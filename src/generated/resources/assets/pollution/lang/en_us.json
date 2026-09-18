@@ -1,4 +1,10 @@
 {
+  "block.pollution.ev_vis_generator": "§5EV Vis Generator",
+  "block.pollution.hv_vis_generator": "§6HV Vis Generator",
+  "block.pollution.iv_vis_generator": "§9IV Vis Generator",
+  "block.pollution.luv_vis_generator": "§dLuV Vis Generator",
+  "block.pollution.lv_vis_generator": "§7LV Vis Generator",
+  "block.pollution.mv_vis_generator": "§bMV Vis Generator",
   "material.pollution.aertitanium": "Aertitanium",
   "material.pollution.aquasilver": "Aquasilver",
   "material.pollution.ignissteel": "Ignissteel",
@@ -49,5 +55,6 @@
   "pollution.command.get": "Chunk pollution: %s",
   "pollution.command.scrub": "Scrubbed %s pollution",
   "pollution.command.set": "Chunk pollution set to %s",
-  "pollution.effect.warning": "The polluted air is making you sick"
+  "pollution.effect.warning": "The polluted air is making you sick",
+  "pollution.machine.vis_generator.tooltip": "Drains Thaumcraft vis to generate EU and industrial pollution"
 }

@@ -1,6 +1,7 @@
 package meowmel.pollution.mixin.jei;
 
 import mezz.jei.api.gui.builder.ITooltipBuilder;
+import mezz.jei.forge.platform.FluidHelper;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
  * only functional difference is that GT's extra fluid tooltip lines are not
  * printed by JEI.</p>
  */
-@Mixin(targets = "mezz.jei.forge.platform.FluidHelper", remap = false)
+@Mixin(value = FluidHelper.class, remap = false)
 public abstract class FluidHelperCompatMixin {
 
     public void getTooltip(ITooltipBuilder tooltip, FluidStack ingredient, TooltipFlag tooltipFlag) {

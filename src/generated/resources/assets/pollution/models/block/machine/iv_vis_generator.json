@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:iv_vis_generator",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/vis_generator_iv"
+    }
+  }
+}

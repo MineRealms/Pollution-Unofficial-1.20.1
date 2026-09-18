@@ -34,6 +34,9 @@ public final class PollutionGTAddon implements IGTAddon {
 
     @Override
     public void initializeAddon() {
+        // Machines are registered from the Pollution mod constructor: GregTech
+        // freezes GTRegistries.MACHINES during its common setup (CommonProxy.init),
+        // which happens after this hook, so queueing them here is too late.
         Pollution.LOGGER.debug("Pollution GregTech CEu addon initialized");
     }
 

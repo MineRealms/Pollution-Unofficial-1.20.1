@@ -1,9 +1,11 @@
 package meowmel.pollution;
 
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.command.PollutionCommand;
+import meowmel.pollution.common.machine.PollutionMachineEvents;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -24,6 +26,11 @@ public final class Pollution {
         // Register the GTCEu addon registrate on this mod's own bus.
         PollutionGTAddon.REGISTRATE.registerRegistrate();
 
+        // Machines are registered through GregTech's machine RegisterEvent, which
+        // fires after GregTech's data is ready and before its registry freezes.
+        context.getModEventBus().addGenericListener(MachineDefinition.class,
+                PollutionMachineEvents::onMachineRegister);
+
         // Manual lang keys are generated through the registrate so they land in
         // the same datagen file as the generated material names.
         PollutionGTAddon.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
@@ -32,6 +39,8 @@ public final class Pollution {
             provider.add("pollution.command.set", "Chunk pollution set to %s");
             provider.add("pollution.command.scrub", "Scrubbed %s pollution");
             provider.add("pollution.effect.warning", "The polluted air is making you sick");
+            provider.add("pollution.machine.vis_generator.tooltip",
+                    "Drains Thaumcraft vis to generate EU and industrial pollution");
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);

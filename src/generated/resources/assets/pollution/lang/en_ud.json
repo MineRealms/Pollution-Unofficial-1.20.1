@@ -1,4 +1,10 @@
 {
+  "block.pollution.ev_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛƎϛ§",
+  "block.pollution.hv_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛH9§",
+  "block.pollution.iv_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛI6§",
+  "block.pollution.luv_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛnꞀp§",
+  "block.pollution.lv_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛꞀㄥ§",
+  "block.pollution.mv_vis_generator": "ɹoʇɐɹǝuǝ⅁ sıΛ ΛWq§",
   "material.pollution.aertitanium": "ɯnıuɐʇıʇɹǝⱯ",
   "material.pollution.aquasilver": "ɹǝʌןısɐnbⱯ",
   "material.pollution.ignissteel": "ןǝǝʇssıubI",
@@ -49,5 +55,6 @@
   "pollution.command.get": "%s :uoıʇnןןod ʞunɥƆ",
   "pollution.command.scrub": "uoıʇnןןod %s pǝqqnɹɔS",
   "pollution.command.set": "%s oʇ ʇǝs uoıʇnןןod ʞunɥƆ",
-  "pollution.effect.warning": "ʞɔıs noʎ buıʞɐɯ sı ɹıɐ pǝʇnןןod ǝɥ⟘"
+  "pollution.effect.warning": "ʞɔıs noʎ buıʞɐɯ sı ɹıɐ pǝʇnןןod ǝɥ⟘",
+  "pollution.machine.vis_generator.tooltip": "uoıʇnןןod ןɐıɹʇsnpuı puɐ ∩Ǝ ǝʇɐɹǝuǝb oʇ sıʌ ʇɟɐɹɔɯnɐɥ⟘ suıɐɹᗡ"
 }

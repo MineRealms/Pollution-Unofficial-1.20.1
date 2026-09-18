@@ -269,6 +269,45 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 数值为 0 属预期：平坦测试世界出生点附近没有 TC4R 灵气节点/咒波；
 重点验证了 SIMULATE/EXECUTE 两条代码路径均真实调用 TC4R API 且无异常。
 
+### 5.8 第一台机器：灵气发电机（已落地，2026-09-18）
+
+**语义（对照上游 `MetaTileEntityVisGenerator`，含一处有意修正）：**
+
+| 项 | 上游 1.12.2 | 本移植 |
+|---|---|---|
+| 能量 | 把能量缓存直接充满（未真正抽灵气）、仅排污 | 通过 `TC4RBridge.drainVis` **真实抽取灵气**后按比例发电 |
+| 转换率 | `visGeneratorEuPerVis`（默认 250） | 同配置项，沿用 |
+| 污染 | `drainedVis * visGeneratorPollutionMultiplier`（默认 0.1） | 同配置项，写入工业污染系统 `PollutionEngine` |
+| 发电速率 | 满容量（异常） | 按等级电压 `V[tier]`，不足 1 灵气量子的部分按 tick 累积 |
+| 通道 | TC6 全局灵气 | TC4R 六通道轮询（aer/terra/ignis/aqua/ordo/perditio） |
+| 等级 | `AURA_GENERATORS[6]`，tier LV..LuV | 相同 6 级（`lv_vis_generator` .. `luv_vis_generator`） |
+
+**关键实现事实（两个都是真实验证出来的坑）：**
+
+1. **注册时机**：`GTRegistries.MACHINES` 在 GT 的 `CommonProxy.init()`（CommonSetup）里冻结；
+   `IGTAddon#initializeAddon()` 在被冻结**之后**调用，addon 机器不能在那里注册。
+   模组构造器注册又会让 `GTMachineModels` 提前类初始化（casing 静态表 null key）。
+   正确做法：监听 `GTCEuAPI.RegisterEvent`（`MachineDefinition.class` 泛型监听，mod bus），
+   该事件在 `GTMachines` 初始化末尾、冻结之前触发。
+2. **模型 datagen**：Forge 的 `ExistingFileHelper` **看不到 GTCEu jar 内的模型**，
+   因此 GT 的 `tieredHullModel`/`simpleGeneratorModel` 在 addon datagen 中必然报
+   `Model at gtceu:block/casings/voltage/lv does not exist` 或卡住。
+   解决：机器模型放本模组资源内（`assets/pollution/models/block/machine/vis_generator_<tier>.json`），
+   parent 指向 GT 模板（运行期从 GT jar 解析），由
+   `tools/generate_machine_models.py` 生成；贴图暂用 GT 电压外壳 + 锅炉正面（占位，TODO 换本模组贴图）。
+
+**验证证据：**
+
+```
+runData: All providers took: 1004 ms；(生成 20 个文件，含 6 个等级 blockstate)
+对话：Registered Pollution machine definitions
+runServer: Done (4.189s)
+RCON: setblock 0 -60 0 pollution:lv_vis_generator -> Changed the block at 0, -60, 0
+RCON: execute if block ... data get block ... id -> "pollution:lv_vis_generator"
+```
+
+**待办**：机器合成配方（assembler）、自定义贴图、UI/状态显示、灵气仓（多方块部件）。
+
 **资产工具（Python，默认只读）：**
 
 - `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
@@ -417,3 +456,9 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 - `TC4RBridge` 增加 SIMULATE/EXECUTE 重载（vis 查询/抽取、flux 查询/清洗）
 - `/pollution vis`、`/pollution flux` 命令落地（见 5.7 节）
 - 新增 `tools/rcon_exec.py`，RCON 实测全部命令回执正常（6/6）
+
+### 2026-09-18 — 第一台魔法机器（灵气发电机）
+- `VisGeneratorMachine`（真实抽灵气发电 + 排污）、`PollutionMachines`、`PollutionMachineEvents`
+- 踩坑与修正：addon 机器注册必须走 `GTCEuAPI.RegisterEvent`（见 5.8 节）；datagen 无法引用 GT jar 内模型，
+  改为自持模型 + Python 生成器（`tools/generate_machine_models.py`）
+- 6 个等级（LV..LuV）注册、datagen、runServer、RCON 放置验证全部通过
