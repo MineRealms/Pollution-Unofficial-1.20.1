@@ -427,8 +427,23 @@ Done (4.274s)! For help, type "help"
 | `PartAbility` | `new PartAbility(String)` 可用 | 同 | 同 |
 | 能量机器 | `TieredEnergyMachine(IMachineBlockEntity, int, Object...)`、`isEnergyEmitter()` protected | `TieredEnergyMachine(BlockEntityCreationInfo, int)` | 构造器已适配 |
 
-**验证：** `gradlew compileJava` 在 7.5.3 下通过（2026-09-18）。
-此前在 8.0.0 下完成的 runServer/runData/RCON 证据需在 7.5.3 下复跑一轮（用户要求暂缓烟测）。
+**验证：** `gradlew compileJava` 在 7.5.3 下通过（2026-09-18）；同日完成 7.5.3 冒烟测试（见下）。
+
+**7.5.3 冒烟测试结果（2026-09-18，独立 runServer + RCON）：**
+
+- 启动：`Done (3.991s)`；`Registered Pollution materials: 6 aspect materials, 34 compound aspects, 6 aspect alloys`
+  → `Registered Pollution machine definitions`
+- 放置验证（RCON `setblock` + `execute if block` + `data get block`）：
+  - `pollution:magic_macerator` ✅（BE 数据完整：`recipeLogic.status=idle`、`isFormed=0b`、`activeRecipeType=0`）
+  - `pollution:spell_prism_earth` ✅（26 个新外壳块代表）
+  - `pollution:lv_vis_hatch` ✅（`data get` 含 `VisStored: 0` → `saveCustomPersistedData` 生效）
+  - `pollution:lv_flux_muffler`、`pollution:lv_infused_fluid_hatch`、`pollution:lv_vis_generator` ✅
+  - 命令回归：`/pollution get`、`/pollution vis aer`（SIMULATE）正常
+- 已知噪音（与本轮改动无关）：authlib 离线报错、TC4R `native_*_cluster_smelting` 空输出告警、
+  LDLib 客户端类 DISTXFORM 警告
+- 存档兼容性观察：`run/world` 内 8.0.0 时期放置的机器 BE 在 7.5.3 下反序列化失败
+  （`LDLib UUIDPayload: Expected UUID-Tag to be of type INT[], but found COMPOUND`），被跳过并继续启动；
+  属旧存档跨版本数据问题（建议清空 `run/world` 或忽略），新放置的 BE 全部正常
 
 ### 5.12 神秘侧缺口盘点（2026-09-18，按类名匹配重新扫描）
 
@@ -773,3 +788,9 @@ Done (4.274s)! For help, type "help"
 - `MagicMaceratorMachine`（首台魔导多块）：`FactoryBlockPattern` 结构 1:1、`MultiblockMachineBuilder` 注册、
   复用 GT `MACERATOR_RECIPES`、占位模型；`compileJava` 通过
 - 19 台机器的机壳/结构数据已全量提取并分类（结构直译 12 台 + 特殊逻辑 6 台），见 5.13 节
+
+### 2026-09-18 — 7.5.3 冒烟测试通过
+- 服务端 `Done (3.991s)`；材料/机器注册日志正常
+- RCON 验证：`magic_macerator`（BE 含 recipeLogic 状态）、`spell_prism_earth`、`lv_vis_hatch`
+  （`VisStored` 持久化可见）、`lv_flux_muffler`、`lv_infused_fluid_hatch`、`lv_vis_generator` 全部可放置且 BE 正常
+- 仅剩旧存档跨版本 BE 反序列化失败（8.0.0 → 7.5.3，LDLib UUID 格式），非代码问题；建议清理 `run/world`
