@@ -670,6 +670,8 @@ Done (4.274s)! For help, type "help"
 - [ ] 剩余 3 台：`NodeBlastFurnace`（BLAST + FORGE_ALCHEMY 双配方 + 节点催化）、
   `NodeFusionReactor`（FUSION + NODE_MAGIC_FUSION 双配方 + `ICleanVis` + Mansus 消耗）、
   `CentralVisTower`（TC6 环境灵气/魔力，需语义重写，工作量最大）
+- 冒烟测试（7.5.3，重启后）：`node_producer`/`large_node_generator`/`node_washer` 注册并可放置；
+  物品 `pollution:packaged_aura_node` 注册成功（物品不参与 setblock，注册失败会在启动期崩溃）
 - 冒烟测试（7.5.3，重启后）：`pollution:infused_exchange`、`pollution:essence_smelter` 注册并可放置，
   BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
