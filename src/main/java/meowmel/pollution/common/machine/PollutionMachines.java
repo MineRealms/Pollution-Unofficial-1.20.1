@@ -74,7 +74,9 @@ import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
 import meowmel.pollution.common.machine.single.MagicEnergyAbsorberMachine;
 import meowmel.pollution.common.machine.single.ManaGeneratorMachine;
+import meowmel.pollution.common.machine.single.SmallNodeGeneratorMachine;
 import meowmel.pollution.common.machine.single.SolarPlateMachine;
+import meowmel.pollution.common.machine.single.SourceChargeMachine;
 import meowmel.pollution.common.machine.single.VisProviderMachine;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraft.network.chat.Component;
@@ -111,6 +113,8 @@ public final class PollutionMachines {
     private static final int[] FLUX_FUEL_CELL_TIERS = { 1, 2, 3, 4, 5 };
     /** Upstream {@code MANA_GENERATOR[6]} (LV..IV registered) for tiers LV..IV. */
     private static final int[] MANA_GENERATOR_TIERS = { 1, 2, 3, 4, 5 };
+    /** Upstream {@code SMALL_NODE_GENERATOR[4]} for tiers LuV..UHV. */
+    private static final int[] SMALL_NODE_GENERATOR_TIERS = { 6, 7, 8, 9 };
     /** Upstream solar plates: 3 tiers x 6 kinds ({@code SOLAR_PLATE[18]}). */
     private static final int[] SOLAR_PLATE_TIERS = { 1, 2, 3 };
     private static final int SOLAR_PLATE_KINDS = 6;
@@ -130,6 +134,13 @@ public final class PollutionMachines {
     public static MachineDefinition[] FLUX_FUEL_CELL;
     /** Single-block mana generators (upstream {@code mana_gen_lv}..{@code mana_gen_iv}). */
     public static MachineDefinition[] MANA_GENERATOR;
+    /**
+     * Single-block micro node generators (upstream
+     * {@code pollution_small_node_generator.luv}..{@code .uhv}), LuV..UHV.
+     */
+    public static MachineDefinition[] SMALL_NODE_GENERATOR;
+    /** Source charge: charges source baubles from infused fluids (upstream {@code source_charge}). */
+    public static MachineDefinition SOURCE_CHARGE;
     /** Indexed by kind (1..6), each entry by tier index. */
     public static MachineDefinition[][] SOLAR_PLATE;
     public static MachineDefinition[] VIS_HATCH;
@@ -317,6 +328,34 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.mana_generator.tooltip"))
                         .register(),
                 MANA_GENERATOR_TIERS);
+
+        SMALL_NODE_GENERATOR = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "small_node_generator",
+                SmallNodeGeneratorMachine::new,
+                (tier, builder) -> builder
+                        .langValue("%s Micro Starlight Node Reactor".formatted(GTValues.VNF[tier]))
+                        .rotationState(RotationState.ALL)
+                        .simpleModel(model("vis_provider_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                                        GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                        GTValues.V[tier] * 64),
+                                Component.translatable("pollution.machine.small_node_generator.tooltip"))
+                        .register(),
+                SMALL_NODE_GENERATOR_TIERS);
+
+        SOURCE_CHARGE = PollutionGTAddon.REGISTRATE
+                .machine("source_charge", SourceChargeMachine::new)
+                .langValue("Source Charge")
+                .rotationState(RotationState.ALL)
+                .simpleModel(model("magic_energy_absorber_lv"))
+                .tooltips(
+                        Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                SourceChargeMachine.TANK_CAPACITY),
+                        Component.translatable("pollution.machine.source_charge.tooltip"))
+                .register();
 
         SOLAR_PLATE = new MachineDefinition[SOLAR_PLATE_KINDS + 1][];
         for (int kind = 1; kind <= SOLAR_PLATE_KINDS; kind++) {

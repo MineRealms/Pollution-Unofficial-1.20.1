@@ -12,7 +12,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 /**
  * Code-side worldgen registrations for the ported 1.12 fortress structure
- * ({@code POStructureManager}/{@code MapGenUndergroundBridge}).
+ * ({@code POStructureManager}/{@code MapGenUndergroundBridge}), the custom
+ * garden feature and the GTCEu ore veins.
  */
 public final class PollutionStructures {
 
@@ -34,5 +35,7 @@ public final class PollutionStructures {
     public static void init(FMLJavaModLoadingContext context) {
         STRUCTURE_TYPES.register(context.getModEventBus());
         PIECE_TYPES.register(context.getModEventBus());
+        PollutionFeatures.init(context);
+        PollutionOreVeins.init(context);
     }
 }

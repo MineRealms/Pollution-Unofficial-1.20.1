@@ -45,6 +45,13 @@ package meowmel.pollution.dimension.worldgen;
  *       {@code minecraft:caves}, so a {@code pollution:underground} noise
  *       settings file must be authored and wired by the dimension batch
  *       before the style biomes can show their surfaces.</li>
+ *   <li>DONE: Alfheim biome layers - {@code noise_settings/alfheim.json}
+ *       reproduces the upstream WorldEngine layers: grass over dirt for the
+ *       field/plateau/forest biomes, elven sand for beach/sandbank and
+ *       gravel-over-clay for the river (upstream rolled clay for half of the
+ *       river tops, which a surface rule cannot express). The plateau (0-2)
+ *       vs non-plateau (4-6) filler depth difference is approximated by the
+ *       noise-driven surface depth instead of per-biome depth rules.</li>
  * </ul>
  *
  * <h2>TODO: structures</h2>
@@ -81,8 +88,13 @@ package meowmel.pollution.dimension.worldgen;
  *   <li>TODO: {@code WorldGenBigVines} - the 20-45 block leaf-core column
  *       wrapped in vines is custom shape logic; the lush cave uses the vanilla
  *       {@code minecraft:vines} feature instead.</li>
- *   <li>TODO: {@code WorldGenGarden} - garden carving (stone to grass, flowers,
- *       trees) is arbitrary code; only the scattered-block pieces were mapped.</li>
+ *   <li>DONE: {@code WorldGenGarden} - ported as
+ *       {@link meowmel.pollution.dimension.worldgen.feature.GardenFeature}
+ *       ({@code pollution:garden}) with configured/placed feature JSON. The
+ *       1.12 {@code WorldGenTrees} trees use the vanilla tree feature with the
+ *       same oak/birch heights. Wired into the Alfheim field biomes through
+ *       {@code pollution:alfheim/garden}; upstream called it from the
+ *       underground decoration pass only.</li>
  *   <li>TODO: {@code WorldGenFleshMound} - flesh mound is a custom shape; the
  *       blood dimension exists but its generator is still the overworld noise
  *       placeholder, so the mound has no placement hook yet.</li>
@@ -115,15 +127,16 @@ package meowmel.pollution.dimension.worldgen;
  *
  * <h2>TODO: other registries</h2>
  * <ul>
- *   <li>TODO: {@code PollutionOreVeins} - 1.12 GTCEu {@code WorldGenRegistry}
- *       vein/fluid-deposit/sphere registration. GTCEu Modern 7.5.3 exposes
- *       {@code GTOreDefinition}/{@code BedrockFluidDefinition} with
- *       {@code GTLayerPattern}/vein generators, but the target has no GT
- *       worldgen registration and most vein materials are not ported yet
- *       (FlameCoal, Dragonstone, Pyrargyrite, Scabyst, PlutoZinc,
- *       ElvenQuartz, ElvenElementium, AuthorityLead, MeltGold, DumbTin and
- *       PureTar are missing; only Octine/Syrmorite/Valonite exist). Port once
- *       the materials and GT registries land.</li>
+ *   <li>DONE: {@code PollutionOreVeins} - ported to
+ *       {@link PollutionOreVeins} as GTCEu 7.5.3 {@code GTOreDefinition}s with
+ *       custom {@code IWorldGenLayer}s for {@code pollution:underground} and
+ *       {@code pollution:alfheim} (registered through the
+ *       {@code GTCEuAPI.RegisterEvent} fired by {@code GTOreLoader}) plus
+ *       {@code BedrockFluidDefinition}s. Veins whose materials have no ore
+ *       block in this port (cryolite, elementium, octine, syrmorite, valonite)
+ *       and the {@code PureTar} deposit are skipped with comments in that
+ *       class; the 1.12 stone spheres and orb/named-dimension helpers have no
+ *       7.5.3 equivalent.</li>
  *   <li>DONE: {@code PODimensionManager}/{@code PODimensionType} - dimensions
  *       are datapack JSON on 1.20.1 ({@code data/pollution/dimension[_type]/}).
  *       Alfheim uses the custom {@code pollution:alfheim} biome source, blood

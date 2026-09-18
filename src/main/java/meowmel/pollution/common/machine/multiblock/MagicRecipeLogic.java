@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -18,10 +20,12 @@ import meowmel.pollution.api.amplification.MagicAmplificationResult;
 import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
 import meowmel.pollution.api.amplification.MagicOutputProcessor;
 import meowmel.pollution.api.amplification.TarotHatchView;
+import meowmel.pollution.api.pollution.MachinePollution;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -222,6 +226,9 @@ public class MagicRecipeLogic extends RecipeLogic {
         int parallel = finished == null ? 1 : Math.max(1, finished.getTotalRuns());
         updateChariotStacks(finished, result);
         super.onRecipeFinish();
+        if (finished != null) {
+            emitMufflerPollution();
+        }
         if (finished != null && result.isActive()) {
             List<ItemStack> extras = MagicOutputProcessor.settle(finished, parallel, result,
                     fractionalOutputRemainders);
@@ -231,6 +238,32 @@ public class MagicRecipeLogic extends RecipeLogic {
         }
         if (getLastRecipe() == null || getLastRecipe() == finished) {
             resetMagicState();
+        }
+    }
+
+    /**
+     * Adds the muffler hatch pollution of the completed operation.
+     *
+     * <p>Upstream emitted this from {@code MetaTileEntity#pollution}, which
+     * modern GregTech removed. The port re-hooks recipe completion: when the
+     * formed structure contains a muffler hatch, its per-operation output
+     * ({@link IMufflerMachine#getHazardStrengthPerOperation()}, the modern
+     * equivalent of the old pollution value) is added to the chunk pollution
+     * scaled by
+     * {@link meowmel.pollution.PollutionConfig#MUFFLER_POLLUTION_MULTIPLIER}.
+     * Runs after {@code super.onRecipeFinish()} so it happens alongside the
+     * muffler's own environmental hazard pass.</p>
+     */
+    private void emitMufflerPollution() {
+        if (!(controller.getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+        for (IMultiPart part : controller.getParts()) {
+            if (part.self() instanceof IMufflerMachine muffler) {
+                MachinePollution.addMufflerPollution(level, controller.getPos(),
+                        muffler.getHazardStrengthPerOperation());
+                return;
+            }
         }
     }
 

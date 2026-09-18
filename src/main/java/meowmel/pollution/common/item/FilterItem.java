@@ -34,6 +34,16 @@ public class FilterItem extends Item {
         this.materialKey = materialKey;
     }
 
+    /**
+     * Upstream {@code FilterBehavior#getInstanceFor}: resolves the behaviour
+     * from a stack. The port keeps the same contract for machine code that
+     * consumes filters.
+     */
+    @Nullable
+    public static FilterItem getInstanceFor(ItemStack stack) {
+        return stack.getItem() instanceof FilterItem filter ? filter : null;
+    }
+
     public int getFilterTier() {
         return filterTier;
     }

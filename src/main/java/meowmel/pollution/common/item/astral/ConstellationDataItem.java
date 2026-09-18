@@ -1,5 +1,6 @@
 package meowmel.pollution.common.item.astral;
 
+import meowmel.pollution.api.amplification.MagicJeiHintResolver;
 import meowmel.pollution.api.astral.AstralNbtHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -17,8 +18,10 @@ import java.util.List;
  *
  * <p>Upstream resolved Astral Sorcery's {@code IConstellation}; the port is
  * id-based (see {@link AstralNbtHelper}), so the stored constellation id is
- * shown instead of the native localized name. The function key and the
- * "native NBT preserved" note match upstream.</p>
+ * mapped through {@link MagicJeiHintResolver#constellationDisplayName(String)}
+ * - the same stable display names the JEI amplification pages use - instead of
+ * the native localized name. The function key and the "native NBT preserved"
+ * note match upstream.</p>
  */
 public class ConstellationDataItem extends Item {
 
@@ -34,7 +37,8 @@ public class ConstellationDataItem extends Item {
                     .withStyle(ChatFormatting.DARK_GRAY));
             return;
         }
-        tooltip.add(Component.translatable("pollution.astral_data.constellation", constellation)
+        tooltip.add(Component.translatable("pollution.astral_data.constellation",
+                        MagicJeiHintResolver.constellationDisplayName(constellation))
                 .withStyle(ChatFormatting.AQUA));
         String function = stack.getOrCreateTag().getString(AstralNbtHelper.CELESTIAL_FUNCTION);
         if (!function.isEmpty()) {

@@ -56,6 +56,10 @@ public final class PollutionRecipes {
         BotaniaNativeRecipes.init(provider);
         ManaToEuRecipes.init(provider);
         DandelifeonRecipe.init(provider);
+        MagicChemicalRecipes.init(provider);
+        MagicIntegrationRecipes.init(provider);
+        MagicGCYMRecipes.init(provider);
+        StarstreamNexusRecipes.init(provider);
 
         Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
         Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));
