@@ -860,6 +860,27 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 每批：compileJava 通过 → 相关冒烟（服务端/客户端）→ tracker 更新 → 提交。
 最终验收：`runServer` + `runClient` + `runGameTestServer` 全绿。
 
+### 5.16 执行进度（Phase 6/7，2026-09-18 晚）
+
+- ✅ **依赖**：Botania `1.20.1-456-FORGE`、AE2 `15.0.18` 接线（LDLib appeng 排除改为作用域限定）；
+  TC 四附属（FM/TM/TE/TT）装入 local-repo 并接线；`docs/PHASE6C_API.md` 完成（四附属 API 清单，
+  结论：上游未直接引用附属，附属多为数据驱动，仅 TT 有公开 api 包）
+- ✅ **Phase 6A（Botania）**：能力层（`ManaMultiblockController`/`ManaHandlerList`/`NotifiableManaContainer`/
+  4 个 PartAbility）+ 部件（mana hatch 1a/4a/16a/64a 有线/无线、pool 三档，共 156 定义）+ 机器 8 台
+  （ManaPlate/ManaPetalApothecary/ManaRuneAltar/IndustrialPureDaisy/BotDistillery/BotVacuumFreezer/
+  BotCircuitAssembler/BotGasCollector）+ `BotaniaRecipeMaps`（7 张地图）+ 结构生成 + 模型 + 中文名
+- ✅ **Phase 6B（AE2）**：`AERecipes` 23/33 条（nae2 8 条与 2 条重复流体总线配方跳过，已记录）
+- ✅ **Phase 6D（维度，首台）**：`pollution:underground`（dimension_type + dimension + biome JSON）+
+  `PollutionTeleporter`；`PortalBlock` 传送就绪
+- ✅ **Phase 7A（方块批）**：植物批 10 个（血肉/彩虹/阿尔夫海姆）+ 传送门/血肉之心/矿物提取机（含 TE）
+- ✅ **Phase 7B（实体）**：Basalz/Blitz/Blizz 注册 + 属性 + AI + 客户端渲染（上游贴图，BlazeModel）
+- ✅ **Phase 7C（增幅）**：`api/amplification` 12 类 + `api/astral` 2 类 + **已接线进 `MagicRecipeLogic`**
+  （+464 行：时长/EU/输出/概率等增幅结算）
+- ⏳ 待做：Botania 机器批 2（EndoflameArray/ManaInfusionReactor/MultiblockManaProvider/MegaManaTurbine/
+  ManaGenerator/MultiDanDeLifeOn）、Botania 配方、维度剩余 3 个（Alfheim/Blood/Demiplane）+ 群系/世界生成、
+  方块/实体剩余、物品行为层（Curios）、客户端表现层（贴图/GUI/TESR/JEI）、Mixin 收尾、资产替换
+- 注：SUBAGENT 因余额耗尽不可用，后续改为主会话直接推进
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
