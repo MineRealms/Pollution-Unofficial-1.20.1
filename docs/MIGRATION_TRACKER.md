@@ -538,15 +538,19 @@ Done (4.274s)! For help, type "help"
    增幅/塔罗/星辉部分延后
 2. ~~`MagicMultiblockController extends WorkableMultiblockMachine`~~ ✅（本轮完成，见上）
 3. ~~`PORecipeMaps` 基于 `GTRecipeType` 重建~~ ✅（本轮完成 TC 子集）
-4. **下一步：魔导多块机器**（19 台）。7.5.3 结构 API 已核实：
+4. **外壳块（本轮完成）**：上游 3 个变体块拆分为 26 个独立方块（`PollutionMagicBlocks`，
+   现代 GT 无 addon 变体块助手）：`spell_prism_*` 9 + `void_prism`/`alloy_blast_casing`/`magic_battery_casing`、
+   `beam_core_0..4` + `filter_1..5`、`laminated_glass` 系 5；占位材质（金属用 GT 电压外壳纹理、
+   玻璃用原版玻璃），`tools/generate_casing_assets.py` 生成 blockstate/模型/物品模型；
+   中英文语言键已加（en 走 datagen provider、zh_cn 手工文件）
+   - 与上游差异：方块 id 由 `pollution:magic_block[variant=...]` 变为每变体独立 id（已记录）
+5. **下一步：魔导多块机器**（19 台）。7.5.3 结构 API 已核实：
    `MultiblockMachineBuilder.pattern(Function<MultiblockMachineDefinition, BlockPattern>)` +
    `FactoryBlockPattern`/`Predicates`/`TraceabilityPredicate`（`api/pattern`）；
    机器定义需 `recipeType(s)`（由 `getDefinition().getRecipeTypes()` 自动注入 `WorkableMultiblockMachine`）+
    `workableCasingModel`/贴图 + `recoveryItems`（消声仓）
-   - 上游机器还依赖 3 类自定义壳体块（上游 `common/block/metablocks`）：
-     `POMagicBlock`（SPELL_PRISM 六要素）、`POMBeamCore`（BEAM_CORE 系列）、`POGlass`（BAMINATED_GLASS）
-     —— 需先移植这 3 个方块类（含 blockstate/模型/材质），或在 v1 用 GT 外壳占位并记录偏差
    - 每台机器上游还实现 `getMaterial()`（该机器对应的 Infused 材料）与 `canBeDistinct()`
+   - 上游结构里还用到多方块部件能力匹配（`Elements.hatch(...)` → 现代 `Predicates.abilities(...)`）
 5. **PORecipeMaps 的注册时机风险**：`GTRecipeTypes.register` 在 addon 静态初始化时执行，
    需在 GT 注册冻结前（`RegisterEvent` 流程内被机器类首次引用），运行期复验时重点检查
 6. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）

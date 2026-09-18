@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
+import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.common.machine.PollutionMachineEvents;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
@@ -25,6 +26,10 @@ public final class Pollution {
 
         // Register the GTCEu addon registrate on this mod's own bus.
         PollutionGTAddon.REGISTRATE.registerRegistrate();
+
+        // Casing blocks (magic multiblocks) are plain registrate blocks and can
+        // be created here, on the Pollution bus, like the machine definitions.
+        PollutionMagicBlocks.init();
 
         // Machines are registered through GregTech's machine RegisterEvent, which
         // fires after GregTech's data is ready and before its registry freezes.
@@ -73,6 +78,8 @@ public final class Pollution {
                     "Not enough mana");
             provider.add("pollution.magic.failure.life_essence",
                     "Not enough life essence");
+            PollutionMagicBlocks.ALL_NAMES.forEach(name -> provider.add(
+                    "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
