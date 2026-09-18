@@ -19,7 +19,12 @@ apply plugin: 'org.spongepowered.mixin'
 
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
-    config "${mod_id}.mixins.json"
+    // The dev-time `--mixin.config` injection is intentionally NOT used: on the
+    // client launch target Mixin cannot read the config resource that early and
+    // aborts with "resource 'pollution.mixins.json' was invalid or could not be
+    // read". The config is declared in META-INF/mods.toml via [[mixins]] instead,
+    // which works for both dev and production runs.
+    // config "${mod_id}.mixins.json"
 }
 
 version = mod_version
