@@ -13,6 +13,7 @@ Covered machines (block model key -> tiers):
   magic_energy_absorber_<tier>    1..5
   flux_scrubber_<tier>            1..5
   flux_fuel_cell_<tier>           1..5
+  vis_hatch_<tier>                1..9   (multiblock part)
   solar_plate_<tier>_<kind>       1..3 x 1..6
 
 All placeholders use GregTech's voltage casing textures and the lava boiler
@@ -45,6 +46,7 @@ TIERED_MACHINES = {
     "magic_energy_absorber": [1, 2, 3, 4, 5],
     "flux_scrubber": [1, 2, 3, 4, 5],
     "flux_fuel_cell": [1, 2, 3, 4, 5],
+    "vis_hatch": [1, 2, 3, 4, 5, 6, 7, 8, 9],
 }
 
 SOLAR_TIERS = [1, 2, 3]

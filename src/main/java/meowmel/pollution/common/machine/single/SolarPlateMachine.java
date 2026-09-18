@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -27,7 +27,7 @@ public class SolarPlateMachine extends PollutionEnergyMachine {
 
     private final int kind;
 
-    public SolarPlateMachine(BlockEntityCreationInfo info, int tier, int kind) {
+    public SolarPlateMachine(IMachineBlockEntity info, int tier, int kind) {
         super(info, tier);
         this.kind = kind;
     }
@@ -53,18 +53,18 @@ public class SolarPlateMachine extends PollutionEnergyMachine {
         return switch (kind) {
             case KIND_ENTROPY, KIND_FIRE -> true;
             case KIND_EARTH -> level.isDay();
-            default -> level.isDay() && level.canSeeSky(getBlockPos().above());
+            default -> level.isDay() && level.canSeeSky(getPos().above());
         };
     }
 
     private boolean hasBoost(ServerLevel level) {
         return switch (kind) {
-            case KIND_AIR -> getBlockPos().getY() > 160;
+            case KIND_AIR -> getPos().getY() > 160;
             case KIND_ENTROPY -> level.isNight();
-            case KIND_EARTH -> getBlockPos().getY() < 10;
+            case KIND_EARTH -> getPos().getY() < 10;
             case KIND_FIRE -> level.dimension() == Level.NETHER;
             case KIND_ORDER -> level.isDay();
-            case KIND_WATER -> level.getBlockState(getBlockPos().below()).is(Blocks.WATER);
+            case KIND_WATER -> level.getBlockState(getPos().below()).is(Blocks.WATER);
             default -> false;
         };
     }

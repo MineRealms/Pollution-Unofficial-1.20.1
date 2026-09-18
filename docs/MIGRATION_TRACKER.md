@@ -5,7 +5,7 @@
 - 上游项目：`H:\MinecraftMods\Pollution`（Minecraft 1.12.2，GTCEu/GTQT 附属，Thaumcraft 6 时代设计）
 - 目标项目：`H:\MinecraftMods\Pollution-Unofficial-1.20.1`
 - 目标分支策略：单分支 `main`，阶段完成后提交
-- 最近更新：2026-09-18（Phase 1 进行中）
+- 最近更新：2026-09-18（Phase 4 基本完成、Phase 5 起步；GTCEu 锁定 7.5.3 服务器版本）
 
 ## 1. 版本矩阵（锁定，不允许浮动）
 
@@ -34,10 +34,10 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 |---|---|---|
 | Phase 0 | 目标工程骨架、Gradle 8.8、依赖锁定、Git 初始化 | 已完成（构建通过，已提交） |
 | Phase 1 | 污染核心：区块污染数据、命令、配置、负效应框架 | 进行中（数据/命令/配置已落地） |
-| Phase 2 | GTCEu 集成：addon 注册、机器排污、消声仓等级、爆炸归因 | 未开始 |
-| Phase 3 | TC4R 集成：灵气抽取/再生、咒波清洗、扭曲联动 | 未开始 |
-| Phase 4 | 基础机器：灵气发电机、灵气再生机、空气过滤机（单方块） | 未开始 |
-| Phase 5 | 多方块与材料：魔导系列、魔法合金、催化剂、源质系统 | 未开始 |
+| Phase 2 | GTCEu 集成：addon 注册、机器排污、消声仓等级、爆炸归因 | 进行中（addon 注册与机器排污基础已落地；消声仓/爆炸归因未开始） |
+| Phase 3 | TC4R 集成：灵气抽取/再生、咒波清洗、扭曲联动 | 进行中（灵气抽取、咒波清洗、要素映射已落地；扭曲联动未开始） |
+| Phase 4 | 基础机器：灵气发电机、灵气再生机、空气过滤机（单方块） | 基本完成（9 族中 6 族落地，3 族延期见 5.10） |
+| Phase 5 | 多方块与材料：魔导系列、魔法合金、催化剂、源质系统 | 进行中（材料已落地；多方块部件起步：VIS_HATCH） |
 | Phase 6 | 其他联动（全部 TODO，见第 6 节） | 未开始 |
 | Phase 7 | 资产、模型、平衡、数据生成、发布 | 未开始 |
 
@@ -198,7 +198,8 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 
 **决定：**
 
-1. GTCEu 7.5.3 → **8.0.0**（JEI 相关 mixin 与 7.5.3 相同，但 8.0.0 是最新发布；本工程 addon 代码在 8.0.0 下编译零改动通过）
+1. GTCEu 固定 **7.5.3**（目标服务器实际运行版本；一度升级到 8.0.0 做验证，2026-09-18 已回退。
+   JEI 冲突与 GT 版本无关：7.5.3 与 8.0.0 的 `jei.FluidHelperMixin` 同签名。两代 API 差异与适配见 5.11 节）
 2. JEI 固定 **15.59.0.212**（满足 TC4R `ISubtypeInterpreter`，满足用户要求）
 3. 本工程提供兼容 shim：`pollution.mixins.json`（`priority: 900`，早于 GT 的默认 1000）
    + `mixin/jei/FluidHelperCompatMixin`，向 JEI 的 `FluidHelper` 补回空的
@@ -325,7 +326,7 @@ registerMachineRecipe(AURA_GENERATORS, "ABA", "CHC", "ABA",
 （形状配方 + `CraftingComponent` 按机器等级解析），模式与上游逐字符一致。
 
 **重要机制修正（已实测）：**
-GTCEu 8.0.0 **不再通过 `runData` 生成配方 JSON**。`GTRecipes.recipeAddition` 在
+GTCEu Modern（实测于 8.0.0；7.5.3 下机制相同待复验）**不再通过 `runData` 生成配方 JSON**。`GTRecipes.recipeAddition` 在
 common setup 被调用并写入内置动态数据包（`GTDynamicDataPack::addRecipe`），
 因此 `IGTAddon#addRecipes` 是**服务器运行时**回调，配方不会出现在
 `src/generated/resources/data/`。验证方式改为启动服务器看日志。
@@ -366,12 +367,23 @@ Done (4.274s)! For help, type "help"
 
 本轮新增 48 个机器定义（generator 6 + provider 9 + absorber 5 + scrubber 5 + fuel cell 5 + solar 18），
 一次性 `compileJava` 通过，`runServer` 全部注册，RCON 抽查 6 台可放置且 block entity 正常。
+（注：上述 runServer/RCON 验证是在 GTCEu 8.0.0 下完成的；回退 7.5.3 后需复跑运行验证，用户已要求暂缓。）
 
-**多方块部件（upstream `multiblockpart`，13 类）— 规划：**
+后续新增：VIS_HATCH 9 个定义（见下方部件进度），机器定义累计 57。
 
-1. 先建 GT 多方块部件框架（`PartAbility`、能力仓、流体/能量/物品仓基类）
-2. 优先移植核心部件：`VIS_HATCH`（灵气仓，接 `VisNetworkApi`）→ `INFUSED_FLUID_HATCH`（灌注流体仓）→ `FLUX_MUFFLER`（消声仓排放，接 `PollutionEngine`）→ `MagicItemHatch`
-3. 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）
+**多方块部件（upstream `multiblockpart`，20 个源文件）— 规划与进度：**
+
+1. [x] **VIS_HATCH（首个部件）**：`VisHatchMachine` + `IVisHatch`（`common/machine/part`、`api/capability`）
+   - 等级 LV..UHV（9 档；上游注册 14 档到 MAX，超出档位待后续）
+   - 每 20 tick 从 TC4R 灵气网络抽 5 centivis（六通道轮询），成功则存 `tier` 单位，容量 `tier * 2000`
+     （对齐上游语义：抽 0.05 vis → 存 tier 单位）
+   - 持久化用 7.5.3 的 `saveCustomPersistedData/loadCustomPersistedData`
+   - `PartAbility` 自定义为 `pollution_vis_hatch`，供控制器收集
+   - 配方：上游 `"ABA"/"CHC"/"ABA"`（H 外壳、A 传送带、B 电路、C 发射器）
+   - 状态：代码落地 + 占位模型 + 语言键，GTCEu 7.5.3 下 `compileJava` 通过；运行验证待复验（用户要求暂缓烟测）
+2. [ ] `INFUSED_FLUID_HATCH`（灌注流体仓）→ [ ] `FLUX_MUFFLER`（消声仓排放，接 `PollutionEngine`）→ [ ] `MagicItemHatch`
+3. [ ] 容器类：`ManaContainer`、`VisContainer`（当前 VIS_HATCH 用整型字段替代 `VisContainer`，待魔法配方系统落地后再评估是否需要独立容器抽象）
+4. [ ] 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）、BM-HPCA 系列 5 个（Phase 6）
 
 **魔法多方块（upstream `multiblock` 19 类 + `multiblock/magic` 18 类 + `multiblock/generator` 3 类）— 规划：**
 
@@ -387,6 +399,74 @@ Done (4.274s)! For help, type "help"
 - 魔导多块的第一步是魔法配方系统，否则只能做空壳
 - 源质/节点体系务必走 `compat/tc4r` 适配层
 - 外部联动部件（魔力/血魔法/星辉/塔罗）统一放到 Phase 6，避免污染核心构建
+
+### 5.11 GTCEu 锁回 7.5.3 与两代 API 差异（2026-09-18）
+
+**背景：** 目标服务器实际运行 **GTCEu Modern 7.5.3**，依赖已固定回 7.5.3（`gradle.properties`），
+一度升级的 8.0.0 已回退。JEI 冲突与 GT 版本无关（7.5.3 的 `jei.FluidHelperMixin` 与 8.0.0 同签名），
+`FluidHelperCompatMixin` shim 继续适用（见 5.5 节）。
+
+**两代 API 差异与适配（7.5.3 各点均已用发布 jar `javap` 核实）：**
+
+| 事项 | 7.5.3（现行） | 8.0.0（已弃用） | 本工程处理 |
+|---|---|---|---|
+| 机器构造器 | `IMachineBlockEntity holder` | `BlockEntityCreationInfo info` | 全部机器类改为 `IMachineBlockEntity` |
+| 坐标读取 | `MetaMachine#getPos()` | `getBlockPos()` | 全部改回 `getPos()` |
+| 持久化 | `saveCustomPersistedData(CompoundTag, boolean)` / `loadCustomPersistedData(CompoundTag)` | `@SaveField` 注解 | `VisHatchMachine` 用前者；其余机器暂无持久字段 |
+| 注册器 | `GTRegistrate#machine(String, Function<IMachineBlockEntity, MetaMachine>)` | `Function<BlockEntityCreationInfo, ...>` | 方法引用/λ 自动匹配 |
+| 分级注册 | `GTMachineUtils.registerTieredMachines(...)` factory 为 `BiFunction<IMachineBlockEntity, Integer, MetaMachine>` | 同位置为 `BlockEntityCreationInfo` | 方法引用自动匹配 |
+| `PartAbility` | `new PartAbility(String)` 可用 | 同 | 同 |
+| 能量机器 | `TieredEnergyMachine(IMachineBlockEntity, int, Object...)`、`isEnergyEmitter()` protected | `TieredEnergyMachine(BlockEntityCreationInfo, int)` | 构造器已适配 |
+
+**验证：** `gradlew compileJava` 在 7.5.3 下通过（2026-09-18）。
+此前在 8.0.0 下完成的 runServer/runData/RCON 证据需在 7.5.3 下复跑一轮（用户要求暂缓烟测）。
+
+### 5.12 神秘侧缺口盘点（2026-09-18，按类名匹配重新扫描）
+
+**总量：** 上游 `src/main/java` 共 **423** 个源文件；按类名（归一化：去 `MetaTileEntity` 前缀、
+去 `Machine`/`TileEntity` 后缀）匹配，已覆盖 **11**，**未移植 412**。
+其中按内容关键字（`tc4port|thaum|aspect|aura|vis|flux|warp|infus|essentia|node|magic` 等）
+扫描命中的未移植类 **164** 个；扣除 2 个改名已覆盖
+（`MetaTileEntityFluxClear`→`FluxScrubberMachine`、`MetaTileEntityFluxPromotedFuelCell`→`FluxFuelCellMachine`）后，
+**魔法/TC 侧实际缺口约 162 个类**。
+
+**机器体系缺口（metatileentity 包系，共 91 个源文件，已覆盖 5，缺口 86）：**
+
+| 区域 | 上游位置 | 缺口 | 说明 |
+|---|---|---|---|
+| 单方块剩余 | `common/metatileentity/single` | 3 | SmallNodeGenerator（需 `PACKAGED_AURA_NODE` 物品）、SourceCharge（需魔力饰品/灌注流体）、ManaGenerator（Botania） |
+| 魔导多块 19 台 | `.../multiblock/magic` | 19 | 前置：魔法配方系统（`MagicRecipeProperties`/`MagicMultiblockRecipeLogic`/`MagicRecipeMapMultiblockController`/`POMultiblockAbility`/`PORecipeMaps`） |
+| 多块发电机 | `.../multiblock/generator` | 6 | `MagicTurbineType`、Large/MegaTurbine、`MultiDanDeLifeOn`、2 个 WorkableHandler；前置燃料表（`MagicFuelRecipes`） |
+| 多块特殊 | `.../multiblock` 顶层 | 17 | CentralVisTower、LargeNodeGenerator、NodeWasher/Producer/BlastFurnace/FusionReactor、IndustrialInfusion、InfusedExchange、MagicBattery、EssenceCollector/EssenceSmelter/GtEssenceSmelter、SmallChemicalPlant、EndoflameArray、MagicFusionReactor、MegaManaTurbine |
+| 多方块部件 | `.../multiblockpart` | 19 | VIS_HATCH ✅（本轮）；INFUSED_FLUID_HATCH / FluxMuffler / MagicItemHatch 排队；容器与外部联动（Mana/Blood/Astral/Tarot/BM-HPCA/无线）延期 |
+| 其余基类 | `.../metatileentity` 顶层等 | ~2 | 抽象类/管理器，随机器阶段处理 |
+
+（注：`multiblock` 目录含子目录共 60 个源文件缺口，上表拆分出 magic 19 + generator 6 + 顶层 17，
+其余为子目录中的辅助类——合计口径以 60 为准。）
+
+**其余大类缺口（含大量非魔法内容）：** `common/block` 55、`dimension` 47、`loaders` 32
+（其中 `loaders/recipes` 29：含 `AERecipes`/`BloodAltar`/`BotaniaRecipes`/`CompoundAspectRecipes`/
+`MagicChemicalRecipes`/`MagicFuelRecipes`/`MagicGCYMRecipes`/`MagicHatchRecipes`/`NodeFusionRecipes`/
+`StarstreamNexusRecipes`/`ThaumcraftRecipes` 等）、`common/items` 19（含 `PollutionMetaItems`、
+`GogglesNano/Quantum`、`Tarots`、`PollutionBaubles`）、`common/entity` 15（含 Basalz/Blitz/Blizz）、
+`common/warpevent` 36、`api` 63、客户端（`gui`/`tesr`/`aspect` 渲染）约 20。
+
+**TC4R 特性替换策略（只列已核实 API；未核实项显式标注）：**
+
+| 上游（TC6 时代）依赖 | TC4R（1.20.1）替换 | 状态 |
+|---|---|---|
+| `AuraHelper` 环境灵气读写 | `VisNetworkApi.drain`（SIMULATE/EXECUTE）+ `NodeApi` CAS 充能 | 已用于 VisGenerator/VisProvider/VisHatch |
+| AspectList / TC6 aspects | `AspectId` / `AspectApi` / `NodeVis` / `AuraNodeState` | 已用于要素映射与对象要素 |
+| 咒波/污染清洗 | `FluxApi.consumeNearby` + `FluxConsumeContext.machine` | 已用于 FluxScrubber/FluxFuelCell |
+| 扭曲读写 | `PlayerWarpApi.view(Player)`（只读视图，已核实） | 待扭曲事件阶段接入；TC4R 是否提供可取消 warp 事件 API **待核实** |
+| `ThaumcraftApi` 研究/注魔注册 | TC4R 数据驱动（jar 内 research/infusion JSON）；运行期 API **待核实** | IndustrialInfusion 前置 |
+| 源质 Essentia 传输 | `GTEssentiaHandler`/`EssenceCollector` 系列需 TC4R essentia API —— **待核实** | 源质体系阶段 |
+| 上游自定义网络（`MeowmelNetwork` 及包） | 现代 Forge `SimpleChannel`（1.20.1）重写 | 网络阶段统一处理 |
+| 上游 Mixin（`CommonInternalsMixin`/`ConfigAspectsMixin`/`ThaumcraftApiHelperMixin`） | TC4R 数据驱动后多数不再需要 | 逐个评估，能删则删 |
+
+**结论：** 神秘侧剩余约 **162 类**，主体是机器体系（单方块 3 + 多方块 60 + 部件 19），
+其次扭曲事件 36 类与配方/材料辅助类。推进顺序保持 5.10 节既定：
+部件框架 → 魔法配方系统 → 魔导多块三批 → 节点/源质体系 → 扭曲事件。
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
@@ -513,7 +593,7 @@ Done (4.274s)! For help, type "help"
 
 ### 2026-09-18 — JEI 冲突定位与兼容层 + datagen 通过
 - 发现并实测 JEI 15.40+ 与 GTCEu（7.5.3/8.0.0）硬冲突（FluidHelper 描述符不匹配）
-- GTCEu 升级 8.0.0；JEI 保持 15.59.0.212；新增 mixin 兼容 shim（priority 900）
+- GTCEu 一度升级 8.0.0（后于本日回退至 7.5.3，见 5.11 节）；JEI 保持 15.59.0.212；新增 mixin 兼容 shim（priority 900）
 - 新增 mixin 构建基础设施（MixinGradle 0.7-SNAPSHOT + mixin AP 0.8.5）
 - `gradlew build` 通过；jar 内含 `pollution.mixins.json`、`pollution.refmap.json`、`MixinConfigs` 清单
 - `runData` 通过并生成 46 个材料语言键 + 手工键（见 5.5 节）
@@ -523,7 +603,7 @@ Done (4.274s)! For help, type "help"
 - 新增 `api/magic/PollutionObjectAspects` + `PollutionMagicEvents`（FMLCommonSetup 触发）
 - 注册 78 条（36 要素材料 × gem/dust + 6 合金 ingot），runServer 验证通过
 - 观察到 TC4R 与 GT 的兼容配方告警（`thaumcraft:compat/native_*_cluster_smelting` 输出为空），
-  属 TC4R 端口自身与 GT 8.0.0 的集成瑕疵，不影响本模组；记录待后续与 TC4R 侧核对
+  属 TC4R 端口自身与 GT 的集成瑕疵（当时在 8.0.0 下观察），不影响本模组；回退 7.5.3 后待复验
 
 ### 2026-09-18 — TC4R 桥接可执行化 + RCON 联调
 - `TC4RBridge` 增加 SIMULATE/EXECUTE 重载（vis 查询/抽取、flux 查询/清洗）
@@ -552,3 +632,12 @@ Done (4.274s)! For help, type "help"
   RCON 抽查 6 台机器 setblock 与 block entity ID 正常
 - 延期机器与全部多方块的详细规划见 5.10 节（SmallNodeGenerator/SourceCharge/ManaGenerator、
   部件框架、魔导系列三批、发电机、储罐）
+
+### 2026-09-18 — GTCEu 回退 7.5.3（服务器实际版本）+ 首个多方块部件 VIS_HATCH
+- 依赖回退：`gtceu_version=8.0.0` → `7.5.3`（用户确认服务器版本；差异与适配见 5.11 节）
+  - 全部机器类构造器 `BlockEntityCreationInfo` → `IMachineBlockEntity`、`getBlockPos()` → `getPos()`
+  - `VisHatchMachine` 持久化改用 7.5.3 的 `saveCustomPersistedData/loadCustomPersistedData`
+  - `gradlew compileJava` 在 7.5.3 下通过；运行验证需复跑（用户要求暂缓烟测）
+- 新增首个多方块部件 `VIS_HATCH`（LV..UHV 9 档）：`VisHatchMachine` + `IVisHatch` + 自定义
+  `PartAbility`（`pollution_vis_hatch`）+ 占位模型（Python 生成器扩展）+ 上游形状配方 + 语言键
+- 完成神秘侧缺口盘点（见 5.12 节）：未移植 412 类，其中魔法/TC 相关约 162 类

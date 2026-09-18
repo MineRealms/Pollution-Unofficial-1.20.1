@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import dev.tc4port.thaumcraft.api.aspect.AspectId;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import dev.tc4port.thaumcraft.api.node.AuraNodeState;
@@ -36,7 +36,7 @@ public class VisProviderMachine extends PollutionEnergyMachine {
     private BlockPos nodePos;
     private int scanTimer;
 
-    public VisProviderMachine(BlockEntityCreationInfo info, int tier) {
+    public VisProviderMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 
@@ -90,7 +90,7 @@ public class VisProviderMachine extends PollutionEnergyMachine {
     }
 
     private BlockPos findNode(ServerLevel level) {
-        BlockPos origin = getBlockPos();
+        BlockPos origin = getPos();
         for (BlockPos pos : BlockPos.betweenClosed(
                 origin.offset(-SCAN_RADIUS, -SCAN_RADIUS, -SCAN_RADIUS),
                 origin.offset(SCAN_RADIUS, SCAN_RADIUS, SCAN_RADIUS))) {

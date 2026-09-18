@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
@@ -25,7 +25,7 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
 
     private double fluxBuffer;
 
-    public FluxFuelCellMachine(BlockEntityCreationInfo info, int tier) {
+    public FluxFuelCellMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 
@@ -39,13 +39,13 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
-        int flux = TC4RBridge.scrubFlux(level, getBlockPos(), FLUX_SAMPLE, VisAction.SIMULATE);
+        int flux = TC4RBridge.scrubFlux(level, getPos(), FLUX_SAMPLE, VisAction.SIMULATE);
         double desired = PollutionConfig.FLUX_FUEL_CELL_FLUX_PER_TICK.get() * 4.0D + 0.05D * 4.0D * (getTier() - 1);
         double ceiling = 60.0D + 5.0D * Math.pow(4, getTier());
 
         if (flux >= ceiling) {
             level.explode(null,
-                    getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D,
+                    getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D,
                     1.0F, Level.ExplosionInteraction.BLOCK);
             return;
         }
@@ -59,7 +59,7 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
         if (quanta <= 0) {
             return;
         }
-        int removed = TC4RBridge.scrubFlux(level, getBlockPos(), quanta);
+        int removed = TC4RBridge.scrubFlux(level, getPos(), quanta);
         if (removed <= 0) {
             return;
         }

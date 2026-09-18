@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
@@ -19,7 +19,7 @@ public class FluxScrubberMachine extends PollutionEnergyMachine {
 
     private double scrubBuffer;
 
-    public FluxScrubberMachine(BlockEntityCreationInfo info, int tier) {
+    public FluxScrubberMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 
@@ -28,7 +28,7 @@ public class FluxScrubberMachine extends PollutionEnergyMachine {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
-        if (TC4RBridge.scrubFlux(level, getBlockPos(), 1, VisAction.SIMULATE) <= 0) {
+        if (TC4RBridge.scrubFlux(level, getPos(), 1, VisAction.SIMULATE) <= 0) {
             scrubBuffer = 0.0D;
             return;
         }
@@ -41,7 +41,7 @@ public class FluxScrubberMachine extends PollutionEnergyMachine {
         if (quanta <= 0) {
             return;
         }
-        int removed = TC4RBridge.scrubFlux(level, getBlockPos(), quanta);
+        int removed = TC4RBridge.scrubFlux(level, getPos(), quanta);
         if (removed <= 0) {
             return;
         }

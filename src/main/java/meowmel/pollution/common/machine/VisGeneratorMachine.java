@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
@@ -36,7 +36,7 @@ public class VisGeneratorMachine extends TieredEnergyMachine {
     private int channelCursor;
     private double visBuffer;
 
-    public VisGeneratorMachine(BlockEntityCreationInfo info, int tier) {
+    public VisGeneratorMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 
@@ -91,7 +91,7 @@ public class VisGeneratorMachine extends TieredEnergyMachine {
 
         visBuffer -= drained;
         energyContainer.addEnergy((long) drained * euPerVis);
-        PollutionEngine.add(level, getBlockPos(),
+        PollutionEngine.add(level, getPos(),
                 drained * PollutionConfig.VIS_GENERATOR_POLLUTION_MULTIPLIER.get());
     }
 
@@ -101,7 +101,7 @@ public class VisGeneratorMachine extends TieredEnergyMachine {
         for (int attempt = 0; attempt < channels.length && remaining > 0; attempt++) {
             VisChannel channel = channels[channelCursor];
             channelCursor = (channelCursor + 1) % channels.length;
-            int result = TC4RBridge.drainVis(level, getBlockPos(), channel, remaining, VisAction.EXECUTE);
+            int result = TC4RBridge.drainVis(level, getPos(), channel, remaining, VisAction.EXECUTE);
             drained += result;
             remaining -= result;
         }

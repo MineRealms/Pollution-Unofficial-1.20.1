@@ -51,6 +51,12 @@ public final class Pollution {
                     "Burns nearby Thaumcraft flux for EU; explodes above its flux ceiling");
             provider.add("pollution.machine.solar_plate.tooltip",
                     "Solar plate MK%s: works in daylight with a per-kind boost condition");
+            provider.add("pollution.machine.vis_hatch.tooltip.capacity",
+                    "Vis buffer: %s units");
+            provider.add("pollution.machine.vis_hatch.tooltip.drain",
+                    "Slowly drains vis from the Thaumcraft 4R network");
+            provider.add("pollution.machine.vis_hatch.tooltip.buffer",
+                    "Stores %s units per drain");
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);

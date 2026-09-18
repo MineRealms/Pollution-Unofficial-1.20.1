@@ -9,6 +9,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.CIRCUIT;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.CONVEYOR;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.EMITTER;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.HULL;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.MOTOR;
@@ -42,12 +43,14 @@ public final class PollutionRecipes {
         registerMagicEnergyAbsorber(provider);
         registerFluxScrubber(provider);
         registerFluxFuelCell(provider);
+        registerVisHatch(provider);
 
         Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
         Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));
         Pollution.LOGGER.info("Registered magic energy absorber crafting recipes for {} tiers", count(PollutionMachines.MAGIC_ENERGY_ABSORBER));
         Pollution.LOGGER.info("Registered flux scrubber crafting recipes for {} tiers", count(PollutionMachines.FLUX_SCRUBBER));
         Pollution.LOGGER.info("Registered flux fuel cell crafting recipes for {} tiers", count(PollutionMachines.FLUX_FUEL_CELL));
+        Pollution.LOGGER.info("Registered vis hatch crafting recipes for {} tiers", count(PollutionMachines.VIS_HATCH));
     }
 
     private static int count(MachineDefinition[] machines) {
@@ -124,5 +127,18 @@ public final class PollutionRecipes {
                 'C', CIRCUIT,
                 'M', MOTOR,
                 'E', EMITTER);
+    }
+
+    /**
+     * Upstream: {@code "ABA" / "CHC" / "ABA"} with H = hull, A = conveyor,
+     * B = blank magic core (substituted by a circuit), C = emitter.
+     */
+    private static void registerVisHatch(Consumer<FinishedRecipe> provider) {
+        MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.VIS_HATCH,
+                "ABA", "CHC", "ABA",
+                'H', HULL,
+                'A', CONVEYOR,
+                'B', CIRCUIT,
+                'C', EMITTER);
     }
 }

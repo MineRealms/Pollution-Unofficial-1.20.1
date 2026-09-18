@@ -1,6 +1,6 @@
 package meowmel.pollution.common.machine.single;
 
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 
@@ -15,7 +15,7 @@ public abstract class PollutionEnergyMachine extends TieredEnergyMachine {
 
     private TickableSubscription tickSubscription;
 
-    protected PollutionEnergyMachine(BlockEntityCreationInfo info, int tier) {
+    protected PollutionEnergyMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 

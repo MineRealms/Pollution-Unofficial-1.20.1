@@ -3,8 +3,10 @@ package meowmel.pollution.common.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.common.machine.part.VisHatchMachine;
 import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
 import meowmel.pollution.common.machine.single.MagicEnergyAbsorberMachine;
@@ -43,6 +45,11 @@ public final class PollutionMachines {
     /** Upstream solar plates: 3 tiers x 6 kinds ({@code SOLAR_PLATE[18]}). */
     private static final int[] SOLAR_PLATE_TIERS = { 1, 2, 3 };
     private static final int SOLAR_PLATE_KINDS = 6;
+    /** Upstream registered 14 tiers (LV..MAX); the port covers LV..UHV for now. */
+    private static final int[] VIS_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    /** Custom multiblock ability used to collect vis hatches on a controller. */
+    public static final PartAbility VIS_HATCH_ABILITY = new PartAbility("pollution_vis_hatch");
 
     public static MachineDefinition[] VIS_GENERATOR;
     public static MachineDefinition[] VIS_PROVIDER;
@@ -51,6 +58,7 @@ public final class PollutionMachines {
     public static MachineDefinition[] FLUX_FUEL_CELL;
     /** Indexed by kind (1..6), each entry by tier index. */
     public static MachineDefinition[][] SOLAR_PLATE;
+    public static MachineDefinition[] VIS_HATCH;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -169,6 +177,23 @@ public final class PollutionMachines {
             }
             SOLAR_PLATE[kind] = perKind;
         }
+
+        VIS_HATCH = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "vis_hatch",
+                VisHatchMachine::new,
+                (tier, builder) -> builder
+                        .langValue("%s Vis Hatch".formatted(GTValues.VNF[tier]))
+                        .rotationState(RotationState.ALL)
+                        .abilities(VIS_HATCH_ABILITY)
+                        .simpleModel(model("vis_hatch_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("pollution.machine.vis_hatch.tooltip.capacity",
+                                        tier * 2000),
+                                Component.translatable("pollution.machine.vis_hatch.tooltip.drain"),
+                                Component.translatable("pollution.machine.vis_hatch.tooltip.buffer", tier))
+                        .register(),
+                VIS_HATCH_TIERS);
     }
 
     private static String tierName(int tier) {

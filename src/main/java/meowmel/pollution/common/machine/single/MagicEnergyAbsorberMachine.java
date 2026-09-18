@@ -1,7 +1,7 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 
@@ -17,7 +17,7 @@ public class MagicEnergyAbsorberMachine extends PollutionEnergyMachine {
 
     private static final int DRAGON_EGG_OUTPUT_TIER = 3;
 
-    public MagicEnergyAbsorberMachine(BlockEntityCreationInfo info, int tier) {
+    public MagicEnergyAbsorberMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
     }
 
@@ -31,7 +31,7 @@ public class MagicEnergyAbsorberMachine extends PollutionEnergyMachine {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
-        if (level.getBlockState(getBlockPos().above()).is(Blocks.DRAGON_EGG)) {
+        if (level.getBlockState(getPos().above()).is(Blocks.DRAGON_EGG)) {
             energyContainer.addEnergy(GTValues.V[DRAGON_EGG_OUTPUT_TIER]);
         }
     }
