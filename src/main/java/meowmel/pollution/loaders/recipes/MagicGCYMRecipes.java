@@ -1005,7 +1005,7 @@ public final class MagicGCYMRecipes {
                 PollutionMagicBlocks.DAMINATED_GLASS };
         for (int index = 0; index < glasses.length; index++) {
             GTRecipeBuilder.of(id("glass/" + index), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(net.minecraft.world.level.block.Blocks.GLASS, 2)
+                    .inputItems(net.minecraft.world.item.Items.GLASS, 2)
                     .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get()))
                     .inputFluids(aura500)
                     .outputItems(glasses[index].asStack())

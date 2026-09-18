@@ -331,7 +331,9 @@ public final class MagicIntegrationRecipes {
             Pollution.LOGGER.warn("Skipping the magic_integration LV..HV circuit board group: a required input is missing");
             return;
         }
-        GTRecipeBuilder.of(id("magic_circuit_board_lv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+        // 上游为奥术工作台配方；LV 板需要两种流体，改用魔导组装机地图
+        // （ASSEMBLER_RECIPES 只支持 1 种流体输入，魔导组装机支持 3 种）。
+        GTRecipeBuilder.of(id("magic_circuit_board_lv"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_ULV.asStack())
                 .inputFluids(basicSubstrate)
                 .inputItems(manaSteelIngot)
