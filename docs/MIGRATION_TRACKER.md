@@ -654,6 +654,8 @@ Done (4.274s)! For help, type "help"
 - [ ] 下一批：`EssenceCollector`/`GtEssenceSmelter`/`IndustrialInfusion`/节点系列
   （NodeWasher 上游半成品需补全；NodeProducer/LargeNodeGenerator/CentralVisTower/NodeBlastFurnace/
   NodeFusionReactor 待逐台）
+- 冒烟测试（7.5.3，重启后）：`pollution:infused_exchange`、`pollution:essence_smelter` 注册并可放置，
+  BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）
