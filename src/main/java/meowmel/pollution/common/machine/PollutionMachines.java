@@ -16,6 +16,7 @@ import meowmel.pollution.Pollution;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicAssemblerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBenderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBreweryMachine;
@@ -111,6 +112,7 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_CHEMICAL_BATH;
     public static MultiblockMachineDefinition MAGIC_CHEMICAL_REACTOR;
     public static MultiblockMachineDefinition MAGIC_DISTILLERY;
+    public static MultiblockMachineDefinition MAGIC_ASSEMBLER;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -354,6 +356,10 @@ public final class PollutionMachines {
         MAGIC_DISTILLERY = magicMultiblock("magic_distillery", "Magic Distillery",
                 MagicDistilleryMachine::new, MagicDistilleryMachine::createPattern,
                 GTRecipeTypes.DISTILLATION_RECIPES, GTRecipeTypes.DISTILLERY_RECIPES);
+
+        MAGIC_ASSEMBLER = magicMultiblock("magic_assembler", "Magic Assembler",
+                MagicAssemblerMachine::new, MagicAssemblerMachine::createPattern,
+                GTRecipeTypes.ASSEMBLER_RECIPES, PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
     }
 
     private static MultiblockMachineDefinition magicMultiblock(

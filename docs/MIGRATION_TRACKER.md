@@ -608,8 +608,33 @@ Done (4.274s)! For help, type "help"
     - ✅ ChemicalBath：水结构用 `Predicates.fluids(Water)`；上游成型后自动注水行为未移植（TODO）
     - ✅ ChemicalReactor：PTFE 管映射到现代 `GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE`
     - ✅ Distillery：Y 用 `magicCasing`，X 的“按层流体输出仓”近似为全局上限 1（TODO）
-    - ⏸ Assembler：**阻塞**——结构依赖 GTQT 材料框架（`HyperdimensionalSilver`/`KQGold`，本工程未移植）
-      与 `POManaPlate`/`POBotBlock` 部分变体；待 GTQT 材料阶段或用替代外壳（需用户确认偏差）
+    - ✅ Assembler：框架阻塞解除（用户决定用 GTCEu 原生材料替代 GTQT 材料，替代规划见下），全部 19 台完成
+
+**GTQT/未移植材料 → GTCEu 原生替代规划（用户授权自主定级）：**
+
+| 上游材料 | 替代 | 等级定位 | 使用位置 |
+|---|---|---|---|
+| `HyperdimensionalSilver` | `NaquadahAlloy` | LuV（高价先进） | Assembler/CentralVisTower/LargeNodeGenerator 等框架 |
+| `KQGold` | `TungstenSteel` | IV（主力工程钢） | Assembler/EndoflameArray 等框架 |
+| `Mansussteel` | `HSSG` | IV（高级工具钢） | EssenceSmelter/NodeBlastFurnace 等框架 |
+| `GTQTMaterials.Thaumium` | `StainlessSteel` | HV（魔法金属位） | EssenceSmelter 系列框架 |
+| `BloodOfAvernus` | 暂缓 | — | 血魔法联动（Phase 6） |
+
+- 实现：`MagicStructureElements.frame(Material)` 经 `GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, material)` 取框架方块
+- 汇编机结构：A=MANA_BASIC（带仓）、B=TERRA_WATERTIGHT、C=NaquadahAlloy 框架、D=层压玻璃、E=TungstenSteel 框架、
+  `' '`=任意；配方类型 `ASSEMBLER_RECIPES` + `MAGIC_ASSEMBLER_RECIPES`
+- **运行期风险**：替代材料必须实际存在 `frameGt` 方块（否则注册期 NPE），冒烟测试重点确认
+
+**节点/源质/注魔系列研究结论（TC4R API 已核实）：**
+
+- 节点：`NodeApi` 只有 `replaceLoadedState(s)`（无创建 API）；`AuraNodeState` 含 type/modifier/baseVis/currentVis（可读/替换）
+- 源质：`EssentiaApi.extract/findSource/take/add`（`EssentiaSearch`、`EssentiaTransferMode.SIMULATE/EXECUTE`）；
+  `EssentiaContainerApi`（标签/容量/内容/insert/extract）；`EssentiaJarView`/`EssentiaTransport`
+- 注魔：待核实（jar 内 infusion 相关 API 路径下一轮定位）
+- 上游质量观察：`MetaTileEntityNodeWasher` 上游实现不完整（`decideType` 恒空、`updateFormedValid` 半成品、
+  依赖未移植的 `PACKAGED_AURA_NODE` 物品）→ 移植时需自行补全语义并记录
+- `InfusedExchange`（7.6KB，完整）：2 格结构（S + 上方输出流体仓），从上方源质罐抽取并输出对应灌注流体
+  （1 单位源质 → 144 mB）；设计已定，下一轮实现（需要 `EssentiaSearch` 完整构造 API）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）

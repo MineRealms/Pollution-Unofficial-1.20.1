@@ -76,6 +76,7 @@ MULTIBLOCKS = {
     "magic_chemical_bath": "hv",
     "magic_chemical_reactor": "ev",
     "magic_distillery": "ev",
+    "magic_assembler": "hv",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
