@@ -596,13 +596,14 @@ Done (4.274s)! For help, type "help"
    `workableCasingModel`/贴图 + `recoveryItems`（消声仓）
    - 每台机器上游还实现 `getMaterial()`（该机器对应的 Infused 材料）与 `canBeDistinct()`
    - 上游结构里还用到多方块部件能力匹配（`Elements.hatch(...)` → 现代 `Predicates.abilities(...)`）
-5. **PORecipeMaps 的注册时机风险**：`GTRecipeTypes.register` 在 addon 静态初始化时执行，
-   需在 GT 注册冻结前（`RegisterEvent` 流程内被机器类首次引用），运行期复验时重点检查
-8. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
-2. `MagicRecipeMapMultiblockController`：仓口收集（`POMultiblockAbility.VIS_HATCH`/`INFUSED_FLUID_HATCH`）与消耗 API
-3. `PORecipeMaps`：基于 `GTRecipeType` 重建魔导配方类型
-4. 19 台魔导多块 + 节点/源质/注魔系列
-5. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
+8. ~~PORecipeMaps 注册时机风险~~ ✅ 已解决：必须在 `GTRecipeType` RegisterEvent 中创建
+   （模组构造期与机器事件期均已冻结；7.5.3 冒烟测试确认 `Registered Pollution recipe types`）
+9. **12 台结构直译机已落地（本轮）**：Bender/Centrifuge/WireMill/Autoclave/Electrolyzer/Extruder/
+   Mixer/Sifter/Solidifier/Brewery/Cutter/GreenHouse；辅助机壳 23 个
+   （POTurbine 系 10、ManaPlate 6、BotBlock 7）已注册并通过冒烟测试
+10. 剩余 6 台特殊机（AlloyBlastSmelter/ElectricBlastFurnace/Assembler/ChemicalBath/
+    ChemicalReactor/Distillery）→ 节点/源质/注魔系列 → TC 配方数据
+    （`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
