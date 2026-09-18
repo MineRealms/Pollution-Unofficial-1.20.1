@@ -253,7 +253,7 @@ public final class BotaniaRecipes {
         for (int index = 0; index < PollutionMachines.MANA_INPUT_HATCH_1A.length; index++) {
             int tier = index + 1;
             Material gear = index <= 4 ? GTMaterials.HSSG : GTMaterials.TungstenSteel;
-            GTRecipeBuilder.of(id("mana_input_hatch/" + GTValues.VN[tier]), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+            GTRecipeBuilder.of(id("mana_input_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier])
                     .inputItems(new ItemStack(BotaniaItems.runeMana))
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, gear, 2))
@@ -270,7 +270,7 @@ public final class BotaniaRecipes {
         Material[] poolGears = { GTMaterials.HSSG, GTMaterials.TungstenSteel, GTMaterials.NaquadahAlloy };
         for (int index = 0; index < poolTiers.length; index++) {
             int tier = poolTiers[index];
-            GTRecipeBuilder.of(id("mana_pool_output_hatch/" + GTValues.VN[tier]), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+            GTRecipeBuilder.of(id("mana_pool_output_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_OUTPUT_HATCH[tier])
                     .inputItems(new ItemStack(BotaniaItems.runeMana))
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, poolGears[index], 2))
@@ -281,7 +281,7 @@ public final class BotaniaRecipes {
                     .EUt(GTValues.VA[tier])
                     .save(provider);
 
-            GTRecipeBuilder.of(id("mana_pool_input_hatch/" + GTValues.VN[tier]), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+            GTRecipeBuilder.of(id("mana_pool_input_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier])
                     .inputItems(new ItemStack(BotaniaItems.runeMana))
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, poolGears[index], 2))
