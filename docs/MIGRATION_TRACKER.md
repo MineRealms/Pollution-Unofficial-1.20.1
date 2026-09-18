@@ -844,10 +844,14 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 - 7C 增幅系统（`api/amplification` 8 类 + `api/astral` 2 类）：魔导多块增幅/塔罗/星辉条件
 - 7D 客户端（39）：正式贴图（`POTextures` 替换占位）、GUI、TESR（魔法阵/储罐渲染）、objmodels、
   粒子、扭曲客户端效果（`client/warpevent`）、JEI 分类（机器排污/注魔/要素）
-- 7E 物品行为层：滤芯、护目镜（Nano/Quantum）、饰品（Baubles/Tarots）、工具
+- 7E 物品行为层：滤芯、护目镜（Nano/Quantum）、**饰品改用 Curios**（上游 1.12 的 Baubles 在 1.20.1 不存在；
+  `PollutionBaubles` 移植为 `CurioItem` + Curios 槽位注册，Curios 5.14.1 已是本工程依赖）、Tarots、工具
 - 7F Mixin 收尾（9 类逐个评估：能删则删，保留 JEI shim）
 - 7G 数据与平衡：`MaterialPropertyAddition`、`OreMaterials`、`SecondDegreeMaterials` 补全、
   矿石/矿脉、掉落表、配置默认值
+
+**平台替代定则（已确认）**：饰品 = Curios（非 Baubles）；UI = LDLib/GTCEu Modern；
+网络 = SimpleChannel；模型 = 原生 JSON（OBJ 仅作参考）；JEI/KubeJS 保持。
 
 **执行顺序（建议）**：依赖准备 → 6C（附属，复用现成 jar）→ 6A（Botania）→ 6B（AE2）→
 6D（维度/世界生成）→ 7A/7B → 7C/7E → 7D/7G → 7F。
