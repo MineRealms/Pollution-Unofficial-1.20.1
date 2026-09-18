@@ -197,6 +197,14 @@ dependencies {
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
     runtimeOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
 
+    // Patchouli: mandatory dependency of Botania in the target pack
+    compileOnly(fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")) { transitive = false }
+
+    // GuideME: guide library shipped in the target pack (GTCEu/AE2 ecosystem)
+    compileOnly(fg.deobf("org.appliedenergistics:guideme:${guideme_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("org.appliedenergistics:guideme:${guideme_version}")) { transitive = false }
+
     // GTNN ("GT--") and GCYR (Gregicality Rocketry), both shipped in the target
     // modpack; local jars installed under local-repo/local/.
     compileOnly(fg.deobf("local.gtnn:gtnn:${gtnn_version}")) { transitive = false }
