@@ -1,6 +1,7 @@
 package meowmel.pollution;
 
 import com.mojang.logging.LogUtils;
+import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
@@ -22,6 +23,16 @@ public final class Pollution {
 
         // Register the GTCEu addon registrate on this mod's own bus.
         PollutionGTAddon.REGISTRATE.registerRegistrate();
+
+        // Manual lang keys are generated through the registrate so they land in
+        // the same datagen file as the generated material names.
+        PollutionGTAddon.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+            provider.add("mod.pollution.name", "Pollution Unofficial");
+            provider.add("pollution.command.get", "Chunk pollution: %s");
+            provider.add("pollution.command.set", "Chunk pollution set to %s");
+            provider.add("pollution.command.scrub", "Scrubbed %s pollution");
+            provider.add("pollution.effect.warning", "The polluted air is making you sick");
+        });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);

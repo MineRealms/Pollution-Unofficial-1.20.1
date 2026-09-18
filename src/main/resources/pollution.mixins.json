@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "meowmel.pollution.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "pollution.refmap.json",
+  "priority": 900,
+  "mixins": [
+    "jei.FluidHelperCompatMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

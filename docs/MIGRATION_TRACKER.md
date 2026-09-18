@@ -177,6 +177,46 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 调试入口：`/pollution aspects`
 - 运行期证据：`Mapped 36 aspect materials to Thaumcraft 4R aspects (6 vis channels)`（runServer 日志）
 
+### 5.5 JEI 兼容性矩阵与决定（2026-09-18，全部实测）
+
+**事实（逐个下载 JEI 版本用 javap 验证，非推测）：**
+
+| JEI 版本 | `ISubtypeInterpreter`（TC4R 需要） | `FluidHelper.getTooltip` 签名（GT 需要 ITooltipBuilder） |
+|---|---|---|
+| 15.20.0.115 | 无 | ITooltipBuilder ✅ |
+| 15.33.0.174 | 无 | ITooltipBuilder ✅ |
+| 15.35.0.175 | 无 | ITooltipBuilder ✅ |
+| 15.40.0.176 | 无 | List ❌ |
+| 15.48.0.177 | 无 | List ❌ |
+| 15.55.0.201 | 有 | List ❌ |
+| 15.59.0.212（最新） | 有 | List ❌ |
+
+结论：**1.20.1 上不存在同时满足 GTCEu 与 TC4R 的 JEI 版本**。
+GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
+`InvalidInjectionException: Invalid descriptor ... Expected (List) but found (ITooltipBuilder)`
+硬崩溃（`require = 0` 对描述符不匹配无效）。
+
+**决定：**
+
+1. GTCEu 7.5.3 → **8.0.0**（JEI 相关 mixin 与 7.5.3 相同，但 8.0.0 是最新发布；本工程 addon 代码在 8.0.0 下编译零改动通过）
+2. JEI 固定 **15.59.0.212**（满足 TC4R `ISubtypeInterpreter`，满足用户要求）
+3. 本工程提供兼容 shim：`pollution.mixins.json`（`priority: 900`，早于 GT 的默认 1000）
+   + `mixin/jei/FluidHelperCompatMixin`，向 JEI 的 `FluidHelper` 补回空的
+   `getTooltip(ITooltipBuilder, FluidStack, TooltipFlag)` 方法，使 GT 的注入有目标、不再崩溃
+   - 功能影响：JEI 15.59 内部走 `List` 重载，GT 额外的流体 tooltip 行不会显示；GT 的 JEI 分类/配方正常
+4. mixin 基础设施：MixinGradle 0.7-SNAPSHOT + `annotationProcessor org.spongepowered:mixin:0.8.5:processor`；
+   JEI forge 实现 jar 加入 `compileOnly`（AP 需要目标类在编译期可见）
+5. 运行验证：`runData` 全流程通过（此前 100% 崩溃点消失）
+
+**datagen 验证结果：**
+
+- `runData` 完成：`All providers took: 795 ms`
+- 产物 `src/generated/resources/assets/pollution/lang/en_us.json`：
+  46 个 GT 材料键（`material.pollution.*`）+ 5 个手工键（`mod.pollution.name`、`/pollution` 命令反馈）
+- `en_ud.json`（滑稽英语）为 JEI/Registrate 标准产物
+- 已知环境怪癖：datagen 完成后游戏 JVM 不自行退出（KubeJS/文件监听等非守护线程），
+  验证日志出现 `All providers took` 后手动结束进程即可；不影响产物
+
 **资产工具（Python，默认只读）：**
 
 - `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
@@ -306,3 +346,10 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 颜色/形态/1:1 组分与原项目逐项一致；上游 `setTooltips` 无现代等价 API，改为注释记录
 - 映射扩展至 36 项并用 `AspectApi.contains` 运行期校验（36/36 命中，无 WARN）
 - runServer 证据：`Mapped 36 aspect materials to Thaumcraft 4R aspects (6 vis channels)` → `Done (4.451s)`
+
+### 2026-09-18 — JEI 冲突定位与兼容层 + datagen 通过
+- 发现并实测 JEI 15.40+ 与 GTCEu（7.5.3/8.0.0）硬冲突（FluidHelper 描述符不匹配）
+- GTCEu 升级 8.0.0；JEI 保持 15.59.0.212；新增 mixin 兼容 shim（priority 900）
+- 新增 mixin 构建基础设施（MixinGradle 0.7-SNAPSHOT + mixin AP 0.8.5）
+- `gradlew build` 通过；jar 内含 `pollution.mixins.json`、`pollution.refmap.json`、`MixinConfigs` 清单
+- `runData` 通过并生成 46 个材料语言键 + 手工键（见 5.5 节）

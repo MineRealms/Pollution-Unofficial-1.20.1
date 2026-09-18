@@ -1,7 +1,0 @@
-{
-  "mod.pollution.name": "Pollution Unofficial",
-  "pollution.command.get": "Chunk pollution: %s",
-  "pollution.command.set": "Chunk pollution set to %s",
-  "pollution.command.scrub": "Scrubbed %s pollution",
-  "pollution.effect.warning": "The polluted air is making you sick"
-}

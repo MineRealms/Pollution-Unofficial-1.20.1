@@ -1,8 +1,25 @@
+buildscript {
+    repositories {
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
 plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+apply plugin: 'org.spongepowered.mixin'
+
+mixin {
+    add sourceSets.main, "${mod_id}.refmap.json"
+    config "${mod_id}.mixins.json"
 }
 
 version = mod_version
@@ -152,7 +169,11 @@ dependencies {
     // JEI
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")) { transitive = false }
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")) { transitive = false }
+    // forge impl is compileOnly too: FluidHelperCompatMixin targets a class inside it
+    compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
     runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
+
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // KubeJS: recipe removal / addition scripting
     compileOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
