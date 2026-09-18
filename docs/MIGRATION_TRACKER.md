@@ -369,7 +369,7 @@ Done (4.274s)! For help, type "help"
 一次性 `compileJava` 通过，`runServer` 全部注册，RCON 抽查 6 台可放置且 block entity 正常。
 （注：上述 runServer/RCON 验证是在 GTCEu 8.0.0 下完成的；回退 7.5.3 后需复跑运行验证，用户已要求暂缓。）
 
-后续新增：VIS_HATCH 9 个定义（见下方部件进度），机器定义累计 57。
+后续新增：VIS_HATCH 9 + INFUSED_FLUID_HATCH 9 + FLUX_MUFFLER 9（见下方部件进度），机器定义累计 75。
 
 **多方块部件（upstream `multiblockpart`，20 个源文件）— 规划与进度：**
 
@@ -381,9 +381,18 @@ Done (4.274s)! For help, type "help"
    - `PartAbility` 自定义为 `pollution_vis_hatch`，供控制器收集
    - 配方：上游 `"ABA"/"CHC"/"ABA"`（H 外壳、A 传送带、B 电路、C 发射器）
    - 状态：代码落地 + 占位模型 + 语言键，GTCEu 7.5.3 下 `compileJava` 通过；运行验证待复验（用户要求暂缓烟测）
-2. [ ] `INFUSED_FLUID_HATCH`（灌注流体仓）→ [ ] `FLUX_MUFFLER`（消声仓排放，接 `PollutionEngine`）→ [ ] `MagicItemHatch`
-3. [ ] 容器类：`ManaContainer`、`VisContainer`（当前 VIS_HATCH 用整型字段替代 `VisContainer`，待魔法配方系统落地后再评估是否需要独立容器抽象）
-4. [ ] 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）、BM-HPCA 系列 5 个（Phase 6）
+2. [x] **INFUSED_FLUID_HATCH（灌注流体仓）**：`InfusedFluidHatchMachine` extends `TieredPartMachine` +
+   `NotifiableFluidTank`（1 罐，`8000 << min(9, tier)` mB，IO.BOTH）。上游的 1 输入/1 输出流体容器槽待物品阶段。
+   等级 LV..UHV（9 档，上游 14）；能力 `POMultiblockAbility.INFUSED_FLUID_HATCH`
+3. [x] **FLUX_MUFFLER（魔法消声仓）**：`FluxMufflerMachine implements IMufflerMachine`
+   - 回收概率 `min((tier-1)*10, 100)`（上游公式，区别于 GT 的 `tier*10`）
+   - 回收仓 `(1 + min(UHV, tier))^2` 槽；`recoverItemsTable` 按概率逐格 `insertItemStacked`
+   - 上游 `getPollutionAmount()=0` 语义：消声仓回收本身不增加工业污染（现代 GT 已移除该钩子，注释记录）
+   - 能力使用 GT 标准 `PartAbility.MUFFLER`，可被现有 GT 多方块识别
+4. [x] **MagicItemHatch 基类**：`MagicItemHatchMachine`（抽象，focus 槽 + 过滤 + 锁定；`NotifiableItemStackHandler`
+   暴露物品能力）。具体子类（Tarot 等）随对应联动阶段；本轮不注册机器定义
+5. [ ] 容器类：`ManaContainer`、`VisContainer`（当前 VIS_HATCH 用整型字段替代 `VisContainer`，待魔法配方系统落地后再评估是否需要独立容器抽象）
+6. [ ] 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）、BM-HPCA 系列 5 个（Phase 6）
 
 **魔法多方块（upstream `multiblock` 19 类 + `multiblock/magic` 18 类 + `multiblock/generator` 3 类）— 规划：**
 
@@ -467,6 +476,40 @@ Done (4.274s)! For help, type "help"
 **结论：** 神秘侧剩余约 **162 类**，主体是机器体系（单方块 3 + 多方块 60 + 部件 19），
 其次扭曲事件 36 类与配方/材料辅助类。推进顺序保持 5.10 节既定：
 部件框架 → 魔法配方系统 → 魔导多块三批 → 节点/源质体系 → 扭曲事件。
+
+### 5.13 魔法配方系统现代化方案与进度（2026-09-18）
+
+**上游结构（1.12 GTCEu）：** `MagicRecipeProperties`（RecipeProperty 注册表）→ `MagicMultiblockRecipeLogic`
+（`MultiblockRecipeLogic` 子类，vis/魔力/源质/星辉/塔罗资源与增幅系统）→ `MagicRecipeMapMultiblockController`
+（资源仓收集与消耗）→ `PORecipeMaps`（魔导 RecipeMap 注册）→ 19 台魔导多块。
+
+**现代 GTCEu 7.5.3 的关键差异（已用发布 jar 核实）：**
+
+| 事项 | 上游（1.12 GTCEu） | 7.5.3 实际 | 现代化方案 |
+|---|---|---|---|
+| 配方自定义属性 | `GregTechAPI.RECIPE_PROPERTIES` + `RecipeProperty` 子类 | 无属性注册表；`GTRecipe.data`（CompoundTag）是官方扩展点 | 键名保留上游字符串（`pollution.magic.*`），`MagicRecipeProperties` 改为 data 读写 + 构建器 helper |
+| 多方块逻辑基类 | `MultiblockRecipeLogic`（独立类） | **不存在**；`WorkableMultiblockMachine` + `RecipeLogic`（`api/machine/trait/RecipeLogic`） | `MagicRecipeLogic` 需基于 `RecipeLogic` 重建（下轮开始） |
+| 配方构建 | `RecipeBuilder#applyProperty` | `GTRecipeBuilder#addData(String, int/long/String/...)` | 已封装进 `MagicRecipeProperties` builder helpers |
+| 配方类型 | `RecipeMap` | `GTRecipeType` | `PORecipeMaps` 待基于 `GTRecipeType` builder 重建 |
+
+**已落地（本轮）：**
+
+- `api/recipes/properties/MagicRecipeProperties.java`（现代化重写）：
+  - TC 面键已接线：`VIS_PER_CRAFT`、`INFUSED_FLUID_PER_TICK`、`THAUMCRAFT_RESEARCH`（+ builder/ getter）
+  - 数字-only 键一并提供构建器：`MANA_PER_TICK`、`LIFE_ESSENCE_PER_TICK`、`TAROT`、`CONSUMABLE_CATALYST_INPUTS`
+  - 延期系统键保留上游名字（ASTRAL/PROCESS_TAG...），避免未来配方不兼容；JEI 展示待现代 GT 配方信息 API 调研
+- `api/capability/ICleanVis.java`（上游原样：干净灵气标记接口）
+- 部件批次（见 5.10）：INFUSED_FLUID_HATCH、FLUX_MUFFLER、MagicItemHatch 基类
+
+**下一步（TC 关键路径）：**
+
+1. `MagicRecipeLogic`：基于 `RecipeLogic` 重建资源扣费（vis/infused fluid/研究门槛），先做 TC 子集，
+   增幅/塔罗/星辉部分延后；需要先读 `RecipeLogic` 7.5.3 的模板方法面（`checkRecipe`/`handleRecipeWorking`/
+   `onRecipeFinish`/`completeRecipe` 等）以及 `WorkableMultiblockMachine` 的挂接方式
+2. `MagicRecipeMapMultiblockController`：仓口收集（`POMultiblockAbility.VIS_HATCH`/`INFUSED_FLUID_HATCH`）与消耗 API
+3. `PORecipeMaps`：基于 `GTRecipeType` 重建魔导配方类型
+4. 19 台魔导多块 + 节点/源质/注魔系列
+5. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
@@ -641,3 +684,11 @@ Done (4.274s)! For help, type "help"
 - 新增首个多方块部件 `VIS_HATCH`（LV..UHV 9 档）：`VisHatchMachine` + `IVisHatch` + 自定义
   `PartAbility`（`pollution_vis_hatch`）+ 占位模型（Python 生成器扩展）+ 上游形状配方 + 语言键
 - 完成神秘侧缺口盘点（见 5.12 节）：未移植 412 类，其中魔法/TC 相关约 162 类
+
+### 2026-09-18 — TC 部件批次 + 魔法配方系统起步
+- 新增 3 个部件类 + 18 个机器定义（累计 75）：`InfusedFluidHatchMachine`（9 档）、
+  `FluxMufflerMachine`（9 档，上游回收概率公式）、`MagicItemHatchMachine`（抽象基类）
+- 新增 `POMultiblockAbility`（自定义 `PartAbility`，经 `MachineBuilder#abilities` 自动注册方块）
+- `MagicRecipeProperties` 现代化重写（GT 7.5.3 无 RecipeProperty 注册表 → `GTRecipe.data`），
+  TC 键全部接线；新增 `ICleanVis`
+- `compileJava` 通过（7.5.3）；魔法配方系统整体方案与下一步见 5.13 节
