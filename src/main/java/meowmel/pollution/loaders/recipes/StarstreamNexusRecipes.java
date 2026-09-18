@@ -3,6 +3,7 @@ package meowmel.pollution.loaders.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import meowmel.pollution.Pollution;
@@ -25,24 +26,26 @@ import java.util.function.Consumer;
  * the port), and Starrymansus maps to InfusedAura per the substitution
  * table.</p>
  *
- * <p><b>Skipped (10 recipes)</b></p>
+ * <p><b>Newly ported</b></p>
  * <ul>
- *   <li>Constellation anchor and obelisk core: TC4R does expose a datapack
- *       infusion serializer usable from code (see
- *       {@code docs/TC4R_INFUSION_API.md}), but both recipes need the unported
- *       constellation/ritual crystal block and the obelisk core block. The four
- *       Botania-style machine infusions (pure daisy, mana infusion, rune altar,
- *       petal apothecary) also stay skipped because they need the unported
- *       Thaumcraft vis/morphic resonators.</li>
- *   <li>Starstream nexus controller: needs the unported
- *       {@code STARSTREAM_NEXUS_OBELISK} machine, the obelisk core block,
- *       liquid starlight and DimensionalTransformingAgent.</li>
- *   <li>Linker and chunk anchor: liquid starlight (Astral Sorcery) is
- *       unported.</li>
- *   <li>Relay, interdimensional relay and operation core: the
- *       {@code STARSTREAM_RELAY} / {@code STARSTREAM_INTERDIMENSIONAL_RELAY} /
- *       {@code STARSTREAM_CHUNK_ANCHOR} / {@code STARSTREAM_OPERATION_CORE}
- *       blocks are unported.</li>
+ *   <li>Starstream linker. // 上游: liquid starlight -> 本移植版: InfusedAura
+ *       （整合包无 Astral Sorcery）。ASTRAL_LENS_BASIC 物品存在（其自身来源链
+ *       属 Astral Sorcery，仍跳过）。</li>
+ *   <li>Constellation anchor infusion: registered by {@code InfusionRecipes}
+ *       (see there for the ritual-crystal substitution).</li>
+ * </ul>
+ *
+ * <p><b>Skipped</b></p>
+ * <ul>
+ *   <li>Obelisk core / nexus controller / relay / interdimensional relay /
+ *       chunk anchor / operation core: the {@code CONSTELLATION_CRYSTAL},
+ *       {@code STARSTREAM_RELAY}, {@code STARSTREAM_INTERDIMENSIONAL_RELAY},
+ *       {@code STARSTREAM_CHUNK_ANCHOR}, {@code STARSTREAM_OPERATION_CORE}
+ *       blocks and the {@code STARSTREAM_NEXUS_OBELISK} machine are unported.
+ *       // 跳过: 星辉网络方块/机器未移植</li>
+ *   <li>Liquid starlight inputs are Astral Sorcery content; the two recipes
+ *       that remain (anchor, linker) substitute InfusedAura, the rest of the
+ *       Astral chain stays skipped. // 跳过: 整合包无 Astral Sorcery</li>
  * </ul>
  */
 public final class StarstreamNexusRecipes {
@@ -80,6 +83,19 @@ public final class StarstreamNexusRecipes {
                 .outputItems(PollutionMagicBlocks.STARSTREAM_RUNED_CASING.asStack(4))
                 .duration(900)
                 .EUt(GTValues.VA[GTValues.UHV])
+                .save(provider);
+
+        // 星轨链接器 // 上游: liquid starlight -> 本移植版: InfusedAura
+        GTRecipeBuilder.of(id("starstream_linker"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                .inputItems(PollutionItems.ASTRAL_LENS_BASIC.asStack())
+                .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(2))
+                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack(2))
+                .inputItems(GTItems.EMITTER_IV.asStack(2))
+                .inputItems(GTItems.SENSOR_IV.asStack(2))
+                .inputFluids(fluid(PollutionMaterials.InfusedAura, 2000))
+                .outputItems(PollutionItems.STARSTREAM_LINKER.asStack())
+                .duration(600)
+                .EUt(GTValues.VA[GTValues.IV])
                 .save(provider);
     }
 

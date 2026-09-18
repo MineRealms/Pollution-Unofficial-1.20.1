@@ -1,7 +1,9 @@
 package meowmel.pollution.common.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -70,6 +72,8 @@ import meowmel.pollution.common.machine.part.mana.ManaHatchMachine;
 import meowmel.pollution.common.machine.part.mana.ManaPoolHatchMachine;
 import meowmel.pollution.common.machine.part.mana.WirelessManaHatchMachine;
 import meowmel.pollution.common.machine.part.mana.WirelessManaPoolHatchMachine;
+import meowmel.pollution.common.machine.single.AspectTankBlockEntity;
+import meowmel.pollution.common.machine.single.AspectTankMachine;
 import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
 import meowmel.pollution.common.machine.single.MagicEnergyAbsorberMachine;
@@ -126,6 +130,11 @@ public final class PollutionMachines {
     private static final int[] FLUX_MUFFLER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     /** Upstream mana hatch arrays held 14 tiers (LV..MAX); the port covers LV..UHV. */
     private static final int[] MANA_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    /**
+     * Upstream {@code ASPECT_TANK[10]} (index 0 unused) for tiers LV..UHV;
+     * capacity {@code 10_000 << (tier - 1)}.
+     */
+    private static final int[] ASPECT_TANK_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     public static MachineDefinition[] VIS_GENERATOR;
     public static MachineDefinition[] VIS_PROVIDER;
@@ -141,6 +150,12 @@ public final class PollutionMachines {
     public static MachineDefinition[] SMALL_NODE_GENERATOR;
     /** Source charge: charges source baubles from infused fluids (upstream {@code source_charge}). */
     public static MachineDefinition SOURCE_CHARGE;
+    /**
+     * Single-block aspect tanks (upstream {@code aspect_tank.lv} ..
+     * {@code aspect_tank.uhv}), tier-indexed with index 0 = null, like
+     * {@code GTMachineUtils.registerTieredMachines}.
+     */
+    public static MachineDefinition[] ASPECT_TANK;
     /** Indexed by kind (1..6), each entry by tier index. */
     public static MachineDefinition[][] SOLAR_PLATE;
     public static MachineDefinition[] VIS_HATCH;
@@ -356,6 +371,33 @@ public final class PollutionMachines {
                                 SourceChargeMachine.TANK_CAPACITY),
                         Component.translatable("pollution.machine.source_charge.tooltip"))
                 .register();
+
+        // The aspect tank needs a custom block entity (TC4R only sees essentia
+        // transports that are block entities), so it cannot go through
+        // GTMachineUtils.registerTieredMachines; the explicit loop below uses
+        // the same registrate overload and produces the same tier-indexed array
+        // shape (index 0 = null).
+        ASPECT_TANK = new MachineDefinition[GTValues.TIER_COUNT];
+        for (int tier : ASPECT_TANK_TIERS) {
+            int capacity = AspectTankMachine.capacityForTier(tier);
+            ASPECT_TANK[tier] = PollutionGTAddon.REGISTRATE
+                    .machine(tierName(tier) + "_aspect_tank",
+                            MachineDefinition::new,
+                            info -> new AspectTankMachine(info, tier),
+                            MetaMachineBlock::new,
+                            MetaMachineItem::new,
+                            AspectTankBlockEntity::new)
+                    .tier(tier)
+                    .langValue("%s Aspect Tank".formatted(GTValues.VNF[tier]))
+                    .rotationState(RotationState.ALL)
+                    .simpleModel(model("aspect_tank_" + tierName(tier)))
+                    .tooltips(
+                            Component.translatable("pollution.machine.aspect_tank.tooltip.capacity",
+                                    capacity),
+                            Component.translatable("pollution.machine.aspect_tank.tooltip"),
+                            Component.translatable("pollution.machine.aspect_tank.help"))
+                    .register();
+        }
 
         SOLAR_PLATE = new MachineDefinition[SOLAR_PLATE_KINDS + 1][];
         for (int kind = 1; kind <= SOLAR_PLATE_KINDS; kind++) {

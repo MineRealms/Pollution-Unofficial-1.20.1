@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:mv_aspect_tank",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/aspect_tank_mv"
+    }
+  }
+}

@@ -5,12 +5,14 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -69,12 +71,18 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plate;
  *       duplicates of the item-bus recipes and are skipped.</li>
  * </ul>
  *
- * <p><b>Skipped recipes</b> (10 of 33)</p>
+ * <p><b>nae2 high-tier storage substitution</b></p>
  * <ul>
- *   <li>8 {@code nae2:material} storage component recipes (256k/1M/4M/16M item
- *       cells, metadata 19-22, and the matching fluid cells, metadata 24-27):
- *       the Nuclearcraft AE2 addon is not part of this port.
- *       TODO: reinstate if {@code nae2} ever becomes a dependency.</li>
+ *   <li>// 上游: nae2:material 19-22/24-27 (256k/1M/4M/16M item/fluid cell
+ *       components) -> 本移植版: AE2 {@code CELL_COMPONENT_256K}. AE2 15.4.10
+ *       only ships components up to 256k; the 1M/4M/16M tiers keep their
+ *       relative storage scale by outputting 4x/16x/64x of the 256k component.
+ *       The upstream {@code GTQTMetaItems.NANO_POWER_IC} UV input maps to
+ *       {@code GTItems.NANO_CENTRAL_PROCESSING_UNIT}.</li>
+ * </ul>
+ *
+ * <p><b>Skipped recipes</b> (2 of 33)</p>
+ * <ul>
  *   <li>2 fluid bus recipes: duplicates after the fluid bus merge (see above).</li>
  * </ul>
  */
@@ -88,6 +96,7 @@ public final class AERecipes {
         processors(provider);
         interfacesAndBuses(provider);
         storageComponents(provider);
+        storageComponentsHighTier(provider);
         networkBlocks(provider);
     }
 
@@ -302,6 +311,54 @@ public final class AERecipes {
                 .duration(320)
                 .circuitMeta(23)
                 .EUt(1920)
+                .save(provider);
+    }
+
+    /**
+     * 256k+ 存储组件。上游 nae2 元件在本整合包中不存在；以 AE2 15 最大号的
+     * {@code CELL_COMPONENT_256K} 替代，1M/4M/16M 档按 4x/16x/64x 输出保持
+     * 相对容量梯度。// 上游: nae2:material 19-22 (物品) / 24-27 (流体) ->
+     * 本移植版: appliedenergistics2:cell_component_256k
+     */
+    private static void storageComponentsHighTier(Consumer<FinishedRecipe> provider) {
+        highTierComponent(provider, "item_cell_component_256k", 22, GTItems.POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.IV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 16), 1600, GTValues.IV, 1);
+        highTierComponent(provider, "item_cell_component_1m", 22, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.LuV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 32), 3200, GTValues.LuV, 4);
+        highTierComponent(provider, "item_cell_component_4m", 22,
+                GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.ZPM_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 64), 6400, GTValues.ZPM, 16);
+        highTierComponent(provider, "item_cell_component_16m", 22, GTItems.NANO_CENTRAL_PROCESSING_UNIT.asStack(),
+                CustomTags.UV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 64), 12800, GTValues.UV, 64);
+
+        highTierComponent(provider, "fluid_cell_component_256k", 23, GTItems.POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.IV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 16), 1600, GTValues.IV, 1);
+        highTierComponent(provider, "fluid_cell_component_1m", 23, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.LuV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 32), 3200, GTValues.LuV, 4);
+        highTierComponent(provider, "fluid_cell_component_4m", 23,
+                GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
+                CustomTags.ZPM_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 64), 6400, GTValues.ZPM, 16);
+        highTierComponent(provider, "fluid_cell_component_16m", 23, GTItems.NANO_CENTRAL_PROCESSING_UNIT.asStack(),
+                CustomTags.UV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 64), 12800, GTValues.UV, 64);
+    }
+
+    private static void highTierComponent(Consumer<FinishedRecipe> provider, String name, int circuit, ItemStack chip,
+                                          net.minecraft.tags.TagKey<net.minecraft.world.item.Item> circuitTag,
+                                          ItemStack processor, int mana, int tier, int outputCount) {
+        var aura = PollutionMaterials.InfusedAura;
+        if (aura == null || !aura.hasFluid()) {
+            Pollution.LOGGER.warn("Skipping ae2/{}: InfusedAura has no fluid", name);
+            return;
+        }
+        GTRecipeBuilder.of(id(name), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                .inputItems(chip)
+                .inputItems(circuitTag, 4)
+                .inputItems(processor)
+                .inputFluids(aura.getFluid(mana))
+                .outputItems(ae(AEItems.CELL_COMPONENT_256K, outputCount))
+                .duration(320)
+                .circuitMeta(circuit)
+                .EUt(GTValues.VA[tier])
                 .save(provider);
     }
 

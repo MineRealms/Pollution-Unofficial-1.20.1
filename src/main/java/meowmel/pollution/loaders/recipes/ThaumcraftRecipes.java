@@ -6,11 +6,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import dev.arbor.gtnn.data.GTNNMaterials;
+import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -18,11 +21,26 @@ import java.util.function.Consumer;
  * Thaumcraft-facing chemistry recipes.
  *
  * <p>Port of the portable part of upstream {@code ThaumcraftRecipes}
- * (12 of 22). Substitutions: GTQT Thaumium -&gt; StainlessSteel, GTQT Mana -&gt;
+ * (14 of 22). Substitutions: GTQT Thaumium -&gt; StainlessSteel, GTQT Mana -&gt;
  * InfusedAura, Sunnarium -&gt; Titanium (Sunnarium is not part of GTCEu Modern),
- * HOTCORE/BLANKCORE -&gt; the ported catalyst core items. The remaining recipes
- * (Botania mana resource maceration, TC ingot maceration, the eight custom
- * wire-coil conversions) depend on unported content and stay deferred.</p>
+ * HOTCORE/BLANKCORE -&gt; the ported catalyst core items. The eight custom
+ * wire-coil conversions live in {@code CoilRecipes} and are not duplicated
+ * here. The solar-plate, catalyst-core and artificial-scabyst infusions of the
+ * upstream file are registered by {@code InfusionRecipes} through TC4R's
+ * infusion serializer (see {@code docs/TC4R_INFUSION_API.md}).</p>
+ *
+ * <p>// 跳过: 上游剩余两条纯奥术工作台配方（vis_resonator_efficient、
+ * morphic_resonator_efficient、vis_battery_efficient）依赖未移植的
+ * ItemsTC.visResonator / morphicResonator / BlocksTC.visBattery，
+ * 且本移植版把过滤器等奥术配方改写为 GT 组装机配方。</p>
+ *
+ * <p><b>Newly ported macerations</b> (previously skipped):</p>
+ * <ul>
+ *   <li>// 上游: Botania {@code ModItems.manaResource} -&gt; 本移植版:
+ *       {@code GTNNMaterials.ManaSteel} ingot（GTNN 魔力钢只有锭/流体形态）</li>
+ *   <li>// 上游: {@code ItemsTC.ingots} (Thaumcraft ingot meta) -&gt;
+ *       本移植版: TC4R {@code TCItems.THAUMIUM_INGOT}</li>
+ * </ul>
  */
 public final class ThaumcraftRecipes {
 
@@ -31,6 +49,26 @@ public final class ThaumcraftRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         coreChemistry(provider);
         substrateChemistry(provider);
+        macerations(provider);
+    }
+
+    /** 打粉：魔力钢（Botania manaResource -> GTNN ManaSteel）与神秘锭（TC4R thaumium ingot -> StainlessSteel）。 */
+    private static void macerations(Consumer<FinishedRecipe> provider) {
+        // 上游: Botania ModItems.manaResource -> 本移植版: GTNN ManaSteel ingot
+        GTRecipeBuilder.of(id("manasteel_dust"), GTRecipeTypes.MACERATOR_RECIPES)
+                .inputItems(BotaniaItems.manaSteel)
+                .outputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 1))
+                .duration(10)
+                .EUt(2)
+                .save(provider);
+
+        // 上游: Thaumcraft ItemsTC.ingots -> 本移植版: TC4R thaumium ingot
+        GTRecipeBuilder.of(id("thaumium_dust"), GTRecipeTypes.MACERATOR_RECIPES)
+                .inputItems(TCItems.THAUMIUM_INGOT.get())
+                .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.StainlessSteel, 1))
+                .duration(10)
+                .EUt(2)
+                .save(provider);
     }
 
     private static void coreChemistry(Consumer<FinishedRecipe> provider) {

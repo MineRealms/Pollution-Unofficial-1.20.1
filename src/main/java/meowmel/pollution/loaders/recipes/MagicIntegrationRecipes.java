@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -25,43 +26,55 @@ import java.util.function.Consumer;
 /**
  * Cross-mod integration layer, port of the portable subset of upstream
  * {@code meowmel.pollution.loaders.recipes.MagicIntegrationRecipes}
- * (26 of 90+ recipes).
+ * (35 of 90+ recipes).
  *
  * <p><b>Ported</b>: the sterile slate blank, the natural infused coil, the
- * advanced blood circuit, the tarot stock (blank card plus 21 Major Arcana) and
- * the ULV magic circuit board.</p>
+ * advanced blood circuit, the tarot stock (blank card plus 22 Major Arcana),
+ * the ULV/LV/MV/HV/LuV magic circuit boards, the arcane ink capsule and the
+ * transform cores.</p>
  *
  * <p><b>Material substitutions</b>: GTQT Mana / Starrymansus -&gt;
  * InfusedAura; Sunnarium -&gt; Titanium; the compound infused dusts used by
  * upstream do not exist in the port (the materials only carry
  * {@code ore/gem/fluid}), so {@code gem} stacks are used instead.</p>
  *
- * <p><b>Skipped (65+ recipes)</b></p>
+ * <p><b>Newly ported (previously skipped)</b></p>
  * <ul>
- *   <li>The whole Astral Sorcery group (foundational materials, optics,
- *       starmetal alchemy, rock-crystal catalysis, attuned wafers, advanced
- *       astral components, the three celestial machines, the astral
- *       constellation circuit boards): Astral Sorcery is not a dependency of
- *       the port and its items, liquid starlight and recipe maps are absent.</li>
- *   <li>Blood Magic bridge (precision rune blank, blood altar slate): the
- *       unported {@code BlocksAS.translucentBlock} / Blood Magic altar API.</li>
- *   <li>The flesh circuit line (blood circuit, living biofilm, ultimate /
- *       supreme boards): BloodPlasma, CelestialBiologicalMedium,
- *       InfusedPurifiedBlood and liquid starlight are unported; only
- *       {@code blood_circuit_advanced} uses fully ported inputs.</li>
- *   <li>Arcane ink capsule: ArcaneInk is unported; the 22nd tarot (The
- *       Magician) uses the Thaumcraft salis-mundus item and is skipped too.</li>
- *   <li>LV/MV/HV magic circuit boards: the port defines BasicSubstrate as a
- *       fluid only (no ingot form) and OpticalGradeAquamarine / the Thaumcraft
- *       vis resonator are unported.</li>
- *   <li>The Thaumcraft infusion components (ball-in-itself, node stabilization
- *       frame, magic control assembly, transform core): TC4R's datapack
- *       infusion serializer is usable from code (see
- *       {@code docs/TC4R_INFUSION_API.md}), but every one of these recipes
- *       needs the unported Thaumcraft vis/morphic resonators (and, for the
- *       ball-in-itself, the Astral Sorcery sky resonator), so they stay
- *       deferred.</li>
+ *   <li>Arcane ink capsule (ArcaneInk is registered).</li>
+ *   <li>The Magician tarot. // 上游: ItemsTC.salisMundus -> 本移植版:
+ *       Salisundus dust</li>
+ *   <li>LV/MV/HV magic circuit boards. // 上游: BasicSubstrate ingot ->
+ *       本移植版: BasicSubstrate fluid（本移植版材料只有流体）；
+ *       plate Manasteel -> GTNN ManaSteel ingot；GTQT Mana -> InfusedAura；
+ *       ItemsTC.visResonator -> ESSENTIA_RESONATOR；liquid starlight ->
+ *       InfusedAura</li>
+ *   <li>EV/IV circuit boards (registered as TC4R infusions in
+ *       {@code InfusionRecipes}).</li>
+ *   <li>LuV circuit board. // 上游: CelestialBiologicalMedium ->
+ *       本移植版: InfusedAura；ASTRAL_LENS_ADVANCED 物品存在（其来源链属
+ *       Astral Sorcery，仍跳过）</li>
  * </ul>
+ *
+ * <p><b>Skipped</b></p>
+ * <ul>
+ *   <li>The Astral Sorcery group (foundational materials, optics, starmetal
+ *       alchemy, rock-crystal catalysis, attuned wafers, advanced astral
+ *       components, the three celestial machines, the constellation-specific
+ *       ZPM/UV/UHV+ circuit boards): Astral Sorcery is not in the pack and its
+ *       items, liquid starlight and recipe maps are absent.
+ *       // 跳过: 整合包无 Astral Sorcery</li>
+ *   <li>Blood Magic bridge (blood altar slate) and the blood culture line
+ *       (living biofilm, ultimate/supreme boards): Blood Magic life essence /
+ *       BloodPlasma / CelestialBiologicalMedium / InfusedPurifiedBlood are not
+ *       in the pack. // 跳过: 整合包无 Blood Magic</li>
+ *   <li>// 跳过: 整合包无 Astral Sorcery / Blood Magic（星图晶圆、星辉晶核、
+ *       血液培养链、终极/至高血液电路板、ZPM 及以上电路板、星空机器）。</li>
+ * </ul>
+ *
+ * <p>The Thaumcraft infusion components (ball-in-itself, node stabilization
+ * frame, magic control assembly) and the transform core are registered: the
+ * infusions live in {@code InfusionRecipes} (with the TC4R resonator
+ * substitutions), the transform core is the assembler recipe below.</p>
  */
 public final class MagicIntegrationRecipes {
 
@@ -73,6 +86,40 @@ public final class MagicIntegrationRecipes {
         bloodCircuit(provider);
         tarotStock(provider);
         magicCircuitBoardUlv(provider);
+        magicCircuitBoardsLvHv(provider);
+        magicCircuitBoardLuv(provider);
+        transformCores(provider);
+    }
+
+    // ////////////////////////////////////
+    // ***** transform cores *****//
+    // ////////////////////////////////////
+
+    /**
+     * 转换核心。// 上游: frameGtMansussteel -> HSSG frame，
+     * ItemsTC.morphicResonator -> NODE_TRANSDUCER。
+     */
+    private static void transformCores(Consumer<FinishedRecipe> provider) {
+        ItemStack[] circuits = { PollutionItems.MAGIC_CIRCUIT_EV.asStack(),
+                PollutionItems.MAGIC_CIRCUIT_BOARD_EV.asStack() };
+        String[] names = { "circuit", "board" };
+        FluidStack exchange = fluid(PollutionMaterials.InfusedExchange, 576);
+        if (exchange == null) {
+            return;
+        }
+        for (int index = 0; index < circuits.length; index++) {
+            GTRecipeBuilder.of(id("transform_core_" + names[index]), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1))
+                    .inputItems(meowmel.pollution.common.block.PollutionMagicBlocks.BEAM_CORE_4.asStack())
+                    .inputItems(circuits[index])
+                    .inputItems(PollutionItems.NATURAL_INFUSED_COIL.asStack())
+                    .inputItems(new ItemStack(dev.tc4port.thaumcraft.registry.TCBlocks.NODE_TRANSDUCER.get(), 4))
+                    .inputFluids(fluid(PollutionMaterials.InfusedExchange, 576))
+                    .outputItems(PollutionItems.TRANSFORM_ENHANCE.asStack())
+                    .duration(500)
+                    .EUt(GTValues.VA[GTValues.EV])
+                    .save(provider);
+        }
     }
 
     // ////////////////////////////////////
@@ -147,9 +194,24 @@ public final class MagicIntegrationRecipes {
                 .EUt(GTValues.VA[GTValues.ZPM])
                 .save(provider);
 
-        // 22 张大阿卡纳中 The Magician 使用未移植的 TC salis mundus 物品，跳过
+        // 秘法墨囊 // 上游: ArcaneInk 流体（现已在移植版注册）
+        FluidStack ink = fluid(PollutionMaterials.ArcaneInk, 250);
+        if (ink != null) {
+            GTRecipeBuilder.of(id("arcane_ink_capsule"), GTRecipeTypes.CANNER_RECIPES)
+                    .inputItems(Items.GLASS_BOTTLE)
+                    .inputFluids(ink)
+                    .outputItems(PollutionItems.ARCANE_INK_CAPSULE.asStack())
+                    .duration(100)
+                    .EUt(GTValues.VA[GTValues.MV])
+                    .save(provider);
+        }
+
+        // 22 张大阿卡纳
         tarot(provider, 1, "the_fool", PollutionItems.TAROT_THE_FOOL,
                 new ItemStack(Items.ENDER_PEARL), GTMaterials.EnderPearl);
+        // 上游: ItemsTC.salisMundus -> 本移植版: Salisundus dust
+        tarot(provider, 2, "the_magician", PollutionItems.TAROT_THE_MAGICIAN,
+                ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.Salisundus, 1), GTMaterials.Electrum);
         tarot(provider, 3, "the_high_priestess", PollutionItems.TAROT_THE_HIGH_PRIESTESS,
                 new ItemStack(Items.ENDER_EYE), GTMaterials.CertusQuartz);
         tarot(provider, 4, "the_empress", PollutionItems.TAROT_THE_EMPRESS,
@@ -247,6 +309,90 @@ public final class MagicIntegrationRecipes {
                 .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_ULV.asStack())
                 .duration(120)
                 .EUt(GTValues.VA[GTValues.ULV])
+                .save(provider);
+    }
+
+    // ////////////////////////////////////
+    // ***** LV..HV circuit boards *****//
+    // ////////////////////////////////////
+
+    /**
+     * LV/MV/HV 魔法电路板。// 上游: BasicSubstrate ingot -> BasicSubstrate
+     * fluid（本移植版只有流体形态）；plate Manasteel -> GTNN ManaSteel ingot；
+     * GTQT Mana -> InfusedAura；ItemsTC.visResonator -> ESSENTIA_RESONATOR；
+     * liquid starlight -> InfusedAura。
+     */
+    private static void magicCircuitBoardsLvHv(Consumer<FinishedRecipe> provider) {
+        FluidStack basicSubstrate = fluid(PollutionMaterials.BasicSubstrate, 144);
+        FluidStack aura = fluid(PollutionMaterials.InfusedAura, 500);
+        FluidStack life = fluid(PollutionMaterials.InfusedLife, 288);
+        ItemStack manaSteelIngot = ChemicalHelper.get(TagPrefix.ingot, dev.arbor.gtnn.data.GTNNMaterials.ManaSteel, 2);
+        if (basicSubstrate == null || aura == null || life == null || manaSteelIngot.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping the magic_integration LV..HV circuit board group: a required input is missing");
+            return;
+        }
+        GTRecipeBuilder.of(id("magic_circuit_board_lv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_ULV.asStack())
+                .inputFluids(basicSubstrate)
+                .inputItems(manaSteelIngot)
+                .inputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.Salisundus, 2))
+                .inputFluids(fluid(PollutionMaterials.InfusedAura, 500))
+                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LV.asStack())
+                .duration(160)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
+        GTRecipeBuilder.of(id("magic_circuit_board_mv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LV.asStack())
+                .inputItems(PollutionItems.STERILE_SLATE_BLANK.asStack(2))
+                .inputItems(ChemicalHelper.get(TagPrefix.wireFine, GTMaterials.Silver, 8))
+                .inputItems(GTItems.RESISTOR.asStack(2))
+                .inputFluids(fluid(PollutionMaterials.InfusedLife, 288))
+                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
+                .duration(220)
+                .EUt(GTValues.VA[GTValues.MV])
+                .save(provider);
+
+        // 上游 notConsumable ItemsTC.visResonator -> 本移植版 ESSENTIA_RESONATOR；
+        // liquid starlight -> InfusedAura
+        GTRecipeBuilder.of(id("magic_circuit_board_hv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
+                .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz, 2))
+                .inputItems(PollutionItems.SILVERED_GLASS_LENS.asStack())
+                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
+                .notConsumable(new ItemStack(dev.tc4port.thaumcraft.registry.TCItems.ESSENTIA_RESONATOR.get()))
+                .inputFluids(fluid(PollutionMaterials.InfusedAura, 500))
+                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_HV.asStack())
+                .duration(300)
+                .EUt(GTValues.VA[GTValues.HV])
+                .save(provider);
+    }
+
+    // ////////////////////////////////////
+    // ***** LuV circuit board *****//
+    // ////////////////////////////////////
+
+    /**
+     * LuV 电路板。// 上游: CelestialBiologicalMedium -> 本移植版: InfusedAura
+     * （血液培养基属 Blood Magic，整合包无）。ZPM 及以上需要星图晶圆/星辉，
+     * 跳过（整合包无 Astral Sorcery）。
+     */
+    private static void magicCircuitBoardLuv(Consumer<FinishedRecipe> provider) {
+        FluidStack bioMedium = fluid(PollutionMaterials.InfusedAura, 500);
+        if (bioMedium == null) {
+            return;
+        }
+        GTRecipeBuilder.of(id("magic_circuit_board_luv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack())
+                .inputItems(PollutionItems.LIVING_MAGIC_BIOFILM.asStack(2))
+                .inputItems(PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack())
+                .inputItems(PollutionItems.ASTRAL_LENS_ADVANCED.asStack())
+                .inputItems(GTItems.ADVANCED_SMD_CAPACITOR.asStack(8))
+                .inputItems(GTItems.ADVANCED_SMD_TRANSISTOR.asStack(8))
+                .inputFluids(bioMedium)
+                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LUV.asStack())
+                .duration(600)
+                .EUt(GTValues.VA[GTValues.IV])
                 .save(provider);
     }
 

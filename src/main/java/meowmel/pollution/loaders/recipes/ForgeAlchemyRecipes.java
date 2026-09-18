@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import dev.arbor.gtnn.data.GTNNMaterials;
+import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
@@ -14,6 +16,8 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -26,25 +30,43 @@ import java.util.function.Consumer;
  * the addon's alchemy content is datapack JSON, so no addon API call is needed
  * here (see {@code docs/PHASE6C_API.md} §2.3).</p>
  *
- * <p>Ported (15 recipes): the nine basic metal triads, the three advanced
- * noble/rare-earth triads, the advanced-substrate Syrmorite/Octine/Valonite
- * transmutation and the two six-aspect-alloy transmutations.</p>
+ * <p>Ported (26 recipes): the nine basic metal triads, the three advanced
+ * noble/rare-earth triads, the advanced-substrate
+ * Syrmorite/Octine/Valonite transmutation, the two six-aspect-alloy
+ * transmutations, the three philosopher-stone upgrades, the three catalyst
+ * metal fluids (Manasteel/Thaumium/Mansussteel), the
+ * DimensionalTransformingAgent production, the HyperdimensionalSilver / KQGold
+ * / Terrasteel / ElvenElementium / IizunamaruElectrum / AethericDarkSteel
+ * transmutations and the helium transmutation.</p>
  *
- * <p>Documented substitutions / skips:</p>
+ * <p>Documented substitutions (task table plus the port's established
+ * mappings):</p>
  * <ul>
- *   <li>GTQT {@code Mana} fluid is replaced by {@code InfusedAura}, the same
- *       substitution used by {@code ThaumcraftRecipes}.</li>
- *   <li>Upstream meta-item philosopher stones (damage 150/151) are the port's
- *       plain items {@code stone_of_philosopher_1}/{@code _2}; recipes are
- *       skipped if the item is absent.</li>
- *   <li>Skipped: the three philosopher-stone upgrades, the
- *       DimensionalTransformingAgent chain, HyperdimensionalSilver, KQGold,
- *       Terrasteel, ElvenElementium, Manasteel/Thaumium/Mansussteel,
- *       IizunamaruElectrum, AethericDarkSteel and BloodOfAvernus. They need
- *       materials or fluids that are not ported (Black/White/Starrymansus,
- *       Sentient/BindingMetal, Existing/FadingNexus, GTQT Mana/Thaumium/
- *       VoidMetal, Blood Magic life essence, Botania runes).</li>
+ *   <li>// 上游: GTQT Mana -&gt; 本移植版: InfusedAura（同 {@code ThaumcraftRecipes}）</li>
+ *   <li>// 上游: BlackMansus / WhiteMansus / Starrymansus -&gt; 本移植版: InfusedAura</li>
+ *   <li>// 上游: Terrasteel -&gt; 本移植版: GTNN TerraSteel</li>
+ *   <li>// 上游: ElvenElementium -&gt; 本移植版: GTNN Elementium</li>
+ *   <li>// 上游: Manasteel -&gt; 本移植版: GTNN ManaSteel</li>
+ *   <li>// 上游: GTQT Thaumium -&gt; 本移植版: StainlessSteel</li>
+ *   <li>// 上游: Mansussteel -&gt; 本移植版: HSSG</li>
+ *   <li>// 上游: HyperdimensionalSilver -&gt; 本移植版: NaquadahAlloy</li>
+ *   <li>// 上游: KQGold -&gt; 本移植版: TungstenSteel</li>
+ *   <li>// 上游: IizunamaruElectrum -&gt; 本移植版: Electrum</li>
+ *   <li>// 上游: AethericDarkSteel -&gt; 本移植版: HSSG</li>
+ *   <li>// 上游: GTQT VoidMetal -&gt; 本移植版: TC4R void ingot</li>
+ *   <li>// 上游: SentientMetal -&gt; 本移植版: GTNN Elementium（活体金属位）</li>
+ *   <li>// 上游: BindingMetal / BloodOfAvernus -&gt; 本移植版: TungstenSteel</li>
+ *   <li>// 上游: ExistingNexus -&gt; 本移植版: GTNN Infinity</li>
+ *   <li>// 上游: FadingNexus -&gt; 本移植版: NaquadahAlloy</li>
+ *   <li>Upstream meta-item philosopher stones (damage 150/151/152/153) are the
+ *       port's plain items {@code stone_of_philosopher_1..4}; recipes are
+ *       skipped when the item is absent.</li>
+ *   <li>GTNN ManaSteel/TerraSteel/Elementium only carry {@code ingot/fluid}, so
+ *       the upstream dust inputs use ingots.</li>
  * </ul>
+ *
+ * <p>Still skipped: the BloodOfAvernus transmutation needs Blood Magic life
+ * essence, which is not in the pack.</p>
  */
 public final class ForgeAlchemyRecipes {
 
@@ -59,6 +81,8 @@ public final class ForgeAlchemyRecipes {
         basicMetalTransmutations(provider);
         advancedMetalTransmutations(provider);
         substrateTransmutations(provider);
+        philosopherStoneUpgrades(provider);
+        catalystTransmutations(provider);
     }
 
     /** Nine triads from BasicSubstrate, stone tier 1, HV. */
@@ -188,6 +212,270 @@ public final class ForgeAlchemyRecipes {
                     .EUt(1920)
                     .save(provider);
         }
+    }
+
+    // ////////////////////////////////////
+    // ***** philosopher stone upgrades *****//
+    // ////////////////////////////////////
+
+    /** 二/三/四级贤者之石升级。 */
+    private static void philosopherStoneUpgrades(Consumer<FinishedRecipe> provider) {
+        ItemStack stone1 = philosopherStone(1);
+        ItemStack stone2 = philosopherStone(2);
+        ItemStack stone3 = philosopherStone(3);
+        ItemStack stone4 = philosopherStone(4);
+
+        // 二级贤者之石
+        if (!stone1.isEmpty() && !stone2.isEmpty() && aura(299997) != null) {
+            GTRecipeBuilder.of(id("stone_upgrade_2"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(aura(299997))
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(9999))
+                    .inputItems(stone1)
+                    .inputItems(ingot(GTNNMaterials.TerraSteel, 64))
+                    .inputItems(dust(GTMaterials.NaquadahAlloy, 64))
+                    .inputItems(dust(GTMaterials.TungstenSteel, 64))
+                    .chancedOutput(stone2.copyWithCount(1), 5000, 0)
+                    .blastFurnaceTemp(5400)
+                    .duration(19980)
+                    .EUt(9999)
+                    .save(provider);
+        }
+
+        // 三级贤者之石（SentientMetal -> GTNN Elementium，BindingMetal -> TungstenSteel）
+        if (!stone2.isEmpty() && !stone3.isEmpty() && aura(399998) != null
+                && hasFluid(GTNNMaterials.Elementium)) {
+            GTRecipeBuilder.of(id("stone_upgrade_3"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(aura(399998))
+                    .inputFluids(GTNNMaterials.Elementium.getFluid(99999))
+                    .inputFluids(GTMaterials.TungstenSteel.getFluid(99999))
+                    .inputItems(stone2)
+                    .inputItems(dust(GTMaterials.Electrum, 64))
+                    .inputItems(dust(GTMaterials.HSSG, 64))
+                    .inputItems(dust(GTMaterials.TungstenSteel, 64))
+                    .chancedOutput(stone3.copyWithCount(1), 2500, 0)
+                    .blastFurnaceTemp(7200)
+                    .duration(19980)
+                    .EUt(99999)
+                    .save(provider);
+        }
+
+        // 四级贤者之石（ExistingNexus -> GTNN Infinity，FadingNexus -> NaquadahAlloy）
+        if (!stone3.isEmpty() && !stone4.isEmpty() && aura(1999998) != null
+                && hasFluid(GTNNMaterials.Infinity) && hasFluid(GTMaterials.NaquadahAlloy)) {
+            GTRecipeBuilder.of(id("stone_upgrade_4"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(aura(1999998))
+                    .inputFluids(GTNNMaterials.Infinity.getFluid(99999))
+                    .inputFluids(GTMaterials.NaquadahAlloy.getFluid(99999))
+                    .inputItems(stone3)
+                    .inputItems(ingot(GTNNMaterials.Elementium, 64))
+                    .inputItems(dust(GTMaterials.TungstenSteel, 64))
+                    .inputItems(dust(GTMaterials.Neutronium, 64))
+                    .chancedOutput(stone4.copyWithCount(1), 1000, 0)
+                    .blastFurnaceTemp(10800)
+                    .duration(29997)
+                    .EUt(999999)
+                    .save(provider);
+        }
+    }
+
+    // ////////////////////////////////////
+    // ***** catalyst transmutations *****//
+    // ////////////////////////////////////
+
+    /** 基础/进阶触媒金属：魔力钢、神秘、漫宿钢、次元改造剂、超次元秘银、刻金、泰拉钢、精灵元素、氦、光风霁月琥珀金、太虚玄钢。 */
+    private static void catalystTransmutations(Consumer<FinishedRecipe> provider) {
+        ItemStack stone1 = philosopherStone(1);
+        ItemStack stone2 = philosopherStone(2);
+
+        if (!stone1.isEmpty()) {
+            // 魔力钢（Manasteel -> GTNN ManaSteel）
+            if (hasFluid(GTNNMaterials.ManaSteel)) {
+                GTRecipeBuilder.of(id("catalyst/manasteel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                        .inputFluids(PollutionMaterials.BasicSubstrate.getFluid(144))
+                        .inputFluids(aura(MANA_AMOUNT))
+                        .inputItems(dust(GTMaterials.Iron, 4))
+                        .notConsumable(stone1.copy())
+                        .outputFluids(GTNNMaterials.ManaSteel.getFluid(FLUID_AMOUNT))
+                        .circuitMeta(20)
+                        .blastFurnaceTemp(3600)
+                        .duration(2500)
+                        .EUt(1920)
+                        .save(provider);
+            }
+            // 神秘（GTQT Thaumium -> StainlessSteel）
+            GTRecipeBuilder.of(id("catalyst/thaumium"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.BasicSubstrate.getFluid(144))
+                    .inputFluids(aura(MANA_AMOUNT))
+                    .inputItems(dust(GTMaterials.Steel, 4))
+                    .notConsumable(stone1.copy())
+                    .outputFluids(GTMaterials.StainlessSteel.getFluid(FLUID_AMOUNT))
+                    .circuitMeta(21)
+                    .blastFurnaceTemp(3600)
+                    .duration(3000)
+                    .EUt(1920)
+                    .save(provider);
+            // 漫宿钢（Mansussteel -> HSSG）
+            GTRecipeBuilder.of(id("catalyst/mansussteel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.BasicSubstrate.getFluid(144))
+                    .inputFluids(aura(MANA_AMOUNT))
+                    .inputItems(dust(GTMaterials.StainlessSteel, 4))
+                    .notConsumable(stone1.copy())
+                    .outputFluids(GTMaterials.HSSG.getFluid(FLUID_AMOUNT))
+                    .circuitMeta(20)
+                    .blastFurnaceTemp(3600)
+                    .duration(5000)
+                    .EUt(1920)
+                    .save(provider);
+        }
+
+        if (!stone2.isEmpty()) {
+            // 次元改造剂
+            GTRecipeBuilder.of(id("catalyst/dimensional_transforming_agent"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(GTMaterials.Water.getFluid(16000))
+                    .inputFluids(aura(4000))
+                    .inputItems(dust(PollutionMaterials.Salisundus, 4))
+                    .notConsumable(stone2.copy())
+                    .outputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(1000))
+                    .blastFurnaceTemp(4500)
+                    .duration(2000)
+                    .EUt(7680)
+                    .save(provider);
+
+            // 超次元秘银（HyperdimensionalSilver -> NaquadahAlloy）
+            GTRecipeBuilder.of(id("catalyst/hyperdimensional_silver"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                    .inputFluids(aura(4000))
+                    .inputItems(dust(GTMaterials.Silver, 4))
+                    .notConsumable(stone2.copy())
+                    .outputFluids(GTMaterials.NaquadahAlloy.getFluid(FLUID_AMOUNT))
+                    .circuitMeta(20)
+                    .blastFurnaceTemp(4500)
+                    .duration(10000)
+                    .EUt(7680)
+                    .save(provider);
+
+            // 刻金（KQGold -> TungstenSteel）
+            GTRecipeBuilder.of(id("catalyst/kq_gold"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                    .inputFluids(aura(4000))
+                    .inputItems(dust(GTMaterials.Gold, 4))
+                    .notConsumable(stone2.copy())
+                    .outputFluids(GTMaterials.TungstenSteel.getFluid(FLUID_AMOUNT))
+                    .circuitMeta(20)
+                    .blastFurnaceTemp(4500)
+                    .duration(10000)
+                    .EUt(7680)
+                    .save(provider);
+
+            // 泰拉钢（Terrasteel -> GTNN TerraSteel）
+            if (hasFluid(GTNNMaterials.TerraSteel)) {
+                GTRecipeBuilder.of(id("catalyst/terrasteel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                        .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
+                        .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                        .inputFluids(aura(4000))
+                        .inputItems(dust(GTMaterials.HSSG, 2))
+                        .inputItems(ingot(GTNNMaterials.ManaSteel, 2))
+                        .notConsumable(stone2.copy())
+                        .outputFluids(GTNNMaterials.TerraSteel.getFluid(FLUID_AMOUNT))
+                        .circuitMeta(20)
+                        .blastFurnaceTemp(4500)
+                        .duration(15000)
+                        .EUt(7680)
+                        .save(provider);
+            }
+
+            // 精灵元素（ElvenElementium -> GTNN Elementium）
+            if (hasFluid(GTNNMaterials.Elementium)) {
+                GTRecipeBuilder.of(id("catalyst/elementium"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                        .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
+                        .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                        .inputFluids(aura(4000))
+                        .inputItems(ingot(GTNNMaterials.TerraSteel, 2))
+                        .inputItems(ingot(GTNNMaterials.ManaSteel, 2))
+                        .inputItems(BotaniaItems.runeMana)
+                        .notConsumable(stone2.copy())
+                        .outputFluids(GTNNMaterials.Elementium.getFluid(FLUID_AMOUNT))
+                        .circuitMeta(20)
+                        .blastFurnaceTemp(4500)
+                        .duration(15000)
+                        .EUt(7680)
+                        .save(provider);
+            }
+
+            // 氦气
+            GTRecipeBuilder.of(id("catalyst/helium"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                    .inputFluids(GTMaterials.Hydrogen.getFluid(4000))
+                    .notConsumable(stone2.copy())
+                    .chancedOutput(GTMaterials.Helium.getFluid(1000), CHANCE, BOOST)
+                    .blastFurnaceTemp(4500)
+                    .duration(1000)
+                    .EUt(7680)
+                    .save(provider);
+
+            // 光风霁月琥珀金（IizunamaruElectrum -> Electrum）
+            GTRecipeBuilder.of(id("catalyst/iizunamaru_electrum"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
+                    .inputFluids(aura(11000))
+                    .inputItems(dust(GTMaterials.NaquadahAlloy, 8))
+                    .inputItems(dust(GTMaterials.TungstenSteel, 8))
+                    .notConsumable(stone2.copy())
+                    .outputFluids(GTMaterials.Electrum.getFluid(1152))
+                    .circuitMeta(21)
+                    .blastFurnaceTemp(7200)
+                    .duration(12000)
+                    .EUt(30720)
+                    .save(provider);
+
+            // 太虚玄钢（VoidMetal -> TC4R void ingot，ElvenElementium -> GTNN Elementium，AethericDarkSteel -> HSSG）
+            GTRecipeBuilder.of(id("catalyst/aetheric_dark_steel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                    .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
+                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
+                    .inputFluids(aura(20000))
+                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
+                    .inputItems(ingot(GTNNMaterials.Elementium, 8))
+                    .notConsumable(stone2.copy())
+                    .outputFluids(GTMaterials.HSSG.getFluid(1152))
+                    .circuitMeta(21)
+                    .blastFurnaceTemp(7200)
+                    .duration(12000)
+                    .EUt(30720)
+                    .save(provider);
+
+            // 阿弗纳斯之血：// 跳过: 整合包无 Blood Magic（life essence 缺失）
+        }
+    }
+
+    // ////////////////////////////////////
+    // ***** helpers *****//
+    // ////////////////////////////////////
+
+    /** @return InfusedAura fluid, or null when the material has no fluid in this GTCEu build */
+    private static FluidStack aura(int amount) {
+        return PollutionMaterials.InfusedAura != null && PollutionMaterials.InfusedAura.hasFluid()
+                ? PollutionMaterials.InfusedAura.getFluid(amount) : null;
+    }
+
+    private static boolean hasFluid(Material material) {
+        return material != null && material.hasFluid();
+    }
+
+    private static ItemStack dust(Material material, int amount) {
+        if (material == null) {
+            return ItemStack.EMPTY;
+        }
+        return ChemicalHelper.get(TagPrefix.dust, material, amount);
+    }
+
+    /** GTNN ManaSteel/TerraSteel/Elementium only carry ingot/fluid, so their dust inputs use ingots. */
+    private static ItemStack ingot(Material material, int amount) {
+        if (material == null) {
+            return ItemStack.EMPTY;
+        }
+        return ChemicalHelper.get(TagPrefix.ingot, material, amount);
     }
 
     private static ItemStack philosopherStone(int tier) {
