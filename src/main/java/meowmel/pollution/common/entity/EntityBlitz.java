@@ -1,5 +1,7 @@
 package meowmel.pollution.common.entity;
 
+import meowmel.pollution.common.entity.shoot.ElementalBolt;
+import meowmel.pollution.common.entity.shoot.EntityBlitzBolt;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -8,7 +10,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -19,9 +20,9 @@ import net.minecraft.world.level.Level;
 /**
  * Blitz - the air/lightning elemental of the 1.12.2 Pollution mod.
  *
- * <p>Upstream fired {@code EntityBlitzBolt} projectiles; in this port it fights
- * in melee and sets its victim on fire for a few seconds on hit. See
- * {@link EntityElemental} for the full deviation list.</p>
+ * <p>Fires {@code pollution:blitz_bolt} projectiles with the ported
+ * {@link ElementalBoltAttackGoal}; close range still sets the victim on fire for
+ * a few seconds. See {@link EntityElemental} for the full deviation list.</p>
  */
 public class EntityBlitz extends EntityElemental {
 
@@ -36,12 +37,17 @@ public class EntityBlitz extends EntityElemental {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(4, new ElementalBoltAttackGoal(this));
         this.goalSelector.addGoal(7, new RandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+    }
+
+    @Override
+    public ElementalBolt createBolt(Level level) {
+        return new EntityBlitzBolt(PollutionEntities.BLITZ_BOLT.get(), this, level);
     }
 
     @Override

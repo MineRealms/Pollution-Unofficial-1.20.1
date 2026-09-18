@@ -98,6 +98,14 @@ public final class PollutionMagicBlocks {
     public static final BlockEntry<Block> TERRA_5_CASING = casing("terra_5_casing");
     public static final BlockEntry<Block> TERRA_6_CASING = casing("terra_6_casing");
 
+    // ////////////////////////////////////
+    // ***** starstream obelisk variants (upstream POStarstreamObelisk) *****//
+    // ////////////////////////////////////
+
+    public static final BlockEntry<Block> STARSTREAM_CASING = starstream("starstream_casing", 0);
+    public static final BlockEntry<Block> STARSTREAM_RUNED_CASING = starstream("starstream_runed_casing", 5);
+    public static final BlockEntry<Block> CONSTELLATION_ANCHOR = starstream("constellation_anchor", 11);
+
     /** Registration names, used for the language keys. */
     public static final java.util.List<String> ALL_NAMES = java.util.List.of(
             "void_prism", "spell_prism", "spell_prism_cold", "spell_prism_hot", "spell_prism_water",
@@ -112,7 +120,8 @@ public final class PollutionMagicBlocks {
             "polytetrafluoroethylene_pipe",
             "mana_basic", "mana_1", "mana_2", "mana_3", "mana_4", "mana_5",
             "terra_watertight_casing", "terra_1_casing", "terra_2_casing", "terra_3_casing",
-            "terra_4_casing", "terra_5_casing", "terra_6_casing");
+            "terra_4_casing", "terra_5_casing", "terra_6_casing",
+            "starstream_casing", "starstream_runed_casing", "constellation_anchor");
 
     /** "spell_prism_earth" -&gt; "Spell Prism Earth". */
     public static String displayName(String name) {
@@ -146,6 +155,26 @@ public final class PollutionMagicBlocks {
                         .strength(5.0F, 5.0F)
                         .sound(SoundType.GLASS)
                         .noOcclusion())
+                .simpleItem()
+                .register();
+    }
+
+    /**
+     * Starstream obelisk structural blocks. Upstream these were variants of a
+     * single block whose {@code obelisk_core} variant carried a tile entity;
+     * the core (needs the constellation network) is not ported, so the three
+     * structural casings are registered as plain blocks with the upstream
+     * hardness/resistance/sound/light values.
+     */
+    private static BlockEntry<Block> starstream(String name, int lightLevel) {
+        return PollutionGTAddon.REGISTRATE
+                .block(name, Block::new)
+                .properties(properties -> properties
+                        .mapColor(MapColor.STONE)
+                        .strength(12.0F, 80.0F)
+                        .sound(SoundType.STONE)
+                        .lightLevel(state -> lightLevel)
+                        .requiresCorrectToolForDrops())
                 .simpleItem()
                 .register();
     }

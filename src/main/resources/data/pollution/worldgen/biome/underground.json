@@ -1,15 +1,82 @@
 {
   "has_precipitation": false,
   "temperature": 0.5,
-  "downfall": 0.0,
+  "downfall": 0.5,
   "effects": {
     "sky_color": 0,
     "fog_color": 3364164,
-    "water_color": 4159204,
+    "water_color": 11389606,
     "water_fog_color": 329011
   },
-  "spawners": {},
+  "spawners": {
+    "monster": [
+      {
+        "type": "pollution:tc_slime_aer",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "pollution:tc_slime_ignis",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "pollution:tc_slime_aqua",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "pollution:tc_slime_terra",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "pollution:tc_slime_ordo",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      },
+      {
+        "type": "pollution:tc_slime_perditio",
+        "weight": 2,
+        "minCount": 1,
+        "maxCount": 2
+      }
+    ]
+  },
   "spawn_costs": {},
   "carvers": {},
-  "features": []
+  "features": [
+    [],
+    [
+      "pollution:cave/water_pool",
+      "pollution:cave/lava_pool"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:cave/quartz_ore",
+      "pollution:cave/soul_sand_ore"
+    ],
+    [
+      "pollution:cave/stalactite",
+      "pollution:cave/glowstone_ceiling"
+    ],
+    [],
+    [
+      "pollution:cave/brown_mushroom",
+      "pollution:cave/red_mushroom",
+      "pollution:cave/brown_mushroom_cluster",
+      "pollution:cave/red_mushroom_cluster",
+      "pollution:cave/vines",
+      "pollution:cave/dead_bush"
+    ],
+    []
+  ]
 }

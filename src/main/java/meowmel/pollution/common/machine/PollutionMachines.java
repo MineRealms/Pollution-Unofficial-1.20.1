@@ -20,10 +20,14 @@ import meowmel.pollution.common.machine.multiblock.botania.BotDistilleryMachine;
 import meowmel.pollution.common.machine.multiblock.botania.BotGasCollectorMachine;
 import meowmel.pollution.common.machine.multiblock.botania.BotVacuumFreezerMachine;
 import meowmel.pollution.common.machine.multiblock.botania.BotaniaRecipeMaps;
+import meowmel.pollution.common.machine.multiblock.botania.EndoflameArrayMachine;
 import meowmel.pollution.common.machine.multiblock.botania.IndustrialPureDaisyMachine;
+import meowmel.pollution.common.machine.multiblock.botania.ManaInfusionReactorMachine;
 import meowmel.pollution.common.machine.multiblock.botania.ManaPetalApothecaryMachine;
 import meowmel.pollution.common.machine.multiblock.botania.ManaPlateMachine;
 import meowmel.pollution.common.machine.multiblock.botania.ManaRuneAltarMachine;
+import meowmel.pollution.common.machine.multiblock.botania.MegaManaTurbineMachine;
+import meowmel.pollution.common.machine.multiblock.botania.MultiDanDeLifeOnMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAssemblerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
@@ -69,6 +73,7 @@ import meowmel.pollution.common.machine.part.mana.WirelessManaPoolHatchMachine;
 import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
 import meowmel.pollution.common.machine.single.MagicEnergyAbsorberMachine;
+import meowmel.pollution.common.machine.single.ManaGeneratorMachine;
 import meowmel.pollution.common.machine.single.SolarPlateMachine;
 import meowmel.pollution.common.machine.single.VisProviderMachine;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
@@ -104,6 +109,8 @@ public final class PollutionMachines {
     private static final int[] FLUX_SCRUBBER_TIERS = { 1, 2, 3, 4, 5 };
     /** Upstream {@code FLUX_PROMOTED_FUEL_CELL[5]} for tiers LV..IV. */
     private static final int[] FLUX_FUEL_CELL_TIERS = { 1, 2, 3, 4, 5 };
+    /** Upstream {@code MANA_GENERATOR[6]} (LV..IV registered) for tiers LV..IV. */
+    private static final int[] MANA_GENERATOR_TIERS = { 1, 2, 3, 4, 5 };
     /** Upstream solar plates: 3 tiers x 6 kinds ({@code SOLAR_PLATE[18]}). */
     private static final int[] SOLAR_PLATE_TIERS = { 1, 2, 3 };
     private static final int SOLAR_PLATE_KINDS = 6;
@@ -121,6 +128,8 @@ public final class PollutionMachines {
     public static MachineDefinition[] MAGIC_ENERGY_ABSORBER;
     public static MachineDefinition[] FLUX_SCRUBBER;
     public static MachineDefinition[] FLUX_FUEL_CELL;
+    /** Single-block mana generators (upstream {@code mana_gen_lv}..{@code mana_gen_iv}). */
+    public static MachineDefinition[] MANA_GENERATOR;
     /** Indexed by kind (1..6), each entry by tier index. */
     public static MachineDefinition[][] SOLAR_PLATE;
     public static MachineDefinition[] VIS_HATCH;
@@ -193,6 +202,10 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition BOT_VACUUM_FREEZER;
     public static MultiblockMachineDefinition BOT_CIRCUIT_ASSEMBLER;
     public static MultiblockMachineDefinition BOT_GAS_COLLECTOR;
+    public static MultiblockMachineDefinition ENDOFLAME_ARRAY;
+    public static MultiblockMachineDefinition MANA_INFUSION_REACTOR;
+    public static MultiblockMachineDefinition MEGA_MANA_TURBINE;
+    public static MultiblockMachineDefinition MULTI_DAN_DE_LIFE_ON;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -287,6 +300,23 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.flux_fuel_cell.tooltip"))
                         .register(),
                 FLUX_FUEL_CELL_TIERS);
+
+        MANA_GENERATOR = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "mana_generator",
+                ManaGeneratorMachine::new,
+                (tier, builder) -> builder
+                        .langValue("%s Mana Generator".formatted(GTValues.VNF[tier]))
+                        .rotationState(RotationState.ALL)
+                        .simpleModel(model("mana_generator_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                                        GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                        GTValues.V[tier] * 64),
+                                Component.translatable("pollution.machine.mana_generator.tooltip"))
+                        .register(),
+                MANA_GENERATOR_TIERS);
 
         SOLAR_PLATE = new MachineDefinition[SOLAR_PLATE_KINDS + 1][];
         for (int kind = 1; kind <= SOLAR_PLATE_KINDS; kind++) {
@@ -614,6 +644,38 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(BotGasCollectorMachine::createPattern)
                 .simpleModel(model("bot_gas_collector"))
+                .register();
+
+        ENDOFLAME_ARRAY = PollutionGTAddon.REGISTRATE
+                .multiblock("endoflame_array", EndoflameArrayMachine::new)
+                .langValue("Endoflame Magical Power Array")
+                .rotationState(RotationState.ALL)
+                .pattern(EndoflameArrayMachine::createPattern)
+                .simpleModel(model("endoflame_array"))
+                .register();
+
+        MANA_INFUSION_REACTOR = magicMultiblock("mana_infusion_reactor", "Mana Infusion Reactor",
+                ManaInfusionReactorMachine::new, ManaInfusionReactorMachine::createPattern,
+                BotaniaRecipeMaps.MANA_INFUSION_RECIPES);
+
+        MEGA_MANA_TURBINE = PollutionGTAddon.REGISTRATE
+                .multiblock("mega_mana_turbine", MegaManaTurbineMachine::new)
+                .tier(GTValues.ZPM)
+                .langValue("Mega Mana Power Converter")
+                .rotationState(RotationState.ALL)
+                .recipeTypes(BotaniaRecipeMaps.MANA_TO_EU)
+                .pattern(MegaManaTurbineMachine::createPattern)
+                .simpleModel(model("mega_mana_turbine"))
+                .register();
+
+        MULTI_DAN_DE_LIFE_ON = PollutionGTAddon.REGISTRATE
+                .multiblock("pollution_multi_dan_de_life_on", MultiDanDeLifeOnMachine::new)
+                .langValue("Life Activation Garden")
+                .rotationState(RotationState.ALL)
+                .recipeTypes(BotaniaRecipeMaps.DAN_DE_LIFE_ON)
+                .pattern(MultiDanDeLifeOnMachine::createPattern)
+                .renderMultiblockXEIPreview(false)
+                .simpleModel(model("pollution_multi_dan_de_life_on"))
                 .register();
     }
 

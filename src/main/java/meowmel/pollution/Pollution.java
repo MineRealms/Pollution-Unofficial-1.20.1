@@ -37,6 +37,7 @@ public final class Pollution {
         PollutionMiscBlocks.init(context);
         meowmel.pollution.common.item.PollutionItems.init();
         meowmel.pollution.common.entity.PollutionEntities.init(context);
+        meowmel.pollution.dimension.biome.POBiomeSources.init(context);
 
         // Recipe types are created from GregTech's own GTRecipeType RegisterEvent
         // (posted inside GTRecipeTypes.init, before the registry freezes).

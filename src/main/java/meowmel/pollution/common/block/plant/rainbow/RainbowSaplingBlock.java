@@ -23,10 +23,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Port of the 1.12 {@code BlockRainbowSapling}: stage 0-1 sapling that grows
  * into a rainbow tree on dirt-like soil.
  *
- * <p>GROWTH STUB: the upstream {@code RainbowTreeGenerator} uses 1.12 worldgen
- * APIs and is not ported in this batch. Random ticks and bonemeal only advance
- * stage 0 -&gt; 1; the stage 1 -&gt; tree step is a no-op. The upstream 2x2
- * large-tree detection is therefore not implemented either.</p>
+ * <p>The upstream {@code RainbowTreeGenerator} is ported in
+ * {@link RainbowTreeGenerator} using modern server-level block placement; the
+ * 2x2 large-tree detection and the small form are both implemented. Upstream
+ * placed GregTech Food Option rainbowwood logs, so oak logs are used as the
+ * port's placeholder trunk material (the port has no rainbow log block).</p>
  */
 public class RainbowSaplingBlock extends Block implements BonemealableBlock {
 
@@ -79,7 +80,7 @@ public class RainbowSaplingBlock extends Block implements BonemealableBlock {
     }
 
     private void growTree(ServerLevel level, BlockPos pos, RandomSource random) {
-        // Growth stub: RainbowTreeGenerator (1.12 worldgen) is not ported yet.
+        RainbowTreeGenerator.grow(level, pos, random);
     }
 
     @Override

@@ -1,13 +1,14 @@
 package meowmel.pollution.common.block.tile;
 
-import meowmel.pollution.Pollution;
+import meowmel.pollution.dimension.PollutionDimensions;
+import meowmel.pollution.dimension.PollutionTeleporter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -49,22 +50,18 @@ import java.util.Map;
  *
  * <p>Deviations from upstream: the destination is the resource key
  * {@code pollution:underground} instead of the numeric dimension id 41, and
- * that dimension is registered by a later batch. Until it exists
- * {@link #attemptSendPlayer} and {@link #tryToCreatePortal} stay inert; the
- * {@code POTeleporter} safe-arrival check is omitted for the same reason. The
- * formation catalyst event ({@code EventLoader} diamond check) also belongs to
- * that later batch, so {@link #tryToCreatePortal} is currently uncalled. The
- * 1.12 translucency render layer is not set because the placeholder cube model
- * is opaque.</p>
+ * the return trip always goes to the overworld instead of the configurable
+ * {@code originDimension} (a later config batch can add that). The
+ * {@code POTeleporter} safe-arrival check is omitted until the progression
+ * systems land. The formation catalyst event ({@code EventLoader} diamond
+ * check) is not ported yet, so {@link #tryToCreatePortal} is currently
+ * uncalled. The 1.12 translucency render layer is not set because the
+ * placeholder cube model is opaque.</p>
  */
 public class PortalBlock extends Block {
 
     /** Upstream {@code is_one_way}: portals that do not send the player back. */
     public static final BooleanProperty ONE_WAY = BooleanProperty.create("one_way");
-
-    /** Destination key of the upstream underground dimension (numeric id 41). */
-    public static final ResourceKey<Level> TARGET_DIMENSION = ResourceKey.create(Registries.DIMENSION,
-            ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "underground"));
 
     private static final VoxelShape SHAPE = Shapes.box(0.0, 0.0, 0.0, 1.0, 0.8125, 1.0);
     private static final int MIN_PORTAL_SIZE = 4;
@@ -107,11 +104,12 @@ public class PortalBlock extends Block {
     }
 
     /**
-     * Sends an entity to the underground dimension.
-     *
-     * <p>TODO(dimension batch): {@code pollution:underground} is not registered
-     * yet, so this returns early and the portal is inert. The teleport call is
-     * already in place for when the dimension lands.</p>
+     * Sends an entity through the portal. Entities outside
+     * {@code pollution:underground} are sent there; entities inside it return
+     * to the overworld (upstream {@code getDestination} with the default
+     * {@code originDimension}). Players arriving in the underground get their
+     * respawn point set at the arrival portal, mirroring upstream's
+     * {@code setSpawnChunk} call.
      */
     public static void attemptSendPlayer(Entity entity, boolean forcedEntry) {
         if (entity.level().isClientSide || !entity.isAlive()) {
@@ -123,20 +121,33 @@ public class PortalBlock extends Block {
         if (!forcedEntry && entity.getPortalCooldown() > 0) {
             return;
         }
-        ServerLevel target = getTargetLevel(entity.level());
+        MinecraftServer server = entity.getServer();
+        if (server == null) {
+            return;
+        }
+        boolean returning = entity.level().dimension().equals(PollutionDimensions.UNDERGROUND);
+        ResourceKey<Level> destinationKey = returning
+                ? Level.OVERWORLD
+                : PollutionDimensions.UNDERGROUND;
+        ServerLevel target = server.getLevel(destinationKey);
         if (target == null) {
             return;
         }
         entity.setPortalCooldown(10);
-        entity.changeDimension(target);
+        Entity transported = entity.changeDimension(target, PollutionTeleporter.get());
+        if (!returning && transported instanceof ServerPlayer player) {
+            player.setRespawnPosition(PollutionDimensions.UNDERGROUND, player.blockPosition(),
+                    player.getYRot(), true, false);
+        }
     }
 
+    /** The underground level, or null while the server does not have it loaded. */
     @Nullable
     public static ServerLevel getTargetLevel(Level level) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
-        return serverLevel.getServer().getLevel(TARGET_DIMENSION);
+        return serverLevel.getServer().getLevel(PollutionDimensions.UNDERGROUND);
     }
 
     // ////////////////////////////////////
@@ -167,10 +178,10 @@ public class PortalBlock extends Block {
             return false;
         }
 
-        // TODO(dimension batch): upstream checked POTeleporter#isSafeAround and
-        // messaged the player when the arrival was unsafe. Without the
-        // dimension there is nothing to validate, and forming a portal would
-        // only create dead blocks.
+        // Upstream checked POTeleporter#isSafeAround and messaged the player
+        // when the arrival was unsafe; that progression hook is not ported
+        // yet. The level check only guards against a server that does not have
+        // the dimension loaded.
         if (getTargetLevel(level) == null) {
             return false;
         }

@@ -1,0 +1,48 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.9,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 3364164,
+    "water_color": 14729312,
+    "water_fog_color": 329011
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "pollution:tc_slime_terra",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "pollution:tc_slime_aer",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 3
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [
+      "pollution:cave/water_pool"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:desert_cave/gravel_ore"
+    ],
+    [],
+    [],
+    [
+      "pollution:cave/cactus"
+    ],
+    []
+  ]
+}

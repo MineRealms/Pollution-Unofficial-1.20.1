@@ -1,5 +1,6 @@
 package meowmel.pollution.common.entity;
 
+import meowmel.pollution.common.entity.shoot.ElementalBolt;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,14 +30,14 @@ import net.minecraft.world.phys.Vec3;
  * <p>DEVIATIONS from upstream:
  * <ul>
  *   <li>The 1.12.2 ranged bolts ({@code EntityBasalzBolt} / {@code EntityBlitzBolt} /
- *       {@code EntityBlizzBolt}) are NOT ported in this batch. The mobs fight in
- *       melee ({@link net.minecraft.world.entity.ai.goal.MeleeAttackGoal}) and apply
- *       a small elemental rider on hit instead; projectiles are deferred to a later
- *       batch.</li>
+ *       {@code EntityBlizzBolt}) are ported as {@code pollution:basalz_bolt},
+ *       {@code pollution:blitz_bolt} and {@code pollution:blizz_bolt} and are
+ *       fired by {@link ElementalBoltAttackGoal}, the modern equivalent of the
+ *       upstream blaze-style attack AI.</li>
  *   <li>Upstream bolts applied Weakness (5s, amplifier II, non-curable) to every
- *       victim. Here the rider is per element (knockback / fire / frost) and
- *       Weakness is dropped.</li>
- *   <li>Upstream registered biome spawns in the underground biome and a loot table
+ *       victim; the ported bolts do too. The extra elemental rider on the close
+ *       range melee hit (knockback / fire / frost) is a port addition.</li>
+ *   <li>Upstream registered biome spawns in the underground biome and loot tables
  *       ({@code pollution:entities/<name>}). Natural spawning and loot tables are
  *       deferred (they need data files owned by other batches); the entity types
  *       can still be spawned with commands or spawn eggs.</li>
@@ -127,4 +128,7 @@ public abstract class EntityElemental extends Monster {
     public boolean isInAttackMode() {
         return this.entityData.get(DATA_ATTACK_MODE);
     }
+
+    /** Creates the element-specific bolt fired by {@link ElementalBoltAttackGoal}. */
+    public abstract ElementalBolt createBolt(Level level);
 }

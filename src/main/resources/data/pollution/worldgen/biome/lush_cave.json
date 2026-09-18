@@ -1,0 +1,55 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.6,
+  "downfall": 0.8,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 3364164,
+    "water_color": 3398707,
+    "water_fog_color": 329011
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "weight": 10,
+        "minCount": 2,
+        "maxCount": 4
+      }
+    ],
+    "monster": [
+      {
+        "type": "pollution:tc_slime_terra",
+        "weight": 4,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "pollution:tc_slime_aqua",
+        "weight": 3,
+        "minCount": 1,
+        "maxCount": 3
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [
+      "pollution:lush_cave/water_pool"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:cave/vines",
+      "pollution:cave/leaves"
+    ],
+    []
+  ]
+}

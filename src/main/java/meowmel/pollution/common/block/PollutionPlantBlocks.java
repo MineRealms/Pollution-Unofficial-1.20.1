@@ -1,6 +1,9 @@
 package meowmel.pollution.common.block;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import meowmel.pollution.common.block.plant.alfheim.AlfheimDreamLeavesBlock;
+import meowmel.pollution.common.block.plant.alfheim.AlfheimElvenSandBlock;
+import meowmel.pollution.common.block.plant.alfheim.AlfheimRedGrapeBlock;
 import meowmel.pollution.common.block.plant.alfheim.AlfheimWhiteGrapeBlock;
 import meowmel.pollution.common.block.plant.flesh.EldritchEyeBlock;
 import meowmel.pollution.common.block.plant.flesh.FleshFlowerBlock;
@@ -155,12 +158,51 @@ public final class PollutionPlantBlocks {
             .simpleItem()
             .register();
 
+    public static final BlockEntry<AlfheimElvenSandBlock> ALFHEIM_ELVEN_SAND = PollutionGTAddon.REGISTRATE
+            .block("alfheim_elven_sand", AlfheimElvenSandBlock::new)
+            .properties(properties -> properties
+                    .mapColor(MapColor.SAND)
+                    .strength(0.5F)
+                    .sound(SoundType.SAND))
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<AlfheimDreamLeavesBlock> ALFHEIM_DREAM_LEAVES = PollutionGTAddon.REGISTRATE
+            .block("alfheim_dream_leaves", AlfheimDreamLeavesBlock::new)
+            .properties(properties -> properties
+                    .mapColor(MapColor.PLANT)
+                    .strength(0.2F)
+                    .sound(SoundType.GRASS)
+                    .noOcclusion()
+                    .randomTicks())
+            .simpleItem()
+            .register();
+
+    public static final BlockEntry<AlfheimRedGrapeBlock> ALFHEIM_RED_GRAPE_0 = redGrape("alfheim_red_grape_0", 0);
+    public static final BlockEntry<AlfheimRedGrapeBlock> ALFHEIM_RED_GRAPE_1 = redGrape("alfheim_red_grape_1", 1);
+    public static final BlockEntry<AlfheimRedGrapeBlock> ALFHEIM_RED_GRAPE_2 = redGrape("alfheim_red_grape_2", 2);
+
+    private static BlockEntry<AlfheimRedGrapeBlock> redGrape(String name, int stage) {
+        return PollutionGTAddon.REGISTRATE
+                .block(name, properties -> new AlfheimRedGrapeBlock(properties, stage))
+                .properties(properties -> properties
+                        .mapColor(MapColor.PLANT)
+                        .strength(0.2F)
+                        .sound(SoundType.VINE)
+                        .noOcclusion()
+                        .noCollission()
+                        .randomTicks())
+                .simpleItem()
+                .register();
+    }
+
     /** Registration names, used for the language keys. */
     public static final List<String> ALL_NAMES = List.of(
             "flesh_plant", "flesh_flower", "flesh_leaves", "flesh_sapling",
             "heart_fruit", "eldritch_eye", "tentacle",
             "rainbow_leaves", "rainbow_sapling",
-            "alfheim_white_grape");
+            "alfheim_white_grape", "alfheim_elven_sand", "alfheim_dream_leaves",
+            "alfheim_red_grape_0", "alfheim_red_grape_1", "alfheim_red_grape_2");
 
     /** "flesh_plant" -&gt; "Flesh Plant". */
     public static String displayName(String name) {

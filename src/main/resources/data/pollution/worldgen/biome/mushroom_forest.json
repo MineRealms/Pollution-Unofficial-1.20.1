@@ -1,0 +1,57 @@
+{
+  "has_precipitation": false,
+  "temperature": 0.6,
+  "downfall": 0.9,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 3364164,
+    "water_color": 6970061,
+    "water_fog_color": 329011
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "minecraft:bat",
+        "weight": 8,
+        "minCount": 2,
+        "maxCount": 4
+      }
+    ],
+    "monster": [
+      {
+        "type": "pollution:tc_slime_terra",
+        "weight": 4,
+        "minCount": 1,
+        "maxCount": 3
+      },
+      {
+        "type": "pollution:tc_slime_aqua",
+        "weight": 4,
+        "minCount": 1,
+        "maxCount": 3
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:cave/huge_red_mushroom",
+      "pollution:cave/huge_brown_mushroom",
+      "pollution:mushroom_forest/red_mushroom",
+      "pollution:mushroom_forest/brown_mushroom",
+      "pollution:cave/brown_mushroom_cluster",
+      "pollution:cave/red_mushroom_cluster"
+    ],
+    []
+  ]
+}

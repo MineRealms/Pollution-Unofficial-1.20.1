@@ -1,0 +1,40 @@
+{
+  "has_precipitation": false,
+  "temperature": 2.0,
+  "downfall": 0.0,
+  "effects": {
+    "sky_color": 0,
+    "fog_color": 3364164,
+    "water_color": 16729088,
+    "water_fog_color": 329011
+  },
+  "spawners": {
+    "monster": [
+      {
+        "type": "pollution:tc_slime_ignis",
+        "weight": 5,
+        "minCount": 2,
+        "maxCount": 4
+      }
+    ]
+  },
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [
+      "pollution:magma_cave/lava_pool"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:cave/soul_sand_ore"
+    ],
+    [],
+    [],
+    [],
+    []
+  ]
+}

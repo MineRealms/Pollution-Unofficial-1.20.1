@@ -1,0 +1,33 @@
+{
+  "has_precipitation": true,
+  "temperature": 0.5,
+  "downfall": 0.8,
+  "effects": {
+    "sky_color": 2518783,
+    "water_color": 65535,
+    "water_fog_color": 65535,
+    "grass_color": 589056
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [],
+    [
+      "pollution:alfheim/lake",
+      "pollution:alfheim/mid_plateau_lake"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "pollution:alfheim/trees",
+      "pollution:alfheim/grass"
+    ],
+    []
+  ]
+}
