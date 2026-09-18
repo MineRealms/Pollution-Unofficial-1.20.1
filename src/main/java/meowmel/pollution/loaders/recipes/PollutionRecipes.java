@@ -48,6 +48,7 @@ public final class PollutionRecipes {
         MagicFuelRecipes.init(provider);
         NodeFusionRecipes.init(provider);
         InfusedProcessingRecipes.init(provider);
+        ThaumcraftRecipes.init(provider);
 
         Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
         Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));

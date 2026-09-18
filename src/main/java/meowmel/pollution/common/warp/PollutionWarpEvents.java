@@ -101,6 +101,17 @@ public final class PollutionWarpEvents {
                 level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.WITHER_ROSE.defaultBlockState());
             }
         });
+        add("fall", 5, player -> player.push(0, -1.5, 0));
+        add("inventory_scramble", 2, player -> {
+            var inventory = player.getInventory();
+            int size = Math.min(9, inventory.getContainerSize());
+            int first = player.getRandom().nextInt(size);
+            int second = player.getRandom().nextInt(size);
+            var a = inventory.getItem(first).copy();
+            var b = inventory.getItem(second).copy();
+            inventory.setItem(first, b);
+            inventory.setItem(second, a);
+        });
         add("zombie_siege", 2, player -> {
             var level = player.serverLevel();
             for (int i = 0; i < 2; i++) {

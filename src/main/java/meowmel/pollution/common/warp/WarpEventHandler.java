@@ -28,6 +28,7 @@ public final class WarpEventHandler {
         }
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             PollutionWarpEvents.tick(player);
+            FluxWarpManager.expose(player);
         }
     }
 }

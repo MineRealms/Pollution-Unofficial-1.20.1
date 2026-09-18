@@ -72,4 +72,17 @@ public final class PollutionMaterials {
     public static Material MagicNitrobenzene;
     public static Material InfernalBlazePropellant;
     public static Material DragonPulseFuel;
+
+    // Substrate / catalyst chemistry (ThaumcraftRecipes chain)
+    public static Material Salisundus;
+    public static Material Roughdraft;
+    public static Material Substrate;
+    public static Material Valonite;
+    public static Material Syrmorite;
+    public static Material Octine;
+    public static Material Thaummix;
+    public static Material SulfoPlumbicSalt;
+    public static Material BasicSubstrate;
+    public static Material AdvancedSubstrate;
+    public static Material HyperSubstrate;
 }

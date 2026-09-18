@@ -35,6 +35,7 @@ public final class PollutionMaterialEvents {
         FirstDegreeMaterials.register();
         InfusedMaterials.register();
         meowmel.pollution.api.unification.materials.MagicFuelMaterials.register();
+        meowmel.pollution.api.unification.materials.SubstrateMaterials.register();
         PollutionAspectMapping.init();
         Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 34 compound aspects, 6 aspect alloys");
     }

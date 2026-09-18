@@ -734,13 +734,19 @@ Done (4.274s)! For help, type "help"
     - `MagicGCYMRecipes`（120 条）= 混合：灌注加工（已提取 6 条）、TC 晶体研磨、GCYM/GTQT 机器联动
       （依赖 GTQT 配方表与材料）→ 按可移植子集继续
     - Botania/Astral 系（`MagicIntegrationRecipes` 62KB 等）→ Phase 6
+  - ✅ **基底/催化剂材料批（`SubstrateMaterials`）**：Salisundus/Roughdraft/Substrate/Valonite/Syrmorite/
+    Octine/Thaummix/SulfoPlumbicSalt + Basic/Advanced/HyperSubstrate 流体（颜色为近似值，已记录）
+  - ✅ **`ThaumcraftRecipes`（12/22 可移植部分）**：核心化学（Sunnarium→Titanium 替代、Roughdraft、
+    Substrate、充能核心）+ 基底合金高炉 6 条 + Thaummix/Thaumium（→StainlessSteel）；剩余 10 条
+    （Botania 魔力资源研磨、TC 锭研磨、8 条自制线圈→GT 线圈转换）依赖未移植内容，已记录
   - ⏳ 剩余大数据文件（6a/6b/6c）：`MagicGCYMRecipes`(111KB)、`MagicIntegrationRecipes`(62KB)、
     `ThaumcraftRecipes`(46KB)、`AERecipes`(35KB)、`BotaniaRecipes`(25KB)、`ForgeAlchemyRecipes`(20KB)、
     `NodeFusionRecipes`(11KB)、`CompoundAspectRecipes`(5.6KB)、`MagicGuideRecipes`(9.2KB) 等；
     计划：脚本辅助逐文件搬运（配方调用形态与 GTRecipeBuilder 接近），按 TC 相关度排序：
     NodeFusionRecipes → CompoundAspectRecipes → AERecipes → ThaumcraftRecipes → MagicGCYMRecipes
-- **Batch 7（扭曲事件）✅ 扩展完成**：事件增至 20 个（新增假爆炸/降雨/垃圾/闪现/黏液/倒计时炸弹/
-  凋灵玫瑰/僵尸围攻）；剩余上游事件类（血、假雨、沼泽、队列等）语义已覆盖或合并
+- **Batch 7（扭曲事件）✅ 完成**：事件 22 个（新增坠落、物品栏打乱），覆盖上游全部玩家效果类；
+  新增 `FluxWarpManager`（语义移植：TC4R warp 视图只读，改为高咒波环境直接触发扭曲事件）；
+  调度器每 10s 双通道（warp 概率 + 咒波暴露）；上游网络包（粒子/音效）属客户端表现层，延后
 - **Batch 4 行为层 v1**：`VisCheckerItem`（右键显示永久/粘性/临时扭曲；读 TC4R warp 视图）
 - **Batch 7（扭曲事件）✅ 核心完成**：`PollutionWarpEvents`（11 个事件：目盲/反胃/中毒/凋零/虚弱/跳跃/风推/
   流血/落雷/黑曜石/蘑菇）+ `WarpEventHandler`（每 10s 按 `min(25%, warp/100)` 概率触发；
