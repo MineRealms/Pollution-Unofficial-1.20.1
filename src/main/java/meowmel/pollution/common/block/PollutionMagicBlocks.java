@@ -60,6 +60,44 @@ public final class PollutionMagicBlocks {
     public static final BlockEntry<Block> CAMINATED_GLASS = glass("caminated_glass");
     public static final BlockEntry<Block> DAMINATED_GLASS = glass("daminated_glass");
 
+    // ////////////////////////////////////
+    // ***** turbine variants (upstream POTurbine) *****//
+    // ////////////////////////////////////
+
+    public static final BlockEntry<Block> BRONZE_GEARBOX = casing("bronze_gearbox");
+    public static final BlockEntry<Block> STEEL_GEARBOX = casing("steel_gearbox");
+    public static final BlockEntry<Block> STAINLESS_STEEL_GEARBOX = casing("stainless_steel_gearbox");
+    public static final BlockEntry<Block> TITANIUM_GEARBOX = casing("titanium_gearbox");
+    public static final BlockEntry<Block> TUNGSTENSTEEL_GEARBOX = casing("tungstensteel_gearbox");
+    public static final BlockEntry<Block> BRONZE_PIPE = casing("bronze_pipe");
+    public static final BlockEntry<Block> STEEL_PIPE = casing("steel_pipe");
+    public static final BlockEntry<Block> TITANIUM_PIPE = casing("titanium_pipe");
+    public static final BlockEntry<Block> TUNGSTENSTEEL_PIPE = casing("tungstensteel_pipe");
+    public static final BlockEntry<Block> POLYTETRAFLUOROETHYLENE_PIPE = casing("polytetrafluoroethylene_pipe");
+
+    // ////////////////////////////////////
+    // ***** mana plate variants (upstream POManaPlate) *****//
+    // ////////////////////////////////////
+
+    public static final BlockEntry<Block> MANA_BASIC = casing("mana_basic");
+    public static final BlockEntry<Block> MANA_1 = casing("mana_1");
+    public static final BlockEntry<Block> MANA_2 = casing("mana_2");
+    public static final BlockEntry<Block> MANA_3 = casing("mana_3");
+    public static final BlockEntry<Block> MANA_4 = casing("mana_4");
+    public static final BlockEntry<Block> MANA_5 = casing("mana_5");
+
+    // ////////////////////////////////////
+    // ***** bot block variants (upstream POBotBlock) *****//
+    // ////////////////////////////////////
+
+    public static final BlockEntry<Block> TERRA_WATERTIGHT_CASING = casing("terra_watertight_casing");
+    public static final BlockEntry<Block> TERRA_1_CASING = casing("terra_1_casing");
+    public static final BlockEntry<Block> TERRA_2_CASING = casing("terra_2_casing");
+    public static final BlockEntry<Block> TERRA_3_CASING = casing("terra_3_casing");
+    public static final BlockEntry<Block> TERRA_4_CASING = casing("terra_4_casing");
+    public static final BlockEntry<Block> TERRA_5_CASING = casing("terra_5_casing");
+    public static final BlockEntry<Block> TERRA_6_CASING = casing("terra_6_casing");
+
     /** Registration names, used for the language keys. */
     public static final java.util.List<String> ALL_NAMES = java.util.List.of(
             "void_prism", "spell_prism", "spell_prism_cold", "spell_prism_hot", "spell_prism_water",
@@ -67,7 +105,14 @@ public final class PollutionMagicBlocks {
             "alloy_blast_casing", "magic_battery_casing",
             "beam_core_0", "beam_core_1", "beam_core_2", "beam_core_3", "beam_core_4",
             "filter_1", "filter_2", "filter_3", "filter_4", "filter_5",
-            "laminated_glass", "aaminated_glass", "baminated_glass", "caminated_glass", "daminated_glass");
+            "laminated_glass", "aaminated_glass", "baminated_glass", "caminated_glass", "daminated_glass",
+            "bronze_gearbox", "steel_gearbox", "stainless_steel_gearbox", "titanium_gearbox",
+            "tungstensteel_gearbox",
+            "bronze_pipe", "steel_pipe", "titanium_pipe", "tungstensteel_pipe",
+            "polytetrafluoroethylene_pipe",
+            "mana_basic", "mana_1", "mana_2", "mana_3", "mana_4", "mana_5",
+            "terra_watertight_casing", "terra_1_casing", "terra_2_casing", "terra_3_casing",
+            "terra_4_casing", "terra_5_casing", "terra_6_casing");
 
     /** "spell_prism_earth" -&gt; "Spell Prism Earth". */
     public static String displayName(String name) {

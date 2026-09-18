@@ -1,6 +1,7 @@
 package meowmel.pollution;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
@@ -30,6 +31,11 @@ public final class Pollution {
         // Casing blocks (magic multiblocks) are plain registrate blocks and can
         // be created here, on the Pollution bus, like the machine definitions.
         PollutionMagicBlocks.init();
+
+        // Recipe types are created from GregTech's own GTRecipeType RegisterEvent
+        // (posted inside GTRecipeTypes.init, before the registry freezes).
+        context.getModEventBus().addGenericListener(GTRecipeType.class,
+                PollutionMachineEvents::onRecipeTypeRegister);
 
         // Machines are registered through GregTech's machine RegisterEvent, which
         // fires after GregTech's data is ready and before its registry freezes.

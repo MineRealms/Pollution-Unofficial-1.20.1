@@ -535,6 +535,18 @@ Done (4.274s)! For help, type "help"
     `industrial_infusion_recipes`），使用 `GTRecipeTypes.register(name, "pollution")` + `setMaxIOSize`/`setEUIO`
   - Botania/Astral/星辉/指南类地图按其系统延期；`MagicPropertyRecipeUI` 等 UI 待现代配方 UI pass
 
+**配方类型注册时机（实测定论，重要）：**
+
+- 失败路径（两次实测崩溃）：模组构造期或机器 `RegisterEvent` 中初始化 `PORecipeMaps` 均会抛
+  `ExceptionInInitializerError → IllegalStateException: [register] registry ... has been frozen`
+- 原因：GT 在自身构造期就把 `GTRecipeCategories`/`GTRecipeTypes` 初始化并冻结（`gtceu` 早于 `pollution` 构造），
+  且 `GTRecipeTypes.init()` 内的 `GTRegistries.RECIPE_TYPES.freeze()` 在机器事件之前
+- 正确钩子（已核实 GT 7.5.2 源码 + 7.5.3 实测）：`GTRecipeTypes.init()` 会先
+  `ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class))`
+  再冻结；CommonProxy 调用顺序为 `GTRecipeTypes.init() → GTRecipeCategories.init() → GTMachines.init()`
+  - 实现：`modBus.addGenericListener(GTRecipeType.class, PollutionMachineEvents::onRecipeTypeRegister)`
+    （与机器事件同一模式，见 `PollutionMachineEvents`）
+
 **7.5.3 逻辑层 API 事实（已 javap 核实，下一轮直接据此实现）：**
 
 | 事项 | 7.5.3 实际 |
@@ -794,3 +806,14 @@ Done (4.274s)! For help, type "help"
 - RCON 验证：`magic_macerator`（BE 含 recipeLogic 状态）、`spell_prism_earth`、`lv_vis_hatch`
   （`VisStored` 持久化可见）、`lv_flux_muffler`、`lv_infused_fluid_hatch`、`lv_vis_generator` 全部可放置且 BE 正常
 - 仅剩旧存档跨版本 BE 反序列化失败（8.0.0 → 7.5.3，LDLib UUID 格式），非代码问题；建议清理 `run/world`
+
+### 2026-09-18 — 12 台魔导直译机 + 辅助外壳 + 配方类型钩子修复
+- 新增 12 台魔导多方块：`MagicBender/Centrifuge/WireMill/Autoclave/Electrolyzer/Extruder/Mixer/
+  Sifter/Solidifier/Brewery/Cutter/GreenHouse`（结构/机壳/配方映射与上游逐项一致；`MagicStructureElements`
+  统一实现上游“外壳格可放仓”的 `Predicates.autoAbilities` 语义）
+- 新增 23 个辅助机壳方块（POTurbine 齿轮箱/管道 10、ManaPlate 6、BotBlock 7）+ 占位资源 + 中英语言键
+- **修复** `PORecipeMaps` 注册时机（两次启动失败定位）：必须在 `GTRecipeType` RegisterEvent 中创建，
+  模组构造期与机器事件期均已被 GT 冻结（详见 5.13）
+- 7.5.3 冒烟测试通过：`Registered Pollution recipe types` → `Registered Pollution machine definitions`
+  → `Done (5.108s)`；RCON 验证 `magic_bender`/`magic_wiremill`/`magic_green_house`/`magic_brewery`/
+  `magic_solidifier`、`tungstensteel_gearbox` 等可放置且 BE 含完整 `recipeLogic` 数据

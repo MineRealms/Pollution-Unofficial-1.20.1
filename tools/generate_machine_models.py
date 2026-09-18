@@ -59,6 +59,18 @@ SOLAR_KINDS = [1, 2, 3, 4, 5, 6]
 
 MULTIBLOCKS = {
     "magic_macerator": "hv",
+    "magic_bender": "hv",
+    "magic_centrifuge": "hv",
+    "magic_wiremill": "mv",
+    "magic_autoclave": "hv",
+    "magic_electrolyzer": "hv",
+    "magic_extruder": "hv",
+    "magic_mixer": "hv",
+    "magic_sifter": "hv",
+    "magic_solidifier": "hv",
+    "magic_brewery": "hv",
+    "magic_cutter": "hv",
+    "magic_green_house": "hv",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"

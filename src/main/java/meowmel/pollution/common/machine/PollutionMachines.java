@@ -2,14 +2,31 @@ package meowmel.pollution.common.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
+import meowmel.pollution.api.recipes.PORecipeMaps;
+import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicBenderMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicBreweryMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicCentrifugeMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicCutterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicElectrolyzerMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicExtruderMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicGreenHouseMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMaceratorMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicMixerMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicSifterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicSolidifierMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicWireMillMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
@@ -23,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * GregTech machine definitions of the Pollution port.
@@ -70,6 +88,18 @@ public final class PollutionMachines {
     public static MachineDefinition[] FLUX_MUFFLER;
 
     public static MultiblockMachineDefinition MAGIC_MACERATOR;
+    public static MultiblockMachineDefinition MAGIC_BENDER;
+    public static MultiblockMachineDefinition MAGIC_CENTRIFUGE;
+    public static MultiblockMachineDefinition MAGIC_WIRE_MILL;
+    public static MultiblockMachineDefinition MAGIC_AUTOCLAVE;
+    public static MultiblockMachineDefinition MAGIC_ELECTROLYZER;
+    public static MultiblockMachineDefinition MAGIC_EXTRUDER;
+    public static MultiblockMachineDefinition MAGIC_MIXER;
+    public static MultiblockMachineDefinition MAGIC_SIFTER;
+    public static MultiblockMachineDefinition MAGIC_SOLIDIFIER;
+    public static MultiblockMachineDefinition MAGIC_BREWERY;
+    public static MultiblockMachineDefinition MAGIC_CUTTER;
+    public static MultiblockMachineDefinition MAGIC_GREEN_HOUSE;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -238,13 +268,74 @@ public final class PollutionMachines {
                         .register(),
                 FLUX_MUFFLER_TIERS);
 
-        MAGIC_MACERATOR = PollutionGTAddon.REGISTRATE
-                .multiblock("magic_macerator", MagicMaceratorMachine::new)
-                .langValue("Magic Macerator")
+        MAGIC_MACERATOR = magicMultiblock("magic_macerator", "Magic Macerator",
+                MagicMaceratorMachine::new, MagicMaceratorMachine::createPattern,
+                GTRecipeTypes.MACERATOR_RECIPES);
+
+        MAGIC_BENDER = magicMultiblock("magic_bender", "Magic Bender",
+                MagicBenderMachine::new, MagicBenderMachine::createPattern,
+                GTRecipeTypes.BENDER_RECIPES, GTRecipeTypes.COMPRESSOR_RECIPES,
+                GTRecipeTypes.FORMING_PRESS_RECIPES, GTRecipeTypes.FORGE_HAMMER_RECIPES);
+
+        MAGIC_CENTRIFUGE = magicMultiblock("magic_centrifuge", "Magic Centrifuge",
+                MagicCentrifugeMachine::new, MagicCentrifugeMachine::createPattern,
+                GTRecipeTypes.CENTRIFUGE_RECIPES, GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES);
+
+        MAGIC_WIRE_MILL = magicMultiblock("magic_wiremill", "Magic Wire Mill",
+                MagicWireMillMachine::new, MagicWireMillMachine::createPattern,
+                GTRecipeTypes.WIREMILL_RECIPES);
+
+        MAGIC_AUTOCLAVE = magicMultiblock("magic_autoclave", "Magic Autoclave",
+                MagicAutoclaveMachine::new, MagicAutoclaveMachine::createPattern,
+                GTRecipeTypes.AUTOCLAVE_RECIPES);
+
+        MAGIC_ELECTROLYZER = magicMultiblock("magic_electrolyzer", "Magic Electrolyzer",
+                MagicElectrolyzerMachine::new, MagicElectrolyzerMachine::createPattern,
+                GTRecipeTypes.ELECTROLYZER_RECIPES);
+
+        MAGIC_EXTRUDER = magicMultiblock("magic_extruder", "Magic Extruder",
+                MagicExtruderMachine::new, MagicExtruderMachine::createPattern,
+                GTRecipeTypes.EXTRUDER_RECIPES);
+
+        MAGIC_MIXER = magicMultiblock("magic_mixer", "Magic Mixer",
+                MagicMixerMachine::new, MagicMixerMachine::createPattern,
+                GTRecipeTypes.MIXER_RECIPES);
+
+        MAGIC_SIFTER = magicMultiblock("magic_sifter", "Magic Sifter",
+                MagicSifterMachine::new, MagicSifterMachine::createPattern,
+                GTRecipeTypes.SIFTER_RECIPES);
+
+        MAGIC_SOLIDIFIER = magicMultiblock("magic_solidifier", "Magic Solidifier",
+                MagicSolidifierMachine::new, MagicSolidifierMachine::createPattern,
+                GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES, GTRecipeTypes.EXTRACTOR_RECIPES,
+                GTRecipeTypes.CANNER_RECIPES);
+
+        MAGIC_BREWERY = magicMultiblock("magic_brewery", "Magic Brewery",
+                MagicBreweryMachine::new, MagicBreweryMachine::createPattern,
+                GTRecipeTypes.BREWING_RECIPES, GTRecipeTypes.FERMENTING_RECIPES,
+                GTRecipeTypes.FLUID_HEATER_RECIPES);
+
+        MAGIC_CUTTER = magicMultiblock("magic_cutter", "Magic Cutter",
+                MagicCutterMachine::new, MagicCutterMachine::createPattern,
+                GTRecipeTypes.CUTTER_RECIPES);
+
+        MAGIC_GREEN_HOUSE = magicMultiblock("magic_green_house", "Magic Greenhouse",
+                MagicGreenHouseMachine::new, MagicGreenHouseMachine::createPattern,
+                PORecipeMaps.MAGIC_GREENHOUSE_RECIPES);
+    }
+
+    private static MultiblockMachineDefinition magicMultiblock(
+            String name, String displayName,
+            Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> factory,
+            Function<MultiblockMachineDefinition, BlockPattern> pattern,
+            GTRecipeType... recipeTypes) {
+        return PollutionGTAddon.REGISTRATE
+                .multiblock(name, factory)
+                .langValue(displayName)
                 .rotationState(RotationState.ALL)
-                .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                .pattern(MagicMaceratorMachine::createPattern)
-                .simpleModel(model("magic_macerator"))
+                .recipeTypes(recipeTypes)
+                .pattern(pattern)
+                .simpleModel(model(name))
                 .register();
     }
 

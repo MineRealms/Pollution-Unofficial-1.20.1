@@ -50,6 +50,32 @@ CASINGS = {
     "baminated_glass": GLASS_TEXTURE,
     "caminated_glass": GLASS_TEXTURE,
     "daminated_glass": GLASS_TEXTURE,
+    # POTurbine variants (placeholder textures by voltage)
+    "bronze_gearbox": "gtceu:block/casings/voltage/lv/side",
+    "steel_gearbox": "gtceu:block/casings/voltage/mv/side",
+    "stainless_steel_gearbox": "gtceu:block/casings/voltage/hv/side",
+    "titanium_gearbox": "gtceu:block/casings/voltage/ev/side",
+    "tungstensteel_gearbox": "gtceu:block/casings/voltage/iv/side",
+    "bronze_pipe": "gtceu:block/casings/voltage/lv/side",
+    "steel_pipe": "gtceu:block/casings/voltage/mv/side",
+    "titanium_pipe": "gtceu:block/casings/voltage/ev/side",
+    "tungstensteel_pipe": "gtceu:block/casings/voltage/iv/side",
+    "polytetrafluoroethylene_pipe": "gtceu:block/casings/voltage/luv/side",
+    # POManaPlate variants
+    "mana_basic": "gtceu:block/casings/voltage/hv/side",
+    "mana_1": "gtceu:block/casings/voltage/lv/side",
+    "mana_2": "gtceu:block/casings/voltage/mv/side",
+    "mana_3": "gtceu:block/casings/voltage/hv/side",
+    "mana_4": "gtceu:block/casings/voltage/ev/side",
+    "mana_5": "gtceu:block/casings/voltage/iv/side",
+    # POBotBlock variants
+    "terra_watertight_casing": "gtceu:block/casings/voltage/mv/side",
+    "terra_1_casing": "gtceu:block/casings/voltage/lv/side",
+    "terra_2_casing": "gtceu:block/casings/voltage/mv/side",
+    "terra_3_casing": "gtceu:block/casings/voltage/hv/side",
+    "terra_4_casing": "gtceu:block/casings/voltage/ev/side",
+    "terra_5_casing": "gtceu:block/casings/voltage/iv/side",
+    "terra_6_casing": "gtceu:block/casings/voltage/luv/side",
 }
 
 

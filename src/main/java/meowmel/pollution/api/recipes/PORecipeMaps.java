@@ -72,5 +72,15 @@ public final class PORecipeMaps {
             .setMaxIOSize(25, 1, 8, 0)
             .setEUIO(IO.IN);
 
+    /**
+     * Forces class initialisation at a safe time.
+     *
+     * <p>{@code GTRecipeTypes#register} writes into GregTech's own registry, which
+     * is frozen before the machine {@code RegisterEvent} fires. Recipe types
+     * must therefore be created during mod construction (same window GregTech
+     * itself uses), never from the machine registration listener.</p>
+     */
+    public static void init() {}
+
     private PORecipeMaps() {}
 }
