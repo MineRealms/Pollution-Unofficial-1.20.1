@@ -766,3 +766,10 @@ Done (4.274s)! For help, type "help"
 - 核实 7.5.3 结构 API：`MultiblockMachineBuilder.pattern` + `FactoryBlockPattern`/`Predicates`；
   魔导多块下一步需要自定义壳体块（SPELL_PRISM/BEAM_CORE/BAMINATED_GLASS）
 - `compileJava` 在 7.5.3 下通过
+
+### 2026-09-18 — 外壳块 26 个 + 第一台魔导多块（Magic Macerator）
+- `PollutionMagicBlocks`：上游 3 个变体块拆为 26 个独立方块（spell prism 系 9、beam core 5、filter 5、glass 5、
+  alloy_blast/magic_battery 外壳 2），占位资源由 `tools/generate_casing_assets.py` 生成；中英语言键已加
+- `MagicMaceratorMachine`（首台魔导多块）：`FactoryBlockPattern` 结构 1:1、`MultiblockMachineBuilder` 注册、
+  复用 GT `MACERATOR_RECIPES`、占位模型；`compileJava` 通过
+- 19 台机器的机壳/结构数据已全量提取并分类（结构直译 12 台 + 特殊逻辑 6 台），见 5.13 节
