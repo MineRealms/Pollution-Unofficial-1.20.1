@@ -66,7 +66,10 @@ public final class PollutionItems {
     public static final ItemEntry<Item> BLACK_RUNE = register("black_rune");
     public static final ItemEntry<Item> STARRY_RUNE = register("starry_rune");
 
-    public static final ItemEntry<Item> VIS_CHECKER = register("vis_checker");
+    public static final ItemEntry<VisCheckerItem> VIS_CHECKER = PollutionGTAddon.REGISTRATE
+            .item("vis_checker", VisCheckerItem::new)
+            .lang("Vis Checker")
+            .register();
     public static final ItemEntry<Item> ENERGY_REDUCE = register("energy_reduce");
     public static final ItemEntry<Item> TIME_INCREASE = register("time_increase");
     public static final ItemEntry<Item> OVERCLOCKING_ENHANCE = register("overclocking_enhance");

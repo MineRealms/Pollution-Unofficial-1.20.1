@@ -64,6 +64,54 @@ public final class PollutionWarpEvents {
                 level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.RED_MUSHROOM.defaultBlockState());
             }
         });
+        add("fake_explosion", 3, player -> {
+            var level = player.serverLevel();
+            level.explode(null, player.getX(), player.getY(), player.getZ(), 0.1F,
+                    net.minecraft.world.level.Level.ExplosionInteraction.NONE);
+        });
+        add("rain", 3, player -> {
+            var level = player.serverLevel();
+            level.setWeatherParameters(0, 600, true, false);
+        });
+        add("junk", 4, player -> player.getInventory().placeItemBackInInventory(
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ROTTEN_FLESH,
+                        player.getRandom().nextInt(3) + 1)));
+        add("blink", 3, player -> {
+            var level = player.serverLevel();
+            double dx = (player.getRandom().nextDouble() - 0.5) * 16;
+            double dz = (player.getRandom().nextDouble() - 0.5) * 16;
+            player.teleportTo(player.getX() + dx, player.getY(), player.getZ() + dz);
+        });
+        add("swamp", 3, player -> {
+            var level = player.serverLevel();
+            var pos = player.blockPosition().below();
+            if (level.getBlockState(pos).isSolidRender(level, pos)) {
+                level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.SLIME_BLOCK.defaultBlockState());
+            }
+        });
+        add("countdown_bomb", 1, player -> {
+            var level = player.serverLevel();
+            level.explode(null, player.getX(), player.getY(), player.getZ(), 1.5F,
+                    net.minecraft.world.level.Level.ExplosionInteraction.NONE);
+        });
+        add("wither_rose", 3, player -> {
+            var level = player.serverLevel();
+            var pos = player.blockPosition();
+            if (level.isEmptyBlock(pos)) {
+                level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.WITHER_ROSE.defaultBlockState());
+            }
+        });
+        add("zombie_siege", 2, player -> {
+            var level = player.serverLevel();
+            for (int i = 0; i < 2; i++) {
+                var zombie = net.minecraft.world.entity.EntityType.ZOMBIE.create(level);
+                if (zombie != null) {
+                    zombie.moveTo(player.getX() + player.getRandom().nextInt(5) - 2, player.getY(),
+                            player.getZ() + player.getRandom().nextInt(5) - 2);
+                    level.addFreshEntity(zombie);
+                }
+            }
+        });
     }
 
     private static void apply(net.minecraft.server.level.ServerPlayer player,

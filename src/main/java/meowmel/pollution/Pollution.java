@@ -91,6 +91,8 @@ public final class Pollution {
                     "Required temperature: %s K");
             provider.add("pollution.magic.failure.research",
                     "Missing Thaumcraft research: %s");
+            provider.add("pollution.item.vis_checker.result",
+                    "Warp — permanent: %s, sticky: %s, temporary: %s");
             PollutionMagicBlocks.ALL_NAMES.forEach(name -> provider.add(
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
         });

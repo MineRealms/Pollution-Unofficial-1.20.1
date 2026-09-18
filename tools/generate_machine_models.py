@@ -91,6 +91,10 @@ MULTIBLOCKS = {
     "essence_collector": "ev",
     "industrial_infusion": "ev",
     "small_chemical_plant": "ev",
+    "magic_fusion_reactor": "luv",
+    "magic_battery": "iv",
+    "magic_large_turbine": "hv",
+    "magic_mega_turbine": "ev",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"

@@ -101,6 +101,28 @@ MACHINES = {
                 .where('L', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_ORDER.get()))
                 .where('O', Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(2))""",
     ),
+    "MetaTileEntityMagicFusionReactor.java": (
+        "MagicFusionReactorPatterns",
+        """                .where('S', Predicates.controller(Predicates.blocks(definition.get())))
+                .where(' ', Predicates.any())
+                .where('A', MagicStructureElements.frame(GTMaterials.TungstenSteel)
+                        .setMinGlobalLimited(105)
+                        .or(Predicates.autoAbilities(meowmel.pollution.api.recipes.PORecipeMaps.MAGIC_FUSION_REACTOR)))
+                .where('B', Predicates.heatingCoils())
+                .where('C', Predicates.blocks(PollutionMagicBlocks.VOID_PRISM.get()))
+                .where('D', Predicates.blocks(PollutionMagicBlocks.BAMINATED_GLASS.get()))""",
+    ),
+    "MetaTileEntityMagicBattery.java": (
+        "MagicBatteryPatterns",
+        """                .where('S', Predicates.controller(Predicates.blocks(definition.get())))
+                .where(' ', Predicates.any())
+                .where('A', Predicates.blocks(PollutionMagicBlocks.MAGIC_BATTERY_CASING.get())
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(16))
+                        .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(16))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
+                .where('C', Predicates.heatingCoils())""",
+    ),
     "MetaTileEntityIndustrialInfusion.java": (
         "IndustrialInfusionPatterns",
         """                .where('S', Predicates.controller(Predicates.blocks(definition.get())))
@@ -181,7 +203,8 @@ def main() -> int:
         if "frameGroup" in predicates:
             content = content.replace(f"    private {class_name}() {{}}",
                                       FRAME_GROUP + f"\n    private {class_name}() {{}}")
-        magic_classes = ("EssenceCollectorPatterns", "IndustrialInfusionPatterns")
+        magic_classes = ("EssenceCollectorPatterns", "IndustrialInfusionPatterns",
+                         "MagicFusionReactorPatterns", "MagicBatteryPatterns")
         target_dir = MAGIC_OUTPUT if class_name in magic_classes else OUTPUT
         package_line = ("package meowmel.pollution.common.machine.multiblock.node;"
                         if class_name not in magic_classes

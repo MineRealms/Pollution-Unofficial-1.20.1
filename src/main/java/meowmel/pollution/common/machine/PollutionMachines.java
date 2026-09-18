@@ -18,8 +18,12 @@ import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAssemblerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicBatteryMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBenderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBreweryMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicFusionReactorMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicLargeTurbineMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicMegaTurbineMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicCentrifugeMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalBathMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalReactorMachine;
@@ -139,6 +143,10 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition ESSENCE_COLLECTOR;
     public static MultiblockMachineDefinition INDUSTRIAL_INFUSION;
     public static MultiblockMachineDefinition SMALL_CHEMICAL_PLANT;
+    public static MultiblockMachineDefinition MAGIC_FUSION_REACTOR;
+    public static MultiblockMachineDefinition MAGIC_BATTERY;
+    public static MultiblockMachineDefinition MAGIC_LARGE_TURBINE;
+    public static MultiblockMachineDefinition MAGIC_MEGA_TURBINE;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -467,6 +475,26 @@ public final class PollutionMachines {
                 SmallChemicalPlantMachine::new, SmallChemicalPlantMachine::createPattern,
                 GTRecipeTypes.CHEMICAL_RECIPES, GTRecipeTypes.LARGE_CHEMICAL_RECIPES,
                 PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES);
+
+        MAGIC_FUSION_REACTOR = magicMultiblock("magic_fusion_reactor", "Magic Fusion Reactor",
+                MagicFusionReactorMachine::new, MagicFusionReactorMachine::createPattern,
+                PORecipeMaps.MAGIC_FUSION_REACTOR);
+
+        MAGIC_BATTERY = PollutionGTAddon.REGISTRATE
+                .multiblock("magic_battery", MagicBatteryMachine::new)
+                .langValue("Magic Battery")
+                .rotationState(RotationState.ALL)
+                .pattern(MagicBatteryMachine::createPattern)
+                .simpleModel(model("magic_battery"))
+                .register();
+
+        MAGIC_LARGE_TURBINE = magicMultiblock("magic_large_turbine", "Magic Large Turbine",
+                MagicLargeTurbineMachine::new, MagicLargeTurbineMachine::createPattern,
+                PORecipeMaps.MAGIC_TURBINE_FUELS);
+
+        MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
+                MagicMegaTurbineMachine::new, MagicMegaTurbineMachine::createPattern,
+                PORecipeMaps.MAGIC_TURBINE_FUELS);
     }
 
     private static MultiblockMachineDefinition fusionReactor(String name, String displayName, int tier) {

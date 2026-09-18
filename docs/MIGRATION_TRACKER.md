@@ -697,8 +697,21 @@ Done (4.274s)! For help, type "help"
   物品行为（滤芯工作、护目镜、饰品等）待行为层
 - **Batch 5（能量/特殊）部分**：`SmallChemicalPlantMachine` ✅（化学+大化反+魔导化学反应釜三配方；
   GTQT 化工厂配方缺失已记录）；`MagicBattery`/`MagicFusionReactor`/魔导涡轮 3 台 + 燃料表待做
-- **Batch 6（配方数据）未开始**：物品已就绪可开工；大文件（AERecipes/ThaumcraftRecipes/MagicGCYMRecipes）
-  按小批 6a/6b/6c 推进
+- **Batch 5（能量/特殊）✅ 完成**：`MagicFusionReactor`（魔导聚变配方）、`MagicBattery`（能量缓冲中继；
+  环形渲染/进度条延后）、`MagicLargeTurbine`/`MagicMegaTurbine`（`MAGIC_TURBINE_FUELS`；
+  转子耐久机制延后）；结构由生成器产出（融合堆 11 层、电池 15 层）
+- **Batch 6（配方数据）部分完成，遇真实阻塞**：
+  - ✅ 已落地：`MagicTurbineRecipes`（以灌注流体直接驱动魔导涡轮的适配配方，镜像上游能量密度顺序）
+  - ⛔ 阻塞：`MagicFuelRecipes` 依赖大量未移植 GTQT 材料与配方表
+    （`MethylFormate`/`BlazingPyrotheum`/`ChlorineTrifluoride`/`SodiumLeadAlloy`/`TetraethylLead`/
+    `Dimethylhydrazine`/`InfernalBlazePropellant`/`DragonPulseFuel`、`ROCKET_ENGINE_RECIPES`），
+    `InfusedManager` 上游自注“无用文件”（配方移除），`MagicGCYMRecipes`(111KB)/`ThaumcraftRecipes`(46KB)/
+    `AERecipes`(35KB) 为超大数据文件
+  - 下一步方案：按用户既定策略用 GTCEu 原生材料替代 GTQT 材料（逐条映射并记录），
+    大数据文件用脚本辅助分 6a/6b/6c 批移植
+- **Batch 7（扭曲事件）✅ 扩展完成**：事件增至 20 个（新增假爆炸/降雨/垃圾/闪现/黏液/倒计时炸弹/
+  凋灵玫瑰/僵尸围攻）；剩余上游事件类（血、假雨、沼泽、队列等）语义已覆盖或合并
+- **Batch 4 行为层 v1**：`VisCheckerItem`（右键显示永久/粘性/临时扭曲；读 TC4R warp 视图）
 - **Batch 7（扭曲事件）✅ 核心完成**：`PollutionWarpEvents`（11 个事件：目盲/反胃/中毒/凋零/虚弱/跳跃/风推/
   流血/落雷/黑曜石/蘑菇）+ `WarpEventHandler`（每 10s 按 `min(25%, warp/100)` 概率触发；
   warp 读取 `TC4RBridge.warpOf` → TC4R 只读视图）；剩余 ~20 个事件类待补
