@@ -1,10 +1,35 @@
 package meowmel.pollution.common.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import meowmel.pollution.api.amplification.AstralAmplifierSnapshot;
+import meowmel.pollution.api.amplification.AstralHatchView;
+import meowmel.pollution.api.amplification.MagicAmplificationEngine;
+import meowmel.pollution.api.amplification.MagicAmplificationResult;
+import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
+import meowmel.pollution.api.amplification.MagicOutputProcessor;
+import meowmel.pollution.api.amplification.TarotHatchView;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.items.IItemHandlerModifiable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Recipe logic of the magic multiblocks.
@@ -22,24 +47,136 @@ import net.minecraft.network.chat.Component;
  *       payment-state cleanup.</li>
  * </ul>
  *
- * <p>Amplification (tarot / constellation bonuses) and the crystal transform
- * recipes of the upstream logic are intentionally out of scope until their
- * systems are ported.</p>
+ * <h2>Amplification wiring (mirrors upstream {@code MagicMultiblockRecipeLogic})</h2>
+ * <p>{@link #setupRecipe} computes the amplification result through
+ * {@link MagicAmplificationEngine} and stores it in {@link #activeAmplification}
+ * for the lifetime of the craft. The result is applied as follows:</p>
+ * <ul>
+ *   <li><b>Duration</b>: after {@code super.setupRecipe} the effective
+ *       {@link #duration} is scaled by {@code 1 - durationReduction} (once per
+ *       craft), so progress and the UI see the shortened time.</li>
+ *   <li><b>EU</b>: the tick draw is scaled by {@code 1 - eutReduction} by
+ *       routing {@link #handleTickRecipe} through a copy of the recipe with a
+ *       reduced EU tick input. Recipe matching still requires the unamplified
+ *       EU/t, matching upstream's conservative search behaviour.</li>
+ *   <li><b>Magic cost</b>: vis / infused fluid / mana / life essence draws get
+ *       the upstream {@code magicCostReduction} discount and are scaled by the
+ *       number of parallel runs.</li>
+ *   <li><b>Output bonus and chance rerolls</b>: settled on completion through
+ *       {@link MagicOutputProcessor#settle} and inserted into the output item
+ *       handlers.</li>
+ *   <li><b>Catalyst save chance</b>: {@code CONSUMABLE_CATALYST_INPUTS} entries
+ *       that would be consumed are rolled once per craft and restored after the
+ *       input IO pass.</li>
+ *   <li><b>Progress retention</b>: while resources are missing, progress is
+ *       held for {@code progressRetentionTicks} instead of regressing.</li>
+ * </ul>
+ *
+ * <h2>Not wired (documented gaps)</h2>
+ * <ul>
+ *   <li><b>Extra parallel</b>: modern {@link RecipeLogic} has no
+ *       {@code getParallelLimit}; parallel work is a machine recipe modifier
+ *       ({@code recipe.parallels} + content scaling) and the magic machine
+ *       definitions register neither a parallel hatch nor a modifier, so
+ *       {@link MagicAmplificationResult#getExtraParallel()} cannot be added
+ *       without touching off-limits registration code.</li>
+ *   <li><b>Astral / tarot hatches</b>: no lens or tarot hatch exists in the port
+ *       yet (Phase 6). {@link #EMPTY_ASTRAL_HATCH} / {@link #EMPTY_TAROT_HATCH}
+ *       make the engine return {@link MagicAmplificationResult#NONE}; the real
+ *       hatches will replace these stubs and feed the same call.</li>
+ *   <li><b>Furnace temperature bonus</b> and the <b>star afterglow</b>
+ *       natural-sky match are not applied (no consumers yet).</li>
+ * </ul>
  */
 public class MagicRecipeLogic extends RecipeLogic {
+
+    /**
+     * Phase 6 stub: no calibrated astral lens hatch exists in the port yet, so
+     * the amplification engine always sees an uncalibrated lens. Replace with
+     * the formed hatch view when the astral system lands.
+     */
+    private static final AstralHatchView EMPTY_ASTRAL_HATCH = new AstralHatchView() {
+
+        @Override
+        public int getTier() {
+            return 0;
+        }
+
+        @Override
+        public boolean hasConstellationDataWafer() {
+            return false;
+        }
+
+        @Override
+        public int getOpticalCrystalQuality() {
+            return 0;
+        }
+
+        @Override
+        public double getOpticalCrystalStrengthBonus() {
+            return 0.0D;
+        }
+
+        @Override
+        public String getFocusedConstellation() {
+            return "";
+        }
+
+        @Override
+        public boolean isSkyVisible() {
+            return false;
+        }
+
+        @Override
+        public boolean isNight() {
+            return false;
+        }
+
+        @Override
+        public boolean isFocusedConstellationActive() {
+            return false;
+        }
+    };
+
+    /** Phase 6 stub: no tarot hatch exists in the port yet. */
+    private static final TarotHatchView EMPTY_TAROT_HATCH = () -> "";
 
     private final MagicMultiblockController controller;
 
     private boolean visPaidThisCraft;
+
+    /** Result computed for the running craft; {@link MagicAmplificationResult#NONE} while idle. */
+    private MagicAmplificationResult activeAmplification = MagicAmplificationResult.NONE;
+
+    /**
+     * Copy of the running recipe with the EU tick input scaled by the
+     * amplification's EU reduction. Built lazily so it can be rebuilt after a
+     * world reload (only the result, not the recipe, is persisted).
+     */
+    private GTRecipe amplifiedTickRecipe;
+
+    private int progressRetentionTicks;
+
+    private int chariotStacks;
+    private ResourceLocation lastCompletedRecipeId;
+
+    private final Map<String, Double> fractionalOutputRemainders = new HashMap<>();
 
     public MagicRecipeLogic(MagicMultiblockController machine) {
         super(machine);
         this.controller = machine;
     }
 
-    /** Clears per-craft payment state; called when the structure changes. */
+    /**
+     * Clears per-craft payment and amplification state; called when the
+     * structure changes, when a new craft is prepared and when a craft finishes
+     * without a successor.
+     */
     public void resetMagicState() {
         visPaidThisCraft = false;
+        activeAmplification = MagicAmplificationResult.NONE;
+        amplifiedTickRecipe = null;
+        progressRetentionTicks = 0;
     }
 
     @Override
@@ -48,16 +185,73 @@ public class MagicRecipeLogic extends RecipeLogic {
         resetMagicState();
     }
 
+    /**
+     * Computes and stores the amplification for the craft, then applies the
+     * duration reduction to the effective duration. The EU reduction is applied
+     * later, per tick, through {@link #handleTickRecipe}.
+     */
     @Override
     public void setupRecipe(GTRecipe recipe) {
         resetMagicState();
+        activeAmplification = calculateAmplification(recipe);
         super.setupRecipe(recipe);
+        if (getLastRecipe() != recipe) {
+            // Recipe was rejected (missing inputs or beforeWorking returned false).
+            resetMagicState();
+            return;
+        }
+        if (activeAmplification.getDurationReduction() > 0.0D) {
+            duration = Math.max(1,
+                    (int) Math.ceil(duration * (1.0D - activeAmplification.getDurationReduction())));
+        }
+        if (activeAmplification.getEutReduction() > 0.0D) {
+            amplifiedTickRecipe = buildEutReducedRecipe(recipe);
+        }
     }
 
+    /**
+     * Settles the amplification output bonus after the regular outputs were
+     * produced. Runs after {@code super.onRecipeFinish} because modern GT
+     * handles recipe outputs there (and may immediately set up the next craft,
+     * in which case {@link #setupRecipe} already installed the next result).
+     */
     @Override
     public void onRecipeFinish() {
-        resetMagicState();
+        GTRecipe finished = getLastRecipe();
+        MagicAmplificationResult result = activeAmplification;
+        int parallel = finished == null ? 1 : Math.max(1, finished.getTotalRuns());
+        updateChariotStacks(finished, result);
         super.onRecipeFinish();
+        if (finished != null && result.isActive()) {
+            List<ItemStack> extras = MagicOutputProcessor.settle(finished, parallel, result,
+                    fractionalOutputRemainders);
+            if (!extras.isEmpty()) {
+                insertBonusOutputs(extras);
+            }
+        }
+        if (getLastRecipe() == null || getLastRecipe() == finished) {
+            resetMagicState();
+        }
+    }
+
+    /**
+     * Adds the catalyst-save protection around the regular input pass: eligible
+     * consumable catalysts are rolled once per craft and restored after GT
+     * consumed the recipe inputs.
+     */
+    @Override
+    protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+        if (io != IO.IN) {
+            return super.handleRecipeIO(recipe, io);
+        }
+        List<SavedCatalyst> protectedCatalysts = collectProtectedCatalysts(recipe);
+        ActionResult result = super.handleRecipeIO(recipe, io);
+        if (result.isSuccess()) {
+            for (SavedCatalyst catalyst : protectedCatalysts) {
+                GTTransferUtils.insertItem(catalyst.inventory(), catalyst.stack(), false);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -87,14 +281,31 @@ public class MagicRecipeLogic extends RecipeLogic {
         return ActionResult.SUCCESS;
     }
 
+    /**
+     * Draws the magic resources and, when the EU reduction is active, performs
+     * the energy IO against a copy of the recipe whose EU tick input is scaled
+     * down. The magic draws mirror the upstream parallel scaling and
+     * {@code magicCostReduction} discount.
+     */
     @Override
     public ActionResult handleTickRecipe(GTRecipe recipe) {
-        ActionResult result = super.handleTickRecipe(recipe);
+        GTRecipe tickRecipe = recipe;
+        if (recipe == getLastRecipe() && activeAmplification.getEutReduction() > 0.0D) {
+            if (amplifiedTickRecipe == null) {
+                amplifiedTickRecipe = buildEutReducedRecipe(recipe);
+            }
+            if (amplifiedTickRecipe != null) {
+                tickRecipe = amplifiedTickRecipe;
+            }
+        }
+        ActionResult result = super.handleTickRecipe(tickRecipe);
         if (!result.isSuccess()) {
             return result;
         }
 
-        int infusedFluid = MagicRecipeProperties.getInfusedFluidPerTick(recipe);
+        int parallel = Math.max(1, recipe.getTotalRuns());
+
+        int infusedFluid = discount(scaleByParallel(MagicRecipeProperties.getInfusedFluidPerTick(recipe), parallel));
         if (infusedFluid > 0) {
             if (!controller.drainInfusedFluid(infusedFluid, true)) {
                 return ActionResult.fail(
@@ -103,24 +314,257 @@ public class MagicRecipeLogic extends RecipeLogic {
             controller.drainInfusedFluid(infusedFluid, false);
         }
 
-        long mana = MagicRecipeProperties.getManaPerTick(recipe);
+        long mana = discount(scaleByParallel(MagicRecipeProperties.getManaPerTick(recipe), parallel));
         if (mana > 0 && !controller.consumeMana(mana, false)) {
             return ActionResult.fail(Component.translatable("pollution.magic.failure.mana"), null, null);
         }
 
-        int lifeEssence = MagicRecipeProperties.getLifeEssencePerTick(recipe);
+        int lifeEssence = discount(
+                scaleByParallel(MagicRecipeProperties.getLifeEssencePerTick(recipe), parallel));
         if (lifeEssence > 0 && !controller.consumeLifeEssence(lifeEssence, false)) {
             return ActionResult.fail(
                     Component.translatable("pollution.magic.failure.life_essence"), null, null);
         }
 
-        int vis = MagicRecipeProperties.getVisPerCraft(recipe);
+        int vis = discount(scaleByParallel(MagicRecipeProperties.getVisPerCraft(recipe), parallel));
         if (vis > 0 && !visPaidThisCraft) {
             if (!controller.consumeVis(vis, false)) {
                 return ActionResult.fail(Component.translatable("pollution.magic.failure.vis"), null, null);
             }
             visPaidThisCraft = true;
         }
+
+        progressRetentionTicks = 0;
         return ActionResult.SUCCESS;
+    }
+
+    /**
+     * Upstream held progress while waiting for resources when the active
+     * amplification granted retention ticks. Modern GT regresses progress in
+     * {@link #regressRecipe}; this override consumes the retention budget first.
+     */
+    @Override
+    protected void regressRecipe() {
+        if (progress > 0 && activeAmplification.getProgressRetentionTicks() > 0
+                && progressRetentionTicks < activeAmplification.getProgressRetentionTicks()) {
+            progressRetentionTicks++;
+            return;
+        }
+        super.regressRecipe();
+    }
+
+    /** Result of the running craft, for UI / diagnostics. */
+    public MagicAmplificationResult getActiveAmplification() {
+        return activeAmplification;
+    }
+
+    // ////////////////////////////////////
+    // ***** Amplification internals *****//
+    // ////////////////////////////////////
+
+    private MagicAmplificationResult calculateAmplification(GTRecipe recipe) {
+        AstralAmplifierSnapshot snapshot = AstralAmplifierSnapshot.from(EMPTY_ASTRAL_HATCH);
+        int stacks = recipe.id != null && recipe.id.equals(lastCompletedRecipeId) ? chariotStacks : 0;
+        boolean singleParallel = recipe.getTotalRuns() <= 1;
+        return MagicAmplificationEngine.calculate(processTagsFor(recipe), recipe.duration, snapshot,
+                EMPTY_TAROT_HATCH, stacks, singleParallel);
+    }
+
+    /**
+     * Explicit recipe tags win; legacy recipes fall back to the machine's
+     * registered profile so they still receive the safe first-batch bonuses.
+     */
+    private long processTagsFor(GTRecipe recipe) {
+        long tags = MagicRecipeProperties.getProcessTagMask(recipe);
+        if (tags != 0L) {
+            return tags;
+        }
+        return MagicMachineProfileRegistry.getFallbackTags(controller.getDefinition().getId());
+    }
+
+    private void updateChariotStacks(GTRecipe finished, MagicAmplificationResult result) {
+        ResourceLocation id = finished == null ? null : finished.id;
+        boolean chariot = "the_chariot".equals(result.getTarot());
+        if (chariot && id != null && id.equals(lastCompletedRecipeId)) {
+            chariotStacks = Math.min(5, chariotStacks + 1);
+        } else if (chariot) {
+            chariotStacks = 1;
+        } else {
+            chariotStacks = 0;
+        }
+        lastCompletedRecipeId = id;
+    }
+
+    /**
+     * Copies the recipe and scales only its EU tick input. The original recipe
+     * instance is never mutated: it stays the one GT matches and re-uses.
+     */
+    private GTRecipe buildEutReducedRecipe(GTRecipe recipe) {
+        GTRecipe reduced = recipe.copy();
+        List<Content> euInputs = reduced.tickInputs.get(EURecipeCapability.CAP);
+        if (euInputs == null || euInputs.isEmpty()) {
+            return null;
+        }
+        double factor = 1.0D - activeAmplification.getEutReduction();
+        List<Content> scaled = new ArrayList<>(euInputs.size());
+        for (Content content : euInputs) {
+            EnergyStack stack = EURecipeCapability.CAP.of(content.getContent());
+            long voltage = stack.voltage() <= 0L ? 0L
+                    : Math.max(1L, (long) Math.ceil(stack.voltage() * factor));
+            scaled.add(new Content(new EnergyStack(voltage, stack.amperage()),
+                    content.chance, content.maxChance, content.tierChanceBoost));
+        }
+        reduced.tickInputs.put(EURecipeCapability.CAP, scaled);
+        return reduced;
+    }
+
+    private List<SavedCatalyst> collectProtectedCatalysts(GTRecipe recipe) {
+        List<SavedCatalyst> saved = new ArrayList<>();
+        double chance = activeAmplification.getCatalystSaveChance();
+        if (chance <= 0.0D) {
+            return saved;
+        }
+        String configured = MagicRecipeProperties.getConsumableCatalystInputs(recipe);
+        if (configured.isEmpty()) {
+            return saved;
+        }
+        List<Content> itemInputs = recipe.getInputContents(ItemRecipeCapability.CAP);
+        for (String token : configured.split(",")) {
+            int index;
+            try {
+                index = Integer.parseInt(token.trim());
+            } catch (NumberFormatException ignored) {
+                // Invalid pack data must not block an otherwise valid recipe.
+                continue;
+            }
+            if (index < 0 || index >= itemInputs.size()) {
+                continue;
+            }
+            Content content = itemInputs.get(index);
+            // Non-consumable (chance 0) and chanced inputs are handled by GT's own chance logic.
+            if (content.chance < content.maxChance) {
+                continue;
+            }
+            Ingredient ingredient = ItemRecipeCapability.CAP.of(content.getContent());
+            ItemStack[] candidates = ingredient.getItems();
+            if (candidates.length == 0 || candidates[0].getCount() <= 0) {
+                continue;
+            }
+            if (GTValues.RNG.nextDouble() >= chance) {
+                continue;
+            }
+            for (IRecipeHandler<?> handler : machine.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP)) {
+                if (!(handler instanceof IItemHandlerModifiable inventory)) {
+                    continue;
+                }
+                ItemStack source = findMatchingStack(inventory, ingredient);
+                if (source.isEmpty()) {
+                    continue;
+                }
+                int amount = Math.min(candidates[0].getCount(), source.getMaxStackSize());
+                saved.add(new SavedCatalyst(inventory, source.copyWithCount(amount)));
+                break;
+            }
+        }
+        return saved;
+    }
+
+    private static ItemStack findMatchingStack(IItemHandlerModifiable inventory, Ingredient ingredient) {
+        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+            ItemStack stack = inventory.getStackInSlot(slot);
+            if (!stack.isEmpty() && ingredient.test(stack)) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * Inserts the amplification extras into the output item handlers. Stacks
+     * that do not fit are dropped, mirroring the upstream behaviour when the
+     * machine output overflowed.
+     */
+    private void insertBonusOutputs(List<ItemStack> extras) {
+        List<ItemStack> remaining = new ArrayList<>(extras);
+        for (IRecipeHandler<?> handler : machine.getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP)) {
+            if (remaining.isEmpty()) {
+                return;
+            }
+            if (!(handler instanceof IItemHandlerModifiable inventory)) {
+                continue;
+            }
+            for (int index = 0; index < remaining.size(); ) {
+                ItemStack leftover = GTTransferUtils.insertItem(inventory, remaining.get(index), false);
+                if (leftover.isEmpty()) {
+                    remaining.remove(index);
+                } else {
+                    remaining.set(index, leftover);
+                    index++;
+                }
+            }
+        }
+    }
+
+    private int scaleByParallel(int amount, int parallel) {
+        if (amount <= 0 || parallel <= 1) {
+            return Math.max(0, amount);
+        }
+        long result = (long) amount * parallel;
+        return result > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) result;
+    }
+
+    private long scaleByParallel(long amount, int parallel) {
+        if (amount <= 0L || parallel <= 1) {
+            return Math.max(0L, amount);
+        }
+        return amount > Long.MAX_VALUE / parallel ? Long.MAX_VALUE : amount * parallel;
+    }
+
+    private int discount(int amount) {
+        if (amount <= 0) {
+            return 0;
+        }
+        return Math.max(1, (int) Math.ceil(amount * (1.0D - activeAmplification.getMagicCostReduction())));
+    }
+
+    private long discount(long amount) {
+        if (amount <= 0L) {
+            return 0L;
+        }
+        return Math.max(1L, (long) Math.ceil(amount * (1.0D - activeAmplification.getMagicCostReduction())));
+    }
+
+    private record SavedCatalyst(IItemHandlerModifiable inventory, ItemStack stack) {}
+
+    // ////////////////////////////////////
+    // ***** Persistence *****//
+    // ////////////////////////////////////
+
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        tag.put("MagicAmplification", activeAmplification.serializeSnapshot());
+        tag.putInt("MagicChariotStacks", chariotStacks);
+        tag.putInt("MagicProgressRetention", progressRetentionTicks);
+        CompoundTag remainders = new CompoundTag();
+        for (Map.Entry<String, Double> entry : fractionalOutputRemainders.entrySet()) {
+            remainders.putDouble(entry.getKey(), entry.getValue());
+        }
+        tag.put("MagicOutputRemainders", remainders);
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        activeAmplification = MagicAmplificationResult.deserializeSnapshot(tag.getCompound("MagicAmplification"));
+        chariotStacks = Math.max(0, Math.min(5, tag.getInt("MagicChariotStacks")));
+        progressRetentionTicks = Math.max(0, tag.getInt("MagicProgressRetention"));
+        fractionalOutputRemainders.clear();
+        CompoundTag remainders = tag.getCompound("MagicOutputRemainders");
+        for (String key : remainders.getAllKeys()) {
+            fractionalOutputRemainders.put(key, remainders.getDouble(key));
+        }
+        // The recipe itself is not persisted here; rebuild the reduced-EU copy lazily.
+        amplifiedTickRecipe = null;
     }
 }
