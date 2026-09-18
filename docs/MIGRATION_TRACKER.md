@@ -707,8 +707,19 @@ Done (4.274s)! For help, type "help"
     `Dimethylhydrazine`/`InfernalBlazePropellant`/`DragonPulseFuel`、`ROCKET_ENGINE_RECIPES`），
     `InfusedManager` 上游自注“无用文件”（配方移除），`MagicGCYMRecipes`(111KB)/`ThaumcraftRecipes`(46KB)/
     `AERecipes`(35KB) 为超大数据文件
-  - 下一步方案：按用户既定策略用 GTCEu 原生材料替代 GTQT 材料（逐条映射并记录），
-    大数据文件用脚本辅助分 6a/6b/6c 批移植
+  - ✅ **已落地（GTCEu 原生替代）**：`MagicFuelMaterials`（新 Pollution 材料：MagicNitrobenzene/
+    InfernalBlazePropellant/DragonPulseFuel）+ `MagicFuelRecipes`（魔力硝基苯、焚天烈焰推进剂、龙脉星轨燃剂
+    的生产与燃烧/涡轮燃料配方）
+  - **替代映射表**：MethylFormate→`AmmoniumFormate`；BlazingPyrotheum+hydrazine sulfate→`RocketFuel`+
+    `Dimethylhydrazine`；ChlorineTrifluoride→`AntimonyTrifluoride`；TetraethylLead→`LeadZincSolution`；
+    `ROCKET_ENGINE_RECIPES`（GTQT）→ GTCEu 无对应，改注册到 `COMBUSTION_GENERATOR_FUELS` +
+    `MAGIC_TURBINE_FUELS`（参考 GTNN：其火箭燃料 RP1/甲基肼硝酸盐/UDMH 亦为自建材料，无可直接复用配方）
+  - 参考仓库：`H:\MinecraftMods\GTNN`（Arborsm/GT--，已克隆）
+  - ⏳ 剩余大数据文件（6a/6b/6c）：`MagicGCYMRecipes`(111KB)、`MagicIntegrationRecipes`(62KB)、
+    `ThaumcraftRecipes`(46KB)、`AERecipes`(35KB)、`BotaniaRecipes`(25KB)、`ForgeAlchemyRecipes`(20KB)、
+    `NodeFusionRecipes`(11KB)、`CompoundAspectRecipes`(5.6KB)、`MagicGuideRecipes`(9.2KB) 等；
+    计划：脚本辅助逐文件搬运（配方调用形态与 GTRecipeBuilder 接近），按 TC 相关度排序：
+    NodeFusionRecipes → CompoundAspectRecipes → AERecipes → ThaumcraftRecipes → MagicGCYMRecipes
 - **Batch 7（扭曲事件）✅ 扩展完成**：事件增至 20 个（新增假爆炸/降雨/垃圾/闪现/黏液/倒计时炸弹/
   凋灵玫瑰/僵尸围攻）；剩余上游事件类（血、假雨、沼泽、队列等）语义已覆盖或合并
 - **Batch 4 行为层 v1**：`VisCheckerItem`（右键显示永久/粘性/临时扭曲；读 TC4R warp 视图）

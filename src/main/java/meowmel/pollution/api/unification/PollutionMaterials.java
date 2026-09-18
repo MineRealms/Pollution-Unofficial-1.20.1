@@ -67,4 +67,9 @@ public final class PollutionMaterials {
     public static Material InfusedSpatio;
     public static Material InfusedTempus;
     public static Material InfusedTinctura;
+
+    // Magic fuel chain (GTQT chain replaced by GTCEu-native intermediates)
+    public static Material MagicNitrobenzene;
+    public static Material InfernalBlazePropellant;
+    public static Material DragonPulseFuel;
 }
