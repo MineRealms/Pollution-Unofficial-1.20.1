@@ -46,6 +46,7 @@ public final class PollutionRecipes {
         registerVisHatch(provider);
         CompoundAspectRecipes.init(provider);
         MagicFuelRecipes.init(provider);
+        NodeFusionRecipes.init(provider);
 
         Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
         Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));

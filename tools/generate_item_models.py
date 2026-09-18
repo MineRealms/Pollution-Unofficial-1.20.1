@@ -26,6 +26,11 @@ ITEMS = [
     "white_rune", "black_rune", "starry_rune",
     "vis_checker", "energy_reduce", "time_increase", "overclocking_enhance",
     "parallel_enhance", "transform_enhance",
+    "core_of_idea", "bottle_of_phlogistonic_oneness", "auto_elenchus_device",
+    "elucidator_of_four_causes", "symptomatic_vis_data_link",
+    "needle_of_mystic_interpellation", "cogito_defibrillator", "ball_in_itself",
+    "stone_of_philosopher_1", "stone_of_philosopher_2", "stone_of_philosopher_3",
+    "stone_of_philosopher_final",
 ]
 
 

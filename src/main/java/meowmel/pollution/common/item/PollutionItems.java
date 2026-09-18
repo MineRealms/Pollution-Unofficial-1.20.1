@@ -76,6 +76,17 @@ public final class PollutionItems {
     public static final ItemEntry<Item> PARALLEL_ENHANCE = register("parallel_enhance");
     public static final ItemEntry<Item> TRANSFORM_ENHANCE = register("transform_enhance");
 
+    static {
+        for (String name : new String[]{
+                "core_of_idea", "bottle_of_phlogistonic_oneness", "auto_elenchus_device",
+                "elucidator_of_four_causes", "symptomatic_vis_data_link",
+                "needle_of_mystic_interpellation", "cogito_defibrillator", "ball_in_itself",
+                "stone_of_philosopher_1", "stone_of_philosopher_2", "stone_of_philosopher_3",
+                "stone_of_philosopher_final"}) {
+            register(name);
+        }
+    }
+
     private static ItemEntry<Item> register(String name) {
         ItemEntry<Item> entry = PollutionGTAddon.REGISTRATE
                 .item(name, Item::new)

@@ -719,6 +719,12 @@ Done (4.274s)! For help, type "help"
     时长/EU 按嵌套组件数）+ 全部要素的魔导涡轮燃料（原素 80mB/80t；复合按组件数缩放）；
     取代了临时的 `MagicTurbineRecipes`（已删除）
   - 🔧 研究工具：`tools/analyze_recipes.py`（把上游 recipeBuilder 链压缩为逐调用摘要，供逐文件搬运）
+  - ✅ **节点聚变配方（`NodeFusionRecipes`）**：节点反应堆装配（4 条魔导装配）+ 聚变燃料链（13 条
+    `NODE_MAGIC_FUSION_RECIPES`，含 ErichAura/维度转换剂/三元合金等）；替代：HyperdimensionalSilver→
+    NaquadahAlloy、KQGold→TungstenSteel、SentientMetal/ExistingNexus→Tritanium、FadingNexus→NaquadahAlloy、
+    ErichAura→InfusedAura、DimensionalTransformingAgent→InfusedSpatio、BlockLifeEssence→InfusedLife、
+    VoidMetal→InfusedVoid、POHyper 外壳→Void Prism、TC 共振器→vis_checker、GT 控制件→魔法电路；
+    等离子输出改流体输出；聚变启动成本未强制（已记录）
   - ⏳ 剩余大数据文件（6a/6b/6c）：`MagicGCYMRecipes`(111KB)、`MagicIntegrationRecipes`(62KB)、
     `ThaumcraftRecipes`(46KB)、`AERecipes`(35KB)、`BotaniaRecipes`(25KB)、`ForgeAlchemyRecipes`(20KB)、
     `NodeFusionRecipes`(11KB)、`CompoundAspectRecipes`(5.6KB)、`MagicGuideRecipes`(9.2KB) 等；
