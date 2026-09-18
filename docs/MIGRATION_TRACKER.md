@@ -881,6 +881,31 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
   方块/实体剩余、物品行为层（Curios）、客户端表现层（贴图/GUI/TESR/JEI）、Mixin 收尾、资产替换
 - 注：SUBAGENT 因余额耗尽不可用，后续改为主会话直接推进
 
+### 5.17 对比 1.12 原版的剩余清单（2026-09-18 深夜，覆盖 112/423 类）
+
+**已完成里程碑**：机器（魔导 19 + 节点/源质/注魔 13 + Botania 14 + 部件 156 定义 + 储能/涡轮/化学等）、
+材料（要素/合金/燃料/基底共 ~70）、配方（6 大整合 + 324 Botania + 23 AE2 + 17 聚变 + 12 TC + 复合要素 36）、
+4 维度 + 22 群系 + 55 世界生成 JSON、实体（3 元素生物 + 6 粘液 + 3 弹射物 + 渲染）、
+方块（植物/传送门/血肉之心/矿物提取机/星辉外壳）、增幅系统（已接线）、扭曲事件（22）。
+
+**剩余（按域，含明确原因）**：
+
+| 域 | 剩余 | 原因/依赖 |
+|---|---|---|
+| 配方 | `MagicChemicalRecipes`(57KB)、`MagicGCYMRecipes` 剩余、`MagicIntegrationRecipes`(62KB)、`ForgeAlchemyRecipes`(20KB)、`BloodAltar`/`BloodCircuit`、`AstralSorcery`、`ConstellationTowerRecipes`、`StarstreamNexusRecipes`、`CrystalLine`/`TarChain`/`MaterialsLine`/`MeteorsHelper`/`CircuitManager`/`MagicGuideRecipes`/`MachineRecipes` 剩余、`MagicHatchRecipes`/`MufflerHatchRecipes` | 多数依赖未接依赖的联动（Astral Sorcery / Blood Magic）或未移植物品 |
+| 机器-部件 | `BloodMagicHatch`、`AstralLensHatch`(+/advanced)、`TarotHatch`、BM-HPCA 系列 5、`ManaContainer`/`VisContainer`(语义已内联) | 需 Astral/Blood 依赖或物品层 |
+| 机器-多块 | Starstream 系列（Obelisk/Relay/OperationCore/ChunkAnchor）、`ConstellationTower` + 8 台星辉机、`MetaTileEntityBMHPCA`、`SmallChemicalPlant` 已做；其余为 Astral/Blood 专属 | Astral Sorcery / Blood Magic 依赖缺失 |
+| 机器-单方块 | `SmallNodeGenerator`（物品已就绪，可做）、`SourceCharge`（需饰品+灌注流体映射） | 物品行为层 |
+| 物品 | 行为层：`GogglesNano`/`GogglesQuantum`（护目镜）、`Tarots`（塔罗）、`PollutionBaubles`（→Curios）、`ItemHeartFruit`、`PollutionBattery`、MetaItem 变体（注魔/塔罗牌） | 未实现 |
+| 方块 | `POHyper` 系外壳（5）、`POConstellationCrystal`、Starstream 方块（4）、矿物提取机正式 GUI、血肉之心生长（需 Blood LP）、`POFusionReactor`/`POComputerCasing`（GT 已有，可跳过） | 依赖物品/联动/客户端 |
+| 维度/世界生成 | 地下世界自定义 ChunkGenerator 与洞穴地图生成（现用 vanilla carver）、Alfheim 世界引擎/梦幻树（现用 vanilla 树）、结构（地下桥/Garden，需 jigsaw + NBT）、GT 矿脉 `PollutionOreVeins`（材料未移植）、表面规则 noise_settings、3 个新维度的群系引用仍为 `minecraft:plains` 占位（群系 JSON 已就绪，可直接切换） | 数据/结构重写 |
+| 客户端 | 矿物提取机 GUI/Container、魔法电池进度条与环形渲染、`AspectTank` 组件（QuantumAspectTank 系列）、TESR（魔法阵/储罐/星辉）、`client/gui` 25 类、粒子与音效、正式贴图替换（机器/方块/物品仍是占位） | 表现层批次 |
+| 附属整合 | TC 四附属 jar 已接线（随游戏加载），但模组侧联动未写：`TCAspects`、`DummyAspectEventProxy`、`GTEssentiaHandler`、`MaterialPropertyAddition`、`OreMaterials`、`SecondDegreeMaterials` 剩余、TT 渗透附魔 API、TE 源质-网络联动 | 需按 `docs/PHASE6C_API.md` 逐项实现 |
+| 平台/杂项 | Astral Sorcery / Blood Magic 依赖未接（星辉/血魔法内容全部阻塞）；KubeJS 事件、JEI 插件骨架完善、`mods.toml` 可选依赖声明、正式资产（贴图/音效）替换 | 依赖决策/收尾 |
+
+**结论**：TC 核心（神秘时代）已基本完整；剩余集中在 **Astral Sorcery / Blood Magic 联动（含其机器/配方/维度内容）**、
+**物品行为层**、**客户端表现层**、**世界生成结构**、**TC 附属模组侧联动**。
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
