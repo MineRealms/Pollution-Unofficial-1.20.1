@@ -1,0 +1,40 @@
+{
+  "type": "pollution:underground_bridge",
+  "biomes": [
+    "pollution:underground",
+    "pollution:stalactite_cluster",
+    "pollution:crystal_cluster",
+    "pollution:mushroom_forest",
+    "pollution:lush_cave",
+    "pollution:primordial_cave",
+    "pollution:desert_cave",
+    "pollution:magma_cave"
+  ],
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "minecraft:zombie",
+          "weight": 8,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "type": "minecraft:creeper",
+          "weight": 3,
+          "minCount": 1,
+          "maxCount": 1
+        },
+        {
+          "type": "minecraft:shulker",
+          "weight": 2,
+          "minCount": 1,
+          "maxCount": 1
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "pollution:underground_bridge",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 36,
+    "separation": 14,
+    "salt": 418721,
+    "spread_type": "linear",
+    "frequency": 0.8,
+    "frequency_reduction_method": "default"
+  }
+}

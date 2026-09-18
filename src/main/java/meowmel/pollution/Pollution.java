@@ -5,12 +5,14 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
+import meowmel.pollution.common.PollutionCreativeTabs;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.block.PollutionMiscBlocks;
 import meowmel.pollution.common.block.PollutionPlantBlocks;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.common.machine.PollutionMachineEvents;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
+import meowmel.pollution.dimension.worldgen.PollutionStructures;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +40,8 @@ public final class Pollution {
         meowmel.pollution.common.item.PollutionItems.init();
         meowmel.pollution.common.entity.PollutionEntities.init(context);
         meowmel.pollution.dimension.biome.POBiomeSources.init(context);
+        PollutionStructures.init(context);
+        PollutionCreativeTabs.init(context);
 
         // Recipe types are created from GregTech's own GTRecipeType RegisterEvent
         // (posted inside GTRecipeTypes.init, before the registry freezes).
@@ -53,6 +57,7 @@ public final class Pollution {
         // the same datagen file as the generated material names.
         PollutionGTAddon.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
             provider.add("mod.pollution.name", "Pollution Unofficial");
+            provider.add("itemGroup.pollution.main", "Pollution Unofficial");
             provider.add("pollution.command.get", "Chunk pollution: %s");
             provider.add("pollution.command.set", "Chunk pollution set to %s");
             provider.add("pollution.command.scrub", "Scrubbed %s pollution");
