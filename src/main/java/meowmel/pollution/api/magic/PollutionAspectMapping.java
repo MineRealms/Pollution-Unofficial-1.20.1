@@ -141,6 +141,11 @@ public final class PollutionAspectMapping {
         return MATERIAL_TO_ASPECT.size();
     }
 
+    /** Read-only view of the material to aspect mapping, in registration order. */
+    public static Map<Material, AspectId> all() {
+        return java.util.Collections.unmodifiableMap(MATERIAL_TO_ASPECT);
+    }
+
     /** Stable, human readable view used by the debug command. */
     public static List<String> describe() {
         List<String> lines = new ArrayList<>();

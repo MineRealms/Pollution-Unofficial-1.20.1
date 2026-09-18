@@ -217,6 +217,27 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 - 已知环境怪癖：datagen 完成后游戏 JVM 不自行退出（KubeJS/文件监听等非守护线程），
   验证日志出现 `All providers took` 后手动结束进程即可；不影响产物
 
+### 5.6 TC4R 对象要素注册（已落地，2026-09-18）
+
+`api/magic/PollutionObjectAspects.java`：通过 TC4R 官方运行期 API
+`ObjectAspectCatalog.registerRuntime(Item, Map<AspectId,Integer>)` 给 Pollution 材料物品注册要素。
+
+**重要事实：上游没有可移植的数值。**
+上游 `ThaumcraftModule.registerAspectsToItem(...)` 仅有两处定义、**从未被调用**
+（全仓 grep 调用点为 0），因此不存在原项目要素数值可复刻。
+
+**移植设计规则（显式声明为设计决定，参照 TC4R 自带数据量级）：**
+
+| 物品形态 | 要素数值 | 参照 |
+|---|---|---|
+| 要素材料 gem / dust | 自身要素 4 | TC4R：铁锭 metallum 4 |
+| 魔法合金 ingot | 自身原素 3 + metallum 2 | TC4R：金锭 metallum 3 + lucrum 2 |
+
+- 合金亲和：aertitanium→aer、ignissteel→ignis、aquasilver→aqua、terracopper→terra、ordolead→ordo、perditioaluminium→perditio
+- 合金不进 `PollutionAspectMapping`（该映射语义为“要素燃料材料”，保持上游语义）
+- 矿石方块逐石材类型生成（`pollution:red_granite_*_ore` 等），本轮未注册，按 tag 注册留待后续核实（TODO）
+- 运行期证据：`Registered 78 TC4R object aspect entries for Pollution materials`（72 gem/dust + 6 ingot）→ `Done (4.050s)`
+
 **资产工具（Python，默认只读）：**
 
 - `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
@@ -353,3 +374,10 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 - 新增 mixin 构建基础设施（MixinGradle 0.7-SNAPSHOT + mixin AP 0.8.5）
 - `gradlew build` 通过；jar 内含 `pollution.mixins.json`、`pollution.refmap.json`、`MixinConfigs` 清单
 - `runData` 通过并生成 46 个材料语言键 + 手工键（见 5.5 节）
+
+### 2026-09-18 — TC4R 对象要素注册
+- 核实上游 `registerAspectsToItem` 为死代码（0 调用点），无上游数值；采用显式设计规则（见 5.6 节）
+- 新增 `api/magic/PollutionObjectAspects` + `PollutionMagicEvents`（FMLCommonSetup 触发）
+- 注册 78 条（36 要素材料 × gem/dust + 6 合金 ingot），runServer 验证通过
+- 观察到 TC4R 与 GT 的兼容配方告警（`thaumcraft:compat/native_*_cluster_smelting` 输出为空），
+  属 TC4R 端口自身与 GT 8.0.0 的集成瑕疵，不影响本模组；记录待后续与 TC4R 侧核对
