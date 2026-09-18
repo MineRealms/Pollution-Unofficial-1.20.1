@@ -715,6 +715,10 @@ Done (4.274s)! For help, type "help"
     `ROCKET_ENGINE_RECIPES`（GTQT）→ GTCEu 无对应，改注册到 `COMBUSTION_GENERATOR_FUELS` +
     `MAGIC_TURBINE_FUELS`（参考 GTNN：其火箭燃料 RP1/甲基肼硝酸盐/UDMH 亦为自建材料，无可直接复用配方）
   - 参考仓库：`H:\MinecraftMods\GTNN`（Arborsm/GT--，已克隆）
+  - ✅ **复合要素化学（`CompoundAspectRecipes`）**：36 条搅拌机配方（两原素/复合要素 1000+1000 → 复合 2000，
+    时长/EU 按嵌套组件数）+ 全部要素的魔导涡轮燃料（原素 80mB/80t；复合按组件数缩放）；
+    取代了临时的 `MagicTurbineRecipes`（已删除）
+  - 🔧 研究工具：`tools/analyze_recipes.py`（把上游 recipeBuilder 链压缩为逐调用摘要，供逐文件搬运）
   - ⏳ 剩余大数据文件（6a/6b/6c）：`MagicGCYMRecipes`(111KB)、`MagicIntegrationRecipes`(62KB)、
     `ThaumcraftRecipes`(46KB)、`AERecipes`(35KB)、`BotaniaRecipes`(25KB)、`ForgeAlchemyRecipes`(20KB)、
     `NodeFusionRecipes`(11KB)、`CompoundAspectRecipes`(5.6KB)、`MagicGuideRecipes`(9.2KB) 等；
