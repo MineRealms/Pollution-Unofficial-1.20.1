@@ -636,7 +636,24 @@ Done (4.274s)! For help, type "help"
 - 上游质量观察：`MetaTileEntityNodeWasher` 上游实现不完整（`decideType` 恒空、`updateFormedValid` 半成品、
   依赖未移植的 `PACKAGED_AURA_NODE` 物品）→ 移植时需自行补全语义并记录
 - `InfusedExchange`（7.6KB，完整）：2 格结构（S + 上方输出流体仓），从上方源质罐抽取并输出对应灌注流体
-  （1 单位源质 → 144 mB）；设计已定，下一轮实现（需要 `EssentiaSearch` 完整构造 API）
+  （1 单位源质 → 144 mB）；**已实现**（见下）
+- TC4R 常用 API 定论：`AspectApi.primals()/getItemAspects(ItemStack)/getBlockAspects(BE)`、
+  `EssentiaSearch.nearby(range)/ahead(dir,range)`、`EssentiaApi.findSource/extract(SourceRef,int)/add`、
+  `EssentiaTransport.addEssentia(...)`、`EssentiaTransferMode.SIMULATE/EXECUTE`
+- TC4R 无“炼金金属块”（上游 `BlocksTC.metalAlchemical`）→ 源质熔炼机结构 H 位暂用基础咒法棱镜（已记录偏差）
+
+**节点/源质/注魔进度（本轮）：**
+
+- [x] `InfusedExchangeMachine`：被动控制器（无配方类型，直接 `subscribeServerTick`）；每 10 tick 轮询六原素，
+  `findSource`（半径 3）→ 校验输出仓容量 → `extract(EXECUTE)` → 注入 `FluidHatchPartMachine.tank`（144 mB/单位）
+- [x] `EssenceSmelterMachine`：被动控制器；物品经 `AspectApi.getItemAspects` 溶解，时长 = `max(20, 要素Σ×10 / 4^(tier-1))`；
+  每 tick 消耗 EU（输入电压）与灌注火流体（`infusedCost` 沿用上游对数公式）；完成后半径 5 内向
+  `EssentiaTransport` 分发源质（`EssentiaApi.add`）
+- 结构：InfusedExchange（S + A 两格）；EssenceSmelter（上游 7 层×6 行×8 字符，B 位外壳可放
+  ITEM/FLUID/ENERGY/MAINTENANCE 仓；A=F 框架替代 StainlessSteel/HSSG）
+- [ ] 下一批：`EssenceCollector`/`GtEssenceSmelter`/`IndustrialInfusion`/节点系列
+  （NodeWasher 上游半成品需补全；NodeProducer/LargeNodeGenerator/CentralVisTower/NodeBlastFurnace/
+  NodeFusionReactor 待逐台）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）

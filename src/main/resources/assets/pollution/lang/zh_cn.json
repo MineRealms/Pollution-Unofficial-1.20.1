@@ -88,6 +88,8 @@
   "block.pollution.magic_chemical_bath": "魔导化学浸洗机",
   "block.pollution.magic_chemical_reactor": "魔导化学反应釜",
   "block.pollution.magic_distillery": "魔导蒸馏塔",
+  "block.pollution.infused_exchange": "灌注交换器",
+  "block.pollution.essence_smelter": "源质熔炼机",
   "pollution.magic.failure.coil": "需要 GregTech 加热线圈",
   "pollution.magic.failure.temperature": "所需温度：%s K"
 }

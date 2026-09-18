@@ -27,6 +27,8 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicCutterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicDistilleryMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectricBlastFurnaceMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectrolyzerMachine;
+import meowmel.pollution.common.machine.multiblock.magic.EssenceSmelterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.InfusedExchangeMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicExtruderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicGreenHouseMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMaceratorMachine;
@@ -113,6 +115,8 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_CHEMICAL_REACTOR;
     public static MultiblockMachineDefinition MAGIC_DISTILLERY;
     public static MultiblockMachineDefinition MAGIC_ASSEMBLER;
+    public static MultiblockMachineDefinition INFUSED_EXCHANGE;
+    public static MultiblockMachineDefinition ESSENCE_SMELTER;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -360,6 +364,22 @@ public final class PollutionMachines {
         MAGIC_ASSEMBLER = magicMultiblock("magic_assembler", "Magic Assembler",
                 MagicAssemblerMachine::new, MagicAssemblerMachine::createPattern,
                 GTRecipeTypes.ASSEMBLER_RECIPES, PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+
+        INFUSED_EXCHANGE = PollutionGTAddon.REGISTRATE
+                .multiblock("infused_exchange", InfusedExchangeMachine::new)
+                .langValue("Infused Exchange")
+                .rotationState(RotationState.ALL)
+                .pattern(InfusedExchangeMachine::createPattern)
+                .simpleModel(model("infused_exchange"))
+                .register();
+
+        ESSENCE_SMELTER = PollutionGTAddon.REGISTRATE
+                .multiblock("essence_smelter", EssenceSmelterMachine::new)
+                .langValue("Essence Smelter")
+                .rotationState(RotationState.ALL)
+                .pattern(EssenceSmelterMachine::createPattern)
+                .simpleModel(model("essence_smelter"))
+                .register();
     }
 
     private static MultiblockMachineDefinition magicMultiblock(
