@@ -799,6 +799,61 @@ AE2（33 配方 + 机器）、TC 附属（5）、维度/世界生成/实体资�
 **近期可做（TC 侧收尾）**：SmallNodeGenerator（节点物品已就绪）→ 物品行为层（滤芯/护目镜/饰品）→
 MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块增强）→ 客户端表现层。
 
+### 5.15 完整模组收尾规划（Phase 6A-6D + Phase 7，客户端+服务端）
+
+**依赖准备（一次性）：**
+- Botania：`vazkii.botania:Botania:1.20.1-456-FORGE`（BlameJared Maven），补 `mods.toml` 依赖声明
+- AE2：`appeng:appliedenergistics2-forge:15.0.18`（ModMaven）；注意 LDLib POM 的 appeng 排除需保留
+- TC 四附属（`D:\Downloads\1.20.1-forge-20711-dev.zip` 与 `FM-port-deps/full` 已备）：
+  forbidden-magic / tainted-magic / thaumic-energistics / thaumic-tinkerer 完整 jar 安装进 `local-repo`
+  （groupId `dev.tc4port`，与 thaumcraft 同构），源码用于 API 核实
+- 验证：`gradlew compileJava` → `runServer` + `runClient` + `runGameTestServer`
+
+**Phase 6A — Botania 联动（分批）**
+- 6A-1 能力层：`ManaMultiblockController`、`ManaHandlerList`、`ManaContainer`、
+  `POMultiblockAbility`（MANA_INPUT/OUTPUT_HATCH、MANA_INPUT/OUTPUT_POOL）+ Mana 部件能力注册
+- 6A-2 部件（4）：`MetaTileEntityManaHatch`（1A/4A/16A 输入输出）、`MetaTileEntityManaPoolHatch`、
+  `WirelessManaHatch`/`WirelessManaPoolHatch` + `WirelessManager`/`WirelessWorldData`
+- 6A-3 机器（13）：`ManaPlate`、`ManaPetalApothecary`、`ManaRuneAltar`、`IndustrialPureDaisy`、
+  `BotDistillery`、`BotVacuumFreezer`、`BotCircuitAssembler`、`BotGasCollector`、`EndoflameArray`、
+  `ManaInfusionReactor`、`MultiblockManaProvider`、`MegaManaTurbine`、`ManaGenerator`（单方块）
+- 6A-4 发电机：`MetaTileEntityMultiDanDeLifeOn`（64KB，含 `DandelifeonRecipe`）
+- 6A-5 配方：`BotaniaRecipes`、`ManaToEuRecipes`、`ManaInfusionReactor` 系配方
+
+**Phase 6B — AE2 联动（分批）**
+- 6B-1 依赖接线 + API 核实（AE2 15.x：`IStorageProvider`、`MEStorage`、`IPart` 等）
+- 6B-2 `AERecipes`（33 条：ME 接口/处理器/存储元件/流体元件，含 `nae2` 兼容分支替换）
+- 6B-3 若存在 AE 机器/方块（上游 `common/gregtech` 3 类与 AE 占位）一并移植 + JEI
+
+**Phase 6C — TC 四附属联动（分批）**
+- 6C-1 安装 4 个附属 jar 到 local-repo + 依赖接线 + 各附属 API 核实（FM 注魔/TT 工具/TE 源质/M 系）
+- 6C-2 `common/thaumcraft` 整合层（5 类：`ThaumcraftModule`、`TCAspects`、`DummyAspectEventProxy`、
+  `GTEssentiaHandler` 等）+ 附属材料/要素映射
+- 6C-3 `ForgeAlchemyRecipes`（Forbidden Magic 炼金）+ 各附属专属配方/机器
+- 6C-4 与 TC 核心的交互（研究/注魔/源质管/工具）
+
+**Phase 6D — 维度与世界生成（分批）**
+- 6D-1 维度注册与传送（`dimension/dims` 4 类，含传送门方块联动）
+- 6D-2 生物群系（`dimension/biome` 12 类：biomes + gen）
+- 6D-3 世界生成（`dimension/worldgen` 31 类：ChunkGenerator、feature、mapGen、structure、terraingen）
+- 6D-4 维度内容联动（维度专属方块/实体/资源，依赖 Phase 7A/7B）
+
+**Phase 7 — 完整资产与表现层（客户端+服务端）**
+- 7A 方块（55）：血肉植物/彩虹树/触手/邪术之眼/传送门/矿物提取机等 + TileEntity/Container
+- 7B 实体（28）：Basalz/Blitz/Blizz 等 + 生成/掉落/AI
+- 7C 增幅系统（`api/amplification` 8 类 + `api/astral` 2 类）：魔导多块增幅/塔罗/星辉条件
+- 7D 客户端（39）：正式贴图（`POTextures` 替换占位）、GUI、TESR（魔法阵/储罐渲染）、objmodels、
+  粒子、扭曲客户端效果（`client/warpevent`）、JEI 分类（机器排污/注魔/要素）
+- 7E 物品行为层：滤芯、护目镜（Nano/Quantum）、饰品（Baubles/Tarots）、工具
+- 7F Mixin 收尾（9 类逐个评估：能删则删，保留 JEI shim）
+- 7G 数据与平衡：`MaterialPropertyAddition`、`OreMaterials`、`SecondDegreeMaterials` 补全、
+  矿石/矿脉、掉落表、配置默认值
+
+**执行顺序（建议）**：依赖准备 → 6C（附属，复用现成 jar）→ 6A（Botania）→ 6B（AE2）→
+6D（维度/世界生成）→ 7A/7B → 7C/7E → 7D/7G → 7F。
+每批：compileJava 通过 → 相关冒烟（服务端/客户端）→ tracker 更新 → 提交。
+最终验收：`runServer` + `runClient` + `runGameTestServer` 全绿。
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
