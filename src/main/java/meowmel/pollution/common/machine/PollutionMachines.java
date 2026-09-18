@@ -9,16 +9,22 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.api.recipes.PORecipeMaps;
+import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBenderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicBreweryMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicCentrifugeMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalBathMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalReactorMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicCutterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicDistilleryMachine;
+import meowmel.pollution.common.machine.multiblock.magic.MagicElectricBlastFurnaceMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectrolyzerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicExtruderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicGreenHouseMachine;
@@ -100,6 +106,11 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_BREWERY;
     public static MultiblockMachineDefinition MAGIC_CUTTER;
     public static MultiblockMachineDefinition MAGIC_GREEN_HOUSE;
+    public static MultiblockMachineDefinition MAGIC_ELECTRIC_BLAST_FURNACE;
+    public static MultiblockMachineDefinition MAGIC_ALLOY_BLAST;
+    public static MultiblockMachineDefinition MAGIC_CHEMICAL_BATH;
+    public static MultiblockMachineDefinition MAGIC_CHEMICAL_REACTOR;
+    public static MultiblockMachineDefinition MAGIC_DISTILLERY;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -322,6 +333,27 @@ public final class PollutionMachines {
         MAGIC_GREEN_HOUSE = magicMultiblock("magic_green_house", "Magic Greenhouse",
                 MagicGreenHouseMachine::new, MagicGreenHouseMachine::createPattern,
                 PORecipeMaps.MAGIC_GREENHOUSE_RECIPES);
+
+        MAGIC_ELECTRIC_BLAST_FURNACE = magicMultiblock("magic_electric_blast_furnace",
+                "Magic Electric Blast Furnace",
+                MagicElectricBlastFurnaceMachine::new, MagicElectricBlastFurnaceMachine::createPattern,
+                GTRecipeTypes.BLAST_RECIPES);
+
+        MAGIC_ALLOY_BLAST = magicMultiblock("magic_alloy_blast", "Magic Alloy Blast Smelter",
+                MagicAlloyBlastSmelterMachine::new, MagicAlloyBlastSmelterMachine::createPattern,
+                PORecipeMaps.MAGIC_ALLOY_BLAST_RECIPES, GCYMRecipeTypes.ALLOY_BLAST_RECIPES);
+
+        MAGIC_CHEMICAL_BATH = magicMultiblock("magic_chemical_bath", "Magic Chemical Bath",
+                MagicChemicalBathMachine::new, MagicChemicalBathMachine::createPattern,
+                GTRecipeTypes.CHEMICAL_BATH_RECIPES, GTRecipeTypes.ORE_WASHER_RECIPES);
+
+        MAGIC_CHEMICAL_REACTOR = magicMultiblock("magic_chemical_reactor", "Magic Chemical Reactor",
+                MagicChemicalReactorMachine::new, MagicChemicalReactorMachine::createPattern,
+                GTRecipeTypes.CHEMICAL_RECIPES, PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES);
+
+        MAGIC_DISTILLERY = magicMultiblock("magic_distillery", "Magic Distillery",
+                MagicDistilleryMachine::new, MagicDistilleryMachine::createPattern,
+                GTRecipeTypes.DISTILLATION_RECIPES, GTRecipeTypes.DISTILLERY_RECIPES);
     }
 
     private static MultiblockMachineDefinition magicMultiblock(

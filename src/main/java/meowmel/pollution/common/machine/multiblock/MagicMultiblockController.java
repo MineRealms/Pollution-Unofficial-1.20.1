@@ -1,5 +1,6 @@
 package meowmel.pollution.common.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -36,6 +37,7 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
 
     protected IVisHatch visHatch;
     protected InfusedFluidHatchMachine infusedFluidHatch;
+    protected ICoilType coilType;
 
     private Set<Fluid> infusedFluids;
 
@@ -61,6 +63,8 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
                 infusedFluidHatch = hatch;
             }
         }
+        Object matchedCoil = getMultiblockState().getMatchContext().get("CoilType");
+        coilType = matchedCoil instanceof ICoilType coil ? coil : null;
     }
 
     @Override
@@ -68,9 +72,28 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         super.onStructureInvalid();
         visHatch = null;
         infusedFluidHatch = null;
+        coilType = null;
         if (recipeLogic instanceof MagicRecipeLogic magicLogic) {
             magicLogic.resetMagicState();
         }
+    }
+
+    // ////////////////////////////////////
+    // ***** Heating coils *****//
+    // ////////////////////////////////////
+
+    /** True when the formed structure contains GregTech heating coils. */
+    public boolean hasCoil() {
+        return coilType != null;
+    }
+
+    /**
+     * Working temperature of the structure, taken from the matched GregTech
+     * coil. Upstream added a custom coil-tier ramp because its coils were
+     * custom blocks; the port uses the standard coil temperature instead.
+     */
+    public int getCurrentTemperature() {
+        return coilType == null ? 0 : coilType.getCoilTemperature();
     }
 
     // ////////////////////////////////////

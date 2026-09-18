@@ -82,5 +82,12 @@
   "block.pollution.magic_solidifier": "魔导固化机",
   "block.pollution.magic_brewery": "魔导酿造机",
   "block.pollution.magic_cutter": "魔导切割机",
-  "block.pollution.magic_green_house": "魔导温室"
+  "block.pollution.magic_green_house": "魔导温室",
+  "block.pollution.magic_electric_blast_furnace": "魔导电力高炉",
+  "block.pollution.magic_alloy_blast": "魔导合金高炉",
+  "block.pollution.magic_chemical_bath": "魔导化学浸洗机",
+  "block.pollution.magic_chemical_reactor": "魔导化学反应釜",
+  "block.pollution.magic_distillery": "魔导蒸馏塔",
+  "pollution.magic.failure.coil": "需要 GregTech 加热线圈",
+  "pollution.magic.failure.temperature": "所需温度：%s K"
 }

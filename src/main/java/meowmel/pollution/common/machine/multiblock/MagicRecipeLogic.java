@@ -73,6 +73,17 @@ public class MagicRecipeLogic extends RecipeLogic {
         if (vis > 0 && !controller.consumeVis(vis, true)) {
             return ActionResult.fail(Component.translatable("pollution.magic.failure.vis"), null, null);
         }
+        if (recipe.data.contains("ebf_temp")) {
+            if (!controller.hasCoil()) {
+                return ActionResult.fail(Component.translatable("pollution.magic.failure.coil"), null, null);
+            }
+            int requiredTemperature = recipe.data.getInt("ebf_temp");
+            if (requiredTemperature > controller.getCurrentTemperature()) {
+                return ActionResult.fail(
+                        Component.translatable("pollution.magic.failure.temperature", requiredTemperature),
+                        null, null);
+            }
+        }
         return ActionResult.SUCCESS;
     }
 

@@ -84,6 +84,10 @@ public final class Pollution {
                     "Not enough mana");
             provider.add("pollution.magic.failure.life_essence",
                     "Not enough life essence");
+            provider.add("pollution.magic.failure.coil",
+                    "Requires GregTech heating coils");
+            provider.add("pollution.magic.failure.temperature",
+                    "Required temperature: %s K");
             PollutionMagicBlocks.ALL_NAMES.forEach(name -> provider.add(
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
         });

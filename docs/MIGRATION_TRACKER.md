@@ -601,9 +601,16 @@ Done (4.274s)! For help, type "help"
 9. **12 台结构直译机已落地（本轮）**：Bender/Centrifuge/WireMill/Autoclave/Electrolyzer/Extruder/
    Mixer/Sifter/Solidifier/Brewery/Cutter/GreenHouse；辅助机壳 23 个
    （POTurbine 系 10、ManaPlate 6、BotBlock 7）已注册并通过冒烟测试
-10. 剩余 6 台特殊机（AlloyBlastSmelter/ElectricBlastFurnace/Assembler/ChemicalBath/
-    ChemicalReactor/Distillery）→ 节点/源质/注魔系列 → TC 配方数据
-    （`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
+10. **特殊机进度（18/19）**：
+    - ✅ AlloyBlastSmelter / ElectricBlastFurnace：改用标准 `Predicates.heatingCoils()`；
+      `MagicRecipeLogic` 已实现 `ebf_temp` 温度门控（`ICoilType.getCoilTemperature()`，
+      对应现代 `GTRecipeModifiers.ebfOverclock` 的拒绝语义；线圈 EU 折扣/OC 待补）
+    - ✅ ChemicalBath：水结构用 `Predicates.fluids(Water)`；上游成型后自动注水行为未移植（TODO）
+    - ✅ ChemicalReactor：PTFE 管映射到现代 `GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE`
+    - ✅ Distillery：Y 用 `magicCasing`，X 的“按层流体输出仓”近似为全局上限 1（TODO）
+    - ⏸ Assembler：**阻塞**——结构依赖 GTQT 材料框架（`HyperdimensionalSilver`/`KQGold`，本工程未移植）
+      与 `POManaPlate`/`POBotBlock` 部分变体；待 GTQT 材料阶段或用替代外壳（需用户确认偏差）
+11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
@@ -818,3 +825,11 @@ Done (4.274s)! For help, type "help"
 - 7.5.3 冒烟测试通过：`Registered Pollution recipe types` → `Registered Pollution machine definitions`
   → `Done (5.108s)`；RCON 验证 `magic_bender`/`magic_wiremill`/`magic_green_house`/`magic_brewery`/
   `magic_solidifier`、`tungstensteel_gearbox` 等可放置且 BE 含完整 `recipeLogic` 数据
+
+### 2026-09-18 — 特殊魔导多块（18/19）
+- 新增 5 台特殊机：`MagicElectricBlastFurnace`、`MagicAlloyBlastSmelter`（标准加热线圈 + `ebf_temp` 温度门控）、
+  `MagicChemicalBath`（水结构）、`MagicChemicalReactor`（现代 PTFE 管）、`MagicDistillery`
+- `MagicMultiblockController` 增加线圈支持（结构匹配上下文 `CoilType` → `ICoilType` → `getCurrentTemperature`），
+  `MagicRecipeLogic` 增加 `coil`/`temperature` 失败原因
+- 汇编机（Assembler）因 GTQT 材料框架缺失（`HyperdimensionalSilver`/`KQGold`）暂缓，已记录
+- 魔导多块进度：19 台中 18 台落地，`compileJava` 通过
