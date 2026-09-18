@@ -38,6 +38,19 @@ def extract_calls(body: str) -> list[tuple[str, str]]:
     return calls
 
 
+def summarize_compact(path: Path) -> None:
+    """One line per recipe with only the decisive calls."""
+    text = path.read_text(encoding="utf-8", errors="replace")
+    pattern = re.compile(r"([\w.]+)\.recipeBuilder\(\)(.*?)\.buildAndRegister\(\)", re.S)
+    interesting = {"input", "inputs", "output", "outputs", "fluidInputs", "fluidOutputs",
+                   "duration", "EUt", "notConsumable", "circuit", "blastFurnaceTemp",
+                   "cleanroom", "chancedOutput"}
+    for match in pattern.finditer(text):
+        calls = [f"{name}({ ' '.join(args.split()) })" for name, args in extract_calls(match.group(2))
+                 if name in interesting]
+        print(f"[{match.group(1)}] " + " ".join(calls))
+
+
 def summarize(path: Path) -> None:
     text = path.read_text(encoding="utf-8", errors="replace")
     print(f"===== {path.name} =====")
@@ -58,11 +71,17 @@ def summarize(path: Path) -> None:
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
+    args = sys.argv[1:]
+    compact = "--compact" in args
+    files = [arg for arg in args if arg != "--compact"]
+    if not files:
         print(__doc__)
         return 1
-    for raw in sys.argv[1:]:
-        summarize(Path(raw))
+    for raw in files:
+        if compact:
+            summarize_compact(Path(raw))
+        else:
+            summarize(Path(raw))
     return 0
 
 

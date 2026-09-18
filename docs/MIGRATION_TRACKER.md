@@ -725,6 +725,15 @@ Done (4.274s)! For help, type "help"
     ErichAura→InfusedAura、DimensionalTransformingAgent→InfusedSpatio、BlockLifeEssence→InfusedLife、
     VoidMetal→InfusedVoid、POHyper 外壳→Void Prism、TC 共振器→vis_checker、GT 控制件→魔法电路；
     等离子输出改流体输出；聚变启动成本未强制（已记录）
+  - ✅ **灌注材料加工（`InfusedProcessingRecipes`）**：六原素粉尘→流体提取（30 EU/t, 200t）
+  - **剩余大文件分类结论（用 `--compact` 分析器核实）**：
+    - `AERecipes`（33 条）= **AE2 联动**（ME 接口/处理器/存储元件），属 Phase 6，非神秘侧
+    - `ThaumcraftRecipes`（22 条）= 神秘侧真配方，但依赖未移植的基底/催化剂材料批次
+      （`Salisundus`/`Roughdraft`/`Basic-Advanced-HyperSubstrate`/`Valonite`/`Syrmorite`/`Octine`/
+      `Thaummix`/`SulfoPlumbicSalt`/`ErichAura` 等）→ 需先做「基底材料批」
+    - `MagicGCYMRecipes`（120 条）= 混合：灌注加工（已提取 6 条）、TC 晶体研磨、GCYM/GTQT 机器联动
+      （依赖 GTQT 配方表与材料）→ 按可移植子集继续
+    - Botania/Astral 系（`MagicIntegrationRecipes` 62KB 等）→ Phase 6
   - ⏳ 剩余大数据文件（6a/6b/6c）：`MagicGCYMRecipes`(111KB)、`MagicIntegrationRecipes`(62KB)、
     `ThaumcraftRecipes`(46KB)、`AERecipes`(35KB)、`BotaniaRecipes`(25KB)、`ForgeAlchemyRecipes`(20KB)、
     `NodeFusionRecipes`(11KB)、`CompoundAspectRecipes`(5.6KB)、`MagicGuideRecipes`(9.2KB) 等；
