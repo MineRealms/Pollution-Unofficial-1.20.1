@@ -80,6 +80,15 @@ CASINGS = {
     "starstream_casing": "gtceu:block/casings/voltage/uv/side",
     "starstream_runed_casing": "gtceu:block/casings/voltage/zpm/side",
     "constellation_anchor": "gtceu:block/casings/voltage/uhv/side",
+    # POCoilBlock variants (upstream wirecoil textures)
+    "wire_coil_cupronickel": "pollution:block/wirecoil/machine_coil_cupronickel",
+    "wire_coil_kanthal": "pollution:block/wirecoil/machine_coil_kanthal",
+    "wire_coil_nichrome": "pollution:block/wirecoil/machine_coil_nichrome",
+    "wire_coil_rtm_alloy": "pollution:block/wirecoil/machine_coil_rtm_alloy",
+    "wire_coil_hssg": "pollution:block/wirecoil/machine_coil_hssg",
+    "wire_coil_naquadah": "pollution:block/wirecoil/machine_coil_naquadah",
+    "wire_coil_trinium": "pollution:block/wirecoil/machine_coil_trinium",
+    "wire_coil_tritanium": "pollution:block/wirecoil/machine_coil_tritanium",
 }
 
 

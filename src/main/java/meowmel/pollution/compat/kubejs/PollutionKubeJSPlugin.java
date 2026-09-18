@@ -57,10 +57,11 @@ public final class PollutionKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
+        // GTRecipeTypes.register() namespaces every id with "gtceu", so the
+        // previous pollution-namespace filter never matched. Register the
+        // generic GT schema for all GT recipe types instead.
         for (Map.Entry<ResourceLocation, GTRecipeType> entry : GTRegistries.RECIPE_TYPES.entries()) {
-            if (Pollution.MOD_ID.equals(entry.getKey().getNamespace())) {
-                event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
-            }
+            event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
         }
     }
 }

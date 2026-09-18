@@ -140,7 +140,7 @@ public final class CompoundAspectRecipes {
         GTRecipeBuilder.of(id("turbine/" + input.getName()), PORecipeMaps.MAGIC_TURBINE_FUELS)
                 .inputFluids(input.getFluid(amount))
                 .duration(duration)
-                .EUt(GTValues.V[Math.max(1, Math.min(tier, GTValues.V.length - 1))])
+                .EUt(-GTValues.V[Math.max(1, Math.min(tier, GTValues.V.length - 1))])
                 .save(provider);
     }
 

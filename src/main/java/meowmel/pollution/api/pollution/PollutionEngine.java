@@ -43,12 +43,42 @@ public final class PollutionEngine {
             return;
         }
         decayTimer = 0;
+        applyPlayerEffects(event.getServer());
         double decay = PollutionConfig.POLLUTION_DECAY_PER_TICK.get() * DECAY_INTERVAL_TICKS;
         if (decay <= 0.0D) {
             return;
         }
         for (ServerLevel level : event.getServer().getAllLevels()) {
             PollutionData.get(level).decayAll(decay);
+        }
+    }
+
+    /**
+     * Applies the configured harmful effect to players standing in chunks whose
+     * pollution exceeds {@link PollutionConfig#EFFECT_THRESHOLD}.
+     */
+    public static void applyPlayerEffects(net.minecraft.server.MinecraftServer server) {
+        if (!PollutionConfig.ENABLE_POLLUTION.get()) {
+            return;
+        }
+        double threshold = PollutionConfig.EFFECT_THRESHOLD.get();
+        for (ServerLevel level : server.getAllLevels()) {
+            for (net.minecraft.server.level.ServerPlayer player : level.players()) {
+                boolean polluted = get(level, player.blockPosition()) > threshold;
+                if (polluted) {
+                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                            net.minecraft.world.effect.MobEffects.CONFUSION, 100, 0, true, false));
+                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                            net.minecraft.world.effect.MobEffects.HUNGER, 100, 0, true, false));
+                    if (!player.getPersistentData().getBoolean("pollution.warned")) {
+                        player.displayClientMessage(
+                                net.minecraft.network.chat.Component.translatable("pollution.effect.warning"), true);
+                        player.getPersistentData().putBoolean("pollution.warned", true);
+                    }
+                } else {
+                    player.getPersistentData().remove("pollution.warned");
+                }
+            }
         }
     }
 }

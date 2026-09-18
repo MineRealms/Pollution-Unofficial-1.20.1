@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "pollution:block/wire_coil_nichrome"
+    }
+  }
+}

@@ -106,6 +106,19 @@ public final class PollutionMagicBlocks {
     public static final BlockEntry<Block> STARSTREAM_RUNED_CASING = starstream("starstream_runed_casing", 5);
     public static final BlockEntry<Block> CONSTELLATION_ANCHOR = starstream("constellation_anchor", 11);
 
+    // ////////////////////////////////////
+    // ***** wire coil variants (upstream POCoilBlock) *****//
+    // ////////////////////////////////////
+
+    public static final BlockEntry<Block> WIRE_COIL_CUPRONICKEL = casing("wire_coil_cupronickel");
+    public static final BlockEntry<Block> WIRE_COIL_KANTHAL = casing("wire_coil_kanthal");
+    public static final BlockEntry<Block> WIRE_COIL_NICHROME = casing("wire_coil_nichrome");
+    public static final BlockEntry<Block> WIRE_COIL_RTM_ALLOY = casing("wire_coil_rtm_alloy");
+    public static final BlockEntry<Block> WIRE_COIL_HSSG = casing("wire_coil_hssg");
+    public static final BlockEntry<Block> WIRE_COIL_NAQUADAH = casing("wire_coil_naquadah");
+    public static final BlockEntry<Block> WIRE_COIL_TRINIUM = casing("wire_coil_trinium");
+    public static final BlockEntry<Block> WIRE_COIL_TRITANIUM = casing("wire_coil_tritanium");
+
     /** Registration names, used for the language keys. */
     public static final java.util.List<String> ALL_NAMES = java.util.List.of(
             "void_prism", "spell_prism", "spell_prism_cold", "spell_prism_hot", "spell_prism_water",

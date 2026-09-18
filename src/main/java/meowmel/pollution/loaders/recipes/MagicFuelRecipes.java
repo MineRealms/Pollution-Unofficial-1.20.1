@@ -97,7 +97,7 @@ public final class MagicFuelRecipes {
         GTRecipeBuilder.of(id("magic_nitrobenzene_fuel"), GTRecipeTypes.COMBUSTION_GENERATOR_FUELS)
                 .inputFluids(PollutionMaterials.MagicNitrobenzene.getFluid(1))
                 .duration(90)
-                .EUt(GTValues.VA[GTValues.HV] / 4)
+                .EUt(-GTValues.VA[GTValues.HV] / 4)
                 .save(provider);
     }
 
@@ -124,7 +124,7 @@ public final class MagicFuelRecipes {
             GTRecipeBuilder.of(id("infernal_blaze_propellant_fuel"), PORecipeMaps.MAGIC_TURBINE_FUELS)
                     .inputFluids(PollutionMaterials.InfernalBlazePropellant.getFluid(1))
                     .duration(4 * 20)
-                    .EUt(GTValues.VA[GTValues.EV])
+                    .EUt(-GTValues.VA[GTValues.EV])
                     .save(provider);
         } else {
             Pollution.LOGGER.warn("Skipping infernal_blaze_propellant recipe: a required fluid is missing");
@@ -149,7 +149,7 @@ public final class MagicFuelRecipes {
             GTRecipeBuilder.of(id("dragon_pulse_fuel_burn"), PORecipeMaps.MAGIC_TURBINE_FUELS)
                     .inputFluids(PollutionMaterials.DragonPulseFuel.getFluid(1))
                     .duration(8 * 20)
-                    .EUt(GTValues.VA[GTValues.IV])
+                    .EUt(-GTValues.VA[GTValues.IV])
                     .save(provider);
         } else {
             Pollution.LOGGER.warn("Skipping dragon_pulse_fuel recipe: a required fluid is missing");

@@ -41,7 +41,7 @@ public final class ManaToEuRecipes {
         GTRecipeBuilder.of(id("infused_aura"), BotaniaRecipeMaps.MANA_TO_EU)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
                 .duration(MANA_FUEL_DURATION)
-                .EUt(8192)
+                .EUt(-8192)
                 .save(provider);
 
         Pollution.LOGGER.info("[botania] MANA_TO_EU: 1/7 upstream fuels ported; 6 skipped "

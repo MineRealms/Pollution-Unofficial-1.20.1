@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import dev.arbor.gtnn.data.GTNNMaterials;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
@@ -297,9 +298,45 @@ public final class BotaniaRecipes {
                     .save(provider);
         }
 
-        if (PollutionItems.get("mana_resonance_coil") == null) {
-            Pollution.LOGGER.warn("[botania] skipping mana resonance coil and 6 wireless hatch "
-                    + "upgrade recipes: pollution:mana_resonance_coil is not registered yet");
+        // 无线升级所需的魔力谐振线圈（上游 BotaniaRecipes: spark + 末影之眼 +
+        // 魔力钢线 + 马努斯钢齿轮 + 魔力）
+        GTRecipeBuilder.of(id("mana_resonance_coil"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                .inputItems(new ItemStack(BotaniaItems.spark))
+                .inputItems(new ItemStack(Items.ENDER_EYE))
+                .inputItems(ChemicalHelper.get(TagPrefix.wireGtSingle, GTNNMaterials.ManaSteel, 8))
+                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.HSSG, 1))
+                .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
+                .outputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
+                .duration(200)
+                .EUt(GTValues.VA[GTValues.LV])
+                .save(provider);
+
+        // 三档无线输入/输出仓由对应有线仓升级（方向不变）
+        String[] poolNames = { "diluted", "normal", "mythic" };
+        int[] poolEuTiers = { GTValues.LV, GTValues.LuV, GTValues.UEV };
+        int[] poolCoils = { 1, 2, 4 };
+        for (int i = 0; i < poolNames.length; i++) {
+            GTRecipeBuilder.of(id("wireless_mana_pool_input_hatch/" + poolNames[i]),
+                            PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(PollutionMachines.MANA_POOL_INPUT_HATCH[i])
+                    .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(poolCoils[i]))
+                    .inputItems(poolSensors[i].asStack(2))
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(2000))
+                    .outputItems(PollutionMachines.WIRELESS_MANA_POOL_INPUT_HATCH[i])
+                    .duration(200 + i * 100)
+                    .EUt(GTValues.VA[poolEuTiers[i]])
+                    .save(provider);
+
+            GTRecipeBuilder.of(id("wireless_mana_pool_output_hatch/" + poolNames[i]),
+                            PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(PollutionMachines.MANA_POOL_OUTPUT_HATCH[i])
+                    .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(poolCoils[i]))
+                    .inputItems(poolEmitters[i].asStack(2))
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(2000))
+                    .outputItems(PollutionMachines.WIRELESS_MANA_POOL_OUTPUT_HATCH[i])
+                    .duration(200 + i * 100)
+                    .EUt(GTValues.VA[poolEuTiers[i]])
+                    .save(provider);
         }
     }
 
