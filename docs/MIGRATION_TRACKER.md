@@ -1155,3 +1155,21 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
     `alfheim_red_grape_0..2` 不在本批（源类未提供），留待后续
   - `heart_fruit` 采摘掉落方块本体（上游独立食物 `heart_fruit_i` 未移植）
 - 验证：`.\gradlew.bat compileJava --console=plain` → `BUILD SUCCESSFUL in 27s`
+
+### 2026-09-19 — TC 侧剩余盘点结论（本轮）
+
+对照上游 `meowmel.pollution` 的 TC 相关文件逐个核实（1.20.1 TC4R 0.1.0-20711 + GTCEu 7.5.3 API）：
+
+- 已覆盖（以本移植版命名落地）：
+  - `TCAspects` → `api/unification/TCAspectAddons` + `api/magic/PollutionAspectMapping`
+  - `POAspectToGtFluidList` → `PollutionAspectMapping`（aspect→材料/流体映射）
+  - `MaterialPropertyAddition` / `OreMaterials` / `SubstrateMaterials` → `api/unification/materials/*`
+  - `ForgeAlchemyRecipes`（FM 点金）→ `loaders/recipes/ForgeAlchemyRecipes`
+  - warp 全套（WarpEvents/WarpQueue/22 事件）→ `common/warp/*`
+- 受阻（TC4R 无对应 API，不能照搬）：
+  - `DummyAspectEventProxy`：TC4R 不存在 `thaumcraft.api.aspects.AspectEventProxy`（jar tf 核实）；TC4R aspect 注册走 `AspectApi`/`AspectRegistryView`，无“事件代理”概念
+  - `GTEssentiaHandler`（10KB）：依赖 TC6 内部 `IAspectSource`、`TileMirrorEssentia`、`PacketFXEssentiaSource`（TC4R 均无）；TC4R 提供 `EssentiaApi`/`EssentiaContainerApi`/`EssentiaJarView`，但其唯一消费方 `MetaTileEntityAspectTank`（36KB）尚未移植，无可挂接对象
+- 受阻（依赖未移植内容）：
+  - `ThaumcraftRecipes` 剩余 10 条：8 条自定义线圈转换依赖 `POCoilBlock`（未移植）；2 条打粉依赖未移植的 Manasteel/Thaumium 材料（GTCEu 7.5.3 无 Thaumium）
+  - `SecondDegreeMaterials`（19KB）与 `HigherDegreeMaterials`/`MagicIntegrationMaterials`/`MaterialFlagAddition`：材料批次，留待与 AspectTank/线圈一起移植
+- 本轮交付：创造页 `pollution:main`（REGISTRATE.getAll 全收，含机器物品）+ `pollution:underground_bridge` 结构（代码生成，含刷怪覆盖）
