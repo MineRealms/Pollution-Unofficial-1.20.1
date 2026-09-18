@@ -89,6 +89,8 @@ public final class Pollution {
                     "Requires GregTech heating coils");
             provider.add("pollution.magic.failure.temperature",
                     "Required temperature: %s K");
+            provider.add("pollution.magic.failure.research",
+                    "Missing Thaumcraft research: %s");
             PollutionMagicBlocks.ALL_NAMES.forEach(name -> provider.add(
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
         });

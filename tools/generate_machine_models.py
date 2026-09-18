@@ -82,6 +82,14 @@ MULTIBLOCKS = {
     "node_producer": "ev",
     "large_node_generator": "iv",
     "node_washer": "ev",
+    "node_blast_furnace": "iv",
+    "luv_node_fusion_reactor": "luv",
+    "zpm_node_fusion_reactor": "zpm",
+    "uv_node_fusion_reactor": "uv",
+    "central_vis_tower": "iv",
+    "gt_essence_smelter": "hv",
+    "essence_collector": "ev",
+    "industrial_infusion": "ev",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"

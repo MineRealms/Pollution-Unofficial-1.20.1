@@ -667,11 +667,30 @@ Done (4.274s)! For help, type "help"
 - [x] `NodeWasherMachine`：**补全上游半成品语义**——原地清洗打包节点（每 20 tick 减
   `coil×EU tier×25` 点 `EssenceEntropy`，耗 EU + `InfusedWater` 144 mB），并顺带清洗半径 4 咒波；
   结构直译（4 层）
-- [ ] 剩余 3 台：`NodeBlastFurnace`（BLAST + FORGE_ALCHEMY 双配方 + 节点催化）、
-  `NodeFusionReactor`（FUSION + NODE_MAGIC_FUSION 双配方 + `ICleanVis` + Mansus 消耗）、
-  `CentralVisTower`（TC6 环境灵气/魔力，需语义重写，工作量最大）
-- 冒烟测试（7.5.3，重启后）：`node_producer`/`large_node_generator`/`node_washer` 注册并可放置；
-  物品 `pollution:packaged_aura_node` 注册成功（物品不参与 setblock，注册失败会在启动期崩溃）
+- [x] `NodeBlastFurnaceMachine`：BLAST + FORGE_ALCHEMY 双配方（线圈温度门控由 `MagicRecipeLogic` 处理）；
+  打包节点每 30s 消耗 1 个，按上游速率产出 White/Black Mansus → 映射 `InfusedLight`/`InfusedDark`
+- [x] `NodeFusionReactorMachine`（LuV/ZPM/UV 3 档）：FUSION + NODE_MAGIC_FUSION 双配方；节点效果表
+  （fall-through 语义复刻）；Mansus → `InfusedLight`/`InfusedDark`/`InfusedAura`；
+  `ICleanVis` → `PollutionEngine.get <= 4.2` 判定；现代聚变启动成本未复刻（已记录）
+- [x] `CentralVisTowerMachine`：**语义重写**——TC4R 无环境灵气，改为抽取范围内灵气节点高于基准的 vis
+  （`NodeApi` CAS → 基准），产出 `InfusedLight`（白 Mansus）；洗咒波 → `InfusedDark`（黑 Mansus）；
+  Botania 魔力 upkeep → EU + `InfusedAura`；Starry Mansus 无对应产物（记录偏差）
+
+**Batch 2（源质收尾）完成：**
+
+- [x] `GtEssenceSmelterMachine`：源质熔炼机变体，aspects → 映射灌注流体（144 mB/单位）入输出仓
+- [x] `EssenceCollectorMachine`：TC6 环境灵气重写为「最近节点 vis + 工业污染当量 flux」，
+  速度公式 `ceil(0.025×(1+coil)×2^tier×(ln(vis)−ln(1+flux/vis)))`；六要素灌注流体输出；
+  聚焦水晶模式无 TC4R 对应物（记录偏差）；13 层结构由 `tools/gen_node_patterns.py` 生成
+
+**Batch 3（注魔）完成：**
+
+- [x] `IndustrialInfusionMachine`：自有配方类型 `industrial_infusion_recipes` +
+  研究门槛（`ResearchApi.isComplete`，机器 owner；离线/无 owner 时放行——服务器友好回退）；
+  自定义 `IndustrialInfusionRecipeLogic`；29 层结构脚本生成
+- 结构生成器：`tools/gen_node_patterns.py`（剥离注释、aisle 原样移植、谓词手写映射；
+  已生成 NodeBlastFurnace/NodeFusionReactor/EssenceCollector/IndustrialInfusion/CentralVisTower 5 个结构类）
+- 集中冒烟测试待做（用户要求几批全做完后一次做）
 - 冒烟测试（7.5.3，重启后）：`pollution:infused_exchange`、`pollution:essence_smelter` 注册并可放置，
   BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）

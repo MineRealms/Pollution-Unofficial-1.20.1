@@ -27,9 +27,15 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicCutterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicDistilleryMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectricBlastFurnaceMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectrolyzerMachine;
+import meowmel.pollution.common.machine.multiblock.magic.EssenceCollectorMachine;
 import meowmel.pollution.common.machine.multiblock.magic.EssenceSmelterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.GtEssenceSmelterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.IndustrialInfusionMachine;
 import meowmel.pollution.common.machine.multiblock.magic.InfusedExchangeMachine;
+import meowmel.pollution.common.machine.multiblock.node.CentralVisTowerMachine;
 import meowmel.pollution.common.machine.multiblock.node.LargeNodeGeneratorMachine;
+import meowmel.pollution.common.machine.multiblock.node.NodeBlastFurnaceMachine;
+import meowmel.pollution.common.machine.multiblock.node.NodeFusionReactorMachine;
 import meowmel.pollution.common.machine.multiblock.node.NodeProducerMachine;
 import meowmel.pollution.common.machine.multiblock.node.NodeWasherMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicExtruderMachine;
@@ -123,6 +129,14 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition NODE_PRODUCER;
     public static MultiblockMachineDefinition LARGE_NODE_GENERATOR;
     public static MultiblockMachineDefinition NODE_WASHER;
+    public static MultiblockMachineDefinition NODE_BLAST_FURNACE;
+    public static MultiblockMachineDefinition NODE_FUSION_REACTOR_LUV;
+    public static MultiblockMachineDefinition NODE_FUSION_REACTOR_ZPM;
+    public static MultiblockMachineDefinition NODE_FUSION_REACTOR_UV;
+    public static MultiblockMachineDefinition CENTRAL_VIS_TOWER;
+    public static MultiblockMachineDefinition GT_ESSENCE_SMELTER;
+    public static MultiblockMachineDefinition ESSENCE_COLLECTOR;
+    public static MultiblockMachineDefinition INDUSTRIAL_INFUSION;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -409,6 +423,54 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(NodeWasherMachine::createPattern)
                 .simpleModel(model("node_washer"))
+                .register();
+
+        NODE_BLAST_FURNACE = magicMultiblock("node_blast_furnace", "Node Blast Furnace",
+                NodeBlastFurnaceMachine::new, NodeBlastFurnaceMachine::createPattern,
+                GTRecipeTypes.BLAST_RECIPES, PORecipeMaps.FORGE_ALCHEMY_RECIPES);
+
+        NODE_FUSION_REACTOR_LUV = fusionReactor("luv_node_fusion_reactor", "LuV Node Fusion Reactor", 6);
+        NODE_FUSION_REACTOR_ZPM = fusionReactor("zpm_node_fusion_reactor", "ZPM Node Fusion Reactor", 7);
+        NODE_FUSION_REACTOR_UV = fusionReactor("uv_node_fusion_reactor", "UV Node Fusion Reactor", 8);
+
+        CENTRAL_VIS_TOWER = PollutionGTAddon.REGISTRATE
+                .multiblock("central_vis_tower", CentralVisTowerMachine::new)
+                .langValue("Central Vis Tower")
+                .rotationState(RotationState.ALL)
+                .pattern(CentralVisTowerMachine::createPattern)
+                .simpleModel(model("central_vis_tower"))
+                .register();
+
+        GT_ESSENCE_SMELTER = PollutionGTAddon.REGISTRATE
+                .multiblock("gt_essence_smelter", GtEssenceSmelterMachine::new)
+                .langValue("GT Essence Smelter")
+                .rotationState(RotationState.ALL)
+                .pattern(GtEssenceSmelterMachine::createPattern)
+                .simpleModel(model("gt_essence_smelter"))
+                .register();
+
+        ESSENCE_COLLECTOR = PollutionGTAddon.REGISTRATE
+                .multiblock("essence_collector", EssenceCollectorMachine::new)
+                .langValue("Essence Collector")
+                .rotationState(RotationState.ALL)
+                .pattern(EssenceCollectorMachine::createPattern)
+                .simpleModel(model("essence_collector"))
+                .register();
+
+        INDUSTRIAL_INFUSION = magicMultiblock("industrial_infusion", "Industrial Infusion",
+                IndustrialInfusionMachine::new, IndustrialInfusionMachine::createPattern,
+                PORecipeMaps.INDUSTRIAL_INFUSION_RECIPES);
+    }
+
+    private static MultiblockMachineDefinition fusionReactor(String name, String displayName, int tier) {
+        return PollutionGTAddon.REGISTRATE
+                .multiblock(name, holder -> new NodeFusionReactorMachine(holder, tier))
+                .tier(tier)
+                .langValue(displayName)
+                .rotationState(RotationState.ALL)
+                .recipeTypes(GTRecipeTypes.FUSION_RECIPES, PORecipeMaps.NODE_MAGIC_FUSION_RECIPES)
+                .pattern(NodeFusionReactorMachine::createPattern)
+                .simpleModel(model(name))
                 .register();
     }
 
