@@ -250,16 +250,20 @@ public final class BotaniaRecipes {
         ItemEntry<?>[] poolSensors = { GTItems.SENSOR_LV, GTItems.SENSOR_LuV, GTItems.SENSOR_UEV };
         ItemEntry<?>[] poolEmitters = { GTItems.EMITTER_LV, GTItems.EMITTER_LuV, GTItems.EMITTER_UEV };
 
-        for (int index = 0; index < PollutionMachines.MANA_INPUT_HATCH_1A.length; index++) {
-            int tier = index + 1;
-            Material gear = index <= 4 ? GTMaterials.HSSG : GTMaterials.TungstenSteel;
+        // GT's registerTieredMachines returns a tier-indexed array (index 0 = ULV
+        // is empty, LV starts at 1), so iterate by tier and skip unregistered slots.
+        for (int tier = 1; tier < PollutionMachines.MANA_INPUT_HATCH_1A.length; tier++) {
+            if (PollutionMachines.MANA_INPUT_HATCH_1A[tier] == null || tier > sensors.length) {
+                continue;
+            }
+            Material gear = tier <= 5 ? GTMaterials.HSSG : GTMaterials.TungstenSteel;
             GTRecipeBuilder.of(id("mana_input_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier])
                     .inputItems(new ItemStack(BotaniaItems.runeMana))
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, gear, 2))
-                    .inputItems(sensors[index].asStack(2))
+                    .inputItems(sensors[tier - 1].asStack(2))
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
-                    .outputItems(PollutionMachines.MANA_INPUT_HATCH_1A[index])
+                    .outputItems(PollutionMachines.MANA_INPUT_HATCH_1A[tier])
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
