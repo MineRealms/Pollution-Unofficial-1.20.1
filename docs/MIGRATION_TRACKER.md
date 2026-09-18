@@ -348,6 +348,46 @@ Done (4.274s)! For help, type "help"
   - 输出 `docs/reference/texture-copy-plan.csv`（315 张贴图，`textures/blocks→textures/block`、`textures/items→textures/item`）
   - `--apply` 才会实际复制；不删除任何文件
 
+### 5.10 机器移植总览与规划（全部机器，2026-09-18）
+
+**单方块机器（upstream `common/metatileentity/single`，9 类）：**
+
+| 上游类 | 数量 | 状态 | 移植说明 |
+|---|---|---|---|
+| MetaTileEntityVisGenerator | 6 (LV..LuV) | ✅ 已完成 | 真实抽 vis 发电 + 工业污染 |
+| MetaTileEntityVisProvider | 9 (LV..UHV) | ✅ 已完成 | TC4R 无环境灵气，改为 `NodeApi` CAS 给最近普通节点充能 |
+| MetaTileEntityMagicEnergyAbsorber | 5 (LV..IV) | ✅ 已完成 | 龙蛋基座发电；Botania 水晶/盖亚头基座 TODO（Phase 6） |
+| MetaTileEntityFluxClear (VIS_CLEAR) | 4+2（含重复 ID） | ✅ 已完成（去重为 5 档） | EU 清洗咒波；上游过滤物品未移植（物品阶段），暂 EU-only |
+| MetaTileEntityFluxPromotedFuelCell | 5 (LV..IV) | ✅ 已完成 | 咒波发电 + 效率区间 + 超上限爆炸；GTQT 燃料配方 UI 不移植 |
+| MetaTileEntitySolarPlate | 18（3 档 × 6 种） | ✅ 已完成 | 光照/维度/高度条件与增产一致；天空 7×7 扫描简化为机顶判定；上游注魔配方待 TC4R 注魔阶段 |
+| MetaTileEntitySmallNodeGenerator | 4 (LuV..UHV) | ⏸ 延期 | 依赖 `PACKAGED_AURA_NODE` 物品（物品阶段） |
+| MetaTileEntitySourceCharge | 1 | ⏸ 延期 | 依赖魔力饰品物品与灌注流体映射（物品阶段） |
+| ManaGeneratorTileEntity | 5 | ⏸ 延期 | Botania 魔力（Phase 6） |
+
+本轮新增 48 个机器定义（generator 6 + provider 9 + absorber 5 + scrubber 5 + fuel cell 5 + solar 18），
+一次性 `compileJava` 通过，`runServer` 全部注册，RCON 抽查 6 台可放置且 block entity 正常。
+
+**多方块部件（upstream `multiblockpart`，13 类）— 规划：**
+
+1. 先建 GT 多方块部件框架（`PartAbility`、能力仓、流体/能量/物品仓基类）
+2. 优先移植核心部件：`VIS_HATCH`（灵气仓，接 `VisNetworkApi`）→ `INFUSED_FLUID_HATCH`（灌注流体仓）→ `FLUX_MUFFLER`（消声仓排放，接 `PollutionEngine`）→ `MagicItemHatch`
+3. 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）
+
+**魔法多方块（upstream `multiblock` 19 类 + `multiblock/magic` 18 类 + `multiblock/generator` 3 类）— 规划：**
+
+1. **前置：魔法配方系统**。上游用 `MagicRecipeProperties`（配方属性：催化剂、灵气并行、注魔流体、星辉条件等）与 `MagicMultiblockRecipeLogic`。需在本工程复刻一套等价的 `api/recipes` 属性与逻辑层（可用 GT `RecipeModifier` + 自定义 `RecipeLogic` 实现），这是所有魔导多块的共同前置。
+2. **第一批（加工型，机制最接近 GT 原版）**：MagicBender / MagicCentrifuge / MagicElectrolyzer / MagicMixer / MagicMacerator / MagicWireMill / MagicExtruder / MagicSolidifier / MagicCutter / MagicSifter / MagicChemicalBath —— 复用 GT 对应配方类型 + 魔法外壳/等级。
+3. **第二批（高级加工）**：MagicElectricBlastFurnace / MagicChemicalReactor / MagicDistillery / MagicBrewery / MagicAutoclave / MagicAlloyBlastSmelter / MagicAssembler / MagicGreenHouse。
+4. **第三批（独立特殊机器）**：IndustrialInfusion（GT 化注魔，需 TC4R 注魔对接）、MagicBattery（大储电）、InfusedExchange（要素转换）、CentralVisTower / LargeNodeGenerator / NodeWasher / NodeProducer / NodeBlastFurnace / NodeFusionReactor / StarstreamNexus*（节点体系，基于 `AuraNodeView`/`NodeApi`）、EssenceCollector / EssenceSmelter / GtEssenceSmelter（源质体系，需 TC4R essentia API 适配层）、SmallChemicalPlant / MultiDanDeLifeOn（特殊逻辑）。
+5. **多方块发电机**：MagicTurbine / MagicLargeTurbine / MagicMegaTurbine——用 GT `SimpleGeneratorMachine` 同款机制 + 自定义燃料类型（基于要素流体），需先确定燃料表（上游 `MagicTurbineType`）。
+6. **储罐**：AspectTank（要素储罐，需要素存储 + UI）。
+
+**依赖与风险速记：**
+
+- 魔导多块的第一步是魔法配方系统，否则只能做空壳
+- 源质/节点体系务必走 `compat/tc4r` 适配层
+- 外部联动部件（魔力/血魔法/星辉/塔罗）统一放到 Phase 6，避免污染核心构建
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
@@ -501,3 +541,14 @@ Done (4.274s)! For help, type "help"
   （`MetaTileEntityLoader.registerMachineRecipe` + `GTCraftingComponents`）
 - 机制修正：GTCEu 8.0.0 配方为运行时动态数据包，非 datagen JSON（见 5.9 节）
 - runServer 验证：`Registered 6 vis generator crafting recipes` → `Done (4.274s)`
+
+### 2026-09-18 — 全部单方块机器推进 + 一次性编译验证
+- 新增 5 台机器类：`VisProviderMachine`、`MagicEnergyAbsorberMachine`、`FluxScrubberMachine`、
+  `FluxFuelCellMachine`、`SolarPlateMachine`（+ 共用基类 `PollutionEnergyMachine`）
+- 注册 48 个新机器定义：provider 9 + absorber 5 + scrubber 5 + fuel cell 5 + solar 18
+  （含 48 个占位模型，由 `tools/generate_machine_models.py` 生成）
+- 配方全部按上游模式落地（`CIRCUIT` 替代未移植的 `BLANKCORE`，已注释说明）
+- 一次性 `compileJava` 通过；`runServer` 全部注册 + `Done (4.330s)`；
+  RCON 抽查 6 台机器 setblock 与 block entity ID 正常
+- 延期机器与全部多方块的详细规划见 5.10 节（SmallNodeGenerator/SourceCharge/ManaGenerator、
+  部件框架、魔导系列三批、发电机、储罐）

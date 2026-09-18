@@ -8,14 +8,17 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.CIRCUIT;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.EMITTER;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.HULL;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.MOTOR;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.PISTON;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.ROTOR;
+import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.SENSOR;
 
 /**
  * GregTech recipe datagen entry point, invoked from
- * {@code PollutionGTAddon#addRecipes(Consumer)} during {@code runData}.
+ * {@code PollutionGTAddon#addRecipes(Consumer)}.
  *
  * <p>Upstream registered machine recipes in
  * {@code meowmel.pollution.loaders.recipes.MachineRecipes} using GTCEu 1.12.2's
@@ -27,7 +30,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.ROTOR;
  * {@code runData}. {@code GTRecipes.recipeAddition} is invoked from the common
  * setup and feeds a built-in dynamic data pack
  * ({@code GTDynamicDataPack::addRecipe}), so this entry point fires at server
- * runtime. A server boot log line is emitted below for verification.</p>
+ * runtime.</p>
  */
 public final class PollutionRecipes {
 
@@ -35,14 +38,26 @@ public final class PollutionRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         registerVisGenerator(provider);
+        registerVisProvider(provider);
+        registerMagicEnergyAbsorber(provider);
+        registerFluxScrubber(provider);
+        registerFluxFuelCell(provider);
 
+        Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
+        Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));
+        Pollution.LOGGER.info("Registered magic energy absorber crafting recipes for {} tiers", count(PollutionMachines.MAGIC_ENERGY_ABSORBER));
+        Pollution.LOGGER.info("Registered flux scrubber crafting recipes for {} tiers", count(PollutionMachines.FLUX_SCRUBBER));
+        Pollution.LOGGER.info("Registered flux fuel cell crafting recipes for {} tiers", count(PollutionMachines.FLUX_FUEL_CELL));
+    }
+
+    private static int count(MachineDefinition[] machines) {
         int tiers = 0;
-        for (MachineDefinition definition : PollutionMachines.VIS_GENERATOR) {
+        for (MachineDefinition definition : machines) {
             if (definition != null) {
                 tiers++;
             }
         }
-        Pollution.LOGGER.info("Registered {} vis generator crafting recipes", tiers);
+        return tiers;
     }
 
     /**
@@ -58,5 +73,56 @@ public final class PollutionRecipes {
                 'A', MOTOR,
                 'B', PISTON,
                 'C', ROTOR);
+    }
+
+    /** Upstream: same pattern as the generator, B = emitter instead of piston. */
+    private static void registerVisProvider(Consumer<FinishedRecipe> provider) {
+        MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.VIS_PROVIDER,
+                "ABA", "CHC", "ABA",
+                'H', HULL,
+                'A', MOTOR,
+                'B', EMITTER,
+                'C', ROTOR);
+    }
+
+    /**
+     * Upstream: pattern {@code "CSC" / "HBH" / "MEM"}. The upstream center piece
+     * {@code BLANKCORE} is a Pollution meta item that is not ported yet, so the
+     * port substitutes a circuit and documents the change.
+     */
+    private static void registerMagicEnergyAbsorber(Consumer<FinishedRecipe> provider) {
+        MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.MAGIC_ENERGY_ABSORBER,
+                "CSC", "HBH", "MEM",
+                'H', HULL,
+                'S', SENSOR,
+                'B', CIRCUIT,
+                'C', CIRCUIT,
+                'M', MOTOR,
+                'E', EMITTER);
+    }
+
+    /** Upstream: same pattern as the absorber, B = sensor, C = rotor. */
+    private static void registerFluxScrubber(Consumer<FinishedRecipe> provider) {
+        MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.FLUX_SCRUBBER,
+                "ABA", "CHC", "ABA",
+                'H', HULL,
+                'A', MOTOR,
+                'B', SENSOR,
+                'C', ROTOR);
+    }
+
+    /**
+     * Upstream: pattern {@code "PBP" / "EHE" / "MCM"}. Center piece
+     * {@code BLANKCORE} substituted by a circuit, same as the absorber.
+     */
+    private static void registerFluxFuelCell(Consumer<FinishedRecipe> provider) {
+        MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.FLUX_FUEL_CELL,
+                "PBP", "EHE", "MCM",
+                'H', HULL,
+                'P', PISTON,
+                'B', CIRCUIT,
+                'C', CIRCUIT,
+                'M', MOTOR,
+                'E', EMITTER);
     }
 }

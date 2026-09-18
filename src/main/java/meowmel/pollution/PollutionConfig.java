@@ -14,6 +14,8 @@ public final class PollutionConfig {
     public static final ForgeConfigSpec.DoubleValue EFFECT_THRESHOLD;
     public static final ForgeConfigSpec.IntValue VIS_GENERATOR_EU_PER_VIS;
     public static final ForgeConfigSpec.DoubleValue VIS_GENERATOR_POLLUTION_MULTIPLIER;
+    public static final ForgeConfigSpec.DoubleValue VIS_PROVIDER_MULTIPLIER;
+    public static final ForgeConfigSpec.DoubleValue FLUX_FUEL_CELL_FLUX_PER_TICK;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -46,6 +48,12 @@ public final class PollutionConfig {
         VIS_GENERATOR_POLLUTION_MULTIPLIER = builder
                 .comment("Pollution added per unit of vis drained.")
                 .defineInRange("visGeneratorPollutionMultiplier", 0.1D, 0.0D, 1000.0D);
+        VIS_PROVIDER_MULTIPLIER = builder
+                .comment("Vis recharged per EU spent by the vis provider (upstream visProviderMultiplier).")
+                .defineInRange("visProviderMultiplier", 0.05D, 0.0D, 100.0D);
+        FLUX_FUEL_CELL_FLUX_PER_TICK = builder
+                .comment("Base flux quanta consumed per operation by the flux promoted fuel cell.")
+                .defineInRange("fluxFuelCellFluxPerTick", 0.005D, 0.0D, 100.0D);
         builder.pop();
 
         SPEC = builder.build();

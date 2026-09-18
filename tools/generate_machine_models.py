@@ -7,9 +7,16 @@ initialisers (they call getExistingFile on GT models). Instead each machine owns
 a small model file in this repository that parents to a GregTech template; the
 parent and textures resolve at runtime from the GTCEu jar.
 
-Current output: vis_generator_<tier>.json for LV..LuV, using GregTech's voltage
-casing textures and the lava boiler front overlay as a placeholder until ported
-Pollution textures exist.
+Covered machines (block model key -> tiers):
+  vis_generator_<tier>            1..6   (LV..LuV)
+  vis_provider_<tier>             1..9   (LV..UHV)
+  magic_energy_absorber_<tier>    1..5
+  flux_scrubber_<tier>            1..5
+  flux_fuel_cell_<tier>           1..5
+  solar_plate_<tier>_<kind>       1..3 x 1..6
+
+All placeholders use GregTech's voltage casing textures and the lava boiler
+front overlay until ported Pollution textures exist.
 """
 
 from __future__ import annotations
@@ -20,13 +27,34 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = PROJECT_ROOT / "src" / "main" / "resources" / "assets" / "pollution" / "models" / "block" / "machine"
 
-TIERS = ["lv", "mv", "hv", "ev", "iv", "luv"]
+TIER_NAMES = {
+    1: "lv",
+    2: "mv",
+    3: "hv",
+    4: "ev",
+    5: "iv",
+    6: "luv",
+    7: "zpm",
+    8: "uv",
+    9: "uhv",
+}
+
+TIERED_MACHINES = {
+    "vis_generator": [1, 2, 3, 4, 5, 6],
+    "vis_provider": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "magic_energy_absorber": [1, 2, 3, 4, 5],
+    "flux_scrubber": [1, 2, 3, 4, 5],
+    "flux_fuel_cell": [1, 2, 3, 4, 5],
+}
+
+SOLAR_TIERS = [1, 2, 3]
+SOLAR_KINDS = [1, 2, 3, 4, 5, 6]
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
 
 
-def machine_model(tier: str) -> dict:
-    casing = f"gtceu:block/casings/voltage/{tier}"
+def machine_model(casing_tier: str) -> dict:
+    casing = f"gtceu:block/casings/voltage/{casing_tier}"
     return {
         "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
@@ -47,12 +75,20 @@ def machine_model(tier: str) -> dict:
     }
 
 
+def write_model(key: str, casing_tier: str) -> None:
+    target = MODEL_DIR / f"{key}.json"
+    target.write_text(json.dumps(machine_model(casing_tier), indent=2) + "\n", encoding="utf-8")
+    print(f"wrote {target.relative_to(PROJECT_ROOT)}")
+
+
 def main() -> int:
     MODEL_DIR.mkdir(parents=True, exist_ok=True)
-    for tier in TIERS:
-        target = MODEL_DIR / f"vis_generator_{tier}.json"
-        target.write_text(json.dumps(machine_model(tier), indent=2) + "\n", encoding="utf-8")
-        print(f"wrote {target.relative_to(PROJECT_ROOT)}")
+    for name, tiers in TIERED_MACHINES.items():
+        for tier in tiers:
+            write_model(f"{name}_{TIER_NAMES[tier]}", TIER_NAMES[tier])
+    for tier in SOLAR_TIERS:
+        for kind in SOLAR_KINDS:
+            write_model(f"solar_plate_{tier}_{kind}", TIER_NAMES[tier])
     return 0
 
 

@@ -41,6 +41,16 @@ public final class Pollution {
             provider.add("pollution.effect.warning", "The polluted air is making you sick");
             provider.add("pollution.machine.vis_generator.tooltip",
                     "Drains Thaumcraft vis to generate EU and industrial pollution");
+            provider.add("pollution.machine.vis_provider.tooltip",
+                    "Consumes EU to recharge the nearest Thaumcraft aura node");
+            provider.add("pollution.machine.magic_energy_absorber.tooltip",
+                    "Generates EU while a dragon egg is placed on top");
+            provider.add("pollution.machine.flux_scrubber.tooltip",
+                    "Consumes EU to scrub Thaumcraft flux in a 16 block radius");
+            provider.add("pollution.machine.flux_fuel_cell.tooltip",
+                    "Burns nearby Thaumcraft flux for EU; explodes above its flux ceiling");
+            provider.add("pollution.machine.solar_plate.tooltip",
+                    "Solar plate MK%s: works in daylight with a per-kind boost condition");
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
