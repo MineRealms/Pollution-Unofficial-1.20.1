@@ -57,6 +57,12 @@ public final class Pollution {
                     "Slowly drains vis from the Thaumcraft 4R network");
             provider.add("pollution.machine.vis_hatch.tooltip.buffer",
                     "Stores %s units per drain");
+            provider.add("pollution.machine.infused_fluid_hatch.tooltip",
+                    "Buffers infused fluids for magic multiblocks");
+            provider.add("pollution.machine.flux_muffler.tooltip.recovery",
+                    "Item recovery chance: %s%%");
+            provider.add("pollution.machine.flux_muffler.tooltip",
+                    "Magically filtered muffler: keeps byproducts out of the environment");
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);

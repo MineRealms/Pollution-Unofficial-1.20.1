@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.api.metatileentity.POMultiblockAbility;
+import meowmel.pollution.common.machine.part.FluxMufflerMachine;
+import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
 import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
@@ -47,9 +50,10 @@ public final class PollutionMachines {
     private static final int SOLAR_PLATE_KINDS = 6;
     /** Upstream registered 14 tiers (LV..MAX); the port covers LV..UHV for now. */
     private static final int[] VIS_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-    /** Custom multiblock ability used to collect vis hatches on a controller. */
-    public static final PartAbility VIS_HATCH_ABILITY = new PartAbility("pollution_vis_hatch");
+    /** Upstream {@code INFUSED_FLUID_HATCH[14]}, covered LV..UHV for now. */
+    private static final int[] INFUSED_FLUID_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    /** Upstream {@code FLUX_MUFFLERS[9]} for tiers LV..UHV. */
+    private static final int[] FLUX_MUFFLER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     public static MachineDefinition[] VIS_GENERATOR;
     public static MachineDefinition[] VIS_PROVIDER;
@@ -59,6 +63,8 @@ public final class PollutionMachines {
     /** Indexed by kind (1..6), each entry by tier index. */
     public static MachineDefinition[][] SOLAR_PLATE;
     public static MachineDefinition[] VIS_HATCH;
+    public static MachineDefinition[] INFUSED_FLUID_HATCH;
+    public static MachineDefinition[] FLUX_MUFFLER;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -185,7 +191,7 @@ public final class PollutionMachines {
                 (tier, builder) -> builder
                         .langValue("%s Vis Hatch".formatted(GTValues.VNF[tier]))
                         .rotationState(RotationState.ALL)
-                        .abilities(VIS_HATCH_ABILITY)
+                        .abilities(POMultiblockAbility.VIS_HATCH)
                         .simpleModel(model("vis_hatch_" + tierName(tier)))
                         .tooltips(
                                 Component.translatable("pollution.machine.vis_hatch.tooltip.capacity",
@@ -194,6 +200,38 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.vis_hatch.tooltip.buffer", tier))
                         .register(),
                 VIS_HATCH_TIERS);
+
+        INFUSED_FLUID_HATCH = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "infused_fluid_hatch",
+                InfusedFluidHatchMachine::new,
+                (tier, builder) -> builder
+                        .langValue("%s Infused Fluid Hatch".formatted(GTValues.VNF[tier]))
+                        .rotationState(RotationState.ALL)
+                        .abilities(POMultiblockAbility.INFUSED_FLUID_HATCH)
+                        .simpleModel(model("infused_fluid_hatch_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+                                        InfusedFluidHatchMachine.getTankCapacity(tier)),
+                                Component.translatable("pollution.machine.infused_fluid_hatch.tooltip"))
+                        .register(),
+                INFUSED_FLUID_HATCH_TIERS);
+
+        FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "flux_muffler",
+                FluxMufflerMachine::new,
+                (tier, builder) -> builder
+                        .langValue("%s Flux Muffler".formatted(GTValues.VNF[tier]))
+                        .rotationState(RotationState.ALL)
+                        .abilities(PartAbility.MUFFLER)
+                        .simpleModel(model("flux_muffler_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("pollution.machine.flux_muffler.tooltip.recovery",
+                                        Math.min((tier - 1) * 10, 100)),
+                                Component.translatable("pollution.machine.flux_muffler.tooltip"))
+                        .register(),
+                FLUX_MUFFLER_TIERS);
     }
 
     private static String tierName(int tier) {
