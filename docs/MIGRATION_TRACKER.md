@@ -690,7 +690,13 @@ Done (4.274s)! For help, type "help"
   自定义 `IndustrialInfusionRecipeLogic`；29 层结构脚本生成
 - 结构生成器：`tools/gen_node_patterns.py`（剥离注释、aisle 原样移植、谓词手写映射；
   已生成 NodeBlastFurnace/NodeFusionReactor/EssenceCollector/IndustrialInfusion/CentralVisTower 5 个结构类）
-- 集中冒烟测试待做（用户要求几批全做完后一次做）
+- **集中冒烟测试（7.5.3，Batch 1-3 一次做完后）通过**：
+  - `Done (5.455s)`；脚本生成的 5 个巨型结构（NodeBlastFurnace/NodeFusionReactor/IndustrialInfusion/
+    EssenceCollector/CentralVisTower）在注册期全部构建成功（尺寸/矩形校验通过）
+  - RCON 验证 8 台新机：`node_blast_furnace`、`luv/zpm/uv_node_fusion_reactor`、`central_vis_tower`、
+    `gt_essence_smelter`、`essence_collector`、`industrial_infusion` 全部可放置，BE 数据正常
+    （`node_blast_furnace` 含完整 `recipeLogic`）
+  - 加上此前 3 台（`node_producer`/`large_node_generator`/`node_washer`），节点/源质/注魔共 13 台全部就位
 - 冒烟测试（7.5.3，重启后）：`pollution:infused_exchange`、`pollution:essence_smelter` 注册并可放置，
   BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
