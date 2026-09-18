@@ -119,8 +119,17 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - `api/unification/PollutionMaterials.java`：已移植材料的字段表（其余类别保持 TODO）
 - `api/unification/materials/ElementMaterials.java`：六要素材料，颜色/形态/图标/元素与环境与原项目逐项一致
 - `api/unification/materials/FirstDegreeMaterials.java`：六种魔法合金，`components` 配比与 `blast(2700, LOW)` 与原项目一致
+- `api/unification/materials/InfusedMaterials.java`：34 个复合要素材料，颜色/形态/组分与原项目逐项一致（上游每个材料的 aspect tooltip 保留为注释）
 - `api/unification/PollutionMaterialEvents.java`：mod bus 事件注册（registry + materials）
 - `loaders/recipes/PollutionRecipes.java`：GT 配方 datagen 钩子（`IGTAddon#addRecipes` 已接线，配方待逐条移植）
+
+**移植中丢弃的旧 API（无法在现代 GT 复现，已确认二进制中不存在）：**
+
+| 旧写法 | 原因 |
+|---|---|
+| `Material#setTooltips(...)` | GTCEu 7.5.3 的 `Material`/`Material.Builder` 均无该方法，aspect 名称改为注释 |
+| `GTQTMaterialFlags.GENERATE_BOULE` | GTQT 私有 flag |
+| 数字材料 ID 段（startId/END_ID） | 7.5.3 使用 `ResourceLocation` 标识 |
 
 **已移植材料对照（颜色/组分逐项来自上游）：**
 
@@ -159,10 +168,14 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 | infused_order | ORDO (4) | `thaumcraft:ordo` |
 | infused_entropy | PERDITIO (5) | `thaumcraft:perditio` |
 
-- 依据：上游 `POAspectToGtFluidList` 的 Aspect→Infused 材料语义；TC4R `VisChannel` 枚举（`aer/terra/ignis/aqua/ordo/perditio`，`VisChannel#aspectId()` 自带 `thaumcraft:` 命名空间）
-- 剩余 29 个复合要素（crystal/metal/life/...）等待对应 Infused 材料移植后加入映射
+- 依据：上游 `POAspectToGtFluidList` 的 Aspect→Infused 材料语义；TC4R 核心要素表
+  （TC4R jar 内 `data/thaumcraft/thaumcraft/aspects/default.json`，48 个要素）
+- 当前映射：**36 个材料**（6 原素 → vis channel；30 复合 → TC4R 要素 id）
+- 4 个上游要素在 TC4R 核心表中不存在，刻意不映射：`ALCHEMY`（无 alkimia）、`SPATIO`/`TEMPUS`/`TINCTURA`（Planar Artifice）
+- 两处 TC4R 命名差异已按 TC4R 表处理：上游 `DESIRE` → `lucrum`，上游 `PROTECT` → `tutamen`；上游 `AVERSION` → `telum`
+- 运行期用 `AspectApi.contains(...)` 逐项校验，缺失会输出 WARN（当前无告警）
 - 调试入口：`/pollution aspects`
-- 运行期证据：`Mapped 6 aspect materials to Thaumcraft 4R vis channels`（runServer 日志）
+- 运行期证据：`Mapped 36 aspect materials to Thaumcraft 4R aspects (6 vis channels)`（runServer 日志）
 
 **资产工具（Python，默认只读）：**
 
@@ -285,3 +298,11 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 映射依据上游 `POAspectToGtFluidList` 语义与 TC4R `VisChannel` 枚举，六要素全部对应
 - 新增调试命令 `/pollution aspects`
 - runServer 复测通过：`Mapped 6 aspect materials ...` → `Done (4.194s)`
+
+### 2026-09-18 — 复合要素材料（34 个）
+- 移植 `InfusedMaterials`：vitreus/victus/mortuus/spiritus/telum/metallum/potentia/instrumentum/
+  permutatio/praecantatio/alchemia/gelum/auram/lux/fabrico/vacuos/motus/vitium/tenebrae/alienis/
+  volatus/herba/machina/vinculum/exanimis/cognitio/sensus/bestia/humanus/lucrum/tutamen/spatium/tempus/tinctura
+- 颜色/形态/1:1 组分与原项目逐项一致；上游 `setTooltips` 无现代等价 API，改为注释记录
+- 映射扩展至 36 项并用 `AspectApi.contains` 运行期校验（36/36 命中，无 WARN）
+- runServer 证据：`Mapped 36 aspect materials to Thaumcraft 4R aspects (6 vis channels)` → `Done (4.451s)`

@@ -7,6 +7,7 @@ import meowmel.pollution.Pollution;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.unification.materials.ElementMaterials;
 import meowmel.pollution.api.unification.materials.FirstDegreeMaterials;
+import meowmel.pollution.api.unification.materials.InfusedMaterials;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -32,7 +33,8 @@ public final class PollutionMaterialEvents {
     public static void onMaterial(MaterialEvent event) {
         ElementMaterials.register();
         FirstDegreeMaterials.register();
+        InfusedMaterials.register();
         PollutionAspectMapping.init();
-        Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 6 aspect alloys");
+        Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 34 compound aspects, 6 aspect alloys");
     }
 }

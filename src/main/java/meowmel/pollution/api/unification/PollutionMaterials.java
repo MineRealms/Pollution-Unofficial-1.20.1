@@ -30,4 +30,41 @@ public final class PollutionMaterials {
     public static Material Terracopper;
     public static Material Ordolead;
     public static Material Perditioaluminium;
+
+    // ---- 复合要素材料 / compound aspect materials --------------------------
+    // Upstream: api/unification/materials/InfusedMaterials.java
+    public static Material InfusedCrystal;
+    public static Material InfusedLife;
+    public static Material InfusedDeath;
+    public static Material InfusedSoul;
+    public static Material InfusedWeapon;
+    public static Material InfusedMetal;
+    public static Material InfusedEnergy;
+    public static Material InfusedInstrument;
+    public static Material InfusedExchange;
+    public static Material InfusedMagic;
+    public static Material InfusedAlchemy;
+    public static Material InfusedCold;
+    public static Material InfusedAura;
+    public static Material InfusedLight;
+    public static Material InfusedCraft;
+    public static Material InfusedVoid;
+    public static Material InfusedMotion;
+    public static Material InfusedTaint;
+    public static Material InfusedDark;
+    public static Material InfusedAlien;
+    public static Material InfusedFly;
+    public static Material InfusedPlant;
+    public static Material InfusedMechanics;
+    public static Material InfusedTrap;
+    public static Material InfusedUndead;
+    public static Material InfusedThought;
+    public static Material InfusedSense;
+    public static Material InfusedAnimal;
+    public static Material InfusedHuman;
+    public static Material InfusedGreed;
+    public static Material InfusedArmor;
+    public static Material InfusedSpatio;
+    public static Material InfusedTempus;
+    public static Material InfusedTinctura;
 }
