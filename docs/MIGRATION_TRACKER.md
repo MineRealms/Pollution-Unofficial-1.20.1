@@ -767,6 +767,38 @@ Done (4.274s)! For help, type "help"
   BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 
+### 5.14 全面审计（2026-09-18，类名匹配重扫）
+
+**总量**：上游 423 个源文件；按类名（去前缀/后缀归一）匹配覆盖 59；未匹配 364。
+未匹配中包含**已功能覆盖但类名不同/合并实现**的部分：
+
+| 域 | 未匹配 | 实际状态 |
+|---|---|---|
+| warpevent | 34 | ✅ 已用 `PollutionWarpEvents`（22 事件）+ `WarpEventHandler`/`FluxWarpManager` 语义覆盖 |
+| recipes | 25 | 部分覆盖：6 个整合配方文件已落地；剩余为 Phase 6（AE2/Botania/Astral）与 GCYM 联动 |
+| items | 19 | 部分覆盖：`PollutionItems` 52 物品；行为层仅 vis_checker（滤芯/护目镜/饰品待做） |
+| single | 5 | 3 台未做（SmallNodeGenerator 现已有节点物品可做；SourceCharge 缺饰品；ManaGenerator 属 Botania） |
+| multiblockpart | 16 | Phase 6（Mana/Blood/Astral/Tarot/无线/BM-HPCA）+ ManaContainer/VisContainer（语义内联） |
+| multiblock/generator | 4 | 涡轮 Handler 与 MultiDanDeLifeOn（Botania）延后 |
+| mixin | 9 | 上游 mixin，多数已因 TC4R 数据驱动而无需；待逐个评估 |
+
+**真正的 TC 侧未完成（下一阶段候选）**：
+
+| 域 | 数量 | 内容 |
+|---|---|---|
+| blocks | 55 | 血肉植物/彩虹树/触手/邪术之眼/传送门/矿物提取机等（含 TileEntity 方块） |
+| entities | 28 | Basalz/Blitz/Blizz（神秘时代生物）及其他实体 |
+| api | 59 | amplification（增幅系统）、astral、capability 剩余、pattern、utils |
+| client | 25 | POTextures 正式贴图、GUI、TESR、JEI 分类、要素储罐组件 |
+| dimension | 47 | 维度与世界生成（Phase 7） |
+| multiblock/other | 21 | Starstream/星辉/BM-HPCA 等 Phase 6 机器（部分为已做机器的改名匹配） |
+
+**Phase 6/7 既定延期**：Botania（~25）、Astral（~20）、Blood（~10）、Starstream（~10）、
+AE2（33 配方 + 机器）、TC 附属（5）、维度/世界生成/实体资产。
+
+**近期可做（TC 侧收尾）**：SmallNodeGenerator（节点物品已就绪）→ 物品行为层（滤芯/护目镜/饰品）→
+MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块增强）→ 客户端表现层。
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
