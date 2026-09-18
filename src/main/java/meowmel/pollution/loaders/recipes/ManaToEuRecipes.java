@@ -19,21 +19,25 @@ import java.util.function.Consumer;
  *
  * <p><b>Material substitutions:</b> {@code GTQTMaterials.Mana} maps to
  * {@link PollutionMaterials#InfusedAura}, the mapping already used by
- * {@code AERecipes} and {@code NodeFusionRecipes}. The other six upstream mana
- * fluids (Impuremana, WhiteMansus, BlackMansus, Starrymansus, RichAura,
+ * {@code AERecipes} and {@code NodeFusionRecipes}. {@code Impuremana} is a
+ * real port material now and gets its own fuel entry (3 ticks). The other five
+ * upstream mana fluids (WhiteMansus, BlackMansus, Starrymansus, RichAura,
  * ErichAura) are not ported; registering them all against the single ported
  * mana fluid would collapse into duplicate fuel entries, so they are skipped
  * and documented.</p>
  *
  * <p><b>Config inlining:</b> the upstream natural-mana default was
- * 8192 EU per mB, giving {@code (int)(100 * 8192 / 8192) = 100} ticks. The
- * port keeps that constant; the other defaults were 256/256/512/1024/2048/32768
- * EU per mB (3/3/6/12/25/400 ticks) and belong to the skipped fluids.</p>
+ * 8192 EU per mB, giving {@code (int)(100 * 8192 / 8192) = 100} ticks, and the
+ * Impuremana default 256 EU per mB gives 3 ticks. The other defaults were
+ * 256/512/1024/2048/32768 EU per mB (3/6/12/25/400 ticks) and belong to the
+ * skipped fluids.</p>
  */
 public final class ManaToEuRecipes {
 
     /** Upstream default burn time of 100 mB natural mana at 8192 EU/t. */
     private static final int MANA_FUEL_DURATION = 100;
+    /** Upstream default burn time of 100 mB impure mana at 8192 EU/t. */
+    private static final int IMPURE_MANA_FUEL_DURATION = 3;
 
     private ManaToEuRecipes() {}
 
@@ -44,8 +48,14 @@ public final class ManaToEuRecipes {
                 .EUt(-8192)
                 .save(provider);
 
-        Pollution.LOGGER.info("[botania] MANA_TO_EU: 1/7 upstream fuels ported; 6 skipped "
-                + "(Impuremana/WhiteMansus/BlackMansus/Starrymansus/RichAura/ErichAura unported)");
+        GTRecipeBuilder.of(id("impuremana"), BotaniaRecipeMaps.MANA_TO_EU)
+                .inputFluids(PollutionMaterials.Impuremana.getFluid(100))
+                .duration(IMPURE_MANA_FUEL_DURATION)
+                .EUt(-8192)
+                .save(provider);
+
+        Pollution.LOGGER.info("[botania] MANA_TO_EU: 2/7 upstream fuels ported; 5 skipped "
+                + "(WhiteMansus/BlackMansus/Starrymansus/RichAura/ErichAura unported)");
     }
 
     private static ResourceLocation id(String path) {

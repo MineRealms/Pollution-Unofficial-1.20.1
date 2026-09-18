@@ -31,6 +31,20 @@ public final class PollutionMaterials {
     public static Material Ordolead;
     public static Material Perditioaluminium;
 
+    // 魔力/超导链（FirstDegreeMaterials 第二批）
+    public static Material Impuremana;
+    public static Material KQGold;
+    public static Material CrudeLk99;
+    public static Material MagicalSuperconductiveLiquid;
+    public static Material BasicThaumicSuperconductor;
+    public static Material AdvancedThaumicSuperconductor;
+
+    // 感知/缚束/枢金属（ElementMaterials 第二批）
+    public static Material SentientMetal;
+    public static Material BindingMetal;
+    public static Material ExistingNexus;
+    public static Material FadingNexus;
+
     // ---- 复合要素材料 / compound aspect materials --------------------------
     // Upstream: api/unification/materials/InfusedMaterials.java
     public static Material InfusedCrystal;
@@ -100,8 +114,61 @@ public final class PollutionMaterials {
     public static Material SuperStickyTar;
     public static Material DimensionalTransformingAgent;
 
-    // Minimal MagicIntegrationMaterials subset for a previously skipped recipe
+    // SecondDegreeMaterials second batch: filth / battery / kqt chains
+    public static Material Filth;
+    public static Material FilthWater;
+    public static Material VoidWater;
+    public static Material VoidMaterial;
+    public static Material BasicBatteryHullAlloy;
+    public static Material AdvancedBatteryHullAlloy;
+    public static Material BasicBatteryContent;
+    public static Material AdvancedBatteryContent;
+    public static Material MagicalSulfoPlumbicSalt;
+    public static Material AlchemicalResidue1;
+    public static Material AlchemicalVapor1;
+    public static Material AlchemicalResidue2;
+    public static Material AlchemicalVapor2;
+    public static Material AlchemicalResidue3;
+    public static Material AlchemicalVapor3;
+    public static Material AlchemicalResidue4;
+    public static Material AlchemicalVapor4;
+    public static Material AlchemicalResidue5;
+    public static Material AlchemicalVapor5;
+    public static Material AlchemicalResidue6;
+    public static Material AlchemicalVapor6;
+    public static Material MagicalTinSolution;
+    public static Material MagicalStannousSulfateSolution;
+    public static Material HighmanaStannousSulfate;
+    public static Material ImpureMercuricSaltSolution;
+    public static Material MercuricSaltSolution;
+    public static Material MagicActivatedIronChlorideSolution;
+    public static Material MagicActivatedFerrousChlorideEthanolSolution;
+    public static Material PurifiedActivatedFerrousChlorideEthanolSolution;
+    public static Material PurifiedActivatedFerrousChloride;
+    public static Material SyrmoriteDopedMagicWaterSolution;
+    public static Material UnformedEmbryoMagicWater;
+    public static Material EmbryoMagicWater;
+    public static Material UnstableDimensionalSilver;
+    public static Material ImpureHyperdimensionalSilver;
+    public static Material HyperdimensionalSilver;
+    public static Material FerrousChloride;
+
+    // SecondDegreeMaterials hachimi chain
+    public static Material HydrazoicAcid;
+    public static Material SodiumAzide;
+    public static Material SodiumCyclopentadienide;
+    public static Material HafnoceneDichloride;
+    public static Material uOxoBisHafnoceneAzide;
+
+    // HigherDegreeMaterials (upstream: api/unification/materials/HigherDegreeMaterials.java)
+    public static Material AethericDarkSteel;
+    public static Material IizunamaruElectrum;
+
+    // Minimal MagicIntegrationMaterials subset for previously skipped recipes
     // (upstream: api/unification/materials/MagicIntegrationMaterials.java)
+    public static Material OpticalGradeAquamarine;
+    public static Material StarlightPollen;
+    public static Material MoonlightResin;
     public static Material ArcaneInk;
 
     // Substrate / catalyst chemistry (ThaumcraftRecipes chain)

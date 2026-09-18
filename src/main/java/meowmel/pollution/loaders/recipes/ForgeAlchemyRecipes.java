@@ -49,21 +49,20 @@ import java.util.function.Consumer;
  *   <li>// 上游: Manasteel -&gt; 本移植版: GTNN ManaSteel</li>
  *   <li>// 上游: GTQT Thaumium -&gt; 本移植版: StainlessSteel</li>
  *   <li>// 上游: Mansussteel -&gt; 本移植版: HSSG</li>
- *   <li>// 上游: HyperdimensionalSilver -&gt; 本移植版: NaquadahAlloy</li>
- *   <li>// 上游: KQGold -&gt; 本移植版: TungstenSteel</li>
- *   <li>// 上游: IizunamaruElectrum -&gt; 本移植版: Electrum</li>
- *   <li>// 上游: AethericDarkSteel -&gt; 本移植版: HSSG</li>
+ *   <li>// 上游: BloodOfAvernus -&gt; 本移植版: TungstenSteel</li>
  *   <li>// 上游: GTQT VoidMetal -&gt; 本移植版: TC4R void ingot</li>
- *   <li>// 上游: SentientMetal -&gt; 本移植版: GTNN Elementium（活体金属位）</li>
- *   <li>// 上游: BindingMetal / BloodOfAvernus -&gt; 本移植版: TungstenSteel</li>
- *   <li>// 上游: ExistingNexus -&gt; 本移植版: GTNN Infinity</li>
- *   <li>// 上游: FadingNexus -&gt; 本移植版: NaquadahAlloy</li>
  *   <li>Upstream meta-item philosopher stones (damage 150/151/152/153) are the
  *       port's plain items {@code stone_of_philosopher_1..4}; recipes are
  *       skipped when the item is absent.</li>
  *   <li>GTNN ManaSteel/TerraSteel/Elementium only carry {@code ingot/fluid}, so
  *       the upstream dust inputs use ingots.</li>
  * </ul>
+ *
+ * <p>Real materials (no longer substituted): {@code SentientMetal},
+ * {@code BindingMetal}, {@code ExistingNexus}, {@code FadingNexus},
+ * {@code AethericDarkSteel}, {@code IizunamaruElectrum},
+ * {@code HyperdimensionalSilver} and {@code KQGold} are ported and used
+ * directly by the stone upgrades and the catalyst transmutations.</p>
  *
  * <p>Still skipped: the BloodOfAvernus transmutation needs Blood Magic life
  * essence, which is not in the pack.</p>
@@ -225,15 +224,15 @@ public final class ForgeAlchemyRecipes {
         ItemStack stone3 = philosopherStone(3);
         ItemStack stone4 = philosopherStone(4);
 
-        // 二级贤者之石
+        // 二级贤者之石（Terrasteel -> GTNN TerraSteel；HyperdimensionalSilver/KQGold 为真实材料）
         if (!stone1.isEmpty() && !stone2.isEmpty() && aura(299997) != null) {
             GTRecipeBuilder.of(id("stone_upgrade_2"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(aura(299997))
                     .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(9999))
                     .inputItems(stone1)
                     .inputItems(ingot(GTNNMaterials.TerraSteel, 64))
-                    .inputItems(dust(GTMaterials.NaquadahAlloy, 64))
-                    .inputItems(dust(GTMaterials.TungstenSteel, 64))
+                    .inputItems(dust(PollutionMaterials.HyperdimensionalSilver, 64))
+                    .inputItems(dust(PollutionMaterials.KQGold, 64))
                     .chancedOutput(stone2.copyWithCount(1), 5000, 0)
                     .blastFurnaceTemp(5400)
                     .duration(19980)
@@ -241,16 +240,16 @@ public final class ForgeAlchemyRecipes {
                     .save(provider);
         }
 
-        // 三级贤者之石（SentientMetal -> GTNN Elementium，BindingMetal -> TungstenSteel）
+        // 三级贤者之石（SentientMetal/BindingMetal 为真实材料；BloodOfAvernus -> TungstenSteel）
         if (!stone2.isEmpty() && !stone3.isEmpty() && aura(399998) != null
-                && hasFluid(GTNNMaterials.Elementium)) {
+                && hasFluid(PollutionMaterials.SentientMetal) && hasFluid(PollutionMaterials.BindingMetal)) {
             GTRecipeBuilder.of(id("stone_upgrade_3"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(aura(399998))
-                    .inputFluids(GTNNMaterials.Elementium.getFluid(99999))
-                    .inputFluids(GTMaterials.TungstenSteel.getFluid(99999))
+                    .inputFluids(PollutionMaterials.SentientMetal.getFluid(99999))
+                    .inputFluids(PollutionMaterials.BindingMetal.getFluid(99999))
                     .inputItems(stone2)
-                    .inputItems(dust(GTMaterials.Electrum, 64))
-                    .inputItems(dust(GTMaterials.HSSG, 64))
+                    .inputItems(dust(PollutionMaterials.IizunamaruElectrum, 64))
+                    .inputItems(dust(PollutionMaterials.AethericDarkSteel, 64))
                     .inputItems(dust(GTMaterials.TungstenSteel, 64))
                     .chancedOutput(stone3.copyWithCount(1), 2500, 0)
                     .blastFurnaceTemp(7200)
@@ -259,16 +258,17 @@ public final class ForgeAlchemyRecipes {
                     .save(provider);
         }
 
-        // 四级贤者之石（ExistingNexus -> GTNN Infinity，FadingNexus -> NaquadahAlloy）
+        // 四级贤者之石（ExistingNexus/FadingNexus 为真实材料）
         if (!stone3.isEmpty() && !stone4.isEmpty() && aura(1999998) != null
-                && hasFluid(GTNNMaterials.Infinity) && hasFluid(GTMaterials.NaquadahAlloy)) {
+                && hasFluid(PollutionMaterials.ExistingNexus)
+                && hasFluid(PollutionMaterials.FadingNexus)) {
             GTRecipeBuilder.of(id("stone_upgrade_4"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(aura(1999998))
-                    .inputFluids(GTNNMaterials.Infinity.getFluid(99999))
-                    .inputFluids(GTMaterials.NaquadahAlloy.getFluid(99999))
+                    .inputFluids(PollutionMaterials.ExistingNexus.getFluid(99999))
+                    .inputFluids(PollutionMaterials.FadingNexus.getFluid(99999))
                     .inputItems(stone3)
-                    .inputItems(ingot(GTNNMaterials.Elementium, 64))
-                    .inputItems(dust(GTMaterials.TungstenSteel, 64))
+                    .inputItems(dust(PollutionMaterials.SentientMetal, 64))
+                    .inputItems(dust(PollutionMaterials.BindingMetal, 64))
                     .inputItems(dust(GTMaterials.Neutronium, 64))
                     .chancedOutput(stone4.copyWithCount(1), 1000, 0)
                     .blastFurnaceTemp(10800)
@@ -341,28 +341,28 @@ public final class ForgeAlchemyRecipes {
                     .EUt(7680)
                     .save(provider);
 
-            // 超次元秘银（HyperdimensionalSilver -> NaquadahAlloy）
+            // 超次元秘银（HyperdimensionalSilver 为真实材料）
             GTRecipeBuilder.of(id("catalyst/hyperdimensional_silver"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
                     .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
                     .inputFluids(aura(4000))
                     .inputItems(dust(GTMaterials.Silver, 4))
                     .notConsumable(stone2.copy())
-                    .outputFluids(GTMaterials.NaquadahAlloy.getFluid(FLUID_AMOUNT))
+                    .outputFluids(PollutionMaterials.HyperdimensionalSilver.getFluid(FLUID_AMOUNT))
                     .circuitMeta(20)
                     .blastFurnaceTemp(4500)
                     .duration(10000)
                     .EUt(7680)
                     .save(provider);
 
-            // 刻金（KQGold -> TungstenSteel）
+            // 刻金（KQGold 为真实材料）
             GTRecipeBuilder.of(id("catalyst/kq_gold"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
                     .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
                     .inputFluids(aura(4000))
                     .inputItems(dust(GTMaterials.Gold, 4))
                     .notConsumable(stone2.copy())
-                    .outputFluids(GTMaterials.TungstenSteel.getFluid(FLUID_AMOUNT))
+                    .outputFluids(PollutionMaterials.KQGold.getFluid(FLUID_AMOUNT))
                     .circuitMeta(20)
                     .blastFurnaceTemp(4500)
                     .duration(10000)
@@ -415,22 +415,23 @@ public final class ForgeAlchemyRecipes {
                     .EUt(7680)
                     .save(provider);
 
-            // 光风霁月琥珀金（IizunamaruElectrum -> Electrum）
+            // 光风霁月琥珀金（IizunamaruElectrum 为真实材料；Starrymansus/Mana -> InfusedAura）
             GTRecipeBuilder.of(id("catalyst/iizunamaru_electrum"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
                     .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
                     .inputFluids(aura(11000))
-                    .inputItems(dust(GTMaterials.NaquadahAlloy, 8))
-                    .inputItems(dust(GTMaterials.TungstenSteel, 8))
+                    .inputItems(dust(PollutionMaterials.HyperdimensionalSilver, 8))
+                    .inputItems(dust(PollutionMaterials.KQGold, 8))
                     .notConsumable(stone2.copy())
-                    .outputFluids(GTMaterials.Electrum.getFluid(1152))
+                    .outputFluids(PollutionMaterials.IizunamaruElectrum.getFluid(1152))
                     .circuitMeta(21)
                     .blastFurnaceTemp(7200)
                     .duration(12000)
                     .EUt(30720)
                     .save(provider);
 
-            // 太虚玄钢（VoidMetal -> TC4R void ingot，ElvenElementium -> GTNN Elementium，AethericDarkSteel -> HSSG）
+            // 太虚玄钢（AethericDarkSteel 为真实材料；VoidMetal -> TC4R void ingot，
+            // ElvenElementium -> GTNN Elementium）
             GTRecipeBuilder.of(id("catalyst/aetheric_dark_steel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
                     .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
                     .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
@@ -438,7 +439,7 @@ public final class ForgeAlchemyRecipes {
                     .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
                     .inputItems(ingot(GTNNMaterials.Elementium, 8))
                     .notConsumable(stone2.copy())
-                    .outputFluids(GTMaterials.HSSG.getFluid(1152))
+                    .outputFluids(PollutionMaterials.AethericDarkSteel.getFluid(1152))
                     .circuitMeta(21)
                     .blastFurnaceTemp(7200)
                     .duration(12000)

@@ -1,13 +1,23 @@
 package meowmel.pollution.api.unification.materials;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.api.unification.PollutionElements;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.DECOMPOSITION_BY_CENTRIFUGING;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_GEAR;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_LONG_ROD;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_PLATE;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_ROD;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_ROTOR;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_ROUND;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_SMALL_GEAR;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Aluminium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Bauxite;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Boron;
@@ -20,6 +30,8 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Lithium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Magnesium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Manganese;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Mercury;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Oxygen;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.Phosphate;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Silicon;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Silver;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Steel;
@@ -27,12 +39,27 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Thorium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Tin;
 
 /**
- * The six aspect alloys used by the magic multiblock parts.
+ * The six aspect alloys used by the magic multiblock parts, plus the magic
+ * superconductor chain.
  *
  * <p>Ported from upstream {@code meowmel.pollution.api.unification.materials.FirstDegreeMaterials}
  * (colors, component ratios and blast temperature are unchanged). Upstream depended on
  * GTQT-only materials for later entries of the same class; those stay TODO until the
  * magic lines they belong to are ported.</p>
+ *
+ * <p>The second batch ports {@code Impuremana}, {@code KQGold},
+ * {@code CrudeLk99}, {@code MagicalSuperconductiveLiquid} and the two
+ * thaumic superconductors. Adaptations to GTCEu 7.5.3:</p>
+ * <ul>
+ *   <li>{@code KQGold}'s tool/rotor stats are dropped (the modern
+ *       {@code ToolProperty.Builder} values cannot be transplanted 1:1, see
+ *       {@link OreMaterials}); cable and fluid-pipe properties are kept.</li>
+ *   <li>Upstream {@code .ingot()} implied a dust form in 1.12; GTCEu Modern
+ *       does not, so {@code KQGold} and {@code CrudeLk99} request
+ *       {@code .dust()} explicitly (the upstream recipes consume the dust).</li>
+ *   <li>The superconductors carry {@code GENERATE_PLATE} because the battery
+ *       chain consumes their plate form.</li>
+ * </ul>
  */
 public final class FirstDegreeMaterials {
 
@@ -97,6 +124,63 @@ public final class FirstDegreeMaterials {
                 .iconSet(MaterialIconSet.SHINY)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .blast(2700, GasTier.LOW)
+                .buildAndRegister();
+
+        // ---- 魔力/超导链（第二轮移植）---------------------------------------
+
+        // 不纯魔力 Impuremana
+        PollutionMaterials.Impuremana = new Material.Builder(id("impuremana"))
+                .color(0x008B8B)
+                .fluid()
+                .iconSet(MaterialIconSet.DULL)
+                .buildAndRegister();
+
+        // 刻金 KQGold（上游 toolStats/rotorStats 因现代 API 差异跳过；
+        // 上游 id "Keqinggold" 含大写，1.20.1 ResourceLocation 要求全小写）
+        PollutionMaterials.KQGold = new Material.Builder(id("keqinggold"))
+                .color(0xFCF770)
+                .fluid().ingot().dust().plasma()
+                .iconSet(MaterialIconSet.SHINY)
+                .fluidPipeProperties(6000, 400, true)
+                .cableProperties(GTValues.V[6], 16, 2)
+                .element(PollutionElements.Kqt)
+                .flags(GENERATE_PLATE, GENERATE_ROTOR, GENERATE_ROD, GENERATE_LONG_ROD, GENERATE_FRAME,
+                        GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_ROUND)
+                .blast(3600, GasTier.MID)
+                .buildAndRegister();
+
+        // LK-99 粗胚 CrudeLk99
+        PollutionMaterials.CrudeLk99 = new Material.Builder(id("crude_lk_99"))
+                .color(0x808080)
+                .ingot().dust().fluid()
+                .components(Lead, 6, Copper, 4, Phosphate, 6, Oxygen, 1)
+                .flags(DECOMPOSITION_BY_CENTRIFUGING)
+                .iconSet(MaterialIconSet.BRIGHT)
+                .blast(2700)
+                .buildAndRegister();
+
+        // 灌魔超导液 MagicalSuperconductiveLiquid
+        PollutionMaterials.MagicalSuperconductiveLiquid = new Material.Builder(id("magical_superconductive_liquid"))
+                .color(0x9C039C)
+                .fluid()
+                .buildAndRegister();
+
+        // 初阶神秘超导体 BasicThaumicSuperconductor
+        PollutionMaterials.BasicThaumicSuperconductor = new Material.Builder(id("basic_thaumic_superconductor"))
+                .color(0xC6B3C6)
+                .ingot().fluid()
+                .iconSet(MaterialIconSet.BRIGHT)
+                .flags(GENERATE_PLATE)
+                .cableProperties(GTValues.V[4], 8, 0, true)
+                .buildAndRegister();
+
+        // 高阶神秘超导体 AdvancedThaumicSuperconductor
+        PollutionMaterials.AdvancedThaumicSuperconductor = new Material.Builder(id("advanced_thaumic_superconductor"))
+                .color(0xDDFF6E)
+                .ingot().fluid()
+                .iconSet(MaterialIconSet.BRIGHT)
+                .flags(GENERATE_PLATE)
+                .cableProperties(GTValues.V[8], 8, 0, true)
                 .buildAndRegister();
     }
 

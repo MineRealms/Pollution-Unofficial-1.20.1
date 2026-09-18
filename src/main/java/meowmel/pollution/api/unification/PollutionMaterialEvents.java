@@ -38,11 +38,12 @@ public final class PollutionMaterialEvents {
         meowmel.pollution.api.unification.materials.SubstrateMaterials.register();
         meowmel.pollution.api.unification.materials.OreMaterials.register();
         meowmel.pollution.api.unification.materials.SecondDegreeMaterials.register();
+        meowmel.pollution.api.unification.materials.HigherDegreeMaterials.register();
         meowmel.pollution.api.unification.materials.MagicIntegrationMaterials.register();
         meowmel.pollution.api.unification.materials.MaterialPropertyAddition.init();
         PollutionAspectMapping.init();
         TCAspectAddons.init();
-        Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 34 compound aspects, "
-                + "6 aspect alloys, 11 ore materials");
+        Pollution.LOGGER.info("Registered Pollution materials: 6 base aspects, 4 nexus metals, 34 compound aspects, "
+                + "6 aspect alloys, 11 ore materials, kqt/superconductor/battery/filth/hachimi intermediates");
     }
 }

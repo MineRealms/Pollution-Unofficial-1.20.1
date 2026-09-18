@@ -41,8 +41,9 @@ import java.util.function.Consumer;
  * <p><b>Material substitutions</b>: Manasteel -&gt; {@code GTNNMaterials.ManaSteel},
  * Thaumium -&gt; StainlessSteel, Mansussteel -&gt; HSSG, KQGold -&gt; TungstenSteel,
  * HyperdimensionalSilver -&gt; NaquadahAlloy, Terrasteel -&gt; TungstenSteel,
- * ElvenElementium -&gt; NaquadahAlloy, BloodOfAvernus -&gt; TungstenSteel,
- * Impuremana -&gt; InfusedAura (see the task substitution table).</p>
+ * ElvenElementium -&gt; NaquadahAlloy, BloodOfAvernus -&gt; TungstenSteel.
+ * {@code Impuremana} is a real port material now and is used directly by the
+ * mana mixers (see the task substitution table).</p>
  *
  * <p><b>Modern API substitutions</b></p>
  * <ul>
@@ -293,8 +294,8 @@ public final class MagicGCYMRecipes {
             Pollution.LOGGER.warn("Skipping magic_gcym/thaumium_simplified: StainlessSteel has no fluid");
         }
 
-        // 不纯魔力搅拌（Impuremana -> InfusedAura）
-        FluidStack impureMana = fluid(PollutionMaterials.InfusedAura, 48);
+        // 不纯魔力搅拌（Impuremana 为真实材料）
+        FluidStack impureMana = fluid(PollutionMaterials.Impuremana, 48);
         if (impureMana != null) {
             impureMana(provider, "order_entropy", PollutionMaterials.InfusedOrder,
                     PollutionMaterials.InfusedEntropy, impureMana);
@@ -303,22 +304,22 @@ public final class MagicGCYMRecipes {
             impureMana(provider, "fire_water", PollutionMaterials.InfusedFire,
                     PollutionMaterials.InfusedWater, impureMana);
         } else {
-            Pollution.LOGGER.warn("Skipping the magic_gcym Impuremana mixer group: InfusedAura has no fluid");
+            Pollution.LOGGER.warn("Skipping the magic_gcym Impuremana mixer group: Impuremana has no fluid");
         }
 
-        // 不纯魔力 + 铁粉 -> 魔力钢锭
-        FluidStack mana = fluid(PollutionMaterials.InfusedAura, 144);
-        if (mana != null) {
+        // 不纯魔力 + 铁粉 -> 魔力钢锭（上游: Manasteel -> GTNN ManaSteel）
+        FluidStack impureMana144 = fluid(PollutionMaterials.Impuremana, 144);
+        if (impureMana144 != null) {
             GTRecipeBuilder.of(id("manasteel_ingot"), GTRecipeTypes.BLAST_RECIPES)
                     .inputItems(dust(GTMaterials.Iron, 1))
-                    .inputFluids(mana)
+                    .inputFluids(impureMana144)
                     .outputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 1))
                     .blastFurnaceTemp(1800)
                     .duration(400)
                     .EUt(GTValues.VA[GTValues.LV])
                     .save(provider);
         } else {
-            Pollution.LOGGER.warn("Skipping magic_gcym/manasteel_ingot: InfusedAura has no fluid");
+            Pollution.LOGGER.warn("Skipping magic_gcym/manasteel_ingot: Impuremana has no fluid");
         }
 
         // 世界盐搅拌
@@ -842,8 +843,9 @@ public final class MagicGCYMRecipes {
 
     /**
      * 高级魔导组件。上游带 Astral 条件；整合包无 Astral Sorcery，这里改为
-     * 等价的魔导组装机配方（条件不生效）。// 上游: IizunamaruElectrum ->
-     * Electrum，AethericDarkSteel -> HSSG，BloodOfAvernus -> TungstenSteel，
+     * 等价的魔导组装机配方（条件不生效）。IizunamaruElectrum /
+     * AethericDarkSteel / SentientMetal / BindingMetal / HyperdimensionalSilver
+     * 现为真实材料。// 上游: BloodOfAvernus -> TungstenSteel，
      * GTQT VoidMetal -> TC4R void ingot，ItemsTC.causalityCollapser ->
      * PRIMORDIAL_PEARL，Starrymansus/BlackMansus/WhiteMansus -> InfusedAura。
      */
@@ -861,10 +863,10 @@ public final class MagicGCYMRecipes {
 
         // 理式核心
         GTRecipeBuilder.of(id("component/core_of_idea"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ChemicalHelper.get(TagPrefix.rodLong, GTMaterials.HSSG, 2))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1))
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.Electrum, 8))
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.Electrum, 4))
+                .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.AethericDarkSteel, 2))
+                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, PollutionMaterials.AethericDarkSteel, 1))
+                .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.IizunamaruElectrum, 8))
+                .inputItems(ChemicalHelper.get(TagPrefix.gear, PollutionMaterials.IizunamaruElectrum, 4))
                 .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get(), 16))
                 .inputItems(new ItemStack(TCItems.ESSENTIA_RESONATOR.get(), 16))
                 .inputItems(GTItems.FIELD_GENERATOR_LuV.asStack())
@@ -874,14 +876,14 @@ public final class MagicGCYMRecipes {
                 .EUt(30720)
                 .save(provider);
 
-        // 自动反诘装置
+        // 自动反诘装置（BloodOfAvernus -> TungstenSteel）
         ItemStack autoElenchus = item("auto_elenchus_device");
         if (!autoElenchus.isEmpty()) {
             GTRecipeBuilder.of(id("component/auto_elenchus"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 6))
                     .inputItems(ChemicalHelper.get(TagPrefix.gearSmall, GTMaterials.TungstenSteel, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, GTMaterials.Electrum, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.rod, GTMaterials.HSSG, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.IizunamaruElectrum, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rod, PollutionMaterials.AethericDarkSteel, 4))
                     .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
                     .inputItems(coreOfIdea.copyWithCount(2))
                     .inputItems(GTItems.ELECTRIC_PISTON_LuV.asStack(2))
@@ -893,15 +895,15 @@ public final class MagicGCYMRecipes {
                     .save(provider);
         }
 
-        // 太一燃素瓶
+        // 太一燃素瓶（BloodOfAvernus -> TungstenSteel）
         ItemStack bottle = item("bottle_of_phlogistonic_oneness");
         FluidStack fire = fluid(PollutionMaterials.InfusedFire, 64000);
         if (!bottle.isEmpty() && fire != null) {
             GTRecipeBuilder.of(id("component/phlogistonic_bottle"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(ChemicalHelper.get(TagPrefix.rotor, GTMaterials.Electrum, 2))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rotor, PollutionMaterials.IizunamaruElectrum, 2))
                     .inputItems(ChemicalHelper.get(TagPrefix.gearSmall, GTMaterials.TungstenSteel, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.ring, GTMaterials.Electrum, 32))
-                    .inputItems(ChemicalHelper.get(TagPrefix.screw, GTMaterials.HSSG, 12))
+                    .inputItems(ChemicalHelper.get(TagPrefix.ring, PollutionMaterials.IizunamaruElectrum, 32))
+                    .inputItems(ChemicalHelper.get(TagPrefix.screw, PollutionMaterials.AethericDarkSteel, 12))
                     .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
                     .inputItems(coreOfIdea.copyWithCount(2))
                     .inputItems(new ItemStack(TCItems.PRIMORDIAL_PEARL.get(), 4))
@@ -914,13 +916,13 @@ public final class MagicGCYMRecipes {
                     .save(provider);
         }
 
-        // 四因阐释器
+        // 四因阐释器（BloodOfAvernus -> TungstenSteel）
         ItemStack elucidator = item("elucidator_of_four_causes");
         if (!elucidator.isEmpty() && !autoElenchus.isEmpty()) {
             GTRecipeBuilder.of(id("component/elucidator"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.Electrum, 16))
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.IizunamaruElectrum, 16))
                     .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 16))
-                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSSG, 16))
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.AethericDarkSteel, 16))
                     .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 16))
                     .inputItems(new ItemStack(TCItems.PRIMORDIAL_PEARL.get(), 4))
                     .inputItems(GTItems.ROBOT_ARM_LuV.asStack(2))
@@ -934,27 +936,30 @@ public final class MagicGCYMRecipes {
                     .save(provider);
         }
 
-        // 意志数据链（上游 SentientMetal -> Elementium，BindingMetal -> TungstenSteel）
+        // 意志数据链（SentientMetal/BindingMetal 为真实材料；
+        // VoidMetal -> TC4R void ingot）
         ItemStack dataLink = item("symptomatic_vis_data_link");
         if (!dataLink.isEmpty() && !bottle.isEmpty()) {
             GTRecipeBuilder.of(id("component/vis_data_link"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(ChemicalHelper.get(TagPrefix.plateDouble, GTMaterials.Electrum, 16))
-                    .inputItems(ChemicalHelper.get(TagPrefix.plateDouble, GTMaterials.HSSG, 16))
-                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, GTMaterials.HSSG, 8))
+                    .inputItems(ChemicalHelper.get(TagPrefix.plateDouble,
+                            PollutionMaterials.IizunamaruElectrum, 16))
+                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 16))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.AethericDarkSteel, 8))
                     .inputItems(GTItems.SENSOR_ZPM.asStack())
                     .inputItems(GTItems.EMITTER_ZPM.asStack())
                     .inputItems(coreOfIdea.copyWithCount(2))
                     .inputItems(bottle.copy())
                     .inputFluids(fluid(PollutionMaterials.DimensionalTransformingAgent, 8000))
-                    .inputFluids(fluid(GTNNMaterials.Elementium, 1440))
-                    .inputFluids(fluid(GTMaterials.TungstenSteel, 1440))
+                    .inputFluids(fluid(PollutionMaterials.SentientMetal, 1440))
+                    .inputFluids(fluid(PollutionMaterials.BindingMetal, 1440))
                     .outputItems(dataLink.copy())
                     .duration(400)
                     .EUt(122880)
                     .save(provider);
         }
 
-        // 中控塔（上游 ErichAura -> InfusedAura，ItemsTC.morphicResonator -> NODE_TRANSDUCER）
+        // 中控塔（上游 ErichAura -> InfusedAura，HyperdimensionalSilver 为真实材料，
+        // ItemsTC.morphicResonator -> NODE_TRANSDUCER）
         if (!dataLink.isEmpty() && PollutionMachines.BOT_GAS_COLLECTOR != null
                 && PollutionMachines.FLUX_SCRUBBER != null && PollutionMachines.FLUX_SCRUBBER.length > 1
                 && PollutionMachines.FLUX_SCRUBBER[1] != null) {
@@ -964,7 +969,8 @@ public final class MagicGCYMRecipes {
                     .inputItems(GTMultiMachines.CENTRAL_MONITOR)
                     .inputItems(PollutionMagicBlocks.MANA_BASIC.asStack(4))
                     .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get(), 64))
-                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 16))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt,
+                            PollutionMaterials.HyperdimensionalSilver, 16))
                     .inputItems(GTItems.EMITTER_LuV.asStack(8))
                     .inputItems(GTItems.SENSOR_LuV.asStack(8))
                     .inputItems(GTItems.FIELD_GENERATOR_LuV.asStack(4))

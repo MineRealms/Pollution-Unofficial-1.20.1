@@ -41,10 +41,12 @@ import java.util.function.Consumer;
  * <p><b>Material substitutions</b> (kept consistent with
  * {@code NodeFusionRecipes}, {@code AERecipes} and {@code MagicStructureElements}):
  * Mansussteel -&gt; HSSG, Terrasteel -&gt; TungstenSteel,
- * ElvenElementium/AethericDarkSteel/HyperdimensionalSilver -&gt; NaquadahAlloy,
- * BloodOfAvernus/VoidMetal/KQGold -&gt; TungstenSteel,
- * IizunamaruElectrum -&gt; Electrum, GTQT Mana/ErichAura -&gt; InfusedAura,
- * the unported {@code Llp} dust -&gt; SiliconDioxide.</p>
+ * ElvenElementium -&gt; NaquadahAlloy,
+ * BloodOfAvernus/VoidMetal -&gt; TungstenSteel,
+ * GTQT Mana/ErichAura -&gt; InfusedAura,
+ * the unported {@code Llp} dust -&gt; SiliconDioxide. The white/starry rune
+ * blocks use the real {@code AethericDarkSteel}, {@code HyperdimensionalSilver},
+ * {@code IizunamaruElectrum} and {@code KQGold}.</p>
  *
  * <p><b>Modern API substitutions</b></p>
  * <ul>
@@ -116,10 +118,12 @@ public final class BotaniaRecipes {
         runeAltar(provider, "white_rune", runeBlank, coreOfIdea,
                 new ItemStack(BotaniaItems.runeFire), new ItemStack(BotaniaItems.runeSummer),
                 new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
-                ChemicalHelper.get(TagPrefix.block, GTMaterials.NaquadahAlloy),
-                ChemicalHelper.get(TagPrefix.block, GTMaterials.NaquadahAlloy),
+                ChemicalHelper.get(TagPrefix.block, PollutionMaterials.AethericDarkSteel),
+                ChemicalHelper.get(TagPrefix.block, PollutionMaterials.HyperdimensionalSilver),
                 PollutionItems.WHITE_RUNE.get());
 
+        // // 上游: block BloodOfAvernus -> 本移植版: TungstenSteel block；
+        // block VoidMetal -> 本移植版: TungstenSteel block
         runeAltar(provider, "black_rune", runeBlank, coreOfIdea,
                 new ItemStack(BotaniaItems.runeEarth), new ItemStack(BotaniaItems.runeAutumn),
                 new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
@@ -130,8 +134,8 @@ public final class BotaniaRecipes {
         runeAltar(provider, "starry_rune", runeBlank, coreOfIdea,
                 new ItemStack(BotaniaItems.runeSpring), new ItemStack(BotaniaItems.runeMana),
                 new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
-                ChemicalHelper.get(TagPrefix.block, GTMaterials.Electrum),
-                ChemicalHelper.get(TagPrefix.block, GTMaterials.TungstenSteel),
+                ChemicalHelper.get(TagPrefix.block, PollutionMaterials.IizunamaruElectrum),
+                ChemicalHelper.get(TagPrefix.block, PollutionMaterials.KQGold),
                 PollutionItems.STARRY_RUNE.get());
     }
 
