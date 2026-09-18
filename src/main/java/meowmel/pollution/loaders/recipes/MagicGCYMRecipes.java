@@ -66,8 +66,16 @@ import java.util.function.Consumer;
  *       materials do not generate.</li>
  *   <li>All Thaumcraft infusion / arcane recipes (machine controllers, beam
  *       cores, wire coils, laminated glass, vis hatches, pipes, gearboxes,
- *       battery casing, filters, fusion frames and reactor cores): the 1.12
- *       {@code ThaumcraftApi} infusion/arcane API does not exist in TC4R.</li>
+ *       battery casing, filters, fusion frames and reactor cores). TC4R has no
+ *       {@code ThaumcraftApi} equivalent, but infusion recipes can be emitted
+ *       as {@code thaumcraft:infusion} datapack JSON from code: the portable
+ *       machine controllers, the magic assembler, the essence smelter and the
+ *       endoflame array are registered by {@link InfusionRecipes}. Beam cores,
+ *       wire coils, vis hatches and the fusion-frame/reactor-core group still
+ *       need unported items (vis/morphic resonators, fusion blocks, matrix
+ *       stones, causality collapser); the arcane-crafting half (glass, pipes,
+ *       gearboxes, battery casing, filters, reactor frame I) is still deferred.
+ *       See {@code docs/TC4R_INFUSION_API.md}.</li>
  *   <li>Greatwood/silverwood greenhouse recipes: Thaumcraft blocks absent.</li>
  *   <li>Node blast furnace, small chemical plant and GT essence smelter:
  *       DimensionalTransformingAgent and the Thaumcraft smelter blocks are

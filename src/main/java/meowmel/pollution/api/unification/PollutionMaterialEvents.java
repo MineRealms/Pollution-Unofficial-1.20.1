@@ -37,6 +37,8 @@ public final class PollutionMaterialEvents {
         meowmel.pollution.api.unification.materials.MagicFuelMaterials.register();
         meowmel.pollution.api.unification.materials.SubstrateMaterials.register();
         meowmel.pollution.api.unification.materials.OreMaterials.register();
+        meowmel.pollution.api.unification.materials.SecondDegreeMaterials.register();
+        meowmel.pollution.api.unification.materials.MagicIntegrationMaterials.register();
         meowmel.pollution.api.unification.materials.MaterialPropertyAddition.init();
         PollutionAspectMapping.init();
         TCAspectAddons.init();

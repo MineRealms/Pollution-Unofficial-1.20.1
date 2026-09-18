@@ -27,9 +27,13 @@ import java.util.function.Consumer;
  *
  * <p><b>Skipped (10 recipes)</b></p>
  * <ul>
- *   <li>Constellation anchor, obelisk core and the four bot-machine style
- *       infusions: the 1.12 {@code ThaumcraftApi} infusion API does not exist
- *       in TC4R.</li>
+ *   <li>Constellation anchor and obelisk core: TC4R does expose a datapack
+ *       infusion serializer usable from code (see
+ *       {@code docs/TC4R_INFUSION_API.md}), but both recipes need the unported
+ *       constellation/ritual crystal block and the obelisk core block. The four
+ *       Botania-style machine infusions (pure daisy, mana infusion, rune altar,
+ *       petal apothecary) also stay skipped because they need the unported
+ *       Thaumcraft vis/morphic resonators.</li>
  *   <li>Starstream nexus controller: needs the unported
  *       {@code STARSTREAM_NEXUS_OBELISK} machine, the obelisk core block,
  *       liquid starlight and DimensionalTransformingAgent.</li>

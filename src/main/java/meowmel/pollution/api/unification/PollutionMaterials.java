@@ -89,6 +89,21 @@ public final class PollutionMaterials {
     public static Material ElvenQuartz;
     public static Material Amber;
 
+    // Minimal SecondDegreeMaterials subset for previously skipped recipes
+    // (upstream: api/unification/materials/SecondDegreeMaterials.java)
+    public static Material LotusDust;
+    public static Material EthylSilicate;
+    public static Material RoughLlp;
+    public static Material Llp;
+    public static Material OilWithLlp;
+    public static Material PureTar;
+    public static Material SuperStickyTar;
+    public static Material DimensionalTransformingAgent;
+
+    // Minimal MagicIntegrationMaterials subset for a previously skipped recipe
+    // (upstream: api/unification/materials/MagicIntegrationMaterials.java)
+    public static Material ArcaneInk;
+
     // Substrate / catalyst chemistry (ThaumcraftRecipes chain)
     public static Material Salisundus;
     public static Material Roughdraft;

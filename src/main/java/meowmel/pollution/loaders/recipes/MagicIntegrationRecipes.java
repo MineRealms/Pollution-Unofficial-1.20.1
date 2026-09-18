@@ -55,8 +55,12 @@ import java.util.function.Consumer;
  *       fluid only (no ingot form) and OpticalGradeAquamarine / the Thaumcraft
  *       vis resonator are unported.</li>
  *   <li>The Thaumcraft infusion components (ball-in-itself, node stabilization
- *       frame, magic control assembly, transform core): the 1.12 infusion API
- *       and Thaumcraft resonator items are not available in TC4R.</li>
+ *       frame, magic control assembly, transform core): TC4R's datapack
+ *       infusion serializer is usable from code (see
+ *       {@code docs/TC4R_INFUSION_API.md}), but every one of these recipes
+ *       needs the unported Thaumcraft vis/morphic resonators (and, for the
+ *       ball-in-itself, the Astral Sorcery sky resonator), so they stay
+ *       deferred.</li>
  * </ul>
  */
 public final class MagicIntegrationRecipes {

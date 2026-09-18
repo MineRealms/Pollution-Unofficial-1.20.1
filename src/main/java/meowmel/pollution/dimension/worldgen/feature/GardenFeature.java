@@ -36,9 +36,13 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlac
  *   <li>Upstream based trees on {@code getTopSolidOrLiquidBlock(pos).up()},
  *       which points one block above the first air position; the port bases the
  *       trunk directly on the first air position above the ground instead.</li>
- *   <li>Wired into the Alfheim field biomes through
- *       {@code pollution:alfheim/garden}; upstream only used it from the
- *       underground world's decoration pass.</li>
+ *   <li>Wired into the {@code pollution:underground} (Deep Cave) biome through
+ *       {@code pollution:underground/garden}, matching upstream: the 1.12
+ *       generator only ran the garden from
+ *       {@code ChunkGeneratorUndergroundWorld.populateWithVanilla}, i.e. the
+ *       fallback path used by the unstyled deep cave biome. The seven styled
+ *       underground biomes override {@code populate} with their own decorator
+ *       groups and never ran it.</li>
  * </ul>
  */
 public class GardenFeature extends Feature<NoneFeatureConfiguration> {

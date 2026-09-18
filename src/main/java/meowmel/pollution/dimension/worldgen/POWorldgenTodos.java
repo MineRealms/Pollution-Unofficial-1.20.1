@@ -92,9 +92,14 @@ package meowmel.pollution.dimension.worldgen;
  *       {@link meowmel.pollution.dimension.worldgen.feature.GardenFeature}
  *       ({@code pollution:garden}) with configured/placed feature JSON. The
  *       1.12 {@code WorldGenTrees} trees use the vanilla tree feature with the
- *       same oak/birch heights. Wired into the Alfheim field biomes through
- *       {@code pollution:alfheim/garden}; upstream called it from the
- *       underground decoration pass only.</li>
+ *       same oak/birch heights. Upstream called it only from the underground
+ *       decoration pass: {@code ChunkGeneratorUndergroundWorld.populateWithVanilla},
+ *       the fallback taken by the unstyled {@code POBiomeUnderground} (Deep
+ *       Cave) biome, while the seven styled biomes override {@code populate}
+ *       with their own decorator groups and never ran the garden. It is
+ *       therefore wired as {@code pollution:underground/garden} from the
+ *       {@code pollution:underground} (Deep Cave) biome, not from the Alfheim
+ *       field biomes.</li>
  *   <li>TODO: {@code WorldGenFleshMound} - flesh mound is a custom shape; the
  *       blood dimension exists but its generator is still the overworld noise
  *       placeholder, so the mound has no placement hook yet.</li>

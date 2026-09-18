@@ -10,9 +10,11 @@ parent and textures resolve at runtime from the GTCEu jar.
 Covered machines (block model key -> tiers):
   vis_generator_<tier>            1..6   (LV..LuV)
   vis_provider_<tier>             1..9   (LV..UHV)
+  small_node_generator_<tier>     6..9   (LuV..UHV, placeholder)
   magic_energy_absorber_<tier>    1..5
   flux_scrubber_<tier>            1..5
   flux_fuel_cell_<tier>           1..5
+  source_charge                  (placeholder)
   vis_hatch_<tier>                1..9   (multiblock part)
   infused_fluid_hatch_<tier>      1..9   (multiblock part)
   flux_muffler_<tier>             1..9   (multiblock part)
@@ -25,6 +27,14 @@ Covered machines (block model key -> tiers):
 
 All placeholders use GregTech's voltage casing textures and the lava boiler
 front overlay until ported Pollution textures exist.
+
+small_node_generator_<tier> and source_charge are not wired yet: upstream has
+no dedicated textures for them (1.12 MetaTileEntitySmallNodeGenerator renders
+with Textures.MAGIC_ENERGY_ABSORBER, MetaTileEntitySourceCharge has no
+renderer), so PollutionMachines.java still points these machines at
+vis_provider_<tier> and magic_energy_absorber_lv respectively. The dedicated
+placeholder models are generated here for the future asset pass, which must
+update the simpleModel(...) calls in common/machine/PollutionMachines.java.
 """
 
 from __future__ import annotations
@@ -50,6 +60,7 @@ TIER_NAMES = {
 TIERED_MACHINES = {
     "vis_generator": [1, 2, 3, 4, 5, 6],
     "vis_provider": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "small_node_generator": [6, 7, 8, 9],
     "magic_energy_absorber": [1, 2, 3, 4, 5],
     "flux_scrubber": [1, 2, 3, 4, 5],
     "flux_fuel_cell": [1, 2, 3, 4, 5],
@@ -142,6 +153,10 @@ MULTIBLOCKS = {
     "wireless_mana_pool_output_hatch_mythic": "uev",
 }
 
+SINGLE_MACHINES = {
+    "source_charge": "lv",
+}
+
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
 
 
@@ -182,6 +197,8 @@ def main() -> int:
         for kind in SOLAR_KINDS:
             write_model(f"solar_plate_{tier}_{kind}", TIER_NAMES[tier])
     for name, casing_tier in MULTIBLOCKS.items():
+        write_model(name, casing_tier)
+    for name, casing_tier in SINGLE_MACHINES.items():
         write_model(name, casing_tier)
     return 0
 

@@ -75,7 +75,8 @@
       "pollution:cave/brown_mushroom_cluster",
       "pollution:cave/red_mushroom_cluster",
       "pollution:cave/vines",
-      "pollution:cave/dead_bush"
+      "pollution:cave/dead_bush",
+      "pollution:underground/garden"
     ],
     []
   ]

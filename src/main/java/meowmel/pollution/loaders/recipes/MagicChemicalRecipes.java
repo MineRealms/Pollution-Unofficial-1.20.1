@@ -59,9 +59,10 @@ import java.util.function.Consumer;
  *       InfusedAura, so the recipe would distil a fluid into itself.</li>
  *   <li>EthylSilicate/LLP chain (6): EthylSilicate, LotusDust, RoughLlp and
  *       Llp unported.</li>
- *   <li>Paradox matter, coking-core infusion and the two wood-coking recipes:
- *       Thaumcraft items and the 1.12 infusion API are not available in TC4R
- *       (see {@code TC4RBridge}).</li>
+ *   <li>Paradox matter and the two wood-coking recipes: the Thaumcraft items
+ *       they need are unported. The coking-core infusion is now registered by
+ *       {@link InfusionRecipes} through TC4R's datapack infusion serializer
+ *       (see {@code docs/TC4R_INFUSION_API.md}).</li>
  *   <li>Sugar -&gt; HMF and the two HMF -&gt; MethylFormate recipes:
  *       Crotonaldehyde, ZirconiumTetrachloride and MethylFormate are GTQT
  *       materials.</li>
