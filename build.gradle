@@ -192,6 +192,13 @@ dependencies {
     compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
     runtimeOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
 
+    // GTNN ("GT--") and GCYR (Gregicality Rocketry), both shipped in the target
+    // modpack; local jars installed under local-repo/local/.
+    compileOnly(fg.deobf("local.gtnn:gtnn:${gtnn_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("local.gtnn:gtnn:${gtnn_version}")) { transitive = false }
+    compileOnly(fg.deobf("local.gcyr:gcyr:${gcyr_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("local.gcyr:gcyr:${gcyr_version}")) { transitive = false }
+
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // KubeJS: recipe removal / addition scripting
