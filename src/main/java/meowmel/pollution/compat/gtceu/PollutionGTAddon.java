@@ -17,16 +17,23 @@ import java.util.function.Consumer;
 @GTAddon
 public final class PollutionGTAddon implements IGTAddon {
 
-    private final GTRegistrate registrate = GTRegistrate.create(Pollution.MOD_ID);
+    /**
+     * Shared registrate. {@code registerRegistrate()} must be called from the
+     * Pollution mod constructor (own mod bus). Calling it from
+     * {@code initializeAddon()} attaches the listener to GregTech's bus instead
+     * (the FMLJavaModLoadingContext thread-local still points at GT there), which
+     * makes addon ore blocks flush before GT's stone blocks exist and crashes
+     * with {@code Registry entry not present: gtceu:red_granite}.
+     */
+    public static final GTRegistrate REGISTRATE = GTRegistrate.create(Pollution.MOD_ID);
 
     @Override
     public GTRegistrate getRegistrate() {
-        return registrate;
+        return REGISTRATE;
     }
 
     @Override
     public void initializeAddon() {
-        registrate.registerRegistrate();
         Pollution.LOGGER.debug("Pollution GregTech CEu addon initialized");
     }
 

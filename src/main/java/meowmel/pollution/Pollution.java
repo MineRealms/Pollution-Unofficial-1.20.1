@@ -3,6 +3,7 @@ package meowmel.pollution;
 import com.mojang.logging.LogUtils;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.command.PollutionCommand;
+import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +19,9 @@ public final class Pollution {
 
     public Pollution(FMLJavaModLoadingContext context) {
         context.registerConfig(ModConfig.Type.COMMON, PollutionConfig.SPEC);
+
+        // Register the GTCEu addon registrate on this mod's own bus.
+        PollutionGTAddon.REGISTRATE.registerRegistrate();
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);

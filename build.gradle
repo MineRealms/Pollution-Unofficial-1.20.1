@@ -143,10 +143,11 @@ dependencies {
     // GregTech CEu Modern addon API
     compileOnly(fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")) { transitive = false }
     runtimeOnly(fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")) { transitive = false }
+    // Compile-time only: GTCEu publishes LDLib and Registrate through its own
+    // jarJar bundle. Adding them as runtimeOnly duplicates the modules and breaks
+    // the FML module layer (ResolutionException: ... export package ...).
     compileOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")) { transitive = false }
-    runtimeOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")) { transitive = false }
     compileOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")) { transitive = false }
-    runtimeOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")) { transitive = false }
 
     // JEI
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")) { transitive = false }

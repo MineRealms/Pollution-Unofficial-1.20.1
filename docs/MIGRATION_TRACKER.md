@@ -233,3 +233,31 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 修正：拆弃 `IGTAddon#registerMaterials()`（7.5.3 标记将删除）
 - 建立 GT 配方 datagen 钩子 `PollutionRecipes`（已接线，配方待逐条移植）
 - 新增 `tools/asset_audit.py`，生成资产清单与贴图复制映射（491 / 315 文件）
+
+### 2026-09-18 — 独立服务端烟测（通过）
+
+方式：后台独立启动 `gradlew runServer`（WMI 创建进程），轮询 `run/logs/latest.log`，验证后关闭。
+
+关键日志证据：
+
+```
+[modloading-worker-0/INFO] [meowmel.pollution.Pollution/]: Pollution Unofficial booting: GregTech CEu Modern x Thaumcraft 4R integration
+[modloading-worker-0/INFO] [KubeJS/]: Found plugin source pollution
+[main/INFO] [meowmel.pollution.Pollution/]: Registered Pollution materials: 6 aspect materials, 6 aspect alloys
+[Server thread/INFO]: Done (5.479s)! For help, type "help"
+```
+
+结论：GTCEu 7.5.3 + TC4R + JEI + KubeJS + Curios + TerraBlender 与本模组共同加载成功；材料注册与配置落盘正常。
+
+烟测中发现并修复的问题（两个都是真实运行期问题，非编译期）：
+
+1. **Registrate 模块重复**：显式 `runtimeOnly` 的 Registrate/LDLib 与 GTCEu jarJar 内置副本冲突
+   → `java.lang.module.ResolutionException: Modules Registrate.MC1._20 and Registrate export package ...`
+   → 移除这两个 `runtimeOnly`，仅保留 `compileOnly`
+2. **addon registrate 挂错总线**：`initializeAddon()` 运行在 GT 的构造线程上，
+   `FMLJavaModLoadingContext.get()` 返回的是 GT 的 bus，导致 addon 矿石方块先于 GT 石材方块注册
+   → `NullPointerException: Registry entry not present: gtceu:red_granite`（`gtceu:red_granite_infused_fire_ore`）
+   → registrate 改在 `Pollution` 构造器（自己的 mod bus）注册；`initializeAddon()` 不再注册
+
+遗留非致命项：离线模式下 authlib 尝试连接 Mojang 超时（日志有 `Connection reset` 堆栈），
+不影响 dedicated server 启动，属于网络环境问题。
