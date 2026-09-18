@@ -833,3 +833,6 @@ Done (4.274s)! For help, type "help"
   `MagicRecipeLogic` 增加 `coil`/`temperature` 失败原因
 - 汇编机（Assembler）因 GTQT 材料框架缺失（`HyperdimensionalSilver`/`KQGold`）暂缓，已记录
 - 魔导多块进度：19 台中 18 台落地，`compileJava` 通过
+- 7.5.3 冒烟测试（重启后）：`magic_electric_blast_furnace`/`magic_alloy_blast`/`magic_chemical_bath`/
+  `magic_chemical_reactor`/`magic_distillery` 全部 setblock + `execute if block` 通过，
+  `data get` 显示完整 `recipeLogic` BE 数据（`isFormed: 0b`、`status: idle`）
