@@ -101,6 +101,58 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 
 参考源码：`H:\MinecraftMods\GregTech-Modern-7.5.2\src\main\java\com\gregtechceu\gtceu\api\addon\`
 
+### 5.3 魔法材料与数据基础设施（已落地，2026-09-18）
+
+**GTCEu 7.5.3 实际机制（已核实，非臆造）：**
+
+| 事项 | 7.5.3 实际 | 旧 1.12.2 写法 | 处理 |
+|---|---|---|---|
+| 材料构建 | `Material.Builder(ResourceLocation)` + `.buildAndRegister()` | `Material.Builder(int id, ResourceLocation)` + `.build()` | 已改 |
+| 材料注册钩子 | `MaterialRegistryEvent`（建 registry）+ `MaterialEvent`（建材料），mod bus | `IGTAddon#registerMaterials()` | 已改（该钩子已标记移除） |
+| 元素注册 | `new Element(...)` + `IGTAddon#registerElements()` | `Elements.add(...)` | 已改 |
+| 数字材料 ID | 不存在 | 自增 ID 段 | 移除 |
+| `GENERATE_BOULE` | 不存在（GTQT 私有） | GTQT flag | 丢弃并在代码注释注明 |
+
+**已移植文件：**
+
+- `api/unification/PollutionElements.java`：六要素元素 Ae/Ig/Aq/Ter/Pe/Ord（质子/中子数、名称、符号与原版 `Elements.java` 一致）
+- `api/unification/PollutionMaterials.java`：已移植材料的字段表（其余类别保持 TODO）
+- `api/unification/materials/ElementMaterials.java`：六要素材料，颜色/形态/图标/元素与环境与原项目逐项一致
+- `api/unification/materials/FirstDegreeMaterials.java`：六种魔法合金，`components` 配比与 `blast(2700, LOW)` 与原项目一致
+- `api/unification/PollutionMaterialEvents.java`：mod bus 事件注册（registry + materials）
+- `loaders/recipes/PollutionRecipes.java`：GT 配方 datagen 钩子（`IGTAddon#addRecipes` 已接线，配方待逐条移植）
+
+**已移植材料对照（颜色/组分逐项来自上游）：**
+
+| 材料 | 上游字段 | 颜色 | 组分（上游原值） |
+|---|---|---|---|
+| infused_air | InfusedAir | 0xFEFE7D | 元素 Ae |
+| infused_fire | InfusedFire | 0xFE3C01 | 元素 Ig |
+| infused_water | InfusedWater | 0x0090FF | 元素 Aq |
+| infused_earth | InfusedEarth | 0x00A000 | 元素 Ter |
+| infused_entropy | InfusedEntropy | 0x43435E | 元素 Pe |
+| infused_order | InfusedOrder | 0xEECCFF | 元素 Ord |
+| aertitanium | Aertitanium | 0xEED2EE | Bauxite2 + Al1 + Mn1 + InfusedAir5 |
+| ignissteel | IgnisSteel | 0x8B1A1A | Steel2 + Mg1 + Li1 + InfusedFire5 |
+| aquasilver | Aquasilver | 0xCAE1FF | Ag2 + Sn1 + Hg1 + InfusedWater5 |
+| terracopper | Terracopper | 0x8FBC8F | Cu2 + B1 + C1 + InfusedEarth5 |
+| ordolead | Ordolead | 0x00008B | Pb2 + Si1 + Au1 + InfusedOrder5 |
+| perditioaluminium | Perditioaluminium | 0x9C9C9C | Al2 + F1 + Th1 + InfusedEntropy5 |
+
+**上游材料注册表未移植部分（保持 TODO，按阶段对应）：**
+
+- 依赖 GTQT 专有材料的条目（Mana / Thaumium / 神秘超导线 / 电池线等）→ 需要先决定新基底材料
+- 血魔法线（PurifiedBlood 等流体）→ Phase 6
+- 星辉/植物魔法线（ElvenElementium、Terrasteel、Orichalcum 等）→ Phase 6
+- 催化剂与化工线（Roughdraft、Substrate、AlchemicalResidue/Vapor 系列）→ 对应机器阶段
+
+**资产工具（Python，默认只读）：**
+
+- `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
+  - 输出 `docs/reference/asset-inventory.csv`（491 文件，按类别/size/sha1）
+  - 输出 `docs/reference/texture-copy-plan.csv`（315 张贴图，`textures/blocks→textures/block`、`textures/items→textures/item`）
+  - `--apply` 才会实际复制；不删除任何文件
+
 ## 6. 其他附属扩展联动（全部 MARK TODO）
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
@@ -174,3 +226,10 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
   - `meowmel.pollution.compat.jei.PollutionJeiPlugin`（`@JeiPlugin` 骨架）
   - `meowmel.pollution.compat.kubejs.PollutionKubeJSPlugin`（`kubejs.plugins.txt` 注册）
 - 环境说明：`gradle.properties` 内写死本机代理 `127.0.0.1:7890`，换机时需删除或修改
+
+### 2026-09-18 — 魔法材料基础设施
+- 核实并采用 GTCEu 7.5.3 的真实注册机制：`MaterialRegistryEvent` + `MaterialEvent`、`buildAndRegister()`、`new Element(...)`
+- 移植六要素材料与六种魔法合金（颜色/组分/温度与上游逐项一致），`compileJava` 通过
+- 修正：拆弃 `IGTAddon#registerMaterials()`（7.5.3 标记将删除）
+- 建立 GT 配方 datagen 钩子 `PollutionRecipes`（已接线，配方待逐条移植）
+- 新增 `tools/asset_audit.py`，生成资产清单与贴图复制映射（491 / 315 文件）
