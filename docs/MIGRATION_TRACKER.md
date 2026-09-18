@@ -501,6 +501,25 @@ Done (4.274s)! For help, type "help"
 - `api/capability/ICleanVis.java`（上游原样：干净灵气标记接口）
 - 部件批次（见 5.10）：INFUSED_FLUID_HATCH、FLUX_MUFFLER、MagicItemHatch 基类
 
+**逻辑层与配方类型（本轮落地，全部 7.5.3 编译通过）：**
+
+- `common/machine/multiblock/MagicMultiblockController.java`（上游 `MagicRecipeMapMultiblockController` 的 TC 子集）：
+  - `extends WorkableMultiblockMachine`；`createRecipeLogic` 注入 `MagicRecipeLogic`
+  - `onStructureFormed` 从 `getParts()` 收集 `IVisHatch` 与 `InfusedFluidHatchMachine`
+  - `consumeVis(int,boolean)` / `drainInfusedFluid(int,boolean)`（后者校验流体属于 `PollutionAspectMapping` 映射材料）
+  - `checkMagicRequirements(GTRecipe)`：mana/life/astral/tarot 配方在对应仓未移植前直接判失败（与上游“缺仓即失败”语义一致）
+  - `consumeMana`/`consumeLifeEssence` 预留（恒 `amount<=0`）
+- `common/machine/multiblock/MagicRecipeLogic.java`（上游 `MagicMultiblockRecipeLogic` 的 TC 子集）：
+  - `checkRecipe`：额外校验 `checkMagicRequirements` + vis 可支付（SIMULATE）
+  - `handleTickRecipe`：每 tick 扣灌注流体（先 SIMULATE 后 EXECUTE）；vis 每 craft 只扣一次（`visPaidThisCraft`）
+  - `setupRecipe`/`onRecipeFinish`/`resetRecipeLogic` 清理付费状态
+  - 增幅/塔罗/星辉/晶体变换等上游扩展明确不在 v1 范围
+- `api/recipes/PORecipeMaps.java`（现代化重写）：
+  - 键名与上游逐字一致（`magic_blast_smelter`/`stove`/`magic_fusion_reactor`/`magic_chemical_reactor`/
+    `magic_assembler`/`magic_greenhouse`/`magic_turbine`/`forge_alchemy`/`node_magic_fusion`/
+    `industrial_infusion_recipes`），使用 `GTRecipeTypes.register(name, "pollution")` + `setMaxIOSize`/`setEUIO`
+  - Botania/Astral/星辉/指南类地图按其系统延期；`MagicPropertyRecipeUI` 等 UI 待现代配方 UI pass
+
 **7.5.3 逻辑层 API 事实（已 javap 核实，下一轮直接据此实现）：**
 
 | 事项 | 7.5.3 实际 |
@@ -517,9 +536,20 @@ Done (4.274s)! For help, type "help"
 1. `MagicRecipeLogic extends RecipeLogic`：在 `checkRecipe` 做研究门槛/vis 可支付校验，在 `handleTickRecipe` 扣
    vis（每 craft 一次）+ infused fluid（每 tick），`onRecipeFinish` 清理状态；先做 TC 子集，
    增幅/塔罗/星辉部分延后
-2. `MagicMultiblockController extends WorkableMultiblockMachine`：override `createRecipeLogic` 注入上面逻辑；
-   用 `getParts()` + `instanceof IVisHatch` / `InfusedFluidHatchMachine` 收集资源仓，暴露
-   `consumeVis(int, simulate)` / `drainInfusedFluid(int, simulate)`（上游同名 API）
+2. ~~`MagicMultiblockController extends WorkableMultiblockMachine`~~ ✅（本轮完成，见上）
+3. ~~`PORecipeMaps` 基于 `GTRecipeType` 重建~~ ✅（本轮完成 TC 子集）
+4. **下一步：魔导多块机器**（19 台）。7.5.3 结构 API 已核实：
+   `MultiblockMachineBuilder.pattern(Function<MultiblockMachineDefinition, BlockPattern>)` +
+   `FactoryBlockPattern`/`Predicates`/`TraceabilityPredicate`（`api/pattern`）；
+   机器定义需 `recipeType(s)`（由 `getDefinition().getRecipeTypes()` 自动注入 `WorkableMultiblockMachine`）+
+   `workableCasingModel`/贴图 + `recoveryItems`（消声仓）
+   - 上游机器还依赖 3 类自定义壳体块（上游 `common/block/metablocks`）：
+     `POMagicBlock`（SPELL_PRISM 六要素）、`POMBeamCore`（BEAM_CORE 系列）、`POGlass`（BAMINATED_GLASS）
+     —— 需先移植这 3 个方块类（含 blockstate/模型/材质），或在 v1 用 GT 外壳占位并记录偏差
+   - 每台机器上游还实现 `getMaterial()`（该机器对应的 Infused 材料）与 `canBeDistinct()`
+5. **PORecipeMaps 的注册时机风险**：`GTRecipeTypes.register` 在 addon 静态初始化时执行，
+   需在 GT 注册冻结前（`RegisterEvent` 流程内被机器类首次引用），运行期复验时重点检查
+6. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 2. `MagicRecipeMapMultiblockController`：仓口收集（`POMultiblockAbility.VIS_HATCH`/`INFUSED_FLUID_HATCH`）与消耗 API
 3. `PORecipeMaps`：基于 `GTRecipeType` 重建魔导配方类型
 4. 19 台魔导多块 + 节点/源质/注魔系列
@@ -706,3 +736,11 @@ Done (4.274s)! For help, type "help"
 - `MagicRecipeProperties` 现代化重写（GT 7.5.3 无 RecipeProperty 注册表 → `GTRecipe.data`），
   TC 键全部接线；新增 `ICleanVis`
 - `compileJava` 通过（7.5.3）；魔法配方系统整体方案与下一步见 5.13 节
+
+### 2026-09-18 — 魔法配方逻辑层 + 配方类型
+- 新增 `MagicMultiblockController`（资源仓收集/扣费/需求校验）与 `MagicRecipeLogic`
+  （vis 每 craft 一次、灌注流体每 tick、失败原因 lang）——现代 `RecipeLogic` 钩子（见 5.13）
+- 新增 `PORecipeMaps`（10 个 TC 面配方类型，键名与上游一致；`GTRecipeTypes.register` + `setMaxIOSize`/`setEUIO`）
+- 核实 7.5.3 结构 API：`MultiblockMachineBuilder.pattern` + `FactoryBlockPattern`/`Predicates`；
+  魔导多块下一步需要自定义壳体块（SPELL_PRISM/BEAM_CORE/BAMINATED_GLASS）
+- `compileJava` 在 7.5.3 下通过

@@ -63,6 +63,16 @@ public final class Pollution {
                     "Item recovery chance: %s%%");
             provider.add("pollution.machine.flux_muffler.tooltip",
                     "Magically filtered muffler: keeps byproducts out of the environment");
+            provider.add("pollution.magic.failure.hatches",
+                    "Missing required magic hatch");
+            provider.add("pollution.magic.failure.vis",
+                    "Not enough vis");
+            provider.add("pollution.magic.failure.infused_fluid",
+                    "Not enough infused fluid");
+            provider.add("pollution.magic.failure.mana",
+                    "Not enough mana");
+            provider.add("pollution.magic.failure.life_essence",
+                    "Not enough life essence");
         });
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
