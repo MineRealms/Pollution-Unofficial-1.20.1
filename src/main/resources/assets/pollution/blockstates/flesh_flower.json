@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=1": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=2": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=3": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=4": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=5": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=6": {
+      "model": "pollution:block/flesh_flower"
+    },
+    "age=7": {
+      "model": "pollution:block/flesh_flower"
+    }
+  }
+}

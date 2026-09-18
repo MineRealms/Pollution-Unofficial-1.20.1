@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "pollution:block/heart_fruit"
+    },
+    "age=1": {
+      "model": "pollution:block/heart_fruit"
+    },
+    "age=2": {
+      "model": "pollution:block/heart_fruit"
+    },
+    "age=3": {
+      "model": "pollution:block/heart_fruit"
+    }
+  }
+}

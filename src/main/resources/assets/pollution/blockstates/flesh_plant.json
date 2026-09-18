@@ -1,0 +1,196 @@
+{
+  "variants": {
+    "north=false,east=false,south=false,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=false,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=false,south=true,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=false,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=false,east=true,south=true,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=false,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=false,south=true,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=false,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=false,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=false,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=false,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=false,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=true,up=false,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=true,up=false,down=true": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=true,up=true,down=false": {
+      "model": "pollution:block/flesh_plant"
+    },
+    "north=true,east=true,south=true,west=true,up=true,down=true": {
+      "model": "pollution:block/flesh_plant"
+    }
+  }
+}

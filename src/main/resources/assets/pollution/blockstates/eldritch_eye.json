@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "facing=down,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=down,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=up,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=up,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=north,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=north,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=south,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=south,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=west,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=west,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=east,open=false": {
+      "model": "pollution:block/eldritch_eye"
+    },
+    "facing=east,open=true": {
+      "model": "pollution:block/eldritch_eye"
+    }
+  }
+}

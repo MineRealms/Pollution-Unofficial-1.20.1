@@ -1084,3 +1084,28 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 - 7.5.3 冒烟测试（重启后）：`magic_electric_blast_furnace`/`magic_alloy_blast`/`magic_chemical_bath`/
   `magic_chemical_reactor`/`magic_distillery` 全部 setblock + `execute if block` 通过，
   `data get` 显示完整 `recipeLogic` BE 数据（`isFormed: 0b`、`status: idle`）
+
+### 2026-09-18 — 第一批植物方块（血肉树 / 魔法彩虹树 / 精灵白葡萄）
+- 新增 `PollutionPlantBlocks`（10 个方块，注册 id 与上游一致）：`flesh_plant`、`flesh_flower`、
+  `flesh_leaves`、`flesh_sapling`、`heart_fruit`、`eldritch_eye`、`tentacle`、`rainbow_leaves`、
+  `rainbow_sapling`、`alfheim_white_grape`；`init()` 在 `Pollution` 构造器 `PollutionMagicBlocks.init()`
+  之后调用，英文语言键加入 datagen LANG provider（`block.pollution.*`）
+- 新增包 `common/block/plant/{flesh,rainbow,alfheim}`（10 个 Block 子类 + 1 个客户端染色事件类）；
+  1.12 API 现代化：`Material`→`BlockBehaviour.Properties`、`IBlockState`→`BlockState`、
+  `BlockRenderLayer`→`noOcclusion()`、`getActualState` 动态连接→`getStateForPlacement`/`updateShape`
+  存储属性、`updateTick`→`randomTick`/`tick`
+- 占位资源由 `tools/generate_plant_assets.py` 生成：blockstate 覆盖全部状态组合
+  （血肉藤 64、触手 192、树叶 28 等）+ 方块/物品模型；贴图暂用原版（TODO 换 1.12 转换贴图）；
+  `zh_cn.json` 增加 10 条
+- 与上游的偏差/跳过（均写入类注释）：
+  - `flesh_sapling` / `rainbow_sapling` 的成树为 STUB：上游依赖未移植的 `FLESH_BLOCK`、
+    `FLESH_HEART`（TileEntity）与 1.12 `RainbowTreeGenerator` worldgen；随机刻/骨粉只推进 stage 0→1
+  - `flesh_leaves` 的心鸣果与掉落不再受 `TileEntityFleshHeart` 等级控制（心核未移植）
+  - `BlockFleshPlant` 上游 GT 粉尘 `<gregtech:meta_dust:1616>` 无法解析，改用 `GTMaterials.Meat`
+    粉尘；`BLOOD_PRIMITIVE_MEAT` 同样以 Meat 粉尘代替
+  - 彩虹树叶“恢复灵气”无 TC4R 等价 API（只有抽取/清洗），仅保留 `TC4RBridge.scrubFlux` 清洗咒波；
+    `SMALL` 属性、幸运加成与 2x2 巨树检测省略
+  - `AlfheimBlocks` 仅移植 `alfheim_white_grape`；`alfheim_elven_sand` / `alfheim_dream_leaves` /
+    `alfheim_red_grape_0..2` 不在本批（源类未提供），留待后续
+  - `heart_fruit` 采摘掉落方块本体（上游独立食物 `heart_fruit_i` 未移植）
+- 验证：`.\gradlew.bat compileJava --console=plain` → `BUILD SUCCESSFUL in 27s`

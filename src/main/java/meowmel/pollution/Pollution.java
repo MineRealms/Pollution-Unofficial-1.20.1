@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
+import meowmel.pollution.common.block.PollutionPlantBlocks;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.common.machine.PollutionMachineEvents;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
@@ -31,7 +32,9 @@ public final class Pollution {
         // Casing blocks (magic multiblocks) are plain registrate blocks and can
         // be created here, on the Pollution bus, like the machine definitions.
         PollutionMagicBlocks.init();
+        PollutionPlantBlocks.init();
         meowmel.pollution.common.item.PollutionItems.init();
+        meowmel.pollution.common.entity.PollutionEntities.init(context);
 
         // Recipe types are created from GregTech's own GTRecipeType RegisterEvent
         // (posted inside GTRecipeTypes.init, before the registry freezes).
@@ -93,8 +96,13 @@ public final class Pollution {
                     "Missing Thaumcraft research: %s");
             provider.add("pollution.item.vis_checker.result",
                     "Warp — permanent: %s, sticky: %s, temporary: %s");
+            provider.add("entity.pollution.basalz", "Basalz");
+            provider.add("entity.pollution.blitz", "Blitz");
+            provider.add("entity.pollution.blizz", "Blizz");
             PollutionMagicBlocks.ALL_NAMES.forEach(name -> provider.add(
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
+            PollutionPlantBlocks.ALL_NAMES.forEach(name -> provider.add(
+                    "block.pollution." + name, PollutionPlantBlocks.displayName(name)));
         });
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();

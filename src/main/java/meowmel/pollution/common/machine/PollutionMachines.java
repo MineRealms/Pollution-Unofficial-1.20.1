@@ -53,6 +53,10 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicWireMillMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
+import meowmel.pollution.common.machine.part.mana.ManaHatchMachine;
+import meowmel.pollution.common.machine.part.mana.ManaPoolHatchMachine;
+import meowmel.pollution.common.machine.part.mana.WirelessManaHatchMachine;
+import meowmel.pollution.common.machine.part.mana.WirelessManaPoolHatchMachine;
 import meowmel.pollution.common.machine.single.FluxFuelCellMachine;
 import meowmel.pollution.common.machine.single.FluxScrubberMachine;
 import meowmel.pollution.common.machine.single.MagicEnergyAbsorberMachine;
@@ -62,6 +66,8 @@ import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -98,6 +104,8 @@ public final class PollutionMachines {
     private static final int[] INFUSED_FLUID_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     /** Upstream {@code FLUX_MUFFLERS[9]} for tiers LV..UHV. */
     private static final int[] FLUX_MUFFLER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    /** Upstream mana hatch arrays held 14 tiers (LV..MAX); the port covers LV..UHV. */
+    private static final int[] MANA_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     public static MachineDefinition[] VIS_GENERATOR;
     public static MachineDefinition[] VIS_PROVIDER;
@@ -109,6 +117,27 @@ public final class PollutionMachines {
     public static MachineDefinition[] VIS_HATCH;
     public static MachineDefinition[] INFUSED_FLUID_HATCH;
     public static MachineDefinition[] FLUX_MUFFLER;
+    public static MachineDefinition[] MANA_INPUT_HATCH_1A;
+    public static MachineDefinition[] MANA_INPUT_HATCH_4A;
+    public static MachineDefinition[] MANA_INPUT_HATCH_16A;
+    public static MachineDefinition[] MANA_INPUT_HATCH_64A;
+    public static MachineDefinition[] MANA_OUTPUT_HATCH_1A;
+    public static MachineDefinition[] MANA_OUTPUT_HATCH_4A;
+    public static MachineDefinition[] MANA_OUTPUT_HATCH_16A;
+    public static MachineDefinition[] MANA_OUTPUT_HATCH_64A;
+    public static MachineDefinition[] WIRELESS_MANA_INPUT_HATCH_1A;
+    public static MachineDefinition[] WIRELESS_MANA_INPUT_HATCH_4A;
+    public static MachineDefinition[] WIRELESS_MANA_INPUT_HATCH_16A;
+    public static MachineDefinition[] WIRELESS_MANA_INPUT_HATCH_64A;
+    public static MachineDefinition[] WIRELESS_MANA_OUTPUT_HATCH_1A;
+    public static MachineDefinition[] WIRELESS_MANA_OUTPUT_HATCH_4A;
+    public static MachineDefinition[] WIRELESS_MANA_OUTPUT_HATCH_16A;
+    public static MachineDefinition[] WIRELESS_MANA_OUTPUT_HATCH_64A;
+    /** Indexed by {@link ManaPoolHatchMachine.PoolType#ordinal()}. */
+    public static MachineDefinition[] MANA_POOL_INPUT_HATCH;
+    public static MachineDefinition[] MANA_POOL_OUTPUT_HATCH;
+    public static MachineDefinition[] WIRELESS_MANA_POOL_INPUT_HATCH;
+    public static MachineDefinition[] WIRELESS_MANA_POOL_OUTPUT_HATCH;
 
     public static MultiblockMachineDefinition MAGIC_MACERATOR;
     public static MultiblockMachineDefinition MAGIC_BENDER;
@@ -315,6 +344,40 @@ public final class PollutionMachines {
                         .register(),
                 FLUX_MUFFLER_TIERS);
 
+        MANA_INPUT_HATCH_1A = registerManaHatches("mana_input_hatch_1a", 1, false, false);
+        MANA_INPUT_HATCH_4A = registerManaHatches("mana_input_hatch_4a", 4, false, false);
+        MANA_INPUT_HATCH_16A = registerManaHatches("mana_input_hatch_16a", 16, false, false);
+        MANA_INPUT_HATCH_64A = registerManaHatches("mana_input_hatch_64a", 64, false, false);
+        MANA_OUTPUT_HATCH_1A = registerManaHatches("mana_output_hatch_1a", 1, true, false);
+        MANA_OUTPUT_HATCH_4A = registerManaHatches("mana_output_hatch_4a", 4, true, false);
+        MANA_OUTPUT_HATCH_16A = registerManaHatches("mana_output_hatch_16a", 16, true, false);
+        MANA_OUTPUT_HATCH_64A = registerManaHatches("mana_output_hatch_64a", 64, true, false);
+        WIRELESS_MANA_INPUT_HATCH_1A = registerManaHatches("wireless_mana_input_hatch_1a", 1, false, true);
+        WIRELESS_MANA_INPUT_HATCH_4A = registerManaHatches("wireless_mana_input_hatch_4a", 4, false, true);
+        WIRELESS_MANA_INPUT_HATCH_16A = registerManaHatches("wireless_mana_input_hatch_16a", 16, false, true);
+        WIRELESS_MANA_INPUT_HATCH_64A = registerManaHatches("wireless_mana_input_hatch_64a", 64, false, true);
+        WIRELESS_MANA_OUTPUT_HATCH_1A = registerManaHatches("wireless_mana_output_hatch_1a", 1, true, true);
+        WIRELESS_MANA_OUTPUT_HATCH_4A = registerManaHatches("wireless_mana_output_hatch_4a", 4, true, true);
+        WIRELESS_MANA_OUTPUT_HATCH_16A = registerManaHatches("wireless_mana_output_hatch_16a", 16, true, true);
+        WIRELESS_MANA_OUTPUT_HATCH_64A = registerManaHatches("wireless_mana_output_hatch_64a", 64, true, true);
+
+        ManaPoolHatchMachine.PoolType[] poolTypes = ManaPoolHatchMachine.PoolType.values();
+        MANA_POOL_INPUT_HATCH = new MachineDefinition[poolTypes.length];
+        MANA_POOL_OUTPUT_HATCH = new MachineDefinition[poolTypes.length];
+        WIRELESS_MANA_POOL_INPUT_HATCH = new MachineDefinition[poolTypes.length];
+        WIRELESS_MANA_POOL_OUTPUT_HATCH = new MachineDefinition[poolTypes.length];
+        for (int index = 0; index < poolTypes.length; index++) {
+            ManaPoolHatchMachine.PoolType poolType = poolTypes[index];
+            MANA_POOL_INPUT_HATCH[index] = registerManaPoolHatch(
+                    "mana_pool_input_hatch_" + poolType.getName(), poolType, false, false);
+            MANA_POOL_OUTPUT_HATCH[index] = registerManaPoolHatch(
+                    "mana_pool_output_hatch_" + poolType.getName(), poolType, true, false);
+            WIRELESS_MANA_POOL_INPUT_HATCH[index] = registerManaPoolHatch(
+                    "wireless_mana_pool_input_hatch_" + poolType.getName(), poolType, false, true);
+            WIRELESS_MANA_POOL_OUTPUT_HATCH[index] = registerManaPoolHatch(
+                    "wireless_mana_pool_output_hatch_" + poolType.getName(), poolType, true, true);
+        }
+
         MAGIC_MACERATOR = magicMultiblock("magic_macerator", "Magic Macerator",
                 MagicMaceratorMachine::new, MagicMaceratorMachine::createPattern,
                 GTRecipeTypes.MACERATOR_RECIPES);
@@ -495,6 +558,88 @@ public final class PollutionMachines {
         MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
                 MagicMegaTurbineMachine::new, MagicMegaTurbineMachine::createPattern,
                 PORecipeMaps.MAGIC_TURBINE_FUELS);
+    }
+
+    /**
+     * Registers one amperage / IO variant of the mana energy hatch for every
+     * tier, matching the upstream {@code MANA_*_HATCH_*A} arrays.
+     */
+    private static MachineDefinition[] registerManaHatches(String name, int amperage, boolean isExport,
+                                                           boolean wireless) {
+        return GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                name,
+                (holder, tier) -> wireless
+                        ? new WirelessManaHatchMachine(holder, tier, amperage, isExport)
+                        : new ManaHatchMachine(holder, tier, amperage, isExport),
+                (tier, builder) -> builder
+                        .langValue("%s %sMana %s Hatch (%dA)".formatted(
+                                GTValues.VNF[tier], wireless ? "Wireless " : "",
+                                isExport ? "Output" : "Input", amperage))
+                        .rotationState(RotationState.ALL)
+                        .abilities(isExport
+                                ? POMultiblockAbility.MANA_OUTPUT_HATCH
+                                : POMultiblockAbility.MANA_INPUT_HATCH)
+                        .simpleModel(model(name + "_" + tierName(tier)))
+                        .tooltips(manaHatchTooltips(tier, amperage, isExport, wireless))
+                        .register(),
+                MANA_HATCH_TIERS);
+    }
+
+    private static List<Component> manaHatchTooltips(int tier, int amperage, boolean isExport, boolean wireless) {
+        List<Component> tooltips = new ArrayList<>(5);
+        if (isExport) {
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.voltage_out",
+                    GTValues.V[tier], GTValues.VNF[tier]));
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.amperage_out_till", amperage));
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                    GTValues.V[tier] * 64L * amperage));
+        } else {
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.voltage_in",
+                    GTValues.V[tier], GTValues.VNF[tier]));
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.amperage_in_till", amperage));
+            tooltips.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                    GTValues.V[tier] * 16L * amperage));
+        }
+        tooltips.add(Component.translatable("pollution.machine.mana_hatch.tooltip"));
+        if (wireless) {
+            tooltips.add(Component.translatable("pollution.machine.wireless_mana_hatch.tooltip"));
+        }
+        return tooltips;
+    }
+
+    /**
+     * Registers one pool type / IO variant of the mana pool hatch. The machine
+     * tier comes from the pool type, exactly like upstream.
+     */
+    private static MachineDefinition registerManaPoolHatch(String name, ManaPoolHatchMachine.PoolType poolType,
+                                                           boolean isExport, boolean wireless) {
+        List<Component> tooltips = new ArrayList<>(5);
+        tooltips.add(Component.translatable("pollution.machine.mana_pool_hatch.type",
+                Component.translatable("pollution.machine.mana_pool_hatch.type." + poolType.getName())));
+        tooltips.add(Component.translatable(isExport
+                ? "pollution.machine.mana_pool_output_hatch.tooltip"
+                : "pollution.machine.mana_pool_input_hatch.tooltip"));
+        tooltips.add(Component.translatable("pollution.machine.mana_pool_hatch.capacity", poolType.getCapacity()));
+        tooltips.add(Component.translatable("pollution.machine.mana_pool_hatch.transfer", poolType.getTransferRate()));
+        if (wireless) {
+            tooltips.add(Component.translatable("pollution.machine.wireless_mana_pool_hatch.tooltip"));
+        }
+        return PollutionGTAddon.REGISTRATE
+                .machine(name, info -> wireless
+                        ? new WirelessManaPoolHatchMachine(info, poolType, isExport)
+                        : new ManaPoolHatchMachine(info, poolType, isExport))
+                .tier(poolType.getMachineTier())
+                .langValue("%s %sMana Pool %s Hatch".formatted(
+                        GTValues.VNF[poolType.getMachineTier()], wireless ? "Wireless " : "",
+                        isExport ? "Output" : "Input"))
+                .rotationState(RotationState.ALL)
+                .abilities(isExport
+                        ? POMultiblockAbility.MANA_OUTPUT_POOL
+                        : POMultiblockAbility.MANA_INPUT_POOL)
+                .simpleModel(model(name))
+                .tooltips(tooltips)
+                .register();
     }
 
     private static MultiblockMachineDefinition fusionReactor(String name, String displayName, int tier) {

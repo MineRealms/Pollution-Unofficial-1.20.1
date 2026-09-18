@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "pollution:block/alfheim_white_grape"
+    },
+    "age=1": {
+      "model": "pollution:block/alfheim_white_grape"
+    },
+    "age=2": {
+      "model": "pollution:block/alfheim_white_grape"
+    }
+  }
+}

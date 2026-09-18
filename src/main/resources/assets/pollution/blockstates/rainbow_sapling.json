@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "pollution:block/rainbow_sapling"
+    },
+    "stage=1": {
+      "model": "pollution:block/rainbow_sapling"
+    }
+  }
+}

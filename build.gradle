@@ -74,14 +74,12 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 // LDLib's published POM lists AE2 as an optional runtime integration. Its
-// coordinates are not hosted on any repository this project consumes, and
-// ForgeGradle resolves the full transitive graph of __obfuscated before it can
-// deobfuscate anything, so the module is excluded explicitly.
-configurations.configureEach { config ->
-    if (config.name == '__obfuscated') {
-        config.exclude group: 'appeng', module: 'appliedenergistics2-forge'
-    }
-}
+// broken 15.0.4-beta coordinates are pulled into ForgeGradle's __obfuscated
+// graph (which resolves in full before it can deobfuscate anything), so the
+// module is excluded on the LDLib dependency itself. The exclude lives inside
+// fg.deobf(...) because that is what gets copied onto the __obfuscated
+// dependency; a configuration-wide exclude would also strip the explicit AE2
+// dependency declared below and no deobf jar would ever be generated for it.
 
 // Work around unreliable TLS to repo.maven.apache.org on this network:
 // transparently redirect every Maven Central repository (including the ones
@@ -117,6 +115,10 @@ repositories {
     maven {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com/'
+    }
+    maven {
+        name = 'ModMaven'
+        url = 'https://modmaven.dev/'
     }
     maven {
         name = 'Curios'
@@ -170,7 +172,9 @@ dependencies {
     // Compile-time only: GTCEu publishes LDLib and Registrate through its own
     // jarJar bundle. Adding them as runtimeOnly duplicates the modules and breaks
     // the FML module layer (ResolutionException: ... export package ...).
-    compileOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")) { transitive = false }
+    compileOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}", {
+        exclude group: 'appeng', module: 'appliedenergistics2-forge'
+    })) { transitive = false }
     compileOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")) { transitive = false }
 
     // JEI
@@ -179,6 +183,14 @@ dependencies {
     // forge impl is compileOnly too: FluidHelperCompatMixin targets a class inside it
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
     runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
+
+    // Botania
+    compileOnly(fg.deobf("vazkii.botania:Botania:${botania_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("vazkii.botania:Botania:${botania_version}")) { transitive = false }
+
+    // Applied Energistics 2
+    compileOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")) { transitive = false }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/lily_pad",
+  "textures": {
+    "particle": "minecraft:block/lily_pad",
+    "texture": "minecraft:block/lily_pad"
+  }
+}

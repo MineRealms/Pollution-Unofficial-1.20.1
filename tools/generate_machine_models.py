@@ -16,6 +16,10 @@ Covered machines (block model key -> tiers):
   vis_hatch_<tier>                1..9   (multiblock part)
   infused_fluid_hatch_<tier>      1..9   (multiblock part)
   flux_muffler_<tier>             1..9   (multiblock part)
+  mana_(input|output)_hatch_<amp>a_<tier>      1..9 x 1,4,16,64 (multiblock part)
+  wireless_mana_(input|output)_hatch_<amp>a_<tier>  1..9 x 1,4,16,64
+  mana_pool_(input|output)_hatch_<pool>        diluted/normal/mythic
+  wireless_mana_pool_(input|output)_hatch_<pool>
   solar_plate_<tier>_<kind>       1..3 x 1..6
   magic_macerator                (multiblock, placeholder)
 
@@ -52,6 +56,22 @@ TIERED_MACHINES = {
     "vis_hatch": [1, 2, 3, 4, 5, 6, 7, 8, 9],
     "infused_fluid_hatch": [1, 2, 3, 4, 5, 6, 7, 8, 9],
     "flux_muffler": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_input_hatch_1a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_input_hatch_4a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_input_hatch_16a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_input_hatch_64a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_output_hatch_1a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_output_hatch_4a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_output_hatch_16a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "mana_output_hatch_64a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_input_hatch_1a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_input_hatch_4a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_input_hatch_16a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_input_hatch_64a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_output_hatch_1a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_output_hatch_4a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_output_hatch_16a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "wireless_mana_output_hatch_64a": [1, 2, 3, 4, 5, 6, 7, 8, 9],
 }
 
 SOLAR_TIERS = [1, 2, 3]
@@ -95,6 +115,18 @@ MULTIBLOCKS = {
     "magic_battery": "iv",
     "magic_large_turbine": "hv",
     "magic_mega_turbine": "ev",
+    "mana_pool_input_hatch_diluted": "lv",
+    "mana_pool_input_hatch_normal": "luv",
+    "mana_pool_input_hatch_mythic": "uev",
+    "mana_pool_output_hatch_diluted": "lv",
+    "mana_pool_output_hatch_normal": "luv",
+    "mana_pool_output_hatch_mythic": "uev",
+    "wireless_mana_pool_input_hatch_diluted": "lv",
+    "wireless_mana_pool_input_hatch_normal": "luv",
+    "wireless_mana_pool_input_hatch_mythic": "uev",
+    "wireless_mana_pool_output_hatch_diluted": "lv",
+    "wireless_mana_pool_output_hatch_normal": "luv",
+    "wireless_mana_pool_output_hatch_mythic": "uev",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"

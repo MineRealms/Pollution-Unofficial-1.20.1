@@ -1,0 +1,18 @@
+{
+  "parent": "gtceu:block/machine/template/generator_machine",
+  "textures": {
+    "bottom": "gtceu:block/casings/voltage/uhv/bottom",
+    "top": "gtceu:block/casings/voltage/uhv/top",
+    "side": "gtceu:block/casings/voltage/uhv/side",
+    "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_back": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_top": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_bottom": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_side": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_back_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_top_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_bottom_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
+    "overlay_side_emissive": "gtceu:block/generators/boiler/lava/overlay_front"
+  }
+}
