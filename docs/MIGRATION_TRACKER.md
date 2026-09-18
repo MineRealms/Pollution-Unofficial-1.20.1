@@ -623,7 +623,9 @@ Done (4.274s)! For help, type "help"
 - 实现：`MagicStructureElements.frame(Material)` 经 `GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, material)` 取框架方块
 - 汇编机结构：A=MANA_BASIC（带仓）、B=TERRA_WATERTIGHT、C=NaquadahAlloy 框架、D=层压玻璃、E=TungstenSteel 框架、
   `' '`=任意；配方类型 `ASSEMBLER_RECIPES` + `MAGIC_ASSEMBLER_RECIPES`
-- **运行期风险**：替代材料必须实际存在 `frameGt` 方块（否则注册期 NPE），冒烟测试重点确认
+- **运行期风险已排除（7.5.3 冒烟测试实测）**：`gtceu:naquadah_alloy_frame`、`gtceu:tungsten_steel_frame`、
+  `gtceu:stainless_steel_frame`、`gtceu:hssg_frame` 全部存在；`pollution:magic_assembler` 注册且可放置
+  （注意：GT 材料方块 id 用材料注册名，如 `tungsten_steel`，非 `tungstensteel`）
 
 **节点/源质/注魔系列研究结论（TC4R API 已核实）：**
 
