@@ -306,7 +306,40 @@ RCON: setblock 0 -60 0 pollution:lv_vis_generator -> Changed the block at 0, -60
 RCON: execute if block ... data get block ... id -> "pollution:lv_vis_generator"
 ```
 
-**待办**：机器合成配方（assembler）、自定义贴图、UI/状态显示、灵气仓（多方块部件）。
+**待办**：自定义贴图、UI/状态显示、灵气仓（多方块部件）。
+
+### 5.9 灵气发电机合成配方（已落地，2026-09-18）
+
+**上游配方（`MachineRecipes.muffler()`）：**
+
+```
+registerMachineRecipe(AURA_GENERATORS, "ABA", "CHC", "ABA",
+        'H', HULL, 'A', MOTOR, 'B', PISTON, 'C', ROTOR)
+```
+
+即每级：外壳 ×1 + 马达 ×4 + 活塞 ×2 + 转子 ×2，按等级自动替换部件材料。
+
+**现代实现（与最初“assembler”判断不同，已按上游事实修正）：**
+使用 GTCEu 自带的同源辅助方法
+`MetaTileEntityLoader.registerMachineRecipe(provider, MachineDefinition[], Object...)`
+（形状配方 + `CraftingComponent` 按机器等级解析），模式与上游逐字符一致。
+
+**重要机制修正（已实测）：**
+GTCEu 8.0.0 **不再通过 `runData` 生成配方 JSON**。`GTRecipes.recipeAddition` 在
+common setup 被调用并写入内置动态数据包（`GTDynamicDataPack::addRecipe`），
+因此 `IGTAddon#addRecipes` 是**服务器运行时**回调，配方不会出现在
+`src/generated/resources/data/`。验证方式改为启动服务器看日志。
+
+**验证证据：**
+
+```
+Registered Pollution machine definitions
+Registered 6 vis generator crafting recipes
+Done (4.274s)! For help, type "help"
+```
+
+无我方配方错误；日志中仅存在已知的 authlib 网络错误与 TC4R 自身
+`thaumcraft:compat/native_*_cluster_smelting` 空输出告警（均与本次改动无关）。
 
 **资产工具（Python，默认只读）：**
 
@@ -462,3 +495,9 @@ RCON: execute if block ... data get block ... id -> "pollution:lv_vis_generator"
 - 踩坑与修正：addon 机器注册必须走 `GTCEuAPI.RegisterEvent`（见 5.8 节）；datagen 无法引用 GT jar 内模型，
   改为自持模型 + Python 生成器（`tools/generate_machine_models.py`）
 - 6 个等级（LV..LuV）注册、datagen、runServer、RCON 放置验证全部通过
+
+### 2026-09-18 — 灵气发电机配方
+- `PollutionRecipes` 落地六级形状配方，模式与上游 `MachineRecipes` 完全一致
+  （`MetaTileEntityLoader.registerMachineRecipe` + `GTCraftingComponents`）
+- 机制修正：GTCEu 8.0.0 配方为运行时动态数据包，非 datagen JSON（见 5.9 节）
+- runServer 验证：`Registered 6 vis generator crafting recipes` → `Done (4.274s)`
