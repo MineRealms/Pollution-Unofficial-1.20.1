@@ -36,7 +36,6 @@ public final class GCYRRocketFuels {
                 .recipeBuilder(id("infernal_blaze_propellant"))
                 .inputFluids(PollutionMaterials.InfernalBlazePropellant.getFluid(1))
                 .duration(4 * 20)
-                .EUt(0)
                 .save(provider);
 
         // 龙脉星轨燃剂: upstream rocket engine duration 8 s.
@@ -44,7 +43,6 @@ public final class GCYRRocketFuels {
                 .recipeBuilder(id("dragon_pulse_fuel"))
                 .inputFluids(PollutionMaterials.DragonPulseFuel.getFluid(1))
                 .duration(8 * 20)
-                .EUt(0)
                 .save(provider);
     }
 

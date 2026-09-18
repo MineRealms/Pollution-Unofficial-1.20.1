@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/tinted_cross",
   "textures": {
-    "cross": "minecraft:blocks/sapling_oak"
+    "cross": "minecraft:block/oak_sapling"
   }
 }

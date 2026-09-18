@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "block/cube_all",
   "textures": {
-    "all": "gtceu:block/casings/voltage/ev/side"
+    "all": "pollution:block/turbine/machine_casing_gearbox_titanium"
   }
 }

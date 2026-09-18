@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "block/cube_all",
   "textures": {
-    "all": "gtceu:block/casings/voltage/zpm/side"
+    "all": "pollution:block/magicblock/spell_prism_order"
   }
 }

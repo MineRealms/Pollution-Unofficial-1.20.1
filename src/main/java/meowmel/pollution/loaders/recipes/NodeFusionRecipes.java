@@ -54,7 +54,7 @@ public final class NodeFusionRecipes {
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_LUV.get())
                 .inputItems(ChemicalHelper.get(TagPrefix.screw, GTMaterials.TungstenSteel, 8))
                 .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 4))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.Electrum, 4))
+                .inputItems(nonEmptyFrames(GTMaterials.Electrum, 4))
                 .inputFluids(GTMaterials.TungstenSteel.getFluid(576))
                 .inputFluids(PollutionMaterials.InfusedLight.getFluid(8000))
                 .inputFluids(PollutionMaterials.InfusedDark.getFluid(8000))
@@ -156,6 +156,15 @@ public final class NodeFusionRecipes {
                 .EUt(GTValues.VA[tier])
                 .duration(200)
                 .save(provider);
+    }
+
+    private static ItemStack nonEmptyFrames(com.gregtechceu.gtceu.api.data.chemical.material.Material material,
+                                            int count) {
+        ItemStack stack = ChemicalHelper.get(TagPrefix.frameGt, material, count);
+        if (stack.isEmpty()) {
+            stack = ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.Steel, count);
+        }
+        return stack;
     }
 
     private static ResourceLocation id(String path) {
