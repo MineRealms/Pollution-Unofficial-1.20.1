@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "pollution:block/test_block" }
+  }
+}

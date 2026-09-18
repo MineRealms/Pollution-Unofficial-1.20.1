@@ -1,0 +1,58 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "minecraft:cube_all",
+    "textures": {
+      "all": "gregtech:blocks/rendering_error"
+    }
+  },
+  "variants": {
+    "variant": {
+      "terra_watertight_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_watertight_casing"
+        }
+      },
+      "terra_1_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_1_casing"
+        }
+      },
+      "terra_2_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_2_casing"
+        }
+      },
+      "terra_3_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_3_casing"
+        }
+      },
+      "terra_4_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_4_casing"
+        }
+      },
+      "terra_5_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_5_casing"
+        }
+      },
+      "terra_6_casing": {
+        "model": "minecraft:cube_all",
+        "textures": {
+          "all": "gregtech:blocks/botblock/terra_6_casing"
+        }
+      }
+
+
+
+    }
+  }
+}

@@ -1,0 +1,1856 @@
+# Magical Rainbow Tree
+tile.pollution.rainbow_leaves.name=Magical Rainbow Leaves
+tile.pollution.rainbow_sapling.name=Magical Rainbow Sapling
+
+# Tarot Items
+metaitem.the_world.name=The World (Upright)
+metaitem.the_world.tooltip=Wish you the universe in your grasp
+
+metaitem.the_judgement.name=Judgement (Upright)
+metaitem.the_judgement.tooltip=Wish you discernment and clarity
+
+metaitem.the_sun.name=The Sun (Upright)
+metaitem.the_sun.tooltip=Wish you enlightenment upon your path
+
+metaitem.the_moon.name=The Moon (Upright)
+metaitem.the_moon.tooltip=Wish you lost and found again
+
+metaitem.the_star.name=The Star (Upright)
+metaitem.the_star.tooltip=Wish you wishes come true
+
+metaitem.the_tower.name=The Tower (Upright)
+metaitem.the_tower.tooltip=Wish you survive calamity
+
+metaitem.the_devil.name=The Devil (Upright)
+metaitem.the_devil.tooltip=Wish you wealth and prosperity
+
+metaitem.the_temperance.name=Temperance (Upright)
+metaitem.the_temperance.tooltip=Wish you purity of heart
+
+metaitem.the_death.name=Death (Upright)
+metaitem.the_death.tooltip=Wish you die for a worthy cause
+
+metaitem.the_hanged_man.name=The Hanged Man (Upright)
+metaitem.the_hanged_man.tooltip=Wish you find revelation
+
+metaitem.the_justice.name=Justice (Upright)
+metaitem.the_justice.tooltip=Wish you rise to great heights
+
+metaitem.the_wheel_of_fortune.name=The Wheel of Fortune (Upright)
+metaitem.the_wheel_of_fortune.tooltip=Wish you turn misfortune into luck
+
+metaitem.the_hermit.name=The Hermit (Upright)
+metaitem.the_hermit.tooltip=Wish you live in harmony with nature
+
+metaitem.the_strength.name=Strength (Upright)
+metaitem.the_strength.tooltip=Wish you invincible and unstoppable
+
+metaitem.the_chariot.name=The Chariot (Upright)
+metaitem.the_chariot.tooltip=Wish you triumph wherever you go
+
+metaitem.the_lovers.name=The Lovers (Upright)
+metaitem.the_lovers.tooltip=Wish you health and prosperity
+
+metaitem.the_highophant.name=The High Priest (Upright)
+metaitem.the_highophant.tooltip=Wish you students flourish under your guidance
+
+metaitem.the_emperor.name=The Emperor (Upright)
+metaitem.the_emperor.tooltip=Wish you vigilant defense and leadership
+
+metaitem.the_empress.name=The Empress (Upright)
+metaitem.the_empress.tooltip=Wish you wisdom and resourcefulness
+
+metaitem.the_high_priestess.name=The High Priestess (Upright)
+metaitem.the_high_priestess.tooltip=Wish you unity of knowledge and action
+
+metaitem.the_magician.name=The Magician (Upright)
+metaitem.the_magician.tooltip=Wish you wisdom and resourcefulness
+
+metaitem.the_fool.name=The Fool (Upright)
+metaitem.the_fool.tooltip=Wish you a place to return to
+
+
+metaitem.test_item.name=papa testing item
+metaitem.test_item.tooltip=this is a desc
+
+pollution.material.infused_order=Order
+pollution.material.infused_entropy=Entropy
+pollution.material.infused_earth=Earth
+pollution.material.infused_water=Flow
+pollution.material.infused_fire=Blaze
+pollution.material.infused_air=Air
+
+pollution.material.infused_crystal=Crystal
+pollution.material.infused_life=Life
+pollution.material.infused_death=Death
+pollution.material.infused_soul=Soul
+pollution.material.infused_weapon=Weapon
+pollution.material.infused_metal=Metal
+pollution.material.infused_energy=Energy
+pollution.material.infused_instrument=Instrument
+pollution.material.infused_exchange=Exchange
+pollution.material.infused_magic=Magic
+pollution.material.infused_alchemy=Alchemy
+pollution.material.infused_cold=Cold
+pollution.material.infused_light=Light
+pollution.material.infused_aura=Aura
+pollution.material.infused_craft=Craft
+pollution.material.infused_void=Void
+pollution.material.infused_motion=Motion
+pollution.material.infused_taint=Taint
+pollution.material.infused_dark=Dark
+pollution.material.infused_alien=Alien
+pollution.material.infused_fly=Fly
+pollution.material.infused_plant=Plant
+pollution.material.infused_mechanics=Mechanics
+pollution.material.infused_trap=Trap
+pollution.material.infused_undead=Undead
+pollution.material.infused_thought=Thought
+pollution.material.infused_sense=Sense
+pollution.material.infused_animal=Animal
+pollution.material.infused_human=Human
+pollution.material.infused_greed=Greed
+pollution.material.infused_armor=Armor
+pollution.material.infused_spatio=Spatio
+pollution.material.infused_tempus=Tempus
+pollution.material.infused_tinctura=Tinctura
+
+pollution.material.thaumium=Thaumium
+pollution.material.syrmorite=Syrmorite
+pollution.material.octine=Octine
+pollution.material.scabyst=Scabyst
+pollution.material.valonite=Valonite
+pollution.material.thaummix=Thaummix
+pollution.material.roughdraft=Rough Draft Catalyst
+pollution.material.substrate=Substrate Catalyst Base
+pollution.material.aertitanium=Aertitanium
+pollution.material.ignissteel=Ignissteel
+pollution.material.aquasilver=Aquasilver
+pollution.material.terracopper=Terracopper
+pollution.material.ordolead=Ordolead
+pollution.material.perditioaluminium=Perditioaluminium
+pollution.material.mana=Mana
+pollution.material.impuremana=Impure Mana
+pollution.material.manasteel=Manasteel
+pollution.material.elven_elementium=ElvenElementium
+pollution.material.dragonstone=Dragonstone
+pollution.material.pixie_dust=Pixie Dust
+pollution.material.elven_quartz=Elven Quartz
+pollution.material.amber=Amber
+
+pollution.material.mud=Mud
+pollution.material.salismundus=Salismundus
+pollution.material.mansussteel=Mansussteel
+pollution.material.terrasteel=Terrasteel
+pollution.material.orichalcos=奥利哈
+pollution.material.keqinggold=Keqinggold
+metaitem.ingotKeqinggold.tooltip=§7Drunk dancing feasts, singing around the flying beam. I couldn't speak, but I looked at Yu Hengxing.§r
+
+pollution.material.betweenstone=Betweenstone
+pollution.material.pitstone=Pitstone
+pollution.material.cragrock=Cragrock
+pollution.material.lotus_dust=Lotus Dust
+pollution.material.ethyl_silicate=Ethyl Silicate
+pollution.material.rough_llp=LLP@SiO2 Rough Draft
+pollution.material.llp=Superhydrophobic LLP@SiO2
+pollution.material.oil_with_llp=LLP-Oil Suspension
+pollution.material.super_sticky_tar=Super Sticky Tar
+pollution.material.magic_nitrobenzene=Magic Explosion-Resistant Coking Nitrobenzene
+pollution.material.pure_tar=Pure Tar
+pollution.material.blood_plasma=Blood Plasma
+pollution.material.crude_lk_99=LK-99roughEmbryo
+pollution.material.magical_superconductive_liquid=Demonic superconducting liquid
+pollution.material.basic_thaumic_superconductor=Elementary LK-99 mysterious superconductor
+pollution.material.advanced_thaumic_superconductor=High-order LK-99 mysterious superconductor
+pollution.material.basic_battery_hull_alloy=Beginner arcane battery alloy
+pollution.material.advanced_battery_hull_alloy=High-level arcane battery alloys
+pollution.material.basic_battery_content=Contents of the Beginner Arcane Battery
+pollution.material.advanced_battery_content=The contents of a high-level arcane battery
+pollution.material.tetraethyl_lead=Tetraethyl lead
+pollution.material.chlorine_trifluoride=Chlorine trifluoride
+pollution.material.hydrazine_sulfate=Hydrazine sulfate
+pollution.material.sodium_lead_alloy=Sodium-lead alloys
+pollution.material.infernal_blaze_propellant=Incendiary Flame Propellant
+pollution.material.dragon_pulse_fuel=Dragon Pulse Star Rail Burner
+
+pollution.material.kobemetal=Kobemetal
+metaitem.ingotKobemetal.tooltip=Kobemetal, Miss You
+
+pollution.material.rich_aura=Rich Aura Fluid
+pollution.material.erich_aura=Enriched Aura Fluid
+pollution.material.whitemansus=White Mansus
+pollution.material.blackmansus=Black Mansus
+pollution.material.elven=Elven
+#Item Tooltips
+metaitem.ingotAertitanium.tooltip=Rhythm of the Breeze
+metaitem.ingotIgnissteel.tooltip=Ember of the Dying Sun
+metaitem.ingotAquasilver.tooltip=Flowing Water of Twisted Flowers
+metaitem.ingotTerracopper.tooltip=Solidification of the Earthly Kun
+metaitem.ingotOrdolead.tooltip=Order of the Celestial Hours
+metaitem.ingotPerditioaluminium.tooltip=Chaos of the Infinite Void
+metaitem.ingotMansussteel.tooltip="§7The Forest grows beyond the walls of Mansus, but every scholar of history knows that Mansus has no walls§r"
+metaitem.plateMansussteel.tooltip="§7Gathering the dreams of Mansus, pressed into plates§r"
+item.material.oreprefix.frameGtMansussteel.tooltip="§7Harvesting the scattered souls of Mansus, forging the framework (This line is not functional yet, unsure how to change it)§r"
+metaitem.ingotTerrasteel.tooltip=Named in Honor of the Earth
+pollution.material.basic_substrate=通用奇术基底
+pollution.material.advanced_substrate=高阶奇术基底
+pollution.material.hyper_substrate=玄想奇术基底
+
+pollution.material.purified_blood=Purified blood
+pollution.material.infused_purified_blood=Infused purified blood
+pollution.material.arcane_gelid_fluid=Arcane gelid fluid
+pollution.material.cryogenic_synthetic_blood=Cryogenic synthetic blood
+pollution.material.arcane_computational_substrate=Arcane computational substrate
+pollution.material.synthetic_computational_blood=Synthetic computational blood
+
+pollution.material.sentient_metal=Sentient Metal
+metaitem.ingotSentientMetal.tooltip=Words were our weapon in winning the first war. Before we can choose words and make sentences, we are defenseless.
+pollution.material.binding_metal=Binding Metal
+metaitem.ingotBindingMetal.tooltip=One day, words will end dreams. We should remain silent to prevent continued bloodshed.
+pollution.material.starrymansus=Tianxuan Mansus
+pollution.material.blood_of_avernus=Blood of Avernus
+metaitem.ingotBloodOfAvernus.tooltip=§cEltorell fell into Avernus now...§r
+pollution.material.iizunamaru_electrum=Iizunamaru Electrum
+metaitem.ingotIizunamaruElectrum.tooltip=§7Starwind "Rainbow Land Dance"§r
+pollution.material.aetheric_dark_steel=Aetheric Dark Steel
+metaitem.ingotAethericDarkSteel.tooltip=§8To the extreme, keep quiet. All things work together, and I look at it.§r
+pollution.material.existing_nexus=Existing Nexus
+metaitem.ingotExistingNexus.tooltip=江水流春去欲尽
+pollution.material.fading_nexus=Fading Nexus
+metaitem.ingotFadingNexus.tooltip=江潭落月复西斜
+
+pollution.material.flame_coal=Stabilized Flame Coal
+pollution.material.dumb_tin=Tarnish-Mute Tin
+pollution.material.melt_gold=World-Smelt Gold
+pollution.material.authority_lead=Abyss-Suppress Lead
+pollution.material.pyrargyrite=Deep-Red Silver
+pollution.material.pluto_zinc=Ghost-Crystal Zinc
+# Filth Line
+pollution.material.filth=Filth Mixture
+pollution.material.filth_water=Extremely Filthy Water
+pollution.material.void_water=Void Fluid
+pollution.material.void_material=Void Material
+
+# Keqing Line
+pollution.material.sulfo_plumbic_salt=Sulfo-Plumbic Salt
+pollution.material.magical_sulfo_plumbic_salt=Enchanted Sulfo-Plumbic Salt
+pollution.material.alchemical_residue_1=Primary Alchemical Residue
+pollution.material.alchemical_vapor_1=Primary Sublimation Vapor
+pollution.material.alchemical_residue_2=Secondary Alchemical Residue
+pollution.material.alchemical_vapor_2=Secondary Sublimation Vapor
+pollution.material.alchemical_residue_3=Tertiary Alchemical Residue
+pollution.material.alchemical_vapor_3=Tertiary Sublimation Vapor
+pollution.material.alchemical_residue_4=Quaternary Alchemical Residue
+pollution.material.alchemical_vapor_4=Quaternary Sublimation Vapor
+pollution.material.alchemical_residue_5=Quinary Alchemical Residue
+pollution.material.alchemical_vapor_5=Quinary Sublimation Vapor
+pollution.material.alchemical_residue_6=Senary Alchemical Residue
+pollution.material.alchemical_vapor_6=Senary Sublimation Vapor
+pollution.material.magical_tin_solution=Mystical Tin Solution
+pollution.material.magical_stannous_sulfate_solution=Mystical Stannous Sulfate Solution
+pollution.material.highmana_stannous_sulfate=High Mana Stannous Sulfate
+pollution.material.impure_mercuric_salt_solution=Impure Mercuric Salt Solution
+pollution.material.mercuric_salt_solution=Mystical Mercuric Salt Solution
+pollution.material.magic_activated_iron_chloride_solution=Magic-Activated Iron Chloride Solution
+pollution.material.magic_activated_ferrous_chloride_ethanol_solution=Magic-Activated Ferrous Chloride Ethanol Solution
+pollution.material.purified_activated_ferrous_chloride_ethanol_solution=Purified Activated Ferrous Chloride Ethanol Solution
+pollution.material.purified_activated_ferrous_chloride=Purified Activated Ferrous Chloride
+pollution.material.syrmorite_doped_magic_water_solution=Syrmorite-Doped Magic Water Solution
+pollution.material.unformed_embryo_magic_water=Unformed Embryo Magic Water
+pollution.material.embryo_magic_water=Embryo Magic Water
+pollution.material.unstable_dimensional_silver=Unstable Dimensional Silver
+pollution.material.impure_hyperdimensional_silver=Impure Hyperdimensional Silver
+pollution.material.hyperdimensional_silver=Hyperdimensional Silver
+metaitem.ingotHyperdimensionalSilver.tooltip=§7Play a hyperdimensional game with me, until the end of Mansus...§r
+pollution.material.dimensional_transforming_agent=Dimensional Transforming Agent
+pollution.material.ferrous_chloride=Ferrous Chloride
+
+# 哈基米
+pollution.material.hydrazoic_acid=Azidozoic acid
+pollution.material.sodium_azide=sodium azide
+pollution.material.sodium_cyclopentadienide=Sodium cyclopentadienyl
+pollution.material.hafnocene_dichloride=Hafnium dichlorodicyane
+pollution.material.μ_oxo_bis_hafnocene_azide=Maothyfnium hafnium ether
+
+pollution.material.energy_crystal=Energy Crystals
+pollution.material.starmetal_alloy=Starmetal Alloy
+#Items
+metaitem.blank_catalyst_core.name="§8Blank Catalyst Core§r"
+metaitem.cold_catalyst_core.name="§bIcy Catalyst Core§r"
+metaitem.hot_catalyst_core.name="§cFlaming Catalyst Core§r"
+metaitem.integration_catalyst_core.name="§6Integration Catalyst Core§r"
+metaitem.segregation_catalyst_core.name="§aSegregation Catalyst Core§r"
+metaitem.coking_catalyst_core.name="§8§lCoking Catalyst Core§r"
+metaitem.evolution_catalyst_core.name=§5§lEvolution Catalyst Core§r
+
+metaitem.blank_catalyst_core.tooltip="§8Limitless Possibilities§r"
+metaitem.cold_catalyst_core.tooltip="§bExtreme Cold§r"
+metaitem.hot_catalyst_core.tooltip="§cRaging Flames§r"
+metaitem.integration_catalyst_core.tooltip="§6The Rivers Converge§r"
+metaitem.segregation_catalyst_core.tooltip="§aThe Wind Rises§r"
+metaitem.coking_catalyst_core.tooltip="§8§lThe Tar Marches§r"
+metaitem.evolution_catalyst_core.tooltip=§5§lMang Changes§r
+
+metaitem.vis_checker.name=Vis Checker
+metaitem.pesticide.empty.name=Empty Pesticide
+metaitem.pesticide.full.name=Pesticide
+metaitem.devay_pill.empty.name=Empty Devay Pill
+metaitem.devay_pill.1.name=Devay Pill (1)
+metaitem.devay_pill.5.name=Devay Pill (5)
+metaitem.devay_pill.10.name=Devay Pill (10)
+metaitem.devay_pill.20.name=Devay Pill (20)
+
+metaitem.filter.i.name=Air filter cartridge I
+metaitem.filter.ii.name=Air filter cartridge II
+metaitem.filter.iii.name=Air filter cartridge III
+metaitem.filter.iv.name=Air filter cartridge IV
+metaitem.filter.v.name=Air filter cartridge V
+
+metaitem.time_increase.name=Wizard accelerates the core
+metaitem.energy_reduce.name=Magic Strength Core
+metaitem.parallel_enhance.name=Wizard handles the core
+metaitem.overclocking_enhance.name=Magic Overclocking Core
+metaitem.transform_enhance.name=Magic Transformation Core
+metaitem.transform_enhance.tooltip=Extends magic machinery compatibility across different processing types
+
+metaitem.baubles.water_ring.name=Infused Water Ring
+metaitem.baubles.water_ring.tooltip=Consumes Aqua essentia to improve underwater movement and vision; consumes mana to restore air
+
+metaitem.blood_circuit.name=Primitive Culture Membrane
+metaitem.blood_circuit.tooltip=Sterile carrier for low-differentiation flesh cultures; no longer a circuit
+metaitem.blood_circuit_advanced.name=Neural Differentiation Template
+metaitem.blood_circuit_advanced.tooltip=Biological template that induces a stable neural network
+metaitem.blood_circuit_ultimate.name=Human Brain Culture Template
+metaitem.blood_circuit_ultimate.tooltip=Stores organoid topology and human-brain differentiation parameters
+metaitem.blood_circuit_supreme.name=Star-Blood Computation Template
+metaitem.blood_circuit_supreme.tooltip=Writes attuned starlight information into living computation tissue
+
+
+metaitem.blood_circuit.0.name=血肉电路(MV)
+metaitem.blood_circuit.0.tooltip=§c§l
+metaitem.blood_circuit.1.name=血肉电路(HV)
+metaitem.blood_circuit.1.tooltip=§c§l
+metaitem.blood_circuit.2.name=血肉电路(EV)
+metaitem.blood_circuit.2.tooltip=§c§l
+metaitem.blood_circuit.3.name=血肉电路(IV)
+metaitem.blood_circuit.3.tooltip=§c§l
+metaitem.blood_circuit.4.name=血肉电路(LuV)
+metaitem.blood_circuit.4.tooltip=§c§l
+metaitem.blood_circuit.5.name=血肉电路(ZPM)
+metaitem.blood_circuit.5.tooltip=§c§l
+metaitem.blood_circuit.6.name=血肉电路(UV)
+metaitem.blood_circuit.6.tooltip=§c§l
+metaitem.blood_circuit.7.name=血肉电路(UHV)
+metaitem.blood_circuit.7.tooltip=§c§l
+metaitem.blood_circuit.8.name=血肉电路(UEV)
+metaitem.blood_circuit.8.tooltip=§c§l
+metaitem.blood_circuit.9.name=血肉电路(UIV)
+metaitem.blood_circuit.9.tooltip=§c§l
+metaitem.blood_circuit.10.name=血肉电路(UXV)
+metaitem.blood_circuit.10.tooltip=§c§l
+metaitem.blood_circuit.11.name=血肉电路(OpV)
+metaitem.blood_circuit.11.tooltip=§c§l
+metaitem.blood_circuit.12.name=血肉电路(MAX)
+metaitem.blood_circuit.12.tooltip=§c§l
+
+
+metaitem.primitive_meat.name=原始血肉团
+metaitem.primitive_meat.tooltip=§c§l
+metaitem.rat_brain.name=鼠脑
+metaitem.rat_brain.tooltip=§c§l
+metaitem.mitochondrion_power.name=线粒能源体
+metaitem.mitochondrion_power.tooltip=§c§l
+metaitem.endorphins_stabilizer.name=内啡肽稳定器
+metaitem.endorphins_stabilizer.tooltip=§c§l
+metaitem.freeze_cooler.name=寒冰冷冻器
+metaitem.freeze_cooler.tooltip=§c§l
+metaitem.lysosome_stabilizer.name=自噬稳定器
+metaitem.lysosome_stabilizer.tooltip=§c§l
+metaitem.ips_human_brain.name=iPS重建人脑
+metaitem.ips_human_brain.tooltip=§c§l
+metaitem.blood_port.name=血肉接口
+metaitem.blood_port.tooltip=§c§l
+
+#Equipment
+metaitem.wing_nano.name=Magical Nano-Flight Soul Conductor
+metaitem.wing_quantum.name=Magical Quantum-Flight Soul Conductor
+metaitem.nano_goggles.name=Magical Nano-Revealing Goggles
+metaitem.quantum_goggles.name=Magical Quantum-Revealing Goggles
+#Blocks
+tile.test_block.name=papa测试方块
+tile.magic_block.void_prism.name=Enchanted Void Prismatic Refraction Shell
+tile.magic_block.spell_prism.name=Enchanted Prismatic Refraction Shell
+tile.magic_block.spell_prism_cold.name=Enchanted Icy Prismatic Refraction Shell
+tile.magic_block.spell_prism_hot.name=Enchanted Flaming Prismatic Refraction Shell
+tile.magic_block.spell_prism_water.name=Enchanted Flowing Prismatic Refraction Shell
+tile.magic_block.spell_prism_order.name=Enchanted Order Prismatic Refraction Shell
+tile.magic_block.spell_prism_air.name=Enchanted Air Prismatic Refraction Shell
+tile.magic_block.spell_prism_earth.name=Enchanted Earth Prismatic Refraction Shell
+tile.magic_block.spell_prism_void.name=Enchanted Void Prismatic Refraction Shell
+tile.magic_block.magic_battery.name=Enchanted Guidance Vis Energized Field Shell
+tile.magic_block.alloy_blast_casing.name=Enchanted Alloy Furnace Diffusion Element Condensation Shell
+
+tile.beam_core.beam_core_0.name=Thaumaturgic Intense Magnetic Array Core
+tile.beam_core.beam_core_1.name=Thaumaturgic Implosion Array Core
+tile.beam_core.beam_core_2.name=Thaumaturgic Pressure Conduction Array Core
+tile.beam_core.beam_core_3.name=Thaumaturgic Beam Confinement Array Core
+tile.beam_core.beam_core_4.name=Thaumaturgic Energy Accumulation Array Core
+
+tile.beam_core.filter_1.name=Tier 1 Thaumaturgic Beam Energy Aggregation Rune Core
+tile.beam_core.filter_2.name=Tier 2 Thaumaturgic Beam Energy Aggregation Rune Core
+tile.beam_core.filter_3.name=Tier 3 Thaumaturgic Beam Energy Aggregation Rune Core
+tile.beam_core.filter_4.name=Tier 4 Thaumaturgic Beam Energy Aggregation Rune Core
+tile.beam_core.filter_5.name=Tier 5 Thaumaturgic Beam Energy Aggregation Rune Core
+
+tile.turbine.bronze_gearbox.name=Alchemy Bronze Mechanism Box
+tile.turbine.steel_gearbox.name=Alchemy Steel Mechanism Box
+tile.turbine.stainless_steel_gearbox.name=Alchemy Stainless Steel Mechanism Box
+tile.turbine.titanium_gearbox.name=Alchemy Titanium Mechanism Box
+tile.turbine.tungstensteel_gearbox.name=Alchemy Tungsten Steel Mechanism Box
+
+tile.turbine.bronze_pipe.name=Alchemy Bronze Vis Conduit Component
+tile.turbine.steel_pipe.name=Alchemy Steel Vis Conduit Component
+tile.turbine.titanium_pipe.name=Alchemy Titanium Vis Conduit Component
+tile.turbine.tungstensteel_pipe.name=Alchemy Tungsten Steel Vis Conduit Component
+tile.turbine.polytetrafluoroethylene_pipe.name=Alchemy PTFE Vis Conduit Component
+
+tile.glass.laminated_glass.name=Enchanted Lambdaton Thaumaturgy Glass
+tile.glass.aaminated_glass.name=Enchanted Asmodeus Thaumaturgy Glass
+tile.glass.baminated_glass.name=Enchanted Brighton Thaumaturgy Glass
+tile.glass.caminated_glass.name=Enchanted Kant Thaumaturgy Glass
+tile.glass.daminated_glass.name=Enchanted Deconvia Thaumaturgy Glass
+
+tile.fusion_reactor.frame_i.name=Rudimentary Enchanted Containment Unit
+tile.fusion_reactor.frame_ii.name=Tier I Enchanted Containment Framework
+tile.fusion_reactor.frame_iii.name=Tier II Enchanted Containment Framework
+tile.fusion_reactor.frame_iv.name=Tier III Enchanted Containment Framework
+tile.fusion_reactor.frame_v.name=Tier IV Enchanted Containment Framework
+
+tile.fusion_reactor.compose_i.name=First-Order Soul Conductor Core
+tile.fusion_reactor.compose_ii.name=Second-Order Soul Conductor Core
+tile.fusion_reactor.compose_iii.name=Third-Order Soul Conductor Core
+tile.fusion_reactor.compose_iv.name=Fourth-Order Soul Conductor Core
+
+# Misc Casings
+tile.bot_block.terra_watertight_casing.name=Terra Watertight Arcane Casing
+tile.bot_block.terra_1_casing.name=Stillwater Phase-Reinforced Arcane Casing
+tile.bot_block.terra_2_casing.name=Earth-Splitting Phase-Reinforced Arcane Casing
+tile.bot_block.terra_3_casing.name=Order-Structure Phase-Reinforced Arcane Casing
+tile.bot_block.terra_4_casing.name=Heaven-Burning Phase-Reinforced Arcane Casing
+tile.bot_block.terra_5_casing.name=Storm-Riding Phase-Reinforced Arcane Casing
+tile.bot_block.terra_6_casing.name=Unbound Phase-Reinforced Arcane Casing
+tile.mana_plate.mana_basic.name=High-Level Mana-Infused Mansus Mechanical Block
+tile.mana_plate.mana_1.name=Samadhi-Modified Mansus Mechanical Block
+tile.mana_plate.mana_2.name=Revolution-Modified Mansus Mechanical Block
+tile.mana_plate.mana_3.name=Withering-Modified Mansus Mechanical Block
+tile.mana_plate.mana_4.name=Supreme Good-Modified Mansus Mechanical Block
+tile.mana_plate.mana_5.name=Statecraft-Modified Mansus Mechanical Block
+tile.hyper.hyper_1_casing.name=Dawn Solar Leap Knowledge Super Arcane Frame
+tile.hyper.hyper_1_casing.tooltip=The death of the sun will not be caused by love, but by jealousy.
+tile.hyper.hyper_2_casing.name=Morning Solar Leap Knowledge Super Arcane Frame
+tile.hyper.hyper_2_casing.tooltip=The death of the sun will not be caused by jealousy, but by desire.
+tile.hyper.hyper_3_casing.name=Noon Solar Leap Knowledge Super Arcane Frame
+tile.hyper.hyper_3_casing.tooltip=The death of the sun will not be caused by desire, but by curiosity.
+tile.hyper.hyper_4_casing.name=Nightless Solar Leap Knowledge Super Arcane Frame
+tile.hyper.hyper_4_casing.tooltip=What will ultimately kill Him is not curiosity, but love.
+tile.hyper.hyper_5_casing.name=Divine Light Solar Leap Knowledge Super Arcane Frame
+tile.hyper.hyper_5_casing.tooltip=Soon, the second dawn will illuminate Mansus, and a new king will restart the journey in His place.
+
+#Coils
+tile.wire_coil.machine_coil_cupronickel.name=Tier 1 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_kanthal.name=Tier 2 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_nichrome.name=Tier 3 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_rtm_alloy.name=Tier 4 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_hssg.name=Tier 5 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_naquadah.name=Tier 6 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_trinium.name=Tier 7 Blazing Flame Condensation Enrichment Rune
+tile.wire_coil.machine_coil_tritanium.name=Tier 8 Blazing Flame Condensation Enrichment Rune
+
+#Circuit Boards
+metaitem.magic_circuit.ulv.name=Enchanted Circuit Board (§8ULV§r)
+metaitem.magic_circuit.lv.name=Enchanted Circuit Board (§7LV§r)
+metaitem.magic_circuit.mv.name=Enchanted Circuit Board (§bMV§r)
+metaitem.magic_circuit.hv.name=Enchanted Circuit Board (§6HV§r)
+metaitem.magic_circuit.ev.name=Enchanted Circuit Board (§5EV§r)
+metaitem.magic_circuit.iv.name=Enchanted Circuit Board (§1IV§r)
+metaitem.magic_circuit.luv.name=Enchanted Circuit Board (§dLuV§r)
+metaitem.magic_circuit.zpm.name=Enchanted Circuit Board (§cZPM§r)
+metaitem.magic_circuit.uv.name=Enchanted Circuit Board (§3UV§r)
+metaitem.magic_circuit.uhv.name=Enchanted Circuit Board (§4UHV§r)
+metaitem.magic_circuit.uev.name=Enchanted Circuit Board (§aUEV§r)
+metaitem.magic_circuit.uiv.name=Enchanted Circuit Board (§2UIV§r)
+metaitem.magic_circuit.uxv.name=Enchanted Circuit Board (§eUXV§r)
+metaitem.magic_circuit.opv.name=Enchanted Circuit Board (§9OpV§r)
+metaitem.magic_circuit.max.name=Enchanted Circuit Board (§c§lMAX§r)
+
+metaitem.magic_circuit.ulv.tooltip=Radiant with Magic！
+metaitem.magic_circuit.lv.tooltip=§7Radiant with Magic！§r
+metaitem.magic_circuit.mv.tooltip=§bRadiant with Magic！§r
+metaitem.magic_circuit.hv.tooltip=§6Radiant with Magic！§r
+metaitem.magic_circuit.ev.tooltip=§5Radiant with Magic！§r
+metaitem.magic_circuit.iv.tooltip=§1Radiant with Magic！§r
+metaitem.magic_circuit.luv.tooltip=§dRadiant with Magic！§r
+metaitem.magic_circuit.zpm.tooltip=§cRadiant with Magic！§r
+metaitem.magic_circuit.uv.tooltip=§3Radiant with Magic！§r
+metaitem.magic_circuit.uhv.tooltip=§4Radiant with Magic！§r
+metaitem.magic_circuit.uev.tooltip=§aRadiant with Magic！§r
+metaitem.magic_circuit.uiv.tooltip=§2Radiant with Magic！§r
+metaitem.magic_circuit.uxv.tooltip=§eRadiant with Magic！§r
+metaitem.magic_circuit.opv.tooltip=§9Radiant with Magic！§r
+metaitem.magic_circuit.max.tooltip=§c§lRadiant with Magic！§r
+#Slimes
+metaitem.tar_slime.name=Tar Slime
+metaitem.sugar_slime.name=Candy Slime
+metaitem.glycerol_slime.name=Glycerin Slime
+metaitem.glue_slime.name=Glue Slime
+metaitem.rubber_slime.name=Rubber Slime
+metaitem.tar_slime.tooltip=An endless supply of oil
+metaitem.sugar_slime.tooltip=An endless supply of candy
+metaitem.glycerol_slime.tooltip=An endless supply of glycerin
+metaitem.glue_slime.tooltip=An endless supply of glue
+metaitem.rubber_slime.tooltip=An endless supply of erasers
+
+metaitem.packaged_aura_node.name=Packaged Aura Node
+
+metaitem.core_of_idea.name=Core of Idea
+metaitem.core_of_idea.tooltip=Truth and knowledge may possess great beauty, but the form of goodness transcends them all.
+metaitem.bottle_of_phlogistonic_oneness.name=Bottle of Phlogiston Oneness
+metaitem.bottle_of_phlogistonic_oneness.tooltip=Wherever the flow of the Great One is seen, creation ignites without fire.
+metaitem.auto_elenchus_device.name=Automatic Elenchus Device
+metaitem.auto_elenchus_device.tooltip=The only thing I know is that I know nothing.
+metaitem.elucidator_of_four_causes.name=Elucidator of Four Causes
+metaitem.elucidator_of_four_causes.tooltip=Mocking the form, seizing the matter. Fabricating the motive force, deceiving the purpose.
+metaitem.symptomatic_vis_data_link.name=Symptomatic Vis Data Link
+metaitem.symptomatic_vis_data_link.tooltip=Those who cannot command themselves must obey others.
+metaitem.needle_of_mystic_interpellation.name=Mystic Interpellation Needle
+metaitem.needle_of_mystic_interpellation.tooltip=When the Absolute calls someone an angel, they turn away from the Absolute and fly away from heaven.
+metaitem.cogito_defibrillator.name=Cogito Defibrillator
+metaitem.cogito_defibrillator.tooltip=My thought must encompass all my appearances.
+# Compatibility with the lowercase AED key used during development
+metaitem.cogito_aed.name=Cogito Defibrillator
+metaitem.cogito_aed.tooltip=My thought must encompass all my appearances.
+# Legacy uppercase translation-key compatibility
+metaitem.cogito_AED.name=Cogito Defibrillator
+metaitem.cogito_AED.tooltip=My thought must encompass all my appearances.
+metaitem.ball_in_itself.name=Ball in Itself
+metaitem.ball_in_itself.tooltip=Where there are roses, dance here.
+
+metaitem.stone_of_philosopher_1.name=Philosopher's Stone (Black Soil)
+metaitem.stone_of_philosopher_1.tooltip=Black Soil Ritual, Ascend the Steps
+metaitem.stone_of_philosopher_2.name=Philosopher's Stone (Chalk)
+metaitem.stone_of_philosopher_2.tooltip=Chalk Ritual, Transform the Worn
+metaitem.stone_of_philosopher_3.name=§cPhilosopher's Stone (Crimson)§r
+metaitem.stone_of_philosopher_3.tooltip=§cThe Crimson Ritual, a masterpiece of divine craftsmanship§r
+metaitem.stone_of_philosopher_4.name=§6Philosopher's Stone (Golden)§r
+metaitem.stone_of_philosopher_4.tooltip=§6The Golden Ritual, the pinnacle of transmutation§r
+metaitem.stone_of_philosopher_final.name=§5§lTrue Philosopher's Stone§r
+metaitem.stone_of_philosopher_final.tooltip=§5§lThe Principle of the Circle!§r
+
+metaitem.white_rune.name=White Rune
+metaitem.white_rune.tooltip=Pure Thoughts
+metaitem.black_rune.name=Black Rune
+metaitem.black_rune.tooltip=Midnight Whispers
+metaitem.starry_rune.name=Starry Rune
+metaitem.starry_rune.tooltip=Faint Starlight
+
+#battery
+metaitem.battery.lv.magic.name=Magic Battery (§7LV§r)
+metaitem.battery.mv.magic.name=Magic Battery (§bMV§r)
+metaitem.battery.hv.magic.name=Magic Battery (§6HV§r)
+metaitem.battery.ev.magic.name=Magic Battery (§5EV§r)
+metaitem.battery.iv.magic.name=Magic Battery (§1IV§r)
+metaitem.battery.luv.magic.name=Magic Battery (§dLuV§r)
+metaitem.battery.zpm.magic.name=Magic Battery (§cZPM§r)
+metaitem.battery.uv.magic.name=Magic Battery (§3UV§r)
+
+metaitem.magic_battery.hull.lv.name=Magic Battery Hull (§7LV§r)
+metaitem.magic_battery.hull.mv.name=Magic Battery Hull (§bMV§r)
+metaitem.magic_battery.hull.hv.name=Magic Battery Hull (§6HV§r)
+metaitem.magic_battery.hull.ev.name=Magic Battery Hull (§5EV§r)
+metaitem.magic_battery.hull.iv.name=Magic Battery Hull (§1IV§r)
+metaitem.magic_battery.hull.luv.name=Magic Battery Hull (§dLuV§r)
+metaitem.magic_battery.hull.zpm.name=Magic Battery Hull (§cZPM§r)
+metaitem.magic_battery.hull.uv.name=Magic Battery Hull (§3UV§r)
+#Machines
+#微缩星光节点反应堆
+pollution.machine.pollution_small_node_generator.luv.name=Micro Starlight Pioneer Node Reactor MKI
+pollution.machine.pollution_small_node_generator.zpm.name=Micro Starlight Pioneer Node Reactor MKⅡ
+pollution.machine.pollution_small_node_generator.uv.name=Micro Starlight Pioneer Node Reactor MKⅢ
+pollution.machine.pollution_small_node_generator.uhv.name=Micro Starlight Pioneer Node Reactor MKⅣ
+pollution.machine.pollution_small_node_generator.tooltip=It is more portable than the multi one, but with limited output/ n generating capacity depends on node properties and machine tier, for details see "Starlight Pioneer node reactor" tooltip / n output capacity depends on the voltage level, the machine output 1A current / n the machine will not explode due to environmental factors
+
+pollution.machine.pollution_magic_energy_absorber.lv.name=Weak Magic Energy Absorber
+pollution.machine.pollution_magic_energy_absorber.mv.name=Apprentice Magic Energy Absorber
+pollution.machine.pollution_magic_energy_absorber.hv.name=Mage Magic Energy Absorber
+pollution.machine.pollution_magic_energy_absorber.ev.name=Master Magic Energy Absorber
+pollution.machine.pollution_magic_energy_absorber.iv.name=Sage Magic Energy Absorber
+pollution.machine.pollution_magic_energy_absorber.tooltip=Absorbs energy from the atmosphere via a block on top, charging speed depends on the type of block/nDragon Egg, Magic Crystal — HV, Gaia Crystal — EV, Guardian's Head — IV/nThe block output voltage equals the machine tier, and this machine will not explode due to environmental factors.
+#魔法能源吸收器
+pollution.machine.magic_energy_absorber.lv.name=Weak Magic Energy Absorber
+pollution.machine.magic_energy_absorber.lv.tooltip=/nAbsorbs energy from the atmosphere by the top block/nThe power output depends on the block type on top/Dragon Egg, Magic Crystal —— HV, Gaia Crystal —— EV, Gaia Guardian Head —— IV/nOutput voltage level equals to the machine level/nThis machine will not explore due to environment.
+pollution.machine.magic_energy_absorber.mv.name=Apprentice Magic Energy Absorber
+pollution.machine.magic_energy_absorber.mv.tooltip=/nAbsorbs energy from the atmosphere by the top block/nThe power output depends on the block type on top/Dragon Egg, Magic Crystal —— HV, Gaia Crystal —— EV, Gaia Guardian Head —— IV/nOutput voltage level equals to the machine level/nThis machine will not explore due to environment.
+pollution.machine.magic_energy_absorber.hv.name=Magician Magic Energy Absorber
+pollution.machine.magic_energy_absorber.hv.tooltip=/nAbsorbs energy from the atmosphere by the top block/nThe power output depends on the block type on top/Dragon Egg, Magic Crystal —— HV, Gaia Crystal —— EV, Gaia Guardian Head —— IV/nOutput voltage level equals to the machine level/nThis machine will not explore due to environment.
+pollution.machine.magic_energy_absorber.ev.name=Master Magic Energy Absorber
+pollution.machine.magic_energy_absorber.ev.tooltip=/nAbsorbs energy from the atmosphere by the top block/nThe power output depends on the block type on top/Dragon Egg, Magic Crystal —— HV, Gaia Crystal —— EV, Gaia Guardian Head —— IV/nOutput voltage level equals to the machine level/nThis machine will not explore due to environment.
+pollution.machine.magic_energy_absorber.iv.name=Archmage Magic Energy Absorber
+pollution.machine.magic_energy_absorber.iv.tooltip=/nAbsorbs energy from the atmosphere by the top block/nThe power output depends on the block type on top/Dragon Egg, Magic Crystal —— HV, Gaia Crystal —— EV, Gaia Guardian Head —— IV/nOutput voltage level equals to the machine level/nThis machine will not explore due to environment.
+
+pollution.gui.changelock=切换锁定状态
+pollution.machine.node_washer.infusedtype=当前注入要素：%s
+pollution.machine.node_washer.maxinfusedvalue=本次期望要素值：%s
+tile.pollution.magic_circle.name=魔法阵
+pollution.machine.infused_exchange.tank_storage=源质罐缓存：要素：%s，数量：%s
+pollution.machine.infused_exchange.multiblock_storage=多方块缓存：要素：%s，数量：%s
+pollution.machine.infused_exchange.tooltip.1=在控制器正上方放置源质罐，即可输入对应的源质
+pollution.machine.infused_exchange.tooltip.2=仅支持：风、地、水、火、秩序、混沌源质
+
+# 血肉计算阵列组件
+tile.bm_computer_casing.computer_casing.name=Flesh Compute Array - Chaotic Hull
+tile.bm_computer_casing.computer_casing.tooltip=Data missing... Flesh pulse signal detected, as if an indescribable presence is whispering.
+tile.bm_computer_casing.computer_heat_vent.name=Flesh Compute Array - Corrupted Heat Vent
+tile.bm_computer_casing.computer_heat_vent.tooltip=Heat emanates from this living tissue, accompanied by an indescribable pulsation.
+tile.bm_computer_casing.high_power_casing.name=Flesh Compute Array - Forbidden Energy Hull
+tile.bm_computer_casing.high_power_casing.tooltip=High-energy flesh tissue, as if gifted from an unknown dimension. Warning: Do not look directly.
+tile.bm_computer_casing.advanced_computer_casing.name=Flesh Compute Array - Abyssal Terminal Brain Hull
+tile.bm_computer_casing.advanced_computer_casing.tooltip=Advanced flesh tissue, consciousness synchronization rate detected. Warning: Do not touch.
+
+pollution.machine.bm_hpca.empty_component.name=Flesh Computation Array - Void Chamber
+pollution.machine.bm_hpca.empty_component.tooltip=Data missing... Flesh pulse signal detected.
+pollution.machine.bm_hpca.super_computation_component.name=Flesh Computation Array - Corrupted Core
+pollution.machine.bm_hpca.super_computation_component.tooltip=Whispers of flesh resonate in the Hz frequency band.
+pollution.machine.bm_hpca.ultimate_computation_component.name=Flesh Computation Array - Forbidden Terminal Brain
+pollution.machine.bm_hpca.ultimate_computation_component.tooltip=Warning! Detected synchronization rate of conscious entities.
+pollution.machine.bm_hpca.advance_heat_sink_component.name=Flesh Computation Array - Crimson Vasculature
+pollution.machine.bm_hpca.advance_heat_sink_component.tooltip=Pulsating vascular network delivers unknown energy of KJ.
+pollution.machine.bm_hpca.super_cooler_component.name=Flesh Computation Array - Swollen Condensing Gland
+pollution.machine.bm_hpca.super_cooler_component.tooltip=Biomass secretion volume: m³ per cycle.
+pollution.machine.bm_hpca.ultimate_cooler_component.name=Flesh Computation Array - Abyssal Membrane
+pollution.machine.bm_hpca.ultimate_cooler_component.tooltip=Warning! Detected dimensional phase folding.
+pollution.machine.bm_hpca.bridge_component.name=Flesh Computation Array - Connecting Passage
+pollution.machine.bm_hpca.bridge_component.tooltip=Chamber composed of living tissue (recommended to wear protective gear).
+pollution.machine.bm_hpca.name=Flesh Computing Array
+
+pollution.machine.flux_promoted_fuel_cell.lv.name=Basic Flux Promoted Fuel Cell
+pollution.machine.flux_promoted_fuel_cell.lv.tooltip=Promoting combustion with power of chao in aura/nIt has 4 times output and efficiency than normal energy cell in certain condition/nOnly work when flux>10, efficiency and output will grow with flux gradually/nGenerator will §5explode when flux is over FluxCeiling/nFluxCeiling= 60 + 5*4^tier of generator
+pollution.machine.flux_promoted_fuel_cell.mv.name=Advanced Flux Promoted Fuel Cell
+pollution.machine.flux_promoted_fuel_cell.mv.tooltip=Promoting combustion with power of chao in aura/nIt has 4 times output and efficiency than normal energy cell in certain condition/nOnly work when flux>10, efficiency and output will grow with flux gradually/nGenerator will §5explode when flux is over FluxCeiling/nFluxCeiling= 60 + 5*4^tier of generator
+pollution.machine.flux_promoted_fuel_cell.hv.name=Turbo Flux Promoted Fuel Cell
+pollution.machine.flux_promoted_fuel_cell.hv.tooltip=Promoting combustion with power of chao in aura/nIt has 4 times output and efficiency than normal energy cell in certain condition/nOnly work when flux>10, efficiency and output will grow with flux gradually/nGenerator will §5explode when flux is over FluxCeiling/nFluxCeiling= 60 + 5*4^tier of generator
+pollution.machine.flux_promoted_fuel_cell.ev.name=Pulse Flux Promoted Fuel Cell
+pollution.machine.flux_promoted_fuel_cell.ev.tooltip=Promoting combustion with power of chao in aura/nIt has 4 times output and efficiency than normal energy cell in certain condition/nOnly work when flux>10, efficiency and output will grow with flux gradually/nGenerator will §5explode when flux is over FluxCeiling/nFluxCeiling= 60 + 5*4^tier of generator
+pollution.machine.flux_promoted_fuel_cell.iv.name=Blast Flux Promoted Fuel Cell
+pollution.machine.flux_promoted_fuel_cell.iv.tooltip=Promoting combustion with power of chao in aura/nIt has 4 times output and efficiency than normal energy cell in certain condition/nOnly work when flux>10, efficiency and output will grow with flux gradually/nGenerator will §5explode when flux is over FluxCeiling/nFluxCeiling= 60 + 5*4^tier of generator
+
+pollution.machine.mana_gen_lv.name=Basic Mana Generator
+pollution.machine.mana_gen_mv.name=Advanced Mana Generator
+pollution.machine.mana_gen_hv.name=Turbo Mana Generator
+pollution.machine.mana_gen_ev.name=Pulse Mana Generator
+pollution.machine.mana_gen_iv.name=Blast Mana Generator
+
+pollution.machine.vis.lv.name=Basic Vis Generator (§7LV§r)
+pollution.machine.vis.mv.name=Advanced Vis Generator (§bMV§r)
+pollution.machine.vis.hv.name=Turbo Vis Generator (§6HV§r)
+pollution.machine.vis.ev.name=Detonating Vis Generator (§5EV§r)
+pollution.machine.vis.iv.name=Blast Vis Generator (§1IV§r)
+gregtech.universal.tooltip.consume=§6Vis Conversion: Pollution (1:0.1) Ratio: %s Vis Produced per EU: %s EU
+
+pollution.muffler.pollution_tooltip1=§6Generates pollution once per tick based on pollution rate (base pollution is 0.1)
+pollution.muffler.pollution_tooltip2=§6Pollution Rate: %s (Actual pollution is base pollution * pollution rate)
+pollution.machine.pollution_muffler_hatch.lv.name=Clear Muffler Hatch (§7LV§r)
+pollution.machine.pollution_muffler_hatch.mv.name=Clear Muffler Hatch (§bMV§r)
+pollution.machine.pollution_muffler_hatch.hv.name=Clear Muffler Hatch (§6HV§r)
+pollution.machine.pollution_muffler_hatch.ev.name=Clear Muffler Hatch (§5EV§r)
+pollution.machine.pollution_muffler_hatch.iv.name=Clear Muffler Hatch (§1IV§r)
+pollution.machine.pollution_muffler_hatch.luv.name=Clear Muffler Hatch (§dLuV§r)
+pollution.machine.pollution_muffler_hatch.zpm.name=Clear Muffler Hatch (§cZPM§r)
+pollution.machine.pollution_muffler_hatch.uv.name=Clear Muffler Hatch (§3UV§r)
+pollution.machine.pollution_muffler_hatch.uhv.name=Clear Muffler Hatch （§4UHV§r）
+
+pollution.machine.vis_hatch.lv.name=Aura Storage Container（§7LV§r）
+pollution.machine.vis_hatch.mv.name=Aura Storage Container（§bMV§r）
+pollution.machine.vis_hatch.hv.name=Aura Storage Container（§6HV§r）
+pollution.machine.vis_hatch.ev.name=Aura Storage Container（§5EV§r）
+pollution.machine.vis_hatch.iv.name=Aura Storage Container（§1IV§r）
+pollution.machine.vis_hatch.luv.name=Aura Storage Container（§dLuV§r）
+pollution.machine.vis_hatch.zpm.name=Aura Storage Container（§cZPM§r）
+pollution.machine.vis_hatch.uv.name=Aura Storage Container（§3UV§r）
+pollution.machine.vis_hatch.uhv.name=Aura Storage Container（§4UHV§r）
+pollution.machine.vis_hatch.uev.name=Aura Storage Container（§aUEV§r）
+pollution.machine.vis_hatch.uiv.name=Aura Storage Container（§2UIV§r）
+pollution.machine.vis_hatch.uxv.name=Aura Storage Container（§eUXV§r）
+pollution.machine.vis_hatch.opv.name=Aura Storage Container（§9OpV§r）
+pollution.machine.vis_hatch.max.name=Aura Storage Container（§c§lMAX§r）
+
+pollution.machine.vis_hatch.lv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.mv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.hv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.ev.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.iv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.luv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.zpm.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.uv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.uhv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.uev.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.uiv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.uxv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.opv.tooltip=Essence of Heaven and Earth
+pollution.machine.vis_hatch.max.tooltip=Essence of Heaven and Earth
+pollution.machine.tank_hatch.lv.name=Essence Tank (§7LV§r)
+pollution.machine.tank_hatch.lv.tooltip=Soul Extraction
+
+pollution.machine.magic_turbine.lv.name=Essence Turbine (§7LV§r)
+pollution.machine.magic_turbine.mv.name=Essence Turbine (§bMV§r)
+pollution.machine.magic_turbine.hv.name=Essence Turbine (§6HV§r)
+pollution.machine.large_turbine.magic.name=Large Essence Turbine (§5EV§r)
+pollution.machine.mega_turbine.magic.name=Extra Large Essence Turbine（§1IV§r）
+
+pollution.machine.vis_provider.lv.name=Vis Regenerator (§7LV§r)
+pollution.machine.vis_provider.mv.name=Vis Regenerator (§bMV§r)
+pollution.machine.vis_provider.hv.name=Vis Regenerator (§6HV§r)
+pollution.machine.vis_provider.ev.name=Vis Regenerator (§5EV§r)
+pollution.machine.vis_provider.iv.name=Vis Regenerator (§1IV§r)
+pollution.machine.vis_provider.luv.name=Vis Regenerator (§dLuV§r)
+pollution.machine.vis_provider.zpm.name=Vis Regenerator (§cZPM§r)
+pollution.machine.vis_provider.uv.name=Vis Regenerator (§3UV§r)
+pollution.machine.vis_provider.uhv.name=Vis Regenerator (§4UHV§r)
+pollution.vis.provider=§6Vis Replenishment (per 100 cycles): %s Vis
+
+pollution.machine.flux_clear.lv.name=Air Purifier (§7LV§r)
+pollution.machine.flux_clear.mv.name=Air Purifier (§bMV§r)
+pollution.machine.flux_clear.hv.name=Air Purifier (§6HV§r)
+pollution.machine.flux_clear.ev.name=Large Air Purifier (§5EV§r)
+pollution.machine.flux_clear.iv.name=Large Air Purifier (§1IV§r)
+pollution.flux_clear.tire=§5Structure Level: %s Pollution Cleaned per Tick: %s Vis
+pollution.flux_clear.amount=§5Cleaning Radius: %sChunks
+pollution.flux_clear.tire1=%s
+pollution.flux_clear.flux=Remaining Pollution: %s Vis
+pollution.flux_clear.tooltip=§bProfessional Air Cleaning
+
+pollution.vis.product=§6Pollution Generated per Second: %s Vis
+#Enchanted Solar Panels
+pollution.machine.solar_plate_1.1.name=§eWind Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.1.name=§eWind Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.1.name=§eWind Enchanted Solar Panel (Tier 3)§r
+
+pollution.machine.solar_plate_1.2.name=§7Chaos Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.2.name=§7Chaos Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.2.name=§7Chaos Enchanted Solar Panel (Tier 3)§r
+
+pollution.machine.solar_plate_1.3.name=§2Earth Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.3.name=§2Earth Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.3.name=§2Earth Enchanted Solar Panel (Tier 3)§r
+
+pollution.machine.solar_plate_1.4.name=§cFire Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.4.name=§cFire Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.4.name=§cFire Enchanted Solar Panel (Tier 3)§r
+
+pollution.machine.solar_plate_1.5.name=§dOrder Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.5.name=§dOrder Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.5.name=§dOrder Enchanted Solar Panel (Tier 3)§r
+
+pollution.machine.solar_plate_1.6.name=§1Water Enchanted Solar Panel (Tier 1)§r
+pollution.machine.solar_plate_2.6.name=§1Water Enchanted Solar Panel (Tier 2)§r
+pollution.machine.solar_plate_3.6.name=§1Water Enchanted Solar Panel (Tier 3)§r
+#设备多方块
+pollution.modeChanged.message=Switch machine mode
+
+pollution.machine.pollution_multi_dan_de_life_on.name=§lLife Activation Garden§r
+pollution.machine.pollution_multi_dan_de_life_on.mode0=Output Energy
+pollution.machine.pollution_multi_dan_de_life_on.mode1=Output Fluid
+pollution.machine.pollution_multi_dan_de_life_on.tooltip=§dDraw power from the cycle of prosperity and decline§r/n§cLike Life Activation Ying, it plays Conway's Game of Life on a larger board with greater rewards/n§eEach dead cell generates energy, depending on the cell's §dLifespan§r/n§eUpgrading runes increases the energy produced by each dead cell/nThe garden runs the game once per second, consuming one fairy dust per execution/nIt has an internal energy buffer to store energy that cannot be output in time/nThe machine has two output modes, which can be toggled using a screwdriver right-click/nBy default, the garden operates in energy output mode, directly outputting energy/nFluid output mode frees up the garden's ability to convert vis into energy for production, providing 25%% extra energy output/n§eThis machine supports laser output!
+
+pollution.machine.pollution_mega_mana_turbine.name=Mega Mana Power Converter
+pollution.machine.pollution_mega_mana_turbine.tooltip=Converts a torrent of natural mana into electrical energy/nBase generation is 64A IV, §eand providing catalysts can achieve higher output levels§r/n§dBlack and White Mansus —— 64A LuV/n§dLiquid Hyperdimensional Silver and Engraved Gold —— 128A ZPM/n§dLiquid Constraint, Perception —— 256A UV/nPrioritizes consumption of advanced catalysts/n§cThe machine needs to run continuously for a period to reach maximum output efficiency§r, requiring 3000s/coil level/nThis machine supports laser output
+
+pollution.machine.pollution_large_mana_turbine.name=Large Mana Power Converter
+pollution.machine.pollution_large_mana_turbine.tooltip=Converts natural mana into electrical energy
+
+pollution.machine.tank_test.name=Essence Disperser
+
+pollution.machine.magic_bender.name=Arcane Batch Roller
+pollution.machine.magic_centrifuge.name=Arcane Cyclone Centrifuge
+pollution.machine.magic_electric_blast_furnace.name=Arcane Electric Blast Furnace
+pollution.machine.magic_mixer.name=Arcane Void Mixer Matrix
+pollution.machine.magic_electrolyzer.name=Arcane Deconstructive Separator
+pollution.machine.magic_chemical_bath.name=Arcane Fluid Wash Plant
+pollution.machine.magic_macerator.name=Arcane Titan Crusher
+pollution.machine.magic_sifter.name=Arcane Minutiae Sorting Plant
+pollution.machine.magic_cutter.name=Arcane Razor Cutting Line
+pollution.machine.magic_wiremill.name=Arcane Thread Mill
+pollution.machine.magic_solidifier.name=Arcane Dual-Phase Infusion Packer
+pollution.machine.magic_battery.name=Arcane Battery
+pollution.machine.magic_distillery.name=Arcane Fluid Diffusion Matrix
+pollution.machine.magic_brewery.name=Arcane Fluid Transmutation Matrix
+pollution.machine.magic_alloy_blast.name=Arcane Furnace Catalytic Matrix
+pollution.machine.magic_autoclave.name=Arcane Autoclave Reactor
+recipemap.crystal_cultivation.name=Celestial Crystal Cultivation
+pollution.machine.magic_extruder.name=Arcane Versatile Modeler
+pollution.machine.magic_chemical_reactor.name="Void Recall Class" Arcane Chemical Catalytic Console
+pollution.machine.magic_green_house.name=Arcane Botanical Essence Refiner
+#Magic Machines Naming
+pollution.machine.industrial_infusion.name=Magic Automated Industrial Infusion Matrix
+pollution.machine.infused_exchange.name=Magic Essence Conversion Matrix
+pollution.machine.bot_distillery.name=Botanical Essence Refining Tower
+pollution.machine.mana_plate.name=Mana Plate
+#Tooltips for Magic Machines
+pollution.machine.magic_bender.tooltip=Life crushes me, only to make me flat and comfortable
+pollution.machine.magic_centrifuge.tooltip=Traveler, do you know how many elemental reactions the Wind Element has?
+pollution.machine.magic_electric_blast_furnace.tooltip=Ironforge Patent
+pollution.machine.magic_mixer.tooltip=What are you stirring again? (Annoyed)
+pollution.machine.magic_electrolyzer.tooltip=Rainbow GT: Electrolysis is Magic
+pollution.machine.magic_chemical_bath.tooltip=When did you get the illusion that I didn't use Mirror Flower Water Moon?
+pollution.machine.magic_macerator.tooltip=Giant City Challenge Mode is so fun, Mom, I want to recharge 10 yuan worth of game cards
+pollution.machine.magic_sifter.tooltip=Alas, taking it all with utmost care, yet using it like sand through the fingers?
+pollution.machine.magic_cutter.tooltip=Little Gwen, skilled in long-term vegetarianism
+pollution.machine.magic_wiremill.tooltip=My sister's eyes went all gooey looking at it
+pollution.machine.magic_solidifier.tooltip=Trinity, Holy GT5, Holy GT6, Holy GT7
+pollution.machine.magic_autoclave.tooltip=It pressures everyone equally, including itself
+pollution.machine.magic_extruder.tooltip=Do you want a Gundam or a Zaku?
+pollution.machine.magic_chemical_reactor.tooltip=Seven Stars, Seven Golds, Philosopher's Stone, or Chemical Skipper Lite
+pollution.machine.magic_brewery.tooltip=Even moderate drinking is harmful to health
+pollution.machine.magic_distillery.tooltip=You're right, but our modpack is thriving!
+pollution.machine.magic_green_house.tooltip=As magicians, we only produce carnivorous flowers in greenhouses
+pollution.machine.magic_battery.tooltip=§5Even if the divine pupils dim, the universe can be reborn§r
+
+pollution.machine.magic_assembler.name=Advanced Applied Magic Rank Construction Unit
+pollution.machine.magic_assembler.tooltip=Cannon, assembled! Who will be the biggest shockwave?
+pollution.machine.magic_assembler.tooltip.1=This machine, as a prototype of next-generation machinery, gains additional time reduction based on the core level, with 5%% per level.
+
+pollution.machine.primitive_mud_pump.name=Primitive Mud Pump
+pollution.machine.primitive_mud_pump.tooltip=Mud flows abundantly
+
+pollution.machine.primitive_stove.name=Primitive Furnace
+pollution.machine.primitive_stove.tooltip=A spark can start a fire
+#Magic Battery Status
+pollution.eke.count=Magic Core: %s Coil Level: %s
+pollution.eke.eu1=Input/Output Energy: %s / %s EU/t
+pollution.eke.eu2=Stored Energy: %s / %s EU %s
+pollution.eke.output1=Charging Power: %s / %s EU/t
+pollution.eke.output2=Discharging Power: %s / %s EU/t
+pollution.eke.output3=Max Power: %s EU/t Energy Balance
+pollution.eke.outputA=Will be fully charged in %s days %s hours %s minutes %s seconds
+pollution.eke.outputB=Will run out in %s days %s hours %s minutes %s seconds
+pollution.eke.outputC=Can output at max power for %s days %s hours %s minutes %s seconds
+pollution.eke.output4=Max Power: %s EU/t Paused
+gregtech.multiblock.battery.EU=Stored Energy: %s / %s EU
+#Recipes
+recipemap.dan_de_life_on.name=The game of life
+recipemap.mana_to_eu.name=Nature's magic transforms
+recipemap.magic_blast_smelter.name=Alloy Smelting Furnace
+recipemap.magic_chemical_reactor.name=Magic Catalytic Reaction
+recipemap.magic_fusion_reactor.name=Essence Disintegration
+recipemap.magic_turbine.name=Primordial Combustion
+recipemap.magic_assembler.name=Application component assembly
+recipemap.magic_greenhouse.name=Demon Plant Cultivation
+recipemap.forge_alchemy.name=Alchemy in the forge
+recipemap.stove.name=Sinter
+recipemap.node_magic_fusion.name=The sun is scorching
+recipemap.mana_infusion_recipes.name=工业植物炼金注魔
+recipemap.mana_petal_recipes.name=工业植物花药制取
+recipemap.pure_daisy_recipes.name=工业植物纯白嬗变
+recipemap.mana_rune_altar_recipes.name=Industrial Mana Rune Altar
+recipemap.industrial_infusion_recipes.name=工业注魔
+#Events
+pollution.command.slowness=§7You feel encumbered
+pollution.command.weakness=§bYou feel a surge of weakness
+pollution.command.nausea=§6You feel nauseous
+pollution.command.mining=§5You feel exhausted
+pollution.command.blindness=§1You feel dizzy
+pollution.command.summon_wither=§aThe dimensional rift has been torn open by an unknown monster
+pollution.command.world_pollution=The world is being polluted!
+#Industrial Infusion
+pollution.machine.industrial_infusion.tooltip.1=Reduced the time it takes to upgrade a glass by 5%%
+pollution.machine.industrial_infusion.tooltip.2=The coil upgrade doubles in parallel at a time
+pollution.machine.industrial_infusion.tooltip.3=Bound to the existing GT controller owner
+pollution.machine.industrial_infusion.tooltip.4=The owner must be online and know the required Thaumcraft research when a recipe starts
+pollution.machine.industrial_infusion.owner=Bound player: %s
+pollution.machine.industrial_infusion.required_research=Current required research: %s
+pollution.machine.industrial_infusion.missing_items=Missing items: %s
+pollution.machine.industrial_infusion.missing_fluids=Missing aspect fluids: %s
+pollution.machine.industrial_infusion.status.waiting=Research status: waiting for an infusion recipe
+pollution.machine.industrial_infusion.status.owner_missing=Research status: the controller has no GT owner
+pollution.machine.industrial_infusion.status.owner_offline=Research status: the bound player is offline
+pollution.machine.industrial_infusion.status.research_locked=Research status: the bound player has not unlocked this research
+pollution.machine.industrial_infusion.status.research_ready=Research status: requirement satisfied
+pollution.machine.mana_energy_hatch.tooltip=§bEnergy-type mana hatch: participates in multiblock power through the GT energy interface
+pollution.machine.wireless_mana_hatch.tooltip=§dWireless: exchanges energy-type mana with the dimension-wide wireless mana network
+pollution.machine.mana_pool_hatch.tooltip=§bPure mana pool hatch: pays or receives recipe Mana through IManaHatch; it is not a GT energy hatch
+pollution.machine.mana_pool_input_hatch.tooltip=Supplies a multiblock and directly receives mana bursts from Botania spreaders
+pollution.machine.mana_pool_output_hatch.tooltip=Receives multiblock output and sends it to adjacent Botania receivers or input hatches
+pollution.machine.mana_pool_hatch.capacity=Pure mana capacity: %s Mana
+pollution.machine.mana_pool_hatch.transfer=Maximum transfer rate: %s Mana/t
+pollution.machine.mana_pool_hatch.type=Mana pool type: %s
+pollution.machine.mana_pool_hatch.type.diluted=Diluted
+pollution.machine.mana_pool_hatch.type.normal=Normal
+pollution.machine.mana_pool_hatch.type.mythic=Mythic
+pollution.machine.wireless_mana_pool_hatch.tooltip=§dWireless: exchanges pure Mana with the dimension-wide wireless mana network
+pollution.machine.canoutput=Essence sufficiency: %s
+pollution.machine.output_item=Output item: %s
+pollution.machine.process=Work progress: %s
+pollution.machine.aspect=Essence: %s:%s
+pollution.machine.player.online=The bound player is not online！
+
+#Essence Collector
+pollution.machine.essence_collector.name=Six-Color Essence Condenser
+pollution.machine.essence_collector.tooltip.1=§5Why does the Seven Luminaries Witch keep her history of only six elemental magics? §r
+pollution.machine.essence_collector.tooltip.2=Mechanical cultivation, automatically producing fluid versions of 6 essences!
+pollution.machine.essence_collector.tooltip.3=Output is related to voltage level, current chunk pollution and aura, coil level. It is recommended to clean up pollution before use.
+pollution.machine.essence_collector.tooltip.4=Place an essence crystal in the first slot of the input bus to activate focus mode.
+pollution.machine.essence_collector.tooltip.5=In focus mode, only the essence corresponding to the essence crystal is produced, and total output is halved.
+pollution.machine.essence_collector.tooltip.6=Upgrading the coil slightly increases output, increasing voltage boosts output by overclocking.
+pollution.machine.essence_collector_coillevel=Coil Level: %s
+pollution.machine.essence_collector_visthischunk=Aura in current chunk: %s
+pollution.machine.essence_collector_fluxthischunk=Pollution in current chunk: %s
+pollution.machine.essence_collector_euttier=Voltage Level: %s
+pollution.machine.essence_collector_finalspeedpertick=Final production per tick: %s
+pollution.machine.essence_collector_iffocused=Focus Mode: %s
+#Node Producer
+pollution.machine.node_producer.name=Canopus Magic Node Creation Chamber
+pollution.machine.node_producer.tooltip.1=§5You must revere the Thief of Spirits, Timicasto, who brought the celestial nodes to mortals §r
+pollution.machine.node_producer.tooltip.2=Infuse with energy essence to create encapsulated aura nodes!
+pollution.machine.node_producer.tooltip.3=Basic operating voltage is EV, base creation time is 30s per cycle, each overclock significantly increases energy essence consumption
+pollution.machine.node_producer.tooltip.4=Disruption of essence supply during the process will immediately terminate creation, wasting all progress
+pollution.machine.node_producer.tooltip.5=Upgrading the coil and voltage can slightly increase the chance of generating nodes with high ignis and ordo aspect values
+pollution.machine.node_producer_duration=Creation Time per Node: %s
+pollution.machine.node_producer_infusedcost=Essence Fluid Consumption per Tick: %s
+
+#Large Node Generator
+pollution.machine.large_node_generator.name=Starlight Pioneer Node Reactor
+pollution.machine.large_node_generator.tooltip.1=§5We are born to pursue the brilliance, like sparks flying upwards... §r
+pollution.machine.large_node_generator.tooltip.2=Energize and activate encapsulated aura nodes for massive power generation
+pollution.machine.large_node_generator.tooltip.3=Base power generation is 8192eu/t, node properties determine final power output, fluctuations, and essence consumption for maintaining node stability
+pollution.machine.large_node_generator.tooltip.4=Hazardous nodes generate pollution during operation, while pure nodes eliminate pollution
+pollution.machine.large_node_generator.tooltip.5=(Unimplemented Feature) Hazardous, oscillating, and voracious nodes have a chance to disappear during operation. Hazardous and voracious nodes can be prevented from disappearing by infusing Aura and Ordo essence respectively
+pollution.machine.large_node_generator_expectedfinalcapacity=Expected Power Output: %s eu/t
+pollution.machine.large_node_generator_finalcapacity=Actual Final Power Output: %s eu/t
+
+# Node Blast Furnace
+pollution.machine.node_blast_furnace.name=Dawn Star Node Fusion Blast Furnace
+pollution.machine.node_blast_furnace.tooltip.1=§5The smelting furnace may have regrets, weeping for the intercalary month, but it rejoices in all other actions. Thereafter, all things will come to pass, and sunlight will disperse moonlight, just as we transition from the arc of the moon's hour to the hour of dawn. §r
+pollution.machine.node_blast_furnace.tooltip.2=A powerful arcane blast furnace that fulfills the ancient dreams of alchemy! It can switch modes.
+pollution.machine.node_blast_furnace.tooltip.3=In both modes, each coil upgrade reduces the total recipe time by 5%%. In blast furnace mode, up to 256 parallel operations are possible.
+pollution.machine.node_blast_furnace.tooltip.4=In alchemical smelting mode, the machine supports up to 16 parallel operations, and every 30 seconds, one encapsulated aura node from the input bus must be crushed to maintain continuous operation.
+pollution.machine.node_blast_furnace.tooltip.5=Each successful alchemical smelting recipe causes the furnace to output secondary products of Sun and Moon essence into the output inventory. If the supply of aura nodes is interrupted, the recipe will pause.
+pollution.machine.node_blast_furnace.tooltip.6=The longer the recipe duration, the higher the Ordo and Perditio attributes of the consumed encapsulated aura nodes, resulting in higher production of essence materials.
+pollution.machine.node_blast_furnace.tooltip.7=During continuous consumption of aura nodes in alchemical smelting mode, energy consumption reduction gradually increases, capping at a 25%% energy savings.
+pollution.machine.node_blast_furnace.tooltip.8=The powerful Node Fusion Blast Furnace also supports additional laser hatches!
+pollution.machine.node_blast_furnace_coillevel=Coil Level: %s
+
+# Mini Magical Chemical Plant
+pollution.machine.small_chemical_plant.name=Miniature Arcane Chemical Plant
+pollution.machine.small.chemical.plant.tooltip.1=§5♪Time Stopper♪ The illustrious maid makes her dazzling debut! §r
+pollution.machine.small.chemical.plant.tooltip.2=A more concise small-scale chemical plant!
+pollution.machine.small.chemical.plant.tooltip.3=Upgrade the coils to achieve 2^coil level parallelism. The chemical plant recipe limit is 256; the fluidized bed recipe limit is 64.
+pollution.machine.small.chemical.plant.tooltip.4=It can also execute magical catalytic recipes, with parallelism set to 4 * coil level.
+pollution.machine.small.chemical.plant.tooltip.5=In all modes, each coil upgrade reduces the total recipe time by 5%%.
+#Node Washer
+pollution.machine.node_washer.name=Node Rebirth Purification Pool
+pollution.machine.node_washer.tooltip.1=Arcane Bathhouse, but GT-style
+pollution.machine.node_washer.tooltip.2=Infuse aspect fluids to enhance the aspect values of aura nodes, just like rerolling stats!
+pollution.machine.node_washer.tooltip.3=aer-terra, aqua-ignis, ordo-perditio are opposing aspects; infusing one will reduce the value of its opposite
+pollution.machine.node_washer.tooltip.4=Coil and voltage levels determine the expected aspect values after rewashing
+pollution.machine.node_washer.tooltip.5=The washing process is random, with varying durations. Power outages during the process will cause nodes to be lost!
+
+# Alchemical Furnace
+pollution.machine.essence_smelter.name=Prototype Arcane Essence Smelting Hub
+pollution.machine.essence_smelter.tooltip.1=§5All that exists is interconnected, all that happens has a root, and all that is witnessed is mysterious. ——Carter Satoli, the Last Witch§r
+pollution.machine.essence_smelter.tooltip.2=The source essence smelting plant of the industrial age, the cornerstone of new mysticism.
+pollution.machine.essence_smelter.tooltip.3=This machine has an essence smelting efficiency of 100%%! No need to worry about wasting essence!
+pollution.machine.essence_smelter.tooltip.4=Additionally, this machine is environmentally friendly and produces no pollution!
+pollution.machine.essence_smelter.tooltip.5=Input liquid Blaze as fuel. After powering on, each operation will smelt the elements contained in one item from the input bus into essence.
+pollution.machine.essence_smelter.tooltip.6=If the item contains no elements, the machine will not smelt it. Be careful when feeding materials; items containing elements will be §c§lquickly smelted§r!
+pollution.machine.essence_smelter.tooltip.7=Place essence containers within a 5-block radius centered on the main block to receive the smelted essence.
+pollution.machine.essence_smelter.tooltip.8=The higher the voltage level, the lower the fuel consumption; each increase in voltage reduces the smelting time by 1/4.
+pollution.machine.essence_smelter.tooltip.9=The machine contains an essence buffer; essence is not wasted. The next smelting duration = (current item's essence + buffered essence) * 0.5s.
+pollution.machine.essence_smelter.tooltip.10=Therefore, the more buffered essence, the slower the machine's next operation. Please quickly export all essence to the container...
+pollution.machine.essence_smelter_infusedcost=Current recipe essence consumption per tick: %s
+pollution.machine.essence_smelter_smeltingduration=This smelting duration: %s
+pollution.machine.essence_smelter_timer=Smelting progress: %s
+pollution.machine.essence_smelter_euttier=Voltage level: %s
+
+# Endoflame Array
+pollution.machine.endoflame_array.name=Endoflame Magical Power Array
+pollution.machine.endoflame_array.tooltip.1=§aA zero-carbon-emission power plant? Impossible!§r
+pollution.machine.endoflame_array.tooltip.2=Place several Endoflames in the input bus to achieve parallel magical generation, just like processing arrays.
+pollution.machine.endoflame_array.tooltip.3=Input fuel into the input bus; all usable fuels in the furnace are converted into fuel buffers.
+pollution.machine.endoflame_array.tooltip.4=Place mana containers to extract mana from the mana pool. Rest assured, 0 pollution!
+pollution.machine.endoflame_array.display.flowers=Endoflames: %s
+pollution.machine.endoflame_array.display.fuel_items=Remaining fuel items: %s
+pollution.machine.endoflame_array.display.fuel_cache=Burn-time buffer: %s / %s ticks
+pollution.machine.endoflame_array.display.output=Actual mana output: %s Mana/t
+pollution.machine.endoflame_array.display.mana_pool=Output pool buffer: %s / %s Mana
+
+# Dimensional Gas Collector
+pollution.machine.bot_gas_collector.name=Dimensional Secret Art Atmospheric Pump
+pollution.machine.bot_gas_collector.tooltip.1=§aIn tribute to Ye Kong, the Warden of Secrets for his contributions to dimensional research, the Tianyi 3G is too fast!§r
+pollution.machine.bot_gas_collector.tooltip.2=Install this atmospheric pump to extract various types of air at home by consuming elements!
+pollution.machine.bot_gas_collector.tooltip.3=This machine does not require electricity, so discard your prepared energy hatches.
+pollution.machine.bot_gas_collector.tooltip.4=Input Su Mu essence and specific fluid elements to extract corresponding air types.
+pollution.machine.bot_gas_collector.tooltip.5=The correspondence is: Air - Overworld, Blaze - Nether, Alien - End, Magic - Mars, Filth - Crossed Worlds.
+pollution.machine.bot_gas_collector.tooltip.6=The machine cannot extract multiple types of air simultaneously; carefully select the desired air type.
+pollution.machine.bot_gas_collector.tooltip.7=Su Mu essence is consumed only once every 100 extraction cycles, while elements are consumed every tick.
+pollution.machine.bot_gas_collector.tooltip.8=Upgrading the machine's core level slightly reduces element consumption speed.
+pollution.machine.bot_gas_collector.tooltip.9=The machine consumes mana; the mana hatch level determines its operational efficiency, but higher levels are not always better.
+pollution.machine.bot_gas_collector.tooltip.10=Each increase in mana hatch level reduces element consumption by 5%%, doubles mana consumption, and doubles atmospheric output.
+pollution.machine.bot_gas_collector_beamLevel=Core Level: %s
+pollution.machine.bot_gas_collector_essenceConsumptionSpeed=Element Consumption Speed: %s
+pollution.machine.bot_gas_collector_manaConsumptionSpeed=Mana Consumption Speed: %s
+pollution.machine.bot_gas_collector_finalCollectionSpeed=Final Atmospheric Collection per Tick: %s
+
+# GT Alchemical Furnace
+pollution.machine.gt_essence_smelter.name=Industrial Specialized Arcane Essence Smelting Hub
+pollution.machine.gt_essence_smelter.tooltip.1=§5Two rabbits running side by side, how can you tell which is male or female?§r
+pollution.machine.gt_essence_smelter.tooltip.2=The mechanism is almost identical to its sister model; refer to the prototype description.
+pollution.machine.gt_essence_smelter.tooltip.3=The difference is that this machine directly outputs GT fluid versions of essence.
+pollution.machine.gt_essence_smelter.tooltip.4=It is recommended to install more output hatches to handle the flood of essence!
+pollution.machine.gt_essence_smelter_infusedcost=Current recipe essence consumption per tick: %s
+pollution.machine.gt_essence_smelter_smeltingduration=This smelting duration: %s
+pollution.machine.gt_essence_smelter_timer=Smelting progress: %s
+pollution.machine.gt_essence_smelter_euttier=Voltage level: %s
+
+# Central Vis Tower
+pollution.machine.central_vis_tower.name=Star Tide Flow Chrysalis Essence Control Tower
+pollution.machine.central_vis_tower.tooltip.1=§aAlthough the name contains the word "god," it does not pursue any faith; skilled in transferring misfortune, yet keeps sorrow to itself. §r
+pollution.machine.central_vis_tower.tooltip.2=Maintains the balance of aura in a region while collecting valuable high-tier essence substances.
+pollution.machine.central_vis_tower.tooltip.3=Every 20 seconds of normal mana consumption, the tower balances the aura in the controlled chunks.
+pollution.machine.central_vis_tower.tooltip.4=Pollution is cleared by 80%%, and aura is replenished or consumed based on the chunk's standard deviation by 80%%.
+pollution.machine.central_vis_tower.tooltip.5=Cleared pollution generates Xuan Pin essence in proportion, while collected aura converts into Su Mu essence.
+pollution.machine.central_vis_tower.tooltip.6=Clearing pollution and generating aura impose a burden on the machine, while absorbing aura reduces the burden.
+pollution.machine.central_vis_tower.tooltip.7=Within the control range of the tower, balanced chunks without excessive processing provide potential for Tian Xuan essence generation.
+pollution.machine.central_vis_tower.tooltip.8=If all chunks within range are balanced, Tian Xuan essence can be generated.
+pollution.machine.central_vis_tower.tooltip.9=Upgrade the containment frame to increase the chunk control radius. Upgrade the mana hatch level to increase essence collection, doubling mana consumption per level.
+pollution.machine.central_vis_tower.tooltip.10=Chunk control radius = Containment Frame Level - 1, minimum 1 (9 chunks), maximum 3 (49 chunks).
+pollution.machine.central_vis_tower.tooltip.11=§cNote! Within the control range of the central tower, no other central towers can be placed, or neither will function!§r
+pollution.machine.central_vis_tower_canwork=Can the machine work: %s
+pollution.machine.central_vis_tower_framelevel=Containment Frame Level: %s
+pollution.machine.central_vis_tower_timer=Cleaning Progress: %s
+pollution.machine.central_vis_tower_manatier=Mana Hatch Level: %s
+pollution.machine.central_vis_tower_fluxcleaned=Last Pollution Cleaned: %s
+pollution.machine.central_vis_tower_aurasupplemented=Last Aura Supplied: %s
+pollution.machine.central_vis_tower_goodchunkamount=Number of Balanced Chunks: %s
+
+# 节点聚变反应堆
+pollution.machine.node_fusion_reactor.luv.name=Eternal Dawn Sun Core
+pollution.machine.node_fusion_reactor.zpm.name=Eternal Morning Sun Core
+pollution.machine.node_fusion_reactor.uv.name=Eternal Zenith Sun Core
+pollution.machine.node.fusion.reactor.tooltip.1=§5The sunrise is blood, and I prophesy that the blazing sun will rise from the blood, yet without the color of blood or the hour of night. §r
+pollution.machine.node.fusion.reactor.tooltip.2=A mystical rewrite of the fusion reactor!
+pollution.machine.node.fusion.reactor.tooltip.3=Equipped with 16 input buses for placing nodes to provide different factors.
+pollution.machine.node.fusion.reactor.tooltip.4=Each parallel factor provides 2x parallelism for nuclear fusion reactions and 1x parallelism for radiant essence transmutation.
+pollution.machine.node.fusion.reactor.tooltip.5=Cost reduction factors slightly reduce power consumption, while acceleration factors slightly increase machine processing speed.
+pollution.machine.node.fusion.reactor.tooltip.6=The magnitude of the other three factors determines the consumption rate of the three types of essences.
+pollution.machine.node.fusion.reactor.tooltip.7=Each node's unique attributes provide different factors; explore how to configure them on your own.
+pollution.machine.node.fusion.reactor.tooltip.8=For regular nuclear fusion, no essence consumption is required, and the requirements of the last three factors can be ignored.
+pollution.machine.node.fusion.reactor.tooltip.9=For radiant essence transmutation, essence consumption is required; otherwise, it will not function.
+pollution.machine.node.fusion.reactor.tooltip.10=Additionally, radiant essence transmutation requires the block where the main machine resides to remain in a super-stable state; otherwise, it will also fail to operate.
+pollution.machine.node.fusion.reactor.tooltip.11=A super-stable state means extremely low pollution and aura values very close to the default standard value of the block.
+pollution.machine.node.fusion.reactor.tooltip.12=The machine still has recipe creation restrictions based on upgrades—yes, you cannot skip tech levels.
+pollution.machine.node.fusion.reactor.tooltip.13=Unlike regular fusion reactors, the energy hatch level starts at LuV but has no upper limit.
+pollution.machine.node.fusion.reactor.tooltip.14=Upgrade multi-blocks to increase the energy hatch level, double parallelism, and generate higher-level nuclear fusion reactions and radiant essence transmutations!
+
+
+#Magic Fusion Reactor
+pollution.machine.magic_fusion_reactor.name=Explosive Aspect Disintegration Essentia-Infused Magic Soul Matrix
+
+# Bot Base Class
+pollution.mana_multiblock_with_electric.tooltip.1=This machine obtains parallelism and power reduction based on the mana hatch level.
+pollution.mana_multiblock_with_electric.tooltip.2=Mana hatches from levels 1-3 provide 64 parallel operations; each subsequent upgrade adds 64, directly reaching 512 parallel operations after level 8.
+pollution.mana_multiblock_with_electric.tooltip.3=The required power for recipes is always divided by the mana hatch level; each increase in level doubles the mana consumption.
+
+pollution.machine.bot_vacuum_freezer.name=Transcendent Arcane Deep Blue Winter Array
+pollution.machine.bot_vacuum_freezer.tooltip=§aFaced with a night filled with starlight and portents, I opened my heart to this world's captivating indifference for the first time.§r
+
+pollution.machine.bot_circuit_assembler.name=Advanced Arcane Circuit Assembly Center
+pollution.machine.bot_circuit_assembler.tooltip=§aIf the blood of martyrs is to flow on the steps, we must build the steps first.§r
+
+pollution.machine.industial_pure_daisy.name=秘学新植白菊之塔
+pollution.machine.mana_petal_apothecary.name=秘学新植花药之杯
+pollution.machine.mana_rune_altar.name=秘学新植符文之台
+pollution.machine.mana_infusion_reactor.name=秘学新植注魔之坛
+
+itemGroup.Pollution=Pollution
+itemGroup.Tarot=Tarot
+#Chambers
+pollution.machine.mana_hatch.lv.name=Mana Hatch（§7LV§r）
+pollution.machine.mana_hatch.mv.name=Mana Hatch（§bMV§r）
+pollution.machine.mana_hatch.hv.name=Mana Hatch（§6HV§r）
+pollution.machine.mana_hatch.ev.name=Mana Hatch（§5EV§r）
+pollution.machine.mana_hatch.iv.name=Mana Hatch（§1IV§r）
+pollution.machine.mana_hatch.luv.name=Mana Hatch（§dLuV§r）
+pollution.machine.mana_hatch.zpm.name=Mana Hatch（§cZPM§r）
+pollution.machine.mana_hatch.uv.name=Mana Hatch（§3UV§r）
+pollution.machine.mana_hatch.uhv.name=Mana Hatch（§4UHV§r）
+pollution.machine.mana_hatch.uev.name=Mana Hatch（§aUEV§r）
+pollution.machine.mana_hatch.uiv.name=Mana Hatch（§2UIV§r）
+pollution.machine.mana_hatch.uxv.name=Mana Hatch（§eUXV§r）
+pollution.machine.mana_hatch.opv.name=Mana Hatch（§9OpV§r）
+pollution.machine.mana_hatch.max.name=Mana Hatch（§c§lMAX§r）
+
+pollution.machine.mana_pool_hatch.lv.name=ManaPool Hatch（§7LV§r）
+pollution.machine.mana_pool_hatch.mv.name=ManaPool Hatch（§bMV§r）
+pollution.machine.mana_pool_hatch.hv.name=ManaPool Hatch（§6HV§r）
+pollution.machine.mana_pool_hatch.ev.name=ManaPool Hatch（§5EV§r）
+pollution.machine.mana_pool_hatch.iv.name=ManaPool Hatch（§1IV§r）
+pollution.machine.mana_pool_hatch.luv.name=ManaPool Hatch（§dLuV§r）
+pollution.machine.mana_pool_hatch.zpm.name=ManaPool Hatch（§cZPM§r）
+pollution.machine.mana_pool_hatch.uv.name=ManaPool Hatch（§3UV§r）
+pollution.machine.mana_pool_hatch.uhv.name=ManaPool Hatch（§4UHV§r）
+pollution.machine.mana_pool_hatch.uev.name=ManaPool Hatch（§aUEV§r）
+pollution.machine.mana_pool_hatch.uiv.name=ManaPool Hatch（§2UIV§r）
+pollution.machine.mana_pool_hatch.uxv.name=ManaPool Hatch（§eUXV§r）
+pollution.machine.mana_pool_hatch.opv.name=ManaPool Hatch（§9OpV§r）
+pollution.machine.mana_pool_hatch.max.name=ManaPool Hatch（§c§lMAX§r）
+
+pollution.flux_clear.tier=§5Tier: %s Pollution Cleansed per Tick: %s Vis
+pollution.flux_clear.tier1=%spollution.machine.mana_pool_hatch.max.name=ManaPool Hatch(MAX)
+
+pollution.gui.aspect_amount=Aspect Total:
+
+pollution.machine.aspect_tank.tooltip=Shenbi's GT
+pollution.universal.tooltip.aspect_storage_capacity=§5Aspect Capacity: §f%,d Mana Crystal Shards
+pollution.universal.tooltip.aspect_storage=§9Contains Aspect: §f%2$,d Mana Crystal Shards %1$s
+pollution.universal.tooltip.aspect_locked=§f%1$s §cLocked!
+pollution.machine.aspect_tank.help=You can place §dAspect Ampoules§r or §bAspect Canisters§r that can §6store aspects§r into the input slot to store aspects
+
+pollution.machine.aspect_tank.lv.name=Super Aspect Tank I
+pollution.machine.aspect_tank.mv.name=Super Aspect Tank II
+pollution.machine.aspect_tank.hv.name=Super Aspect Tank III
+pollution.machine.aspect_tank.ev.name=Super Aspect Tank IV
+pollution.machine.aspect_tank.iv.name=Quantum Aspect Tank I
+pollution.machine.aspect_tank.luv.name=Quantum Aspect Tank II
+pollution.machine.aspect_tank.zpm.name=Quantum Aspect Tank III
+pollution.machine.aspect_tank.uv.name=Quantum Aspect Tank IV
+pollution.machine.aspect_tank.uhv.name=Quantum Aspect Tank V
+
+##矿脉
+pollution.vein.sphere.black_granite=Black Granite Sphere
+pollution.vein.sphere.red_granite=Red Granite Sphere
+pollution.vein.sphere.marble=Marble Sphere
+pollution.vein.sphere.basalt=Basalt Sphere
+pollution.vein.sphere.concrete_light=Light Concrete Sphere
+pollution.vein.sphere.concrete_dark=Dark Concrete Sphere
+pollution.vein.sphere.limestone=Limestone Sphere
+pollution.vein.sphere.komatiite=Komatiite Sphere
+pollution.vein.sphere.green_schist=Green Schist Sphere
+pollution.vein.sphere.blue_schist=Blue Schist Sphere
+pollution.vein.sphere.quartzite=Quartzite Sphere
+pollution.vein.sphere.slate=Slate Sphere
+pollution.vein.sphere.shale=Shale Sphere
+
+pollution.veins.ore.flame_coal=地下固焰煤矿脉
+pollution.veins.ore.octine=地下炽焰铁矿脉
+pollution.veins.ore.syrmorite=地下赛摩铜矿脉
+pollution.veins.ore.scabyst=地下痂壳晶矿脉
+pollution.veins.ore.valonite=地下法罗钠矿脉
+pollution.veins.ore.pyrargyrite=地下深红银矿脉
+pollution.veins.ore.pluto_zinc=地下锌锑硫化矿脉
+
+pollution.veins.ore.thaumastic.order=地下秩序元素蕴魔矿脉
+pollution.veins.ore.thaumastic.entropy=地下混沌元素蕴魔矿脉
+pollution.veins.ore.thaumastic.earth=地下土元素蕴魔矿脉
+pollution.veins.ore.thaumastic.air=地下气元素蕴魔矿脉
+pollution.veins.ore.thaumastic.fire=地下火元素蕴魔矿
+pollution.veins.ore.thaumastic.water=地下水元素蕴魔矿脉
+
+pollution.veins.ore.pure_tar=地下煤焦油球
+
+gregtech.veins.fluid.water=水矿藏
+gregtech.veins.fluid.pure_tar=地下煤焦油矿藏
+
+##实体
+entity.Aer Slime.name=风结晶史莱姆
+entity.Ignis Slime.name=火结晶史莱姆
+entity.Aqua Slime.name=水结晶史莱姆
+entity.Terra Slime.name=地结晶史莱姆
+entity.Ordo Slime.name=秩序结晶史莱姆
+entity.Perditio Slime.name=混沌结晶史莱姆
+entity.Basalz.name=岩石人
+entity.Blitz.name=狂风人
+entity.Blizz.name=暴雪人
+entity.pollution.basalz_bolt.name=岩石人蛋蛋
+entity.pollution.blitz_bolt.name=狂风人蛋蛋
+entity.blizz_bolt.basalz_bolt.name=暴雪人蛋蛋
+
+tile.fleshFlower.name=血肉之花
+tile.fleshPlant.name=血肉植株
+tile.pollution.flesh_block.name=Flesh Block
+tile.pollution.flesh_leaves.name=Flesh Leaves
+tile.pollution.flesh_heart.name=Flesh Heart Core
+tile.pollution.heart_fruit.name=Heart Fruit
+tile.pollution.flesh_sapling.name=Flesh Sapling
+item.pollution.heart_fruit_i.name=Heart Fruit
+tile.pollution.eldritch_eye.name=Eldritch Eye
+tile.pollution.tentacle.name=Writhing Tentacle
+tile.pollution.alfheim_elven_sand.name=Elven Sand
+tile.pollution.alfheim_dream_leaves.name=Dream Leaves
+tile.pollution.alfheim_white_grape.name=White Grapes
+tile.pollution.alfheim_red_grape_0.name=Red Grape Vine
+tile.pollution.alfheim_red_grape_1.name=Red Grape Vine
+pollution.machine.blood_magic_hatch.name=Blood Magic Hatch
+pollution.machine.astral_lens_hatch.name=Astral Lens Hatch
+pollution.machine.astral_lens_hatch_advanced.name=Advanced Astral Lens Hatch
+pollution.machine.tarot_hatch.name=Tarot Hatch
+
+# Magic integration materials
+pollution.material.optical_grade_aquamarine=Optical-Grade Aquamarine
+pollution.material.starlight_pollen=Starlight Pollen
+pollution.material.moonlight_resin=Moonlight Resin
+pollution.material.astral_blood_plasma=Astral Blood Plasma
+pollution.material.celestial_biological_medium=Celestial Biological Medium
+pollution.material.arcane_ink=Arcane Ink
+pollution.material.starry_arcane_alloy=Starry Arcane Alloy
+
+# Magic integration cores
+metaitem.astral_lens_basic.name=Basic Astral Lens
+metaitem.astral_lens_basic.tooltip=Focuses starlight into a stable beam readable by machinery
+metaitem.astral_lens_advanced.name=Advanced Astral Lens
+metaitem.astral_lens_advanced.tooltip=Uses multiple refraction rings to carry complex constellation data
+metaitem.celestial_calibration_core.name=Celestial Calibration Core
+metaitem.celestial_calibration_core.tooltip=Calibrates machinery against the current sky, constellation and starlight level
+metaitem.harmonizing_rune_core.name=Harmonizing Rune Core
+metaitem.harmonizing_rune_core.tooltip=Synchronizes mana, essentia, life essence and starlight processing cycles
+metaitem.astral_blood_catalyst.name=Astral Blood Catalyst
+metaitem.astral_blood_catalyst.tooltip=Keeps starlight and life essence compatible during reactions
+metaitem.astral_neural_bundle.name=Astral Neural Bundle
+metaitem.astral_neural_bundle.tooltip=A living computational intermediate capable of carrying constellation signals
+metaitem.primordial_star_blood_crystal.name=Primordial Star-Blood Crystal
+metaitem.primordial_star_blood_crystal.tooltip=A terminal crystal of primordial starlight, life essence and soul information
+metaitem.causality_catalyst.name=Causality Catalyst
+metaitem.causality_catalyst.tooltip=Constrains the inputs, results and causal order of cross-magic reactions
+
+# Magic processing intermediates
+metaitem.silvered_glass_lens.name=Silvered Glass Lens
+metaitem.silvered_glass_lens.tooltip=The mechanical optical substrate of an astral lens
+metaitem.astral_resonance_coil.name=Astral Resonance Coil
+metaitem.astral_resonance_coil.tooltip=Converts an astral field into a stable machine resonance signal
+metaitem.mana_resonance_coil.name=Mana Resonance Coil
+metaitem.mana_resonance_coil.tooltip=Converts Botania mana into a controllable processing field
+metaitem.sterile_slate_blank.name=Sterile Slate Blank
+metaitem.sterile_slate_blank.tooltip=A clean substrate for precision Blood Magic slate and rune inscription
+metaitem.precision_rune_blank.name=Precision Rune Blank
+metaitem.precision_rune_blank.tooltip=Standardized empty channels accept runes from different magic systems
+metaitem.rock_crystal_seed.name=Rock Crystal Seed
+metaitem.rock_crystal_seed.tooltip=A selected seed for controlled Astral Sorcery crystal growth
+metaitem.celestial_crystal_embryo.name=Celestial Crystal Growth Embryo
+metaitem.celestial_crystal_embryo.tooltip=Retains seed quality until celestial growth under a real sky
+metaitem.cultivated_crystal.name=Cultivated Crystal
+metaitem.cultivated_crystal.tooltip=Independent output of the Celestial Crystal Growth Array; fits the Advanced Astral Lens Hatch
+pollution.crystal_quality.unselected=No valid crystal quality data
+pollution.crystal_quality.purity=Crystal Purity: %s
+pollution.crystal_quality.stability=Cultivation Stability: %s
+pollution.crystal_quality.embryo=Celestial cultivation stage
+metaitem.natural_infused_coil.name=Natural Infused Coil
+metaitem.natural_infused_coil.tooltip=Uses plant vitality to sustain an adaptive magical processing field
+metaitem.magic_control_assembly_ev.name=Magic Control Assembly
+metaitem.magic_control_assembly_ev.tooltip=The MV-stage standard link between GT control circuits and magical interfaces
+metaitem.node_stabilization_frame.name=Node Stabilization Frame
+metaitem.node_stabilization_frame.tooltip=Secures an aura node while isolating it from external essentia disturbances
+metaitem.blank_tarot_card.name=Blank Tarot Card
+metaitem.blank_tarot_card.tooltip=A standard card base without an inscribed Major Arcana symbol or effect
+metaitem.arcane_ink_capsule.name=Arcane Ink Capsule
+metaitem.arcane_ink_capsule.tooltip=Contains a metered dose of arcane ink for tarot and rune inscription
+tile.pollution.alfheim_red_grape_2.name=Red Grape Vine
+tile.pollution.mineral_extractor.name=Mineral Extractor
+
+# Directional mana input/output hatches
+pollution.machine.mana_input_hatch_1a.lv.name=1A Mana Input Hatch (§7LV§r)
+pollution.machine.mana_input_hatch_1a.mv.name=1A Mana Input Hatch (§bMV§r)
+pollution.machine.mana_input_hatch_1a.hv.name=1A Mana Input Hatch (§6HV§r)
+pollution.machine.mana_input_hatch_1a.ev.name=1A Mana Input Hatch (§5EV§r)
+pollution.machine.mana_input_hatch_1a.iv.name=1A Mana Input Hatch (§1IV§r)
+pollution.machine.mana_input_hatch_1a.luv.name=1A Mana Input Hatch (§dLuV§r)
+pollution.machine.mana_input_hatch_1a.zpm.name=1A Mana Input Hatch (§cZPM§r)
+pollution.machine.mana_input_hatch_1a.uv.name=1A Mana Input Hatch (§3UV§r)
+pollution.machine.mana_input_hatch_1a.uhv.name=1A Mana Input Hatch (§4UHV§r)
+pollution.machine.mana_input_hatch_1a.uev.name=1A Mana Input Hatch (§aUEV§r)
+pollution.machine.mana_input_hatch_1a.uiv.name=1A Mana Input Hatch (§2UIV§r)
+pollution.machine.mana_input_hatch_1a.uxv.name=1A Mana Input Hatch (§eUXV§r)
+pollution.machine.mana_input_hatch_1a.opv.name=1A Mana Input Hatch (§9OpV§r)
+pollution.machine.mana_input_hatch_1a.max.name=1A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.mana_input_hatch_4a.lv.name=4A Mana Input Hatch (§7LV§r)
+pollution.machine.mana_input_hatch_4a.mv.name=4A Mana Input Hatch (§bMV§r)
+pollution.machine.mana_input_hatch_4a.hv.name=4A Mana Input Hatch (§6HV§r)
+pollution.machine.mana_input_hatch_4a.ev.name=4A Mana Input Hatch (§5EV§r)
+pollution.machine.mana_input_hatch_4a.iv.name=4A Mana Input Hatch (§1IV§r)
+pollution.machine.mana_input_hatch_4a.luv.name=4A Mana Input Hatch (§dLuV§r)
+pollution.machine.mana_input_hatch_4a.zpm.name=4A Mana Input Hatch (§cZPM§r)
+pollution.machine.mana_input_hatch_4a.uv.name=4A Mana Input Hatch (§3UV§r)
+pollution.machine.mana_input_hatch_4a.uhv.name=4A Mana Input Hatch (§4UHV§r)
+pollution.machine.mana_input_hatch_4a.uev.name=4A Mana Input Hatch (§aUEV§r)
+pollution.machine.mana_input_hatch_4a.uiv.name=4A Mana Input Hatch (§2UIV§r)
+pollution.machine.mana_input_hatch_4a.uxv.name=4A Mana Input Hatch (§eUXV§r)
+pollution.machine.mana_input_hatch_4a.opv.name=4A Mana Input Hatch (§9OpV§r)
+pollution.machine.mana_input_hatch_4a.max.name=4A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.mana_input_hatch_16a.lv.name=16A Mana Input Hatch (§7LV§r)
+pollution.machine.mana_input_hatch_16a.mv.name=16A Mana Input Hatch (§bMV§r)
+pollution.machine.mana_input_hatch_16a.hv.name=16A Mana Input Hatch (§6HV§r)
+pollution.machine.mana_input_hatch_16a.ev.name=16A Mana Input Hatch (§5EV§r)
+pollution.machine.mana_input_hatch_16a.iv.name=16A Mana Input Hatch (§1IV§r)
+pollution.machine.mana_input_hatch_16a.luv.name=16A Mana Input Hatch (§dLuV§r)
+pollution.machine.mana_input_hatch_16a.zpm.name=16A Mana Input Hatch (§cZPM§r)
+pollution.machine.mana_input_hatch_16a.uv.name=16A Mana Input Hatch (§3UV§r)
+pollution.machine.mana_input_hatch_16a.uhv.name=16A Mana Input Hatch (§4UHV§r)
+pollution.machine.mana_input_hatch_16a.uev.name=16A Mana Input Hatch (§aUEV§r)
+pollution.machine.mana_input_hatch_16a.uiv.name=16A Mana Input Hatch (§2UIV§r)
+pollution.machine.mana_input_hatch_16a.uxv.name=16A Mana Input Hatch (§eUXV§r)
+pollution.machine.mana_input_hatch_16a.opv.name=16A Mana Input Hatch (§9OpV§r)
+pollution.machine.mana_input_hatch_16a.max.name=16A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.mana_input_hatch_64a.lv.name=64A Mana Input Hatch (§7LV§r)
+pollution.machine.mana_input_hatch_64a.mv.name=64A Mana Input Hatch (§bMV§r)
+pollution.machine.mana_input_hatch_64a.hv.name=64A Mana Input Hatch (§6HV§r)
+pollution.machine.mana_input_hatch_64a.ev.name=64A Mana Input Hatch (§5EV§r)
+pollution.machine.mana_input_hatch_64a.iv.name=64A Mana Input Hatch (§1IV§r)
+pollution.machine.mana_input_hatch_64a.luv.name=64A Mana Input Hatch (§dLuV§r)
+pollution.machine.mana_input_hatch_64a.zpm.name=64A Mana Input Hatch (§cZPM§r)
+pollution.machine.mana_input_hatch_64a.uv.name=64A Mana Input Hatch (§3UV§r)
+pollution.machine.mana_input_hatch_64a.uhv.name=64A Mana Input Hatch (§4UHV§r)
+pollution.machine.mana_input_hatch_64a.uev.name=64A Mana Input Hatch (§aUEV§r)
+pollution.machine.mana_input_hatch_64a.uiv.name=64A Mana Input Hatch (§2UIV§r)
+pollution.machine.mana_input_hatch_64a.uxv.name=64A Mana Input Hatch (§eUXV§r)
+pollution.machine.mana_input_hatch_64a.opv.name=64A Mana Input Hatch (§9OpV§r)
+pollution.machine.mana_input_hatch_64a.max.name=64A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.mana_output_hatch_1a.lv.name=1A Mana Output Hatch (§7LV§r)
+pollution.machine.mana_output_hatch_1a.mv.name=1A Mana Output Hatch (§bMV§r)
+pollution.machine.mana_output_hatch_1a.hv.name=1A Mana Output Hatch (§6HV§r)
+pollution.machine.mana_output_hatch_1a.ev.name=1A Mana Output Hatch (§5EV§r)
+pollution.machine.mana_output_hatch_1a.iv.name=1A Mana Output Hatch (§1IV§r)
+pollution.machine.mana_output_hatch_1a.luv.name=1A Mana Output Hatch (§dLuV§r)
+pollution.machine.mana_output_hatch_1a.zpm.name=1A Mana Output Hatch (§cZPM§r)
+pollution.machine.mana_output_hatch_1a.uv.name=1A Mana Output Hatch (§3UV§r)
+pollution.machine.mana_output_hatch_1a.uhv.name=1A Mana Output Hatch (§4UHV§r)
+pollution.machine.mana_output_hatch_1a.uev.name=1A Mana Output Hatch (§aUEV§r)
+pollution.machine.mana_output_hatch_1a.uiv.name=1A Mana Output Hatch (§2UIV§r)
+pollution.machine.mana_output_hatch_1a.uxv.name=1A Mana Output Hatch (§eUXV§r)
+pollution.machine.mana_output_hatch_1a.opv.name=1A Mana Output Hatch (§9OpV§r)
+pollution.machine.mana_output_hatch_1a.max.name=1A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.mana_output_hatch_4a.lv.name=4A Mana Output Hatch (§7LV§r)
+pollution.machine.mana_output_hatch_4a.mv.name=4A Mana Output Hatch (§bMV§r)
+pollution.machine.mana_output_hatch_4a.hv.name=4A Mana Output Hatch (§6HV§r)
+pollution.machine.mana_output_hatch_4a.ev.name=4A Mana Output Hatch (§5EV§r)
+pollution.machine.mana_output_hatch_4a.iv.name=4A Mana Output Hatch (§1IV§r)
+pollution.machine.mana_output_hatch_4a.luv.name=4A Mana Output Hatch (§dLuV§r)
+pollution.machine.mana_output_hatch_4a.zpm.name=4A Mana Output Hatch (§cZPM§r)
+pollution.machine.mana_output_hatch_4a.uv.name=4A Mana Output Hatch (§3UV§r)
+pollution.machine.mana_output_hatch_4a.uhv.name=4A Mana Output Hatch (§4UHV§r)
+pollution.machine.mana_output_hatch_4a.uev.name=4A Mana Output Hatch (§aUEV§r)
+pollution.machine.mana_output_hatch_4a.uiv.name=4A Mana Output Hatch (§2UIV§r)
+pollution.machine.mana_output_hatch_4a.uxv.name=4A Mana Output Hatch (§eUXV§r)
+pollution.machine.mana_output_hatch_4a.opv.name=4A Mana Output Hatch (§9OpV§r)
+pollution.machine.mana_output_hatch_4a.max.name=4A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.mana_output_hatch_16a.lv.name=16A Mana Output Hatch (§7LV§r)
+pollution.machine.mana_output_hatch_16a.mv.name=16A Mana Output Hatch (§bMV§r)
+pollution.machine.mana_output_hatch_16a.hv.name=16A Mana Output Hatch (§6HV§r)
+pollution.machine.mana_output_hatch_16a.ev.name=16A Mana Output Hatch (§5EV§r)
+pollution.machine.mana_output_hatch_16a.iv.name=16A Mana Output Hatch (§1IV§r)
+pollution.machine.mana_output_hatch_16a.luv.name=16A Mana Output Hatch (§dLuV§r)
+pollution.machine.mana_output_hatch_16a.zpm.name=16A Mana Output Hatch (§cZPM§r)
+pollution.machine.mana_output_hatch_16a.uv.name=16A Mana Output Hatch (§3UV§r)
+pollution.machine.mana_output_hatch_16a.uhv.name=16A Mana Output Hatch (§4UHV§r)
+pollution.machine.mana_output_hatch_16a.uev.name=16A Mana Output Hatch (§aUEV§r)
+pollution.machine.mana_output_hatch_16a.uiv.name=16A Mana Output Hatch (§2UIV§r)
+pollution.machine.mana_output_hatch_16a.uxv.name=16A Mana Output Hatch (§eUXV§r)
+pollution.machine.mana_output_hatch_16a.opv.name=16A Mana Output Hatch (§9OpV§r)
+pollution.machine.mana_output_hatch_16a.max.name=16A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.mana_output_hatch_64a.lv.name=64A Mana Output Hatch (§7LV§r)
+pollution.machine.mana_output_hatch_64a.mv.name=64A Mana Output Hatch (§bMV§r)
+pollution.machine.mana_output_hatch_64a.hv.name=64A Mana Output Hatch (§6HV§r)
+pollution.machine.mana_output_hatch_64a.ev.name=64A Mana Output Hatch (§5EV§r)
+pollution.machine.mana_output_hatch_64a.iv.name=64A Mana Output Hatch (§1IV§r)
+pollution.machine.mana_output_hatch_64a.luv.name=64A Mana Output Hatch (§dLuV§r)
+pollution.machine.mana_output_hatch_64a.zpm.name=64A Mana Output Hatch (§cZPM§r)
+pollution.machine.mana_output_hatch_64a.uv.name=64A Mana Output Hatch (§3UV§r)
+pollution.machine.mana_output_hatch_64a.uhv.name=64A Mana Output Hatch (§4UHV§r)
+pollution.machine.mana_output_hatch_64a.uev.name=64A Mana Output Hatch (§aUEV§r)
+pollution.machine.mana_output_hatch_64a.uiv.name=64A Mana Output Hatch (§2UIV§r)
+pollution.machine.mana_output_hatch_64a.uxv.name=64A Mana Output Hatch (§eUXV§r)
+pollution.machine.mana_output_hatch_64a.opv.name=64A Mana Output Hatch (§9OpV§r)
+pollution.machine.mana_output_hatch_64a.max.name=64A Mana Output Hatch (§c§lMAX§r)
+
+# Mana pool input/output hatches
+pollution.machine.mana_pool_input_hatch.diluted.name=Diluted Mana Pool Input Hatch
+pollution.machine.mana_pool_output_hatch.diluted.name=Diluted Mana Pool Output Hatch
+pollution.machine.mana_pool_input_hatch.normal.name=Normal Mana Pool Input Hatch
+pollution.machine.mana_pool_output_hatch.normal.name=Normal Mana Pool Output Hatch
+pollution.machine.mana_pool_input_hatch.mythic.name=Mythic Mana Pool Input Hatch
+pollution.machine.mana_pool_output_hatch.mythic.name=Mythic Mana Pool Output Hatch
+
+# Wireless mana input/output hatches
+pollution.machine.wireless.mana_input_hatch_1a.lv.name=Wireless 1A Mana Input Hatch (§7LV§r)
+pollution.machine.wireless.mana_input_hatch_1a.mv.name=Wireless 1A Mana Input Hatch (§bMV§r)
+pollution.machine.wireless.mana_input_hatch_1a.hv.name=Wireless 1A Mana Input Hatch (§6HV§r)
+pollution.machine.wireless.mana_input_hatch_1a.ev.name=Wireless 1A Mana Input Hatch (§5EV§r)
+pollution.machine.wireless.mana_input_hatch_1a.iv.name=Wireless 1A Mana Input Hatch (§1IV§r)
+pollution.machine.wireless.mana_input_hatch_1a.luv.name=Wireless 1A Mana Input Hatch (§dLuV§r)
+pollution.machine.wireless.mana_input_hatch_1a.zpm.name=Wireless 1A Mana Input Hatch (§cZPM§r)
+pollution.machine.wireless.mana_input_hatch_1a.uv.name=Wireless 1A Mana Input Hatch (§3UV§r)
+pollution.machine.wireless.mana_input_hatch_1a.uhv.name=Wireless 1A Mana Input Hatch (§4UHV§r)
+pollution.machine.wireless.mana_input_hatch_1a.uev.name=Wireless 1A Mana Input Hatch (§aUEV§r)
+pollution.machine.wireless.mana_input_hatch_1a.uiv.name=Wireless 1A Mana Input Hatch (§2UIV§r)
+pollution.machine.wireless.mana_input_hatch_1a.uxv.name=Wireless 1A Mana Input Hatch (§eUXV§r)
+pollution.machine.wireless.mana_input_hatch_1a.opv.name=Wireless 1A Mana Input Hatch (§9OpV§r)
+pollution.machine.wireless.mana_input_hatch_1a.max.name=Wireless 1A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_input_hatch_4a.lv.name=Wireless 4A Mana Input Hatch (§7LV§r)
+pollution.machine.wireless.mana_input_hatch_4a.mv.name=Wireless 4A Mana Input Hatch (§bMV§r)
+pollution.machine.wireless.mana_input_hatch_4a.hv.name=Wireless 4A Mana Input Hatch (§6HV§r)
+pollution.machine.wireless.mana_input_hatch_4a.ev.name=Wireless 4A Mana Input Hatch (§5EV§r)
+pollution.machine.wireless.mana_input_hatch_4a.iv.name=Wireless 4A Mana Input Hatch (§1IV§r)
+pollution.machine.wireless.mana_input_hatch_4a.luv.name=Wireless 4A Mana Input Hatch (§dLuV§r)
+pollution.machine.wireless.mana_input_hatch_4a.zpm.name=Wireless 4A Mana Input Hatch (§cZPM§r)
+pollution.machine.wireless.mana_input_hatch_4a.uv.name=Wireless 4A Mana Input Hatch (§3UV§r)
+pollution.machine.wireless.mana_input_hatch_4a.uhv.name=Wireless 4A Mana Input Hatch (§4UHV§r)
+pollution.machine.wireless.mana_input_hatch_4a.uev.name=Wireless 4A Mana Input Hatch (§aUEV§r)
+pollution.machine.wireless.mana_input_hatch_4a.uiv.name=Wireless 4A Mana Input Hatch (§2UIV§r)
+pollution.machine.wireless.mana_input_hatch_4a.uxv.name=Wireless 4A Mana Input Hatch (§eUXV§r)
+pollution.machine.wireless.mana_input_hatch_4a.opv.name=Wireless 4A Mana Input Hatch (§9OpV§r)
+pollution.machine.wireless.mana_input_hatch_4a.max.name=Wireless 4A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_input_hatch_16a.lv.name=Wireless 16A Mana Input Hatch (§7LV§r)
+pollution.machine.wireless.mana_input_hatch_16a.mv.name=Wireless 16A Mana Input Hatch (§bMV§r)
+pollution.machine.wireless.mana_input_hatch_16a.hv.name=Wireless 16A Mana Input Hatch (§6HV§r)
+pollution.machine.wireless.mana_input_hatch_16a.ev.name=Wireless 16A Mana Input Hatch (§5EV§r)
+pollution.machine.wireless.mana_input_hatch_16a.iv.name=Wireless 16A Mana Input Hatch (§1IV§r)
+pollution.machine.wireless.mana_input_hatch_16a.luv.name=Wireless 16A Mana Input Hatch (§dLuV§r)
+pollution.machine.wireless.mana_input_hatch_16a.zpm.name=Wireless 16A Mana Input Hatch (§cZPM§r)
+pollution.machine.wireless.mana_input_hatch_16a.uv.name=Wireless 16A Mana Input Hatch (§3UV§r)
+pollution.machine.wireless.mana_input_hatch_16a.uhv.name=Wireless 16A Mana Input Hatch (§4UHV§r)
+pollution.machine.wireless.mana_input_hatch_16a.uev.name=Wireless 16A Mana Input Hatch (§aUEV§r)
+pollution.machine.wireless.mana_input_hatch_16a.uiv.name=Wireless 16A Mana Input Hatch (§2UIV§r)
+pollution.machine.wireless.mana_input_hatch_16a.uxv.name=Wireless 16A Mana Input Hatch (§eUXV§r)
+pollution.machine.wireless.mana_input_hatch_16a.opv.name=Wireless 16A Mana Input Hatch (§9OpV§r)
+pollution.machine.wireless.mana_input_hatch_16a.max.name=Wireless 16A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_input_hatch_64a.lv.name=Wireless 64A Mana Input Hatch (§7LV§r)
+pollution.machine.wireless.mana_input_hatch_64a.mv.name=Wireless 64A Mana Input Hatch (§bMV§r)
+pollution.machine.wireless.mana_input_hatch_64a.hv.name=Wireless 64A Mana Input Hatch (§6HV§r)
+pollution.machine.wireless.mana_input_hatch_64a.ev.name=Wireless 64A Mana Input Hatch (§5EV§r)
+pollution.machine.wireless.mana_input_hatch_64a.iv.name=Wireless 64A Mana Input Hatch (§1IV§r)
+pollution.machine.wireless.mana_input_hatch_64a.luv.name=Wireless 64A Mana Input Hatch (§dLuV§r)
+pollution.machine.wireless.mana_input_hatch_64a.zpm.name=Wireless 64A Mana Input Hatch (§cZPM§r)
+pollution.machine.wireless.mana_input_hatch_64a.uv.name=Wireless 64A Mana Input Hatch (§3UV§r)
+pollution.machine.wireless.mana_input_hatch_64a.uhv.name=Wireless 64A Mana Input Hatch (§4UHV§r)
+pollution.machine.wireless.mana_input_hatch_64a.uev.name=Wireless 64A Mana Input Hatch (§aUEV§r)
+pollution.machine.wireless.mana_input_hatch_64a.uiv.name=Wireless 64A Mana Input Hatch (§2UIV§r)
+pollution.machine.wireless.mana_input_hatch_64a.uxv.name=Wireless 64A Mana Input Hatch (§eUXV§r)
+pollution.machine.wireless.mana_input_hatch_64a.opv.name=Wireless 64A Mana Input Hatch (§9OpV§r)
+pollution.machine.wireless.mana_input_hatch_64a.max.name=Wireless 64A Mana Input Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_output_hatch_1a.lv.name=Wireless 1A Mana Output Hatch (§7LV§r)
+pollution.machine.wireless.mana_output_hatch_1a.mv.name=Wireless 1A Mana Output Hatch (§bMV§r)
+pollution.machine.wireless.mana_output_hatch_1a.hv.name=Wireless 1A Mana Output Hatch (§6HV§r)
+pollution.machine.wireless.mana_output_hatch_1a.ev.name=Wireless 1A Mana Output Hatch (§5EV§r)
+pollution.machine.wireless.mana_output_hatch_1a.iv.name=Wireless 1A Mana Output Hatch (§1IV§r)
+pollution.machine.wireless.mana_output_hatch_1a.luv.name=Wireless 1A Mana Output Hatch (§dLuV§r)
+pollution.machine.wireless.mana_output_hatch_1a.zpm.name=Wireless 1A Mana Output Hatch (§cZPM§r)
+pollution.machine.wireless.mana_output_hatch_1a.uv.name=Wireless 1A Mana Output Hatch (§3UV§r)
+pollution.machine.wireless.mana_output_hatch_1a.uhv.name=Wireless 1A Mana Output Hatch (§4UHV§r)
+pollution.machine.wireless.mana_output_hatch_1a.uev.name=Wireless 1A Mana Output Hatch (§aUEV§r)
+pollution.machine.wireless.mana_output_hatch_1a.uiv.name=Wireless 1A Mana Output Hatch (§2UIV§r)
+pollution.machine.wireless.mana_output_hatch_1a.uxv.name=Wireless 1A Mana Output Hatch (§eUXV§r)
+pollution.machine.wireless.mana_output_hatch_1a.opv.name=Wireless 1A Mana Output Hatch (§9OpV§r)
+pollution.machine.wireless.mana_output_hatch_1a.max.name=Wireless 1A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_output_hatch_4a.lv.name=Wireless 4A Mana Output Hatch (§7LV§r)
+pollution.machine.wireless.mana_output_hatch_4a.mv.name=Wireless 4A Mana Output Hatch (§bMV§r)
+pollution.machine.wireless.mana_output_hatch_4a.hv.name=Wireless 4A Mana Output Hatch (§6HV§r)
+pollution.machine.wireless.mana_output_hatch_4a.ev.name=Wireless 4A Mana Output Hatch (§5EV§r)
+pollution.machine.wireless.mana_output_hatch_4a.iv.name=Wireless 4A Mana Output Hatch (§1IV§r)
+pollution.machine.wireless.mana_output_hatch_4a.luv.name=Wireless 4A Mana Output Hatch (§dLuV§r)
+pollution.machine.wireless.mana_output_hatch_4a.zpm.name=Wireless 4A Mana Output Hatch (§cZPM§r)
+pollution.machine.wireless.mana_output_hatch_4a.uv.name=Wireless 4A Mana Output Hatch (§3UV§r)
+pollution.machine.wireless.mana_output_hatch_4a.uhv.name=Wireless 4A Mana Output Hatch (§4UHV§r)
+pollution.machine.wireless.mana_output_hatch_4a.uev.name=Wireless 4A Mana Output Hatch (§aUEV§r)
+pollution.machine.wireless.mana_output_hatch_4a.uiv.name=Wireless 4A Mana Output Hatch (§2UIV§r)
+pollution.machine.wireless.mana_output_hatch_4a.uxv.name=Wireless 4A Mana Output Hatch (§eUXV§r)
+pollution.machine.wireless.mana_output_hatch_4a.opv.name=Wireless 4A Mana Output Hatch (§9OpV§r)
+pollution.machine.wireless.mana_output_hatch_4a.max.name=Wireless 4A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_output_hatch_16a.lv.name=Wireless 16A Mana Output Hatch (§7LV§r)
+pollution.machine.wireless.mana_output_hatch_16a.mv.name=Wireless 16A Mana Output Hatch (§bMV§r)
+pollution.machine.wireless.mana_output_hatch_16a.hv.name=Wireless 16A Mana Output Hatch (§6HV§r)
+pollution.machine.wireless.mana_output_hatch_16a.ev.name=Wireless 16A Mana Output Hatch (§5EV§r)
+pollution.machine.wireless.mana_output_hatch_16a.iv.name=Wireless 16A Mana Output Hatch (§1IV§r)
+pollution.machine.wireless.mana_output_hatch_16a.luv.name=Wireless 16A Mana Output Hatch (§dLuV§r)
+pollution.machine.wireless.mana_output_hatch_16a.zpm.name=Wireless 16A Mana Output Hatch (§cZPM§r)
+pollution.machine.wireless.mana_output_hatch_16a.uv.name=Wireless 16A Mana Output Hatch (§3UV§r)
+pollution.machine.wireless.mana_output_hatch_16a.uhv.name=Wireless 16A Mana Output Hatch (§4UHV§r)
+pollution.machine.wireless.mana_output_hatch_16a.uev.name=Wireless 16A Mana Output Hatch (§aUEV§r)
+pollution.machine.wireless.mana_output_hatch_16a.uiv.name=Wireless 16A Mana Output Hatch (§2UIV§r)
+pollution.machine.wireless.mana_output_hatch_16a.uxv.name=Wireless 16A Mana Output Hatch (§eUXV§r)
+pollution.machine.wireless.mana_output_hatch_16a.opv.name=Wireless 16A Mana Output Hatch (§9OpV§r)
+pollution.machine.wireless.mana_output_hatch_16a.max.name=Wireless 16A Mana Output Hatch (§c§lMAX§r)
+pollution.machine.wireless.mana_output_hatch_64a.lv.name=Wireless 64A Mana Output Hatch (§7LV§r)
+pollution.machine.wireless.mana_output_hatch_64a.mv.name=Wireless 64A Mana Output Hatch (§bMV§r)
+pollution.machine.wireless.mana_output_hatch_64a.hv.name=Wireless 64A Mana Output Hatch (§6HV§r)
+pollution.machine.wireless.mana_output_hatch_64a.ev.name=Wireless 64A Mana Output Hatch (§5EV§r)
+pollution.machine.wireless.mana_output_hatch_64a.iv.name=Wireless 64A Mana Output Hatch (§1IV§r)
+pollution.machine.wireless.mana_output_hatch_64a.luv.name=Wireless 64A Mana Output Hatch (§dLuV§r)
+pollution.machine.wireless.mana_output_hatch_64a.zpm.name=Wireless 64A Mana Output Hatch (§cZPM§r)
+pollution.machine.wireless.mana_output_hatch_64a.uv.name=Wireless 64A Mana Output Hatch (§3UV§r)
+pollution.machine.wireless.mana_output_hatch_64a.uhv.name=Wireless 64A Mana Output Hatch (§4UHV§r)
+pollution.machine.wireless.mana_output_hatch_64a.uev.name=Wireless 64A Mana Output Hatch (§aUEV§r)
+pollution.machine.wireless.mana_output_hatch_64a.uiv.name=Wireless 64A Mana Output Hatch (§2UIV§r)
+pollution.machine.wireless.mana_output_hatch_64a.uxv.name=Wireless 64A Mana Output Hatch (§eUXV§r)
+pollution.machine.wireless.mana_output_hatch_64a.opv.name=Wireless 64A Mana Output Hatch (§9OpV§r)
+pollution.machine.wireless.mana_output_hatch_64a.max.name=Wireless 64A Mana Output Hatch (§c§lMAX§r)
+
+# Wireless mana pool input/output hatches
+pollution.machine.wireless.mana_pool_input_hatch.diluted.name=Wireless Diluted Mana Pool Input Hatch
+pollution.machine.wireless.mana_pool_output_hatch.diluted.name=Wireless Diluted Mana Pool Output Hatch
+pollution.machine.wireless.mana_pool_input_hatch.normal.name=Wireless Normal Mana Pool Input Hatch
+pollution.machine.wireless.mana_pool_output_hatch.normal.name=Wireless Normal Mana Pool Output Hatch
+pollution.machine.wireless.mana_pool_input_hatch.mythic.name=Wireless Mythic Mana Pool Input Hatch
+pollution.machine.wireless.mana_pool_output_hatch.mythic.name=Wireless Mythic Mana Pool Output Hatch
+
+# Magic hatch descriptions
+pollution.machine.vis_hatch.tooltip.capacity=Vis buffer capacity: %,d Vis
+pollution.machine.vis_hatch.tooltip.drain=Draws 0.05 Vis from the aura each second
+pollution.machine.vis_hatch.tooltip.buffer=Buffers %d Vis each second
+pollution.machine.blood_magic_hatch.tooltip.1=Insert a bound Blood Orb to draw Life Essence from its owner's Soul Network
+pollution.machine.blood_magic_hatch.tooltip.2=The orb is not consumed; recipes stop when binding or Life Essence is unavailable
+pollution.machine.astral_lens_hatch.tooltip.1=Insert constellation paper or an attuned Astral Sorcery crystal
+pollution.machine.astral_lens_hatch.tooltip.2=Requires open sky and validates constellation, moon phase and celestial events live
+pollution.machine.astral_lens_hatch_advanced.tooltip.1=Accepts constellation-data wafers, constellation paper, or attuned crystals
+pollution.machine.astral_lens_hatch_advanced.tooltip.2=LuV celestial authorization hatch; requires open sky and validates live sky state
+pollution.machine.astral_lens_hatch_advanced.tooltip.3=Slot two accepts only Cultivated Crystals from the Celestial Crystal Growth Array; higher quality grants more wafer strength
+pollution.crystal_quality.cultivated=Cultivated Crystal
+pollution.crystal_quality.generation=Cultivation generation: %s
+pollution.crystal_quality.no_reseed=Cannot be selected as a seed again
+pollution.crystal_quality.constellation=Cultivated under: %s
+pollution.crystal_quality.native_stats=Size: %s  Purity: %s  Collective: %s  Fracture: %s
+pollution.crystal_quality.grade=Lens grade: %s (%s%%)
+pollution.crystal_quality.lens_slot=Fits the Advanced Astral Lens Hatch's second slot
+pollution.machine.tarot_hatch.tooltip.1=Insert one Major Arcana tarot card to authorize the corresponding ritual recipe
+pollution.machine.tarot_hatch.tooltip.2=The tarot card is an authorization medium and is never consumed by recipes
+pollution.machine.tarot_hatch.tooltip.3=装配消耗空白塔罗牌、奥术墨液胶囊与萨利斯蒙杜斯；所有魔导机器最多安装一个
+pollution.machine.infused_fluid_hatch.name=Essentia Fluid Input Hatch
+pollution.machine.infused_fluid_hatch.tooltip=Stores and supplies essentia fluids required by magical machinery
+pollution.machine.infused_fluid_hatch.lv.name=Essentia Fluid Input Hatch (§7LV§r)
+pollution.machine.infused_fluid_hatch.mv.name=Essentia Fluid Input Hatch (§bMV§r)
+pollution.machine.infused_fluid_hatch.hv.name=Essentia Fluid Input Hatch (§6HV§r)
+pollution.machine.infused_fluid_hatch.ev.name=Essentia Fluid Input Hatch (§5EV§r)
+pollution.machine.infused_fluid_hatch.iv.name=Essentia Fluid Input Hatch (§1IV§r)
+pollution.machine.infused_fluid_hatch.luv.name=Essentia Fluid Input Hatch (§dLuV§r)
+pollution.machine.infused_fluid_hatch.zpm.name=Essentia Fluid Input Hatch (§cZPM§r)
+pollution.machine.infused_fluid_hatch.uv.name=Essentia Fluid Input Hatch (§3UV§r)
+pollution.machine.infused_fluid_hatch.uhv.name=Essentia Fluid Input Hatch (§4UHV§r)
+pollution.machine.infused_fluid_hatch.uev.name=Essentia Fluid Input Hatch (§aUEV§r)
+pollution.machine.infused_fluid_hatch.uiv.name=Essentia Fluid Input Hatch (§2UIV§r)
+pollution.machine.infused_fluid_hatch.uxv.name=Essentia Fluid Input Hatch (§eUXV§r)
+pollution.machine.infused_fluid_hatch.opv.name=Essentia Fluid Input Hatch (§9OpV§r)
+pollution.machine.infused_fluid_hatch.max.name=Essentia Fluid Input Hatch (§c§lMAX§r)
+
+# One independent magic circuit board for every voltage tier, parallel to enchanted circuit boards
+metaitem.magic_circuit_board.ulv.name=Magic Circuit Board (§8ULV§r)
+metaitem.magic_circuit_board.lv.name=Magic Circuit Board (§7LV§r)
+metaitem.magic_circuit_board.mv.name=Magic Circuit Board (§bMV§r)
+metaitem.magic_circuit_board.hv.name=Magic Circuit Board (§6HV§r)
+metaitem.magic_circuit_board.ev.name=Magic Circuit Board (§5EV§r)
+metaitem.magic_circuit_board.iv.name=Magic Circuit Board (§1IV§r)
+metaitem.magic_circuit_board.luv.name=Magic Circuit Board (§dLuV§r)
+metaitem.magic_circuit_board.zpm.name=Magic Circuit Board (§cZPM§r)
+metaitem.magic_circuit_board.uv.name=Magic Circuit Board (§3UV§r)
+metaitem.magic_circuit_board.uhv.name=Magic Circuit Board (§4UHV§r)
+metaitem.magic_circuit_board.uev.name=Magic Circuit Board (§aUEV§r)
+metaitem.magic_circuit_board.uiv.name=Magic Circuit Board (§2UIV§r)
+metaitem.magic_circuit_board.uxv.name=Magic Circuit Board (§eUXV§r)
+metaitem.magic_circuit_board.opv.name=Magic Circuit Board (§9OpV§r)
+metaitem.magic_circuit_board.max.name=Magic Circuit Board (§c§lMAX§r)
+metaitem.magic_circuit_board.ulv.tooltip=A basic independent industrial magic circuit with faint runic traces
+metaitem.magic_circuit_board.lv.tooltip=A runic printed circuit able to carry low-voltage magic components
+metaitem.magic_circuit_board.mv.tooltip=Mana-stabilized traces reinforce its edge contacts
+metaitem.magic_circuit_board.hv.tooltip=Essentia etching forms high-voltage magic pathways
+metaitem.magic_circuit_board.ev.tooltip=High-energy runes flow continuously across its surface
+metaitem.magic_circuit_board.iv.tooltip=Carries both thaumic data and living mana traces
+metaitem.magic_circuit_board.luv.tooltip=Living computing tissue synchronizes with its magic pathways
+metaitem.magic_circuit_board.zpm.tooltip=Constellation data is written into stable celestial traces
+metaitem.magic_circuit_board.uv.tooltip=High-density starlight pathways cover the entire circuit board
+metaitem.magic_circuit_board.uhv.tooltip=Causal constraints begin stabilizing ultra-high-tier magic computation
+metaitem.magic_circuit_board.uev.tooltip=Cross-system magic signals travel in parallel through phase traces
+metaitem.magic_circuit_board.uiv.tooltip=Its pathways adapt between node, starlight and living signals
+metaitem.magic_circuit_board.uxv.tooltip=World-scale magic information is compressed into dense traces
+metaitem.magic_circuit_board.opv.tooltip=A nearly complete causal computing network cycles within the circuit board
+metaitem.magic_circuit_board.max.tooltip=The final independent circuit attainable by magic industry
+
+# Recipe-first functional intermediates
+metaitem.attuned_crystal_wafer.name=Attuned Crystal Wafer
+metaitem.attuned_crystal_wafer.tooltip=Cut from an attuned astral crystal and able to retain crystal quality and constellation data
+metaitem.constellation_data_wafer.name=Constellation Data Wafer
+metaitem.constellation_data_wafer.tooltip=An industrial carrier for a discovered constellation; it cannot reveal an unknown one
+metaitem.living_magic_biofilm.name=Living Magic Biofilm
+metaitem.living_magic_biofilm.tooltip=A biological computing medium linking botanical mana, blood tissue and celestial culture
+metaitem.depleted_magic_core.name=Depleted Magic Core
+metaitem.depleted_magic_core.tooltip=A spent catalyst shell that can be purified and recycled into a blank catalyst core
+
+metaitem.magic_sweep.name=Magic Broom
+metaitem.magic_sweep.tooltip.1=Carry this broom and soar through the sky
+metaitem.magic_sweep.tooltip.2=Grants §cCr§6ea§eti§ave§3Fly§9Ab§dili§5ty§7 and immunity to damage while carried or worn
+# Constellation NBT state
+pollution.astral_data.unattuned=No constellation data written
+pollution.astral_data.constellation=Written constellation: %s
+pollution.astral_data.function=Celestial calibration affinity: %s
+pollution.astral_data.function.life=Life cultivation
+pollution.astral_data.function.processing=Processing and destruction
+pollution.astral_data.function.stability=Stability and protection
+pollution.astral_data.function.energy=Energy and aggressive overclocking
+pollution.astral_data.function.time=Timing and precision calibration
+pollution.astral_data.function.resonance=General astral resonance
+pollution.astral_data.nbt_preserved=Constellation identity is stored using canonical Astral Sorcery NBT
+
+# Celestial observation and calibration
+pollution.machine.celestial_observation_array.name=Industrial Celestial Observation Array
+recipemap.celestial_observation.name=Industrial Celestial Observation
+pollution.machine.celestial_observation_array.tooltip.1=Reads live constellations, moon phase, starlight distribution and celestial events
+pollution.machine.celestial_observation_array.tooltip.2=Wafer NBT, lens-hatch focus and the active sky constellation must match
+pollution.machine.celestial_observation_array.tooltip.3=Place the advanced Astral Lens Hatch in the open dome's highest centre; a Tarot Hatch may replace any outer marble brick
+pollution.machine.celestial_calibration_matrix.name=Celestial Calibration Matrix
+recipemap.celestial_calibration.name=Celestial Calibration
+pollution.machine.celestial_crystal_growth_array.name=Celestial Crystal Growth Array
+recipemap.celestial_crystal_growth.name=Celestial Crystal Growth
+pollution.machine.celestial_crystal_growth_array.tooltip.1=Grows a celestial embryo into an independent Cultivated Crystal while preserving native Astral Sorcery properties
+pollution.machine.celestial_crystal_growth_array.tooltip.2=Requires a LuV Advanced Astral Lens Hatch holding a Constellation Data Wafer
+pollution.machine.celestial_crystal_growth_array.tooltip.3=The lens hatch must see open sky; runs only at night under the wafer's active constellation
+recipemap.constellation_wafer_guide.name=Constellation Data Wafer Guide
+recipemap.tarot_guide.name=Tarot Amplification Guide
+recipemap.crystal_cultivation_guide.name=Crystal Seed and Cultivation Guide
+pollution.machine.celestial_calibration_matrix.tooltip.1=Writes canonical constellation NBT from a data wafer into a celestial calibration core
+pollution.machine.celestial_calibration_matrix.tooltip.2=Refuses to start unless wafer, lens hatch and live sky all match
+pollution.machine.celestial_calibration_matrix.tooltip.3=Place the advanced Astral Lens Hatch at the four-pylon array's roof centre; a Tarot Hatch may replace any outer marble brick
+
+# Industrial Starlight Infuser
+pollution.machine.industrial_starlight_infuser.name=Industrial Starlight Infuser
+recipemap.industrial_starlight_infuser_recipes.name=Industrial Starlight Infusion
+pollution.machine.industrial_starlight_infuser.tooltip.1=Astral Sorcery Starlight Infuser recipes
+pollution.machine.industrial_starlight_infuser.tooltip.2=Keeps the standard recipe's one-to-one input and output
+pollution.machine.industrial_starlight_infuser.tooltip.3=Uses one sixth of the standard infuser's expected Liquid Starlight consumption
+
+# Industrial Lightwell
+pollution.machine.industrial_lightwell.name=Industrial Lightwell
+recipemap.industrial_lightwell_recipes.name=Industrial Lightwell Liquefaction
+pollution.machine.industrial_lightwell.tooltip.1=Automatically imports Astral Sorcery Lightwell catalyst recipes
+pollution.machine.industrial_lightwell.tooltip.2=Produces five times an ideal Lightwell's output every 200 ticks
+pollution.machine.industrial_lightwell.tooltip.3=Catalysts are retained but may shatter with the standard Lightwell probability for the same work
+pollution.magic_energy_amplification=Magic energy amplification: %s / %s, capacity +%s%%, transfer +%s%%, generation +%s%%
+
+# 星流中枢方尖碑
+tile.starstream_obelisk.starstream_casing.name=星流中枢外壳
+tile.starstream_obelisk.starstream_runed_casing.name=星流符文外壳
+tile.starstream_obelisk.constellation_anchor.name=星宿锚定座
+tile.starstream_obelisk.obelisk_core.name=星流方尖碑核心
+pollution.machine.starstream_nexus_obelisk.name=星流中枢方尖碑
+pollution.machine.starstream_nexus.tooltip.1=星辉魔法终局巨构，通过中央方尖碑核心存储全部十六种星宿能量。
+pollution.machine.starstream_nexus.tooltip.2=每一种星宿能量容量为 %s CE，全部使用64位持久化存储。
+pollution.machine.starstream_nexus.tooltip.3=不使用星宿能量仓；后续星宿塔网络与耗能设备均直接连接中央核心。
+pollution.machine.starstream_nexus.display.core_linked=方尖碑核心：已绑定
+pollution.machine.starstream_nexus.display.core_unlinked=方尖碑核心：缺失或未绑定
+pollution.machine.starstream_nexus.display.total=星宿能量总量：%s / %s CE
+pollution.machine.starstream_nexus.display.channel=%s：%s / %s CE
+pollution.machine.starstream_nexus.core.unlinked=方尖碑核心尚未连接到已成型的星流中枢。
+metaitem.starstream_linker.name=星流链接器
+pollution.starstream_linker.source_selected=已选择输入源：%s星宿塔核心，坐标%s、%s、%s
+pollution.starstream_linker.source_relink=已选择输入源，完成线路后将替换这座塔的旧连接：%s，坐标%s、%s、%s
+pollution.starstream_linker.cancelled=已取消待确认的星流线路。
+pollution.starstream_linker.unlinked=已断开该星宿塔与星流中枢的连接。
+pollution.starstream_linker.success=%s输入线路建立成功，直连距离%s格。
+pollution.starstream_linker.error.invalid_tower=该方块不是已成型星宿塔的有效核心。
+pollution.starstream_linker.error.no_source=请先选择一座已成型星宿塔的核心。
+pollution.starstream_linker.error.dimension=星流直连不能跨越维度。
+pollution.starstream_linker.error.range=当前距离%s格，直连上限为%s格，需要使用中继器。
+pollution.starstream_linker.error.nexus_unformed=目标星流中枢方尖碑尚未成型。
+pollution.starstream_linker.error.source_unavailable=选中的星宿塔核心区块当前未加载。
+pollution.starstream_linker.error.source_changed=选中的星宿塔核心已被拆除、更换或改变了星宿身份。
+pollution.starstream_linker.error.input_limit=该方尖碑已经达到%s条直连输入线路上限。
+pollution.starstream_network.status.unlinked=星流网络：未连接
+pollution.starstream_network.status.active=星流网络：正在传输
+pollution.starstream_network.status.no_energy=星流网络：等待塔内能量
+pollution.starstream_network.status.channel_full=星流网络：目标频道已满
+pollution.starstream_network.status.source_unformed=星流网络：星宿塔未成型
+pollution.starstream_network.status.target_unformed=星流网络：方尖碑未成型
+pollution.starstream_network.status.endpoint_unloaded=星流网络：目标区块未加载
+pollution.starstream_network.status.out_of_range=星流网络：超过直连距离
+pollution.starstream_network.status.wrong_dimension=星流网络：维度不匹配
+pollution.starstream_network.status.target_invalid=星流网络：方尖碑核心缺失
+pollution.starstream_network.status.target_replaced=星流网络：方尖碑节点身份已改变
+pollution.machine.constellation_tower.display.nexus_target=方尖碑目标：维度%s，坐标%s、%s、%s
+pollution.machine.constellation_tower.display.nexus_transfer=本刻汇入方尖碑：%s CE/t
+pollution.machine.starstream_nexus.display.input_network=输入网络：%s / %s条线路活跃，%s CE/t
+tile.starstream_relay.name=星流中继器
+metaitem.starstream_linker.tooltip.1=潜行右击空气切换输入/输出模式；每段最大距离：%s格
+metaitem.starstream_linker.tooltip.2=输入线路顺向连接；输出线路从目标塔开始反向连接，最后点击方尖碑核心
+metaitem.starstream_linker.pending=待连接节点：%s，坐标%s、%s、%s
+metaitem.starstream_linker.pending.tower_suffix=星宿塔
+pollution.starstream_linker.relay_selected=已选择星流中继器作为线路起点：坐标%s、%s、%s。
+pollution.starstream_linker.relay_segment_success=中继段建立成功，长度%s格；当前中继器%s、%s、%s已成为下一段起点。
+pollution.starstream_linker.relay_route_success=中继线路已接入星流中枢，末段长度%s格。
+pollution.starstream_linker.relay_unlinked=已断开该星流中继器的输出线路。
+pollution.starstream_linker.error.relay_input_limit=目标中继器已达到%s个输入节点上限。
+pollution.starstream_linker.error.relay_changed=选中的中继器已被拆除或节点身份已经改变。
+pollution.starstream_linker.error.relay_loop=拒绝连接：该操作会形成星流网络闭环。
+pollution.starstream_relay.info=星流中继器：输入%s路，输出%s，本刻传输%s CE/t；%s
+pollution.starstream_relay.status.unlinked=未设置输出
+pollution.starstream_relay.status.idle=等待输入
+pollution.starstream_relay.status.active=正在转发
+pollution.starstream_relay.status.target_full=目标频道已满或下游受阻
+pollution.starstream_relay.status.throughput_limit=达到32768 CE/t吞吐上限
+pollution.starstream_relay.status.endpoint_unloaded=下游区块未加载
+pollution.starstream_relay.status.out_of_range=下游节点超过256格
+pollution.starstream_relay.status.wrong_dimension=输出节点维度不匹配
+pollution.starstream_relay.status.target_invalid=输出节点缺失
+pollution.starstream_relay.status.target_replaced=输出节点身份改变
+pollution.starstream_relay.status.nexus_unformed=星流中枢尚未成型
+pollution.starstream_relay.status.loop_or_too_deep=线路成环或超过16级中继
+pollution.machine.constellation_tower.display.relay_target=中继器目标：维度%s，坐标%s、%s、%s
+pollution.machine.constellation_tower.display.network_transfer=本刻输出至星流网络：%s CE/t
+metaitem.starstream_linker.mode.input=当前模式：输入（星宿塔 → 方尖碑）
+metaitem.starstream_linker.mode.output=当前模式：输出（方尖碑 → 星宿塔）
+metaitem.starstream_linker.pending.output=待接入方尖碑的输出端：%s，坐标%s、%s、%s
+pollution.starstream_linker.mode.input=星流链接器已切换为输入模式。
+pollution.starstream_linker.mode.output=星流链接器已切换为输出模式。
+pollution.starstream_linker.output_consumer_selected=已选择%s星宿塔作为输出目标：坐标%s、%s、%s。请反向放置中继，最后点击方尖碑核心。
+pollution.starstream_linker.output_relay_segment=输出中继段建立成功，长度%s格；中继器%s、%s、%s成为新的上游端。
+pollution.starstream_linker.output_success=%s星宿输出线路建立成功，方尖碑末段长度%s格。
+pollution.starstream_linker.error.no_output_consumer=请先在输出模式下选择一座未连接输入网络的星宿塔核心。
+pollution.starstream_linker.error.output_tower_is_input=该星宿塔已经作为输入源连接网络，不能同时作为输出目标。
+pollution.starstream_linker.error.output_consumer_changed=输出目标塔已拆除、改变星宿、未成型或已被设置为输入源。
+pollution.starstream_linker.error.output_limit=该方尖碑已达到%s条输出线路上限。
+pollution.starstream_linker.output_unlinked=已断开通往%s星宿塔的方尖碑输出线路。
+pollution.machine.starstream_nexus.display.output_network=输出网络：%s / %s条线路活跃，%s CE/t
+pollution.machine.constellation_tower.display.network_received=本刻接收方尖碑输出：%s CE/t
+
+# Fixed constellation towers
+pollution.machine.constellation_tower.tooltip.1=Fixed constellation: %s
+pollution.machine.constellation_tower.tooltip.2=An endgame Astral Sorcery facility that stores constellation energy directly in its tower core.
+pollution.machine.constellation_tower.tooltip.3=The matching active constellation gathers four times faster; the tower-core roof must see the sky.
+pollution.machine.constellation_tower.tooltip.4=Use either the controller or tower core to open the UI; core sneak-use toggles the tower or activates the ritual with a Sky Resonator.
+pollution.machine.constellation_tower.tooltip.5=Big Dipper ritual: x2 gathering, x4 core capacity, and core output raised from 512 to 2048 CE/t.
+pollution.machine.constellation_tower.display.constellation=Constellation: %s
+pollution.machine.constellation_tower.display.distribution=Starlight distribution: %.1f%%
+pollution.machine.constellation_tower.display.generation=Generation: %s CE/t
+pollution.machine.constellation_tower.display.storage=Constellation energy: %s / %s CE
+pollution.machine.constellation_tower.display.storage_overflow=Overflow storage: %s CE; gathering is paused and existing energy is preserved
+pollution.machine.constellation_tower.display.core_linked=Tower core: Bound
+pollution.machine.constellation_tower.display.core_unlinked=Tower core: Unbound
+pollution.machine.constellation_tower.display.core_transfer=Core output this tick: %s / %s CE/t
+pollution.machine.constellation_tower.display.sky_open=Sky: Open
+pollution.machine.constellation_tower.display.sky_blocked=Sky: Blocked
+pollution.machine.constellation_tower.display.active_yes=Constellation state: Active
+pollution.machine.constellation_tower.display.active_no=Constellation state: Inactive
+pollution.machine.constellation_tower.display.turbo_on=Big Dipper Resonance Amplification Ritual: Active (x2 gathering, x4 capacity, x4 output)
+pollution.machine.constellation_tower.display.turbo_off=Big Dipper Resonance Amplification Ritual: Inactive
+pollution.machine.constellation_tower.turbo.unformed=The constellation tower is not formed.
+pollution.machine.constellation_tower.turbo.sky=The tower requires open sky and its matching active constellation.
+pollution.machine.constellation_tower.turbo.structure=Complete the eight-point ritual-crystal ring on tower level 6 first.
+pollution.machine.constellation_tower.turbo.success=Big Dipper ritual active: x2 gathering, x4 capacity, and x4 output.
+pollution.machine.constellation_tower.core.enabled=The constellation tower was enabled through its core.
+pollution.machine.constellation_tower.core.disabled=The constellation tower was disabled through its core.
+pollution.machine.constellation_tower.core.unlinked=This tower core is not linked to a valid constellation tower controller.
+tile.constellation_crystal.ritual_crystal.name=Constellation Ritual Crystal
+tile.constellation_crystal.tower_core.name=Constellation Tower Core
+pollution.machine.constellation_tower.aevitas.name=Aevitas Constellation Tower
+pollution.machine.constellation_tower.evorsio.name=Evorsio Constellation Tower
+pollution.machine.constellation_tower.armara.name=Armara Constellation Tower
+pollution.machine.constellation_tower.discidia.name=Discidia Constellation Tower
+pollution.machine.constellation_tower.vicio.name=Vicio Constellation Tower
+pollution.machine.constellation_tower.mineralis.name=Mineralis Constellation Tower
+pollution.machine.constellation_tower.fornax.name=Fornax Constellation Tower
+pollution.machine.constellation_tower.horologium.name=Horologium Constellation Tower
+pollution.machine.constellation_tower.lucerna.name=Lucerna Constellation Tower
+pollution.machine.constellation_tower.octans.name=Octans Constellation Tower
+pollution.machine.constellation_tower.bootes.name=Bootes Constellation Tower
+pollution.machine.constellation_tower.pelotrio.name=Pelotrio Constellation Tower
+pollution.machine.constellation_tower.gelu.name=Gelu Constellation Tower
+pollution.machine.constellation_tower.ulteria.name=Ulteria Constellation Tower
+pollution.machine.constellation_tower.alcara.name=Alcara Constellation Tower
+pollution.machine.constellation_tower.vorux.name=Vorux Constellation Tower
+
+metaitem.starstream_linker.mode.network=当前模式：组网（方尖碑/在线中继器 → 新中继器）
+metaitem.starstream_linker.pending.network=待扩展网络节点：%s，坐标%s、%s、%s
+pollution.starstream_linker.mode.network=星流链接器已切换为无线组网模式。
+pollution.starstream_linker.network_source_nexus=已选择方尖碑无线网络作为扩展起点：坐标%s、%s、%s。
+pollution.starstream_linker.network_source_relay=已选择在线中继器作为扩展起点：坐标%s、%s、%s。
+pollution.starstream_linker.network_extended=无线网络扩展成功，骨干距离%s格；新中继器位于%s、%s、%s，覆盖半径%s格。
+pollution.starstream_linker.error.tower_producer_only=星宿塔只能向网络汇入能量，不能作为无线输出目标。
+pollution.starstream_linker.error.relay_not_online=该中继器尚未连接到已成型的方尖碑无线网络。
+pollution.starstream_linker.error.no_network_source=请先选择已成型的方尖碑核心或在线中继器。
+pollution.machine.starstream_nexus.display.wireless_online=无线网络：在线；活跃终端%s，输出%s / %s CE/t
+pollution.machine.starstream_nexus.display.wireless_offline=无线网络：离线；活跃终端%s，输出%s / %s CE/t
+pollution.machine.starstream_nexus.display.relay_network=根中继器：%s / %s在线；核心覆盖%s格，中继覆盖%s格
+pollution.starstream_linker.error.relay_depth_limit=无线网络最多允许%s级中继，无法继续向外扩展。
+metaitem.starstream_linker.tooltip.3=组网模式手持链接器可预览覆盖范围与临时拓扑：青色在线、红色离线、紫色为其他网络
+pollution.machine.starstream_nexus.button.wireless_off=无线输出已关闭；点击开启
+pollution.machine.starstream_nexus.button.wireless_on=无线输出已开启；点击暂停
+pollution.machine.starstream_nexus.button.limit_25=无线输出上限：25%（131072 CE/t）
+pollution.machine.starstream_nexus.button.limit_50=无线输出上限：50%（262144 CE/t）
+pollution.machine.starstream_nexus.button.limit_75=无线输出上限：75%（393216 CE/t）
+pollution.machine.starstream_nexus.button.limit_100=无线输出上限：100%（524288 CE/t）
+pollution.starstream_terminal.status.unbound=无线终端：未绑定网络
+pollution.starstream_terminal.status.discovering=无线终端：正在搜索附近节点
+pollution.starstream_terminal.status.online=无线终端：在线
+pollution.starstream_terminal.status.network_offline=无线终端：网络输出已关闭或线路离线
+pollution.starstream_terminal.status.provider_unavailable=无线终端：覆盖范围内没有已加载节点
+pollution.starstream_terminal.status.waiting_for_energy=无线终端：等待星宿能量或本刻带宽
+pollution.starstream_terminal.status.invalid_channel=无线终端：星宿频道无效
+pollution.starstream_terminal.status.invalid_request=无线终端：请求位置无效
+pollution.starstream_terminal.status.wrong_side=无线终端：只能在服务端请求能量
+pollution.machine.starstream_nexus.tooltip.4=无线总输出上限524288 CE/t；每个终端独立限制为8192 CE/t，无法通过多条中继线路绕过
+metaitem.starstream_linker.tooltip.4=选择方尖碑或中继器后可连续绑定多个无线终端；未选择网络时点击已绑定终端可解绑
+pollution.starstream_linker.terminal_bound=无线终端已绑定网络%s：坐标%s、%s、%s；链接器保留当前网络以便批量绑定
+pollution.starstream_linker.terminal_unbound=无线终端已解绑：坐标%s、%s、%s
+pollution.starstream_linker.error.invalid_terminal=目标声明了无线终端接口，但没有提供有效的绑定对象
+pollution.starstream_linker.error.terminal_denied=目标终端拒绝修改无线网络绑定
+tile.starstream_interdimensional_relay.name=维度星流中继器
+tile.starstream_chunk_anchor.name=星流区块锚
+tile.starstream_operation_core.name=星宿运转核心
+tile.starstream_operation_core.tooltip.1=终局设备与魔法阵使用的十六频道星宿能量接收核心
+tile.starstream_operation_core.tooltip.2=使用组网模式的星流链接器绑定方尖碑或在线中继器
+tile.starstream_operation_core.tooltip.3=设备开工时按需取能；多频道需求全部满足后才会统一扣除
+pollution.starstream_operation_core.info.bound=星宿运转核心：已绑定；状态：%s；本刻接收：%s CE/t；服务节点：%s
+pollution.starstream_operation_core.info.unbound=星宿运转核心：未绑定；请用组网模式的星流链接器连接方尖碑网络
+pollution.starstream_interdimensional_relay.info.bound=维度网关：已绑定；方尖碑维度%s，核心%s，无线输出%s CE/t
+pollution.starstream_interdimensional_relay.info.unbound=维度网关：未绑定；请先用链接器选择方尖碑网络
+pollution.starstream_chunk_anchor.active=星流区块锚运行正常：当前区块保持加载
+pollution.starstream_chunk_anchor.failed=星流区块锚无法取得区块加载票据，请检查Forge区块加载配置
+pollution.starstream_linker.interdimensional_bound=维度网关绑定成功：远端维度%s → 方尖碑维度%s，网络%s
+pollution.starstream_linker.interdimensional_unbound=维度星流中继器已解除跨维度绑定
+pollution.starstream_linker.error.interdimensional_source_unloaded=无法访问选中网络的方尖碑核心；请在核心区块放置星流区块锚
+pollution.machine.starstream_nexus.display.terminal_network=终端管理：%s / %s在线；本刻活跃%s；单终端上限%s CE/t
+pollution.machine.starstream_nexus.button.page_network=显示网络总览、中继器和终端状态
+pollution.machine.starstream_nexus.button.page_channels=显示全部16种星宿能量频道
+pollution.machine.starstream_nexus.button.cleanup=清理超过10分钟未上线的中继器和终端记录
+pollution.machine.starstream_nexus.button.label.off=关闭
+pollution.machine.starstream_nexus.button.label.on=开启
+pollution.machine.starstream_nexus.button.label.network=网络
+pollution.machine.starstream_nexus.button.label.channels=频道
+pollution.machine.starstream_nexus.button.label.cleanup=清理
+pollution.machine.starstream_nexus.tooltip.5=维度星流中继器可在其他维度建立96格无线网关；方尖碑核心区块必须由星流区块锚保持加载
+metaitem.starstream_linker.tooltip.5=选择网络后可在其他维度点击维度星流中继器建立远端网关
+
+#Underground Biomes
+biome.Deep Cave Basic=Deep Cave Basic
+biome.Stalactite Cluster=Stalactite Cluster
+biome.Crystal Cluster=Crystal Cluster
+biome.Mushroom Forest=Mushroom Forest
+biome.Lush Cave=Lush Cave
+biome.Primordial Cave=Primordial Cave
+biome.Desert Cave=Desert Cave
+biome.Magma Cave=Magma Cave
+
+#Warp Event System
+chat.pollution.warp.poison=Warp flux corrodes your body!
+chat.pollution.warp.nausea=Warp flux churns in your gut. You feel sick.
+chat.pollution.warp.blind=Warp flux blinds your eyes.
+chat.pollution.warp.wither=Warp flux decays your flesh.
+chat.pollution.warp.jump=Warp flux fills your legs. You leap uncontrollably!
+chat.pollution.warp.lightning=Warp flux summons thunder!
+chat.pollution.warp.rain=Corrosive warp rain falls...
+chat.pollution.warp.wind=Warp winds hurl you around!
+chat.pollution.warp.mushrooms=Warp flux sprouts a patch of mushrooms.
+chat.pollution.warp.swamp=Warp flux corrupts the ground around you.
+chat.pollution.warp.fakerain=A foul warp stench fills the air...
+chat.pollution.warp.blink=Warp flux hurls you somewhere else!
+chat.pollution.warp.blood=Dark red liquid seeps from the ground...
+chat.pollution.warp.obsidian=Warp flux solidifies, trapping you in obsidian!
+chat.pollution.warp.fall=The ground beneath you is ripped away!
+chat.pollution.warp.fakeexplosion=BOOM!!! ...Just a false alarm.
+chat.pollution.warp.siege=Snarls echo from the warp. A horde of zombies pours out!
+chat.pollution.warp.countdownbomb=Tick... tick... Something on you is beeping.
+chat.pollution.warp.countdownbomb.tick=%s...
+chat.pollution.warp.countdownbomb.end=BOOM!!! ...The bomb on you went off. Or did it?
+chat.pollution.warp.junk=Warp flux vomits out junk from the void.
+chat.pollution.warp.inventoryscramble=Warp flux scrambles your inventory!

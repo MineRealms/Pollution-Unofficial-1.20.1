@@ -1,0 +1,7 @@
+{
+  "mod.pollution.name": "污染（非官方移植）",
+  "pollution.command.get": "当前区块污染：%s",
+  "pollution.command.set": "当前区块污染已设为 %s",
+  "pollution.command.scrub": "已清洗污染 %s",
+  "pollution.effect.warning": "污浊的空气让你感到不适"
+}
