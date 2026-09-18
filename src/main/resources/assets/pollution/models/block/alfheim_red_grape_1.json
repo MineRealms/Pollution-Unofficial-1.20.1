@@ -1,1 +1,3 @@
-﻿{\n  "parent": "minecraft:block/vine"\n}
+{
+  "parent": "minecraft:block/vine"
+}
