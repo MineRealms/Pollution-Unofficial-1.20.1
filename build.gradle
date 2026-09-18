@@ -152,6 +152,13 @@ dependencies {
     compileOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
     runtimeOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
 
+    // Thaumcraft 4R addon ports (local-repo/): forbidden magic, tainted magic,
+    // thaumic energistics, thaumic tinkerer
+    for (addon in ['forbidden-magic', 'tainted-magic', 'thaumic-energistics', 'thaumic-tinkerer']) {
+        compileOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
+        runtimeOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
+    }
+
     // Curios / TerraBlender: runtime dependencies of Thaumcraft 4R
     compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")) { transitive = false }
     runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")) { transitive = false }

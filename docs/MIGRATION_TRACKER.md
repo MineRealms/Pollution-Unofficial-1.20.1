@@ -826,7 +826,9 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 - 6B-3 若存在 AE 机器/方块（上游 `common/gregtech` 3 类与 AE 占位）一并移植 + JEI
 
 **Phase 6C — TC 四附属联动（分批）**
-- 6C-1 安装 4 个附属 jar 到 local-repo + 依赖接线 + 各附属 API 核实（FM 注魔/TT 工具/TE 源质/M 系）
+- [x] 6C-1 安装 4 个附属 jar 到 local-repo（`dev.tc4port:{forbidden-magic,tainted-magic,thaumic-energistics,thaumic-tinkerer}:0.1.0-20711`）
+  + `gradle.properties`（`tc_addons_version`）+ `build.gradle`（compileOnly/runtimeOnly 循环接线）；
+  `compileJava` 通过（42s，含附属 deobf）
 - 6C-2 `common/thaumcraft` 整合层（5 类：`ThaumcraftModule`、`TCAspects`、`DummyAspectEventProxy`、
   `GTEssentiaHandler` 等）+ 附属材料/要素映射
 - 6C-3 `ForgeAlchemyRecipes`（Forbidden Magic 炼金）+ 各附属专属配方/机器
