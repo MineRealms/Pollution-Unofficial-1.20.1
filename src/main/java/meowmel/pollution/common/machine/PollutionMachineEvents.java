@@ -28,6 +28,7 @@ public final class PollutionMachineEvents {
      */
     public static void onRecipeTypeRegister(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
         PORecipeMaps.init();
+        meowmel.pollution.common.machine.multiblock.botania.BotaniaRecipeMaps.init();
         Pollution.LOGGER.info("Registered Pollution recipe types");
     }
 

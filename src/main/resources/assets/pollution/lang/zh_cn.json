@@ -126,5 +126,19 @@
   "pollution.magic.failure.research": "缺少神秘研究：%s",
   "item.pollution.packaged_aura_node": "封装灵气节点",
   "pollution.magic.failure.coil": "需要 GregTech 加热线圈",
-  "pollution.magic.failure.temperature": "所需温度：%s K"
+  "pollution.magic.failure.temperature": "所需温度：%s K",
+  "block.pollution.mana_plate": "魔力基板加速器",
+  "block.pollution.mana_petal_apothecary": "工业花瓣炼药锅",
+  "block.pollution.mana_rune_altar": "工业符文祭坛",
+  "block.pollution.industrial_pure_daisy": "工业纯白雏菊",
+  "block.pollution.bot_distillery": "泰拉蒸馏塔",
+  "block.pollution.bot_vacuum_freezer": "泰拉真空冷冻机",
+  "block.pollution.bot_circuit_assembler": "泰拉电路组装机",
+  "block.pollution.bot_gas_collector": "泰拉大气收集器",
+  "pollution.machine.mana_plate.tier": "等级：%s | 魔力：%s / %s",
+  "pollution.machine.mana_plate.speed": "加速速率：%s | 魔力消耗：%s",
+  "pollution.machine.bot_gas_collector_beamLevel": "光束核心等级：%s",
+  "pollution.machine.bot_gas_collector_essenceConsumptionSpeed": "要素消耗：%s mB/t",
+  "pollution.machine.bot_gas_collector_manaConsumptionSpeed": "魔力消耗：%s",
+  "pollution.machine.bot_gas_collector_finalCollectionSpeed": "收集速率：%s mB"
 }

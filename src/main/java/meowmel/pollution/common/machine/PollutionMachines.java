@@ -15,6 +15,15 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.api.recipes.PORecipeMaps;
+import meowmel.pollution.common.machine.multiblock.botania.BotCircuitAssemblerMachine;
+import meowmel.pollution.common.machine.multiblock.botania.BotDistilleryMachine;
+import meowmel.pollution.common.machine.multiblock.botania.BotGasCollectorMachine;
+import meowmel.pollution.common.machine.multiblock.botania.BotVacuumFreezerMachine;
+import meowmel.pollution.common.machine.multiblock.botania.BotaniaRecipeMaps;
+import meowmel.pollution.common.machine.multiblock.botania.IndustrialPureDaisyMachine;
+import meowmel.pollution.common.machine.multiblock.botania.ManaPetalApothecaryMachine;
+import meowmel.pollution.common.machine.multiblock.botania.ManaPlateMachine;
+import meowmel.pollution.common.machine.multiblock.botania.ManaRuneAltarMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAssemblerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
@@ -176,6 +185,14 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_BATTERY;
     public static MultiblockMachineDefinition MAGIC_LARGE_TURBINE;
     public static MultiblockMachineDefinition MAGIC_MEGA_TURBINE;
+    public static MultiblockMachineDefinition MANA_PLATE;
+    public static MultiblockMachineDefinition MANA_PETAL_APOTHECARY;
+    public static MultiblockMachineDefinition MANA_RUNE_ALTAR;
+    public static MultiblockMachineDefinition INDUSTRIAL_PURE_DAISY;
+    public static MultiblockMachineDefinition BOT_DISTILLERY;
+    public static MultiblockMachineDefinition BOT_VACUUM_FREEZER;
+    public static MultiblockMachineDefinition BOT_CIRCUIT_ASSEMBLER;
+    public static MultiblockMachineDefinition BOT_GAS_COLLECTOR;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -558,6 +575,46 @@ public final class PollutionMachines {
         MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
                 MagicMegaTurbineMachine::new, MagicMegaTurbineMachine::createPattern,
                 PORecipeMaps.MAGIC_TURBINE_FUELS);
+
+        MANA_PLATE = PollutionGTAddon.REGISTRATE
+                .multiblock("mana_plate", ManaPlateMachine::new)
+                .langValue("Mana Plate")
+                .rotationState(RotationState.ALL)
+                .pattern(ManaPlateMachine::createPattern)
+                .simpleModel(model("mana_plate"))
+                .register();
+
+        MANA_PETAL_APOTHECARY = magicMultiblock("mana_petal_apothecary", "Mana Petal Apothecary",
+                ManaPetalApothecaryMachine::new, ManaPetalApothecaryMachine::createPattern,
+                BotaniaRecipeMaps.MANA_PETAL_RECIPES);
+
+        MANA_RUNE_ALTAR = magicMultiblock("mana_rune_altar", "Mana Rune Altar",
+                ManaRuneAltarMachine::new, ManaRuneAltarMachine::createPattern,
+                BotaniaRecipeMaps.MANA_RUNE_ALTAR_RECIPES);
+
+        INDUSTRIAL_PURE_DAISY = magicMultiblock("industrial_pure_daisy", "Industrial Pure Daisy",
+                IndustrialPureDaisyMachine::new, IndustrialPureDaisyMachine::createPattern,
+                BotaniaRecipeMaps.PURE_DAISY_RECIPES);
+
+        BOT_DISTILLERY = magicMultiblock("bot_distillery", "Terra Distillery",
+                BotDistilleryMachine::new, BotDistilleryMachine::createPattern,
+                GTRecipeTypes.DISTILLATION_RECIPES);
+
+        BOT_VACUUM_FREEZER = magicMultiblock("bot_vacuum_freezer", "Terra Vacuum Freezer",
+                BotVacuumFreezerMachine::new, BotVacuumFreezerMachine::createPattern,
+                GTRecipeTypes.VACUUM_RECIPES);
+
+        BOT_CIRCUIT_ASSEMBLER = magicMultiblock("bot_circuit_assembler", "Terra Circuit Assembler",
+                BotCircuitAssemblerMachine::new, BotCircuitAssemblerMachine::createPattern,
+                GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES);
+
+        BOT_GAS_COLLECTOR = PollutionGTAddon.REGISTRATE
+                .multiblock("bot_gas_collector", BotGasCollectorMachine::new)
+                .langValue("Terra Gas Collector")
+                .rotationState(RotationState.ALL)
+                .pattern(BotGasCollectorMachine::createPattern)
+                .simpleModel(model("bot_gas_collector"))
+                .register();
     }
 
     /**

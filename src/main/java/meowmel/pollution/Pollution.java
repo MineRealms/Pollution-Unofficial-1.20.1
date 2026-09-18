@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
+import meowmel.pollution.common.block.PollutionMiscBlocks;
 import meowmel.pollution.common.block.PollutionPlantBlocks;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.common.machine.PollutionMachineEvents;
@@ -33,6 +34,7 @@ public final class Pollution {
         // be created here, on the Pollution bus, like the machine definitions.
         PollutionMagicBlocks.init();
         PollutionPlantBlocks.init();
+        PollutionMiscBlocks.init(context);
         meowmel.pollution.common.item.PollutionItems.init();
         meowmel.pollution.common.entity.PollutionEntities.init(context);
 
@@ -103,6 +105,22 @@ public final class Pollution {
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
             PollutionPlantBlocks.ALL_NAMES.forEach(name -> provider.add(
                     "block.pollution." + name, PollutionPlantBlocks.displayName(name)));
+            PollutionMiscBlocks.ALL_NAMES.forEach(name -> provider.add(
+                    "block.pollution." + name, PollutionMiscBlocks.displayName(name)));
+            provider.add("pollution.flesh_heart.bound",
+                    "The flesh tree has bound itself to your soul...");
+            provider.add("pollution.flesh_heart.level",
+                    "Flesh tree level: %s/%s");
+            provider.add("pollution.flesh_heart.next_growth",
+                    "Next growth needs %s LP; the soul network holds %s LP");
+            provider.add("pollution.flesh_heart.other",
+                    "This tree is bound to %s's soul...");
+            provider.add("pollution.mineral_extractor.enabled",
+                    "Mineral extractor enabled");
+            provider.add("pollution.mineral_extractor.disabled",
+                    "Mineral extractor disabled");
+            provider.add("pollution.mineral_extractor.mode",
+                    "Mineral extractor mode: %s");
         });
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();

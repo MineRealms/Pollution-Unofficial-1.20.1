@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "one_way=false": {
+      "model": "pollution:block/portal"
+    },
+    "one_way=true": {
+      "model": "pollution:block/portal"
+    }
+  }
+}
