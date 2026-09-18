@@ -223,7 +223,9 @@ public final class MagicChemicalRecipes {
         GTRecipeBuilder.of(id("battery_hull_zpm"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(advancedHull.copyWithCount(12))
                 .inputItems(advancedSuperconductor.copyWithCount(4))
-                .inputItems(ChemicalHelper.get(TagPrefix.cableGtSingle, GTMaterials.Osmiridium, 4))
+                // 上游: cableGtSingle Osmiridium -> 本移植版: cableGtSingle Trinium
+                // （GTCEu 7.5.3 的 Osmiridium 无线缆属性，ZPM 级线缆为 Trinium）
+                .inputItems(ChemicalHelper.get(TagPrefix.cableGtSingle, GTMaterials.Trinium, 4))
                 .outputItems(PollutionItems.MAGIC_BATTERY_HULL_ZPM.asStack())
                 .duration(100)
                 .EUt(GTValues.VA[GTValues.ZPM])
@@ -1693,7 +1695,7 @@ public final class MagicChemicalRecipes {
 
         // 荷叶粉
         GTRecipeBuilder.of(id("lotus_dust"), GTRecipeTypes.MACERATOR_RECIPES)
-                .inputItems(net.minecraft.world.level.block.Blocks.LILY_PAD)
+                .inputItems(Items.LILY_PAD)
                 .outputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.LotusDust, 1))
                 .duration(200)
                 .EUt(8)

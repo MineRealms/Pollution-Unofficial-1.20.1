@@ -307,7 +307,9 @@ public final class BotaniaRecipes {
         GTRecipeBuilder.of(id("mana_resonance_coil"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(new ItemStack(BotaniaItems.spark))
                 .inputItems(new ItemStack(Items.ENDER_EYE))
-                .inputItems(ChemicalHelper.get(TagPrefix.wireGtSingle, GTNNMaterials.ManaSteel, 8))
+                // 上游: wireGtSingle ManaSteel x8 -> 本移植版: ingot ManaSteel x4
+                // （GTNN 魔力钢只有 ingot/fluid 形态，无 WIRE 属性；8 线 = 4 锭）
+                .inputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 4))
                 .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.HSSG, 1))
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
                 .outputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())

@@ -117,7 +117,11 @@ public final class SecondDegreeMaterials {
 
         PollutionMaterials.PureTar = new Material.Builder(id("pure_tar"))
                 .color(0x4F4F4F)
-                .liquid(new FluidBuilder().block())
+                // 上游: 流体方块 (FluidBuilder#block) -> 本移植版: 仅流体。
+                // GT 为附加模组流体方块生成的模型引用 gtceu:block/void，而
+                // datagen 的 ExistingFileHelper 看不到 GT jar 内资源，会直接
+                // 中断 datagen；焦油链只需要流体。
+                .liquid(new FluidBuilder())
                 .buildAndRegister();
 
         PollutionMaterials.SuperStickyTar = new Material.Builder(id("super_sticky_tar"))

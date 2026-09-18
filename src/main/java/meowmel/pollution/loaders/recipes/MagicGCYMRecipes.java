@@ -173,22 +173,23 @@ public final class MagicGCYMRecipes {
     // ////////////////////////////////////
 
     private static void alloyChemistry(Consumer<FinishedRecipe> provider) {
-        alloy(provider, "aertitanium", PollutionMaterials.InfusedAir, 20,
+        // 上游: dust <alloy> -> 本移植版: ingot <alloy>（六种元素合金只有 ingot/fluid 形态）
+        alloy(provider, "aertitanium", PollutionMaterials.Aertitanium, 20,
                 dust(GTMaterials.Bauxite, 2), dust(GTMaterials.Aluminium, 1),
                 dust(GTMaterials.Manganese, 1), dust(PollutionMaterials.InfusedAir, 5));
-        alloy(provider, "ignissteel", PollutionMaterials.InfusedFire, 20,
+        alloy(provider, "ignissteel", PollutionMaterials.IgnisSteel, 20,
                 dust(GTMaterials.Steel, 2), dust(GTMaterials.Magnesium, 1),
                 dust(GTMaterials.Lithium, 1), dust(PollutionMaterials.InfusedFire, 5));
-        alloy(provider, "aquasilver", PollutionMaterials.InfusedWater, 20,
+        alloy(provider, "aquasilver", PollutionMaterials.Aquasilver, 20,
                 dust(GTMaterials.Silver, 2), dust(GTMaterials.Tin, 1),
                 dust(PollutionMaterials.InfusedWater, 5));
-        alloy(provider, "terracopper", PollutionMaterials.InfusedEarth, 20,
+        alloy(provider, "terracopper", PollutionMaterials.Terracopper, 20,
                 dust(GTMaterials.Copper, 2), dust(GTMaterials.Boron, 1),
                 dust(GTMaterials.Carbon, 1), dust(PollutionMaterials.InfusedEarth, 5));
-        alloy(provider, "ordolead", PollutionMaterials.InfusedOrder, 20,
+        alloy(provider, "ordolead", PollutionMaterials.Ordolead, 20,
                 dust(GTMaterials.Lead, 2), dust(GTMaterials.Silicon, 1),
                 dust(GTMaterials.Gold, 1), dust(PollutionMaterials.InfusedOrder, 5));
-        alloy(provider, "perditioaluminium", PollutionMaterials.InfusedEntropy, 0,
+        alloy(provider, "perditioaluminium", PollutionMaterials.Perditioaluminium, 0,
                 dust(GTMaterials.Aluminium, 2), dust(GTMaterials.Thorium, 1),
                 dust(PollutionMaterials.InfusedEntropy, 5));
 
