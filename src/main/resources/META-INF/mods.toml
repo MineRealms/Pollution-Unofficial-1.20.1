@@ -55,11 +55,11 @@ config="pollution.mixins.json"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="jei"
-    mandatory=false
-    versionRange="[15.56.0.205,)"
-    ordering="AFTER"
-    side="BOTH"
+modId="jei"
+mandatory=false
+versionRange="[15.56.0.205,)"
+ordering="NONE"
+side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="kubejs"

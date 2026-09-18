@@ -187,7 +187,12 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")) { transitive = false }
     // forge impl is compileOnly too: FluidHelperCompatMixin targets a class inside it
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
-    runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
+    // JEI is intentionally NOT a dev runtime dependency: in dev our mixin config
+    // cannot be registered before JEI's construction (dev classloader timing), so
+    // GTCEu's jei.FluidHelperMixin would fail against JEI >= 15.40. In production
+    // the shim is registered from the jar manifest at launch and the conflict is
+    // handled (verified in the target modpack). Dev runs therefore load no JEI.
+    // runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
 
     // Botania
     compileOnly(fg.deobf("vazkii.botania:Botania:${botania_version}")) { transitive = false }
