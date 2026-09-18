@@ -238,6 +238,37 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 - 矿石方块逐石材类型生成（`pollution:red_granite_*_ore` 等），本轮未注册，按 tag 注册留待后续核实（TODO）
 - 运行期证据：`Registered 78 TC4R object aspect entries for Pollution materials`（72 gem/dust + 6 ingot）→ `Done (4.050s)`
 
+### 5.7 调试命令与服务器联调工具（已落地，2026-09-18）
+
+`/pollution` 命令树（需权限等级 2）：
+
+| 命令 | 作用 | API 路径 |
+|---|---|---|
+| `/pollution get` | 当前区块工业污染 | `PollutionEngine` |
+| `/pollution set <amount>` | 设置区块污染 | `PollutionEngine` |
+| `/pollution add <amount>` | 增加区块污染 | `PollutionEngine` |
+| `/pollution scrub <amount>` | 清洗区块污染 | `PollutionEngine` |
+| `/pollution aspects` | 列出材料↔要素映射 | `PollutionAspectMapping` |
+| `/pollution vis <channel> [amount]` | 查询（SIMULATE）/抽取（EXECUTE）灵气 | `TC4RBridge.drainVis` |
+| `/pollution flux [scrub <quanta>]` | 查询/清洗咒波 | `TC4RBridge.scrubFlux` |
+
+**联调工具**：`tools/rcon_exec.py`（Python，标准库实现 RCON 协议），配套 `run/server.properties`
+启用 RCON（`enable-rcon=true`, `rcon.port=25575`, `rcon.password=pollution`）。
+
+**实测记录（RCON 回执，runServer 环境）：**
+
+```
+> pollution aspects      -> Aspect mapping (36): infused_air -> aer [AER] ...（36 行）
+> pollution get          -> Chunk pollution: 0.0000
+> pollution vis aer      -> Drainable 0 AER vis          (SIMULATE)
+> pollution vis aer 5    -> Drained 0 AER vis            (EXECUTE)
+> pollution flux         -> Scrubbable 0 flux (range 16) (SIMULATE)
+> pollution flux scrub 8 -> Scrubbed 0 flux (range 16)   (EXECUTE)
+```
+
+数值为 0 属预期：平坦测试世界出生点附近没有 TC4R 灵气节点/咒波；
+重点验证了 SIMULATE/EXECUTE 两条代码路径均真实调用 TC4R API 且无异常。
+
 **资产工具（Python，默认只读）：**
 
 - `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
@@ -381,3 +412,8 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 - 注册 78 条（36 要素材料 × gem/dust + 6 合金 ingot），runServer 验证通过
 - 观察到 TC4R 与 GT 的兼容配方告警（`thaumcraft:compat/native_*_cluster_smelting` 输出为空），
   属 TC4R 端口自身与 GT 8.0.0 的集成瑕疵，不影响本模组；记录待后续与 TC4R 侧核对
+
+### 2026-09-18 — TC4R 桥接可执行化 + RCON 联调
+- `TC4RBridge` 增加 SIMULATE/EXECUTE 重载（vis 查询/抽取、flux 查询/清洗）
+- `/pollution vis`、`/pollution flux` 命令落地（见 5.7 节）
+- 新增 `tools/rcon_exec.py`，RCON 实测全部命令回执正常（6/6）

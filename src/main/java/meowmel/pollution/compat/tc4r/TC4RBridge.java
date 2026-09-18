@@ -29,19 +29,35 @@ public final class TC4RBridge {
 
     /** Drains vis from the TC4R network around the given position. Returns the amount actually drained. */
     public static int drainVis(ServerLevel level, BlockPos pos, VisChannel channel, int amount) {
+        return drainVis(level, pos, channel, amount, VisAction.EXECUTE);
+    }
+
+    /**
+     * Queries or drains vis. {@link VisAction#SIMULATE} reports the drainable
+     * amount without consuming it.
+     */
+    public static int drainVis(ServerLevel level, BlockPos pos, VisChannel channel, int amount, VisAction action) {
         if (amount <= 0) {
             return 0;
         }
-        return VisNetworkApi.drain(level, pos, channel, amount, VisAction.EXECUTE);
+        return VisNetworkApi.drain(level, pos, channel, amount, action);
     }
 
     /** Consumes flux goo/gas around the given position. Returns the amount actually consumed. */
     public static int scrubFlux(ServerLevel level, BlockPos pos, int quanta) {
+        return scrubFlux(level, pos, quanta, VisAction.EXECUTE);
+    }
+
+    /**
+     * Queries or consumes flux. {@link VisAction#SIMULATE} reports the
+     * consumable amount without removing blocks.
+     */
+    public static int scrubFlux(ServerLevel level, BlockPos pos, int quanta, VisAction action) {
         if (quanta <= 0) {
             return 0;
         }
         FluxConsumeResult result = FluxApi.consumeNearby(level, pos, FLUX_RANGE, quanta,
-                FluxConsumeContext.machine(MACHINE_SOURCE, pos), VisAction.EXECUTE);
+                FluxConsumeContext.machine(MACHINE_SOURCE, pos), action);
         return result.consumedQuanta();
     }
 
