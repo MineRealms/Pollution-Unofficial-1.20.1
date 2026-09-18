@@ -9,6 +9,7 @@ import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.ModList;
 
 import java.util.function.Consumer;
 
@@ -24,8 +25,11 @@ import java.util.function.Consumer;
  *   <li>BlazingPyrotheum + hydrazine sulfate -&gt; RocketFuel + Dimethylhydrazine</li>
  *   <li>ChlorineTrifluoride -&gt; AntimonyTrifluoride</li>
  *   <li>TetraethylLead -&gt; LeadZincSolution</li>
- *   <li>ROCKET_ENGINE_RECIPES -&gt; COMBUSTION_GENERATOR_FUELS + MAGIC_TURBINE_FUELS
- *       (GregTech 7.5.3 has no rocket engine map)</li>
+ *   <li>ROCKET_ENGINE_RECIPES -&gt; MAGIC_TURBINE_FUELS (GregTech 7.5.3 has no
+ *       rocket engine map) plus, when the optional GTNN/GCYR mods are loaded,
+ *       the real rocket maps: {@code GTNNRecipeTypes.ROCKET_ENGINE_RECIPES} and
+ *       {@code GCYRRecipeTypes.ROCKET_FUEL_RECIPES} (see
+ *       {@link GTNNRocketFuels} / {@link GCYRRocketFuels})</li>
  * </ul>
  */
 public final class MagicFuelRecipes {
@@ -35,6 +39,29 @@ public final class MagicFuelRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         combustionGenerator(provider);
         propellants(provider);
+        rocketEngines(provider);
+    }
+
+    /**
+     * Rocket fuel registration on GTNN/GCYR. Both mods are optional
+     * dependencies, so the implementation classes are only resolved when the
+     * mod is loaded (lazy class resolution keeps the references in
+     * {@link #rocketEngines} safe when the mods are absent).
+     *
+     * <p>The upstream 1.12.2 {@code ROCKET_ENGINE_RECIPES} entries could not be
+     * ported directly because GTCEu Modern has no rocket engine recipe map; the
+     * initial port substituted {@code MAGIC_TURBINE_FUELS} (kept, it is the
+     * Pollution magic turbine's own fuel map). GTNN restores the real map, so
+     * the two upstream rocket recipes are registered there, and GCYR receives
+     * the same propellants in its own {@code ROCKET_FUEL_RECIPES} registry.</p>
+     */
+    private static void rocketEngines(Consumer<FinishedRecipe> provider) {
+        if (ModList.get().isLoaded("gtnn")) {
+            GTNNRocketFuels.init(provider);
+        }
+        if (ModList.get().isLoaded("gcyr")) {
+            GCYRRocketFuels.init(provider);
+        }
     }
 
     private static void combustionGenerator(Consumer<FinishedRecipe> provider) {

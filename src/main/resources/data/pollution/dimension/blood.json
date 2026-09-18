@@ -2,10 +2,10 @@
   "type": "pollution:blood",
   "generator": {
     "type": "minecraft:noise",
-    "settings": "minecraft:overworld",
+    "settings": "pollution:blood",
     "biome_source": {
       "type": "minecraft:fixed",
-      "biome": "minecraft:plains"
+      "biome": "pollution:blood"
     }
   }
 }

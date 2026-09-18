@@ -1,0 +1,6 @@
+﻿{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "pollution:item/metaitems/magic.integration/attuned_crystal_wafer"
+  }
+}

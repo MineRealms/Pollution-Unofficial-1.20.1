@@ -73,6 +73,22 @@ public final class PollutionMaterials {
     public static Material InfernalBlazePropellant;
     public static Material DragonPulseFuel;
 
+    // ---- 矿物材料 / ore materials -------------------------------------------
+    // Upstream: api/unification/materials/OreMaterials.java
+    // Syrmorite / Octine / Valonite already exist in SubstrateMaterials; their
+    // full upstream ore definitions are not ported (see OreMaterials javadoc).
+    public static Material Scabyst;
+    public static Material FlameCoal;
+    public static Material DumbTin;
+    public static Material MeltGold;
+    public static Material AuthorityLead;
+    public static Material Pyrargyrite;
+    public static Material PlutoZinc;
+    public static Material Dragonstone;
+    public static Material PixieDust;
+    public static Material ElvenQuartz;
+    public static Material Amber;
+
     // Substrate / catalyst chemistry (ThaumcraftRecipes chain)
     public static Material Salisundus;
     public static Material Roughdraft;

@@ -36,7 +36,11 @@ public final class PollutionMaterialEvents {
         InfusedMaterials.register();
         meowmel.pollution.api.unification.materials.MagicFuelMaterials.register();
         meowmel.pollution.api.unification.materials.SubstrateMaterials.register();
+        meowmel.pollution.api.unification.materials.OreMaterials.register();
+        meowmel.pollution.api.unification.materials.MaterialPropertyAddition.init();
         PollutionAspectMapping.init();
-        Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 34 compound aspects, 6 aspect alloys");
+        TCAspectAddons.init();
+        Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 34 compound aspects, "
+                + "6 aspect alloys, 11 ore materials");
     }
 }

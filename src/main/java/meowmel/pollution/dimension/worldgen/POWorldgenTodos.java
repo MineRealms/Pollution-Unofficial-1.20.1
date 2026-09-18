@@ -25,8 +25,12 @@ package meowmel.pollution.dimension.worldgen;
  *       interpolation, livingrock restoration and per-biome layers; same
  *       {@code noise_settings} story as above.</li>
  *   <li>TODO: {@code ChunkGeneratorBlood} - flesh/plasma terrain from
- *       {@code TerrainGenerator}; the blood dimension has no target datapack
- *       yet.</li>
+ *       {@code TerrainGenerator}. The blood dimension now has a target
+ *       datapack ({@code data/pollution/dimension/blood.json} +
+ *       {@code noise_settings/blood.json}): overworld noise router with
+ *       {@code thaumcraft:tainted_flesh} as the default block, since the
+ *       upstream {@code FLESH_BLOCK} and {@code BloodPlasma} fluid are not
+ *       ported. The flesh mounds still wait for this generator.</li>
  *   <li>TODO: {@code TerrainGenerator} - Perlin height source used only by the
  *       blood chunk generator; skipped together with it.</li>
  * </ul>
@@ -120,14 +124,16 @@ package meowmel.pollution.dimension.worldgen;
  *       ElvenQuartz, ElvenElementium, AuthorityLead, MeltGold, DumbTin and
  *       PureTar are missing; only Octine/Syrmorite/Valonite exist). Port once
  *       the materials and GT registries land.</li>
- *   <li>TODO: {@code PODimensionManager}/{@code PODimensionType} - dimensions
- *       are datapack JSON on 1.20.1 ({@code data/pollution/dimension[_type]/}),
- *       owned by the dimension batch. All four dimension files now exist, but
- *       alfheim/blood/demiplane still use {@code minecraft:fixed} +
- *       {@code minecraft:plains} placeholders. Follow-up (dimension batch):
- *       switch them to {@code pollution:alfheim} (custom source),
- *       {@code pollution:blood} / {@code pollution:demiplane} (fixed biomes),
- *       and the underground file to {@code pollution:underground}.</li>
+ *   <li>DONE: {@code PODimensionManager}/{@code PODimensionType} - dimensions
+ *       are datapack JSON on 1.20.1 ({@code data/pollution/dimension[_type]/}).
+ *       Alfheim uses the custom {@code pollution:alfheim} biome source, blood
+ *       and demiplane use fixed {@code pollution:blood} / {@code
+ *       pollution:demiplane} biomes, and {@code pollution:alfheim} /
+ *       {@code pollution:blood} noise settings are authored. Remaining
+ *       follow-up: point the underground file at the already registered
+ *       {@code pollution:underground} biome source and author a
+ *       {@code pollution:underground} noise settings with the style-biome
+ *       surface rules.</li>
  * </ul>
  */
 public final class POWorldgenTodos {

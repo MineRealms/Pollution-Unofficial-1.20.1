@@ -5,6 +5,8 @@ import meowmel.pollution.client.entity.EntityBasalzRenderer;
 import meowmel.pollution.client.entity.EntityBlitzRenderer;
 import meowmel.pollution.client.entity.EntityBlizzRenderer;
 import meowmel.pollution.client.entity.PollutionSlimeRenderer;
+import meowmel.pollution.client.renderer.MineralExtractorRenderer;
+import meowmel.pollution.common.block.PollutionMiscBlocks;
 import meowmel.pollution.common.entity.PollutionEntities;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +25,18 @@ import net.minecraftforge.fml.common.Mod;
  * <p>The elemental bolts use the vanilla {@link ThrownItemRenderer} with the
  * slime-ball placeholder item; upstream did not register bolt renderers at all,
  * so this is a port addition (a dedicated bolt model can replace it later).</p>
+ *
+ * <p>Block-entity renderers: the mineral extractor keeps its upstream
+ * procedural visual through {@link MineralExtractorRenderer}. The remaining
+ * 1.12 TESRs are intentionally not ported yet because their block entities do
+ * not exist server-side in this port:
+ * {@code TesrMagicCircle} (TileEntityMagicCircle),
+ * {@code TesrConstellationCrystal} (constellation crystal),
+ * {@code TesrStarstreamObeliskCore}, {@code TesrStarstreamOperationCore} and
+ * {@code TesrStarstreamRelay} (starstream core/relay block entities), plus the
+ * {@code ItemMineralExtractorRenderer} item variant which needs a
+ * {@code BlockEntityWithoutLevelRenderer}. TODO(client): port each of these
+ * together with its block entity.</p>
  */
 @Mod.EventBusSubscriber(modid = Pollution.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class PollutionEntityRenderers {
@@ -51,5 +65,8 @@ public final class PollutionEntityRenderers {
         event.registerEntityRenderer(PollutionEntities.BASALZ_BOLT.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(PollutionEntities.BLITZ_BOLT.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(PollutionEntities.BLIZZ_BOLT.get(), ThrownItemRenderer::new);
+
+        event.registerBlockEntityRenderer(PollutionMiscBlocks.MINERAL_EXTRACTOR_BLOCK_ENTITY.get(),
+                MineralExtractorRenderer::new);
     }
 }

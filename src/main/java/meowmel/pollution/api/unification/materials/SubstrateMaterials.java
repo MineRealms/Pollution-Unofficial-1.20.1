@@ -14,6 +14,12 @@ import net.minecraft.resources.ResourceLocation;
  * colours; the port registers them with approximate colours because the
  * upstream definitions were not part of the carried-over field table. The
  * substrate family (basic/advanced/hyper) are fluids, the rest are dusts/gems.</p>
+ *
+ * <p>{@code Syrmorite}, {@code Octine} and {@code Valonite} also appear in the
+ * upstream ore-material batch ({@link OreMaterials}). Their full upstream
+ * ingot/ore definitions are intentionally not re-registered here (the port's
+ * substrate chemistry depends on the dust/gem shapes); the fluids are added so
+ * the forge-alchemy transmutations can output them.</p>
  */
 public final class SubstrateMaterials {
 
@@ -27,11 +33,11 @@ public final class SubstrateMaterials {
         PollutionMaterials.Substrate = new Material.Builder(id("substrate"))
                 .color(0x8FAF8F).dust().iconSet(MaterialIconSet.DULL).buildAndRegister();
         PollutionMaterials.Valonite = new Material.Builder(id("valonite"))
-                .color(0x6FD6C4).gem().iconSet(MaterialIconSet.SHINY).buildAndRegister();
+                .color(0x6FD6C4).gem().fluid().iconSet(MaterialIconSet.SHINY).buildAndRegister();
         PollutionMaterials.Syrmorite = new Material.Builder(id("syrmorite"))
-                .color(0x4A5D6A).dust().iconSet(MaterialIconSet.METALLIC).buildAndRegister();
+                .color(0x4A5D6A).dust().fluid().iconSet(MaterialIconSet.METALLIC).buildAndRegister();
         PollutionMaterials.Octine = new Material.Builder(id("octine"))
-                .color(0xC46A2A).dust().iconSet(MaterialIconSet.METALLIC).buildAndRegister();
+                .color(0xC46A2A).dust().fluid().iconSet(MaterialIconSet.METALLIC).buildAndRegister();
         PollutionMaterials.Thaummix = new Material.Builder(id("thaummix"))
                 .color(0x7A4FA0).dust().iconSet(MaterialIconSet.DULL).buildAndRegister();
         PollutionMaterials.SulfoPlumbicSalt = new Material.Builder(id("sulfo_plumbic_salt"))

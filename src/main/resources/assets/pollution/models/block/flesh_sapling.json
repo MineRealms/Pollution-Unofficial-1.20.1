@@ -1,6 +1,6 @@
-{
+﻿{
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "minecraft:block/crimson_fungus"
+    "cross": "pollution:block/flesh_sapling"
   }
 }

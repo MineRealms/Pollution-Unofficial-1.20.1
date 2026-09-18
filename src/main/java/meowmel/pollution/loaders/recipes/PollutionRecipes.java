@@ -49,6 +49,7 @@ public final class PollutionRecipes {
         NodeFusionRecipes.init(provider);
         InfusedProcessingRecipes.init(provider);
         ThaumcraftRecipes.init(provider);
+        ForgeAlchemyRecipes.init(provider);
         AERecipes.init(provider);
         BotaniaRecipes.init(provider);
         BotaniaNativeRecipes.init(provider);

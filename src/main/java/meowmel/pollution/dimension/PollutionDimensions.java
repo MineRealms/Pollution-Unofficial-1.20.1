@@ -42,17 +42,26 @@ import net.minecraft.world.level.Level;
  *       angle.</li>
  * </ul>
  *
+ * <p>Current wiring (worldgen batch):</p>
+ * <ul>
+ *   <li><b>Biome sources</b> — {@code alfheim.json} uses the custom
+ *       {@code pollution:alfheim} 12-biome map (seed {@code 0}; a datapack file
+ *       cannot read the world seed); {@code blood.json} and
+ *       {@code demiplane.json} use {@code minecraft:fixed} with
+ *       {@code pollution:blood} / {@code pollution:demiplane}.</li>
+ *   <li><b>Noise settings</b> — {@code pollution:alfheim} and
+ *       {@code pollution:blood} are authored datapack files (vanilla overworld
+ *       noise router plus a compact surface rule; blood uses
+ *       {@code thaumcraft:tainted_flesh} as default block). Demiplane keeps
+ *       {@code minecraft:overworld}.</li>
+ * </ul>
+ *
  * <p>Stubs kept for later batches:</p>
  * <ul>
- *   <li><b>Biome sources</b> — the worldgen batch owns the biome JSONs. Only
- *       {@code pollution:underground} exists today, so the alfheim, blood and
- *       demiplane dimension JSONs use {@code minecraft:plains} as their fixed
- *       biome until {@code pollution:alfheim}, {@code pollution:blood} and
- *       {@code pollution:demiplane} land; switch the fixed biome then.</li>
  *   <li><b>Chunk generators</b> — the custom WorldEngine generators
  *       ({@code ChunkGeneratorAlfheim}, {@code ChunkGeneratorBlood}) are not
- *       ported yet, so all three new dimensions use the
- *       {@code minecraft:overworld} noise settings placeholder.
+ *       ported yet, so the alfheim/blood terrain <em>shape</em> is still the
+ *       vanilla overworld noise router (only the surface materials differ).
  *       {@code DimensionDemiplane} used the vanilla overworld generator
  *       upstream, so for it the placeholder is already the final shape.</li>
  *   <li><b>Fog and sky colours</b> — in 1.20.1 these live on the biome

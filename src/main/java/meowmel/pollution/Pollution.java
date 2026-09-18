@@ -122,6 +122,43 @@ public final class Pollution {
                     "Mineral extractor disabled");
             provider.add("pollution.mineral_extractor.mode",
                     "Mineral extractor mode: %s");
+
+            // Item behaviour tooltips (upstream metaitem behaviour pass).
+            provider.add("pollution.item.packaged_aura_node.header", "Node info:");
+            provider.add("pollution.armor.goggles.food",
+                    "Gluttony: consumes power to restore hunger");
+            provider.add("pollution.armor.goggles.water",
+                    "Aquatic: night vision mode grants water breathing");
+            provider.add("pollution.armor.goggles.solar",
+                    "Solar: recharges in daylight while night vision is off");
+            provider.add("pollution.armor.goggles.vis_discount",
+                    "Vis discount: %s");
+            provider.add("pollution.tarot.the_fool.tooltip",
+                    "Sneak + right-click to teleport to the world spawn");
+            provider.add("pollution.bauble.source", "Source: %s/%s");
+            provider.add("pollution.bauble.material", "Aspect: %s");
+            provider.add("pollution.filter.durability", "Durability: %s/%s");
+            provider.add("pollution.filter.material", "Primary material: %s");
+            provider.add("pollution.filter.tier", "Filter tier: %s");
+            provider.add("pollution.filter.expected", "Expected work: %s");
+            provider.add("pollution.filter.remaining", "Until breakage: %s");
+            provider.add("pollution.astral_data.unattuned", "No constellation data");
+            provider.add("pollution.astral_data.constellation", "Constellation: %s");
+            provider.add("pollution.astral_data.function", "Celestial bias: %s");
+            provider.add("pollution.astral_data.function.life", "Life cultivation");
+            provider.add("pollution.astral_data.function.processing", "Processing and destruction");
+            provider.add("pollution.astral_data.function.stability", "Stability and protection");
+            provider.add("pollution.astral_data.function.energy", "Energy and overclocking");
+            provider.add("pollution.astral_data.function.time", "Timing and calibration");
+            provider.add("pollution.astral_data.function.resonance", "General starlight resonance");
+            provider.add("pollution.astral_data.nbt_preserved",
+                    "Constellation identity is kept as native Astral Sorcery NBT");
+            provider.add("pollution.crystal_quality.unselected", "No crystal quality data");
+            provider.add("pollution.crystal_quality.purity", "Crystal purity: %s");
+            provider.add("pollution.crystal_quality.stability", "Cultivation stability: %s");
+            provider.add("pollution.crystal_quality.embryo", "In celestial cultivation stage");
+            provider.add("pollution.crystal_quality.cultivated", "Cultivated crystal");
+            provider.add("pollution.crystal_quality.grade", "Lens quality: grade %s (%s%%)");
         });
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();
