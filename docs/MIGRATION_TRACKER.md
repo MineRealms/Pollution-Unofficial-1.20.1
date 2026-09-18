@@ -654,6 +654,22 @@ Done (4.274s)! For help, type "help"
 - [ ] 下一批：`EssenceCollector`/`GtEssenceSmelter`/`IndustrialInfusion`/节点系列
   （NodeWasher 上游半成品需补全；NodeProducer/LargeNodeGenerator/CentralVisTower/NodeBlastFurnace/
   NodeFusionReactor 待逐台）
+
+**Batch 1（节点族）进度（物品迷你层 + 3/6 台）：**
+
+- [x] 物品迷你层：`PollutionItems.PACKAGED_AURA_NODE`（普通物品，NBT 合同与上游一致：
+  `NodeTire`/`NodeType`/6×`Essence*`，见 `PackagedAuraNode`；GT MetaItem 体系不移植）
+- [x] `NodeProducerMachine`：EU + `InfusedEnergy` 生产随机节点物品（概率表/高斯要素照搬上游；
+  线圈等级影响火要素）；16 层大结构直译（FRAME_II → `GTBlocks.FUSION_CASING` 替代）
+- [x] `LargeNodeGeneratorMachine`：打包节点为燃料输出 EU（容量倍率表/水要素调速/风要素波动照搬）；
+  TC6 环境灵气行为映射：Pure→`TC4RBridge.scrubFlux`、Ominous→`PollutionEngine.add`、
+  Concussive/Voracious→缺源质时按概率烧毁节点；25 层结构直译（Mansussteel→HSSG 框架、FRAME_II→融合外壳）
+- [x] `NodeWasherMachine`：**补全上游半成品语义**——原地清洗打包节点（每 20 tick 减
+  `coil×EU tier×25` 点 `EssenceEntropy`，耗 EU + `InfusedWater` 144 mB），并顺带清洗半径 4 咒波；
+  结构直译（4 层）
+- [ ] 剩余 3 台：`NodeBlastFurnace`（BLAST + FORGE_ALCHEMY 双配方 + 节点催化）、
+  `NodeFusionReactor`（FUSION + NODE_MAGIC_FUSION 双配方 + `ICleanVis` + Mansus 消耗）、
+  `CentralVisTower`（TC6 环境灵气/魔力，需语义重写，工作量最大）
 - 冒烟测试（7.5.3，重启后）：`pollution:infused_exchange`、`pollution:essence_smelter` 注册并可放置，
   BE 正常（被动控制器无 `recipeLogic` 字段属预期）
 11. 节点/源质/注魔系列 → TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）

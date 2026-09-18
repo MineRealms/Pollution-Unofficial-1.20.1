@@ -29,6 +29,9 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicElectricBlastFurna
 import meowmel.pollution.common.machine.multiblock.magic.MagicElectrolyzerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.EssenceSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.InfusedExchangeMachine;
+import meowmel.pollution.common.machine.multiblock.node.LargeNodeGeneratorMachine;
+import meowmel.pollution.common.machine.multiblock.node.NodeProducerMachine;
+import meowmel.pollution.common.machine.multiblock.node.NodeWasherMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicExtruderMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicGreenHouseMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMaceratorMachine;
@@ -117,6 +120,9 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_ASSEMBLER;
     public static MultiblockMachineDefinition INFUSED_EXCHANGE;
     public static MultiblockMachineDefinition ESSENCE_SMELTER;
+    public static MultiblockMachineDefinition NODE_PRODUCER;
+    public static MultiblockMachineDefinition LARGE_NODE_GENERATOR;
+    public static MultiblockMachineDefinition NODE_WASHER;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -379,6 +385,30 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(EssenceSmelterMachine::createPattern)
                 .simpleModel(model("essence_smelter"))
+                .register();
+
+        NODE_PRODUCER = PollutionGTAddon.REGISTRATE
+                .multiblock("node_producer", NodeProducerMachine::new)
+                .langValue("Node Producer")
+                .rotationState(RotationState.ALL)
+                .pattern(NodeProducerMachine::createPattern)
+                .simpleModel(model("node_producer"))
+                .register();
+
+        LARGE_NODE_GENERATOR = PollutionGTAddon.REGISTRATE
+                .multiblock("large_node_generator", LargeNodeGeneratorMachine::new)
+                .langValue("Large Node Generator")
+                .rotationState(RotationState.ALL)
+                .pattern(LargeNodeGeneratorMachine::createPattern)
+                .simpleModel(model("large_node_generator"))
+                .register();
+
+        NODE_WASHER = PollutionGTAddon.REGISTRATE
+                .multiblock("node_washer", NodeWasherMachine::new)
+                .langValue("Node Washer")
+                .rotationState(RotationState.ALL)
+                .pattern(NodeWasherMachine::createPattern)
+                .simpleModel(model("node_washer"))
                 .register();
     }
 

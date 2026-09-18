@@ -31,6 +31,7 @@ public final class Pollution {
         // Casing blocks (magic multiblocks) are plain registrate blocks and can
         // be created here, on the Pollution bus, like the machine definitions.
         PollutionMagicBlocks.init();
+        meowmel.pollution.common.item.PollutionItems.init();
 
         // Recipe types are created from GregTech's own GTRecipeType RegisterEvent
         // (posted inside GTRecipeTypes.init, before the registry freezes).

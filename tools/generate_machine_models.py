@@ -79,6 +79,9 @@ MULTIBLOCKS = {
     "magic_assembler": "hv",
     "infused_exchange": "hv",
     "essence_smelter": "hv",
+    "node_producer": "ev",
+    "large_node_generator": "iv",
+    "node_washer": "ev",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
