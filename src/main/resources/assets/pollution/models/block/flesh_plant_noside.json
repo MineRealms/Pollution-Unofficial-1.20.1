@@ -1,0 +1,27 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "texture": "pollution:block/flesh_plant",
+    "inside": "pollution:block/flesh_plant",
+    "particle": "pollution:block/flesh_plant"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        4,
+        4
+      ],
+      "to": [
+        12,
+        12,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#inside"
+        }
+      }
+    }
+  ]
+}

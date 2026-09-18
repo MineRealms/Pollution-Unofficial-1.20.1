@@ -237,6 +237,7 @@ tasks.named('processResources', ProcessResources).configure {
             thaumcraft_version: thaumcraft_version, gtceu_version: gtceu_version,
     ]
     inputs.properties replaceProperties
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]

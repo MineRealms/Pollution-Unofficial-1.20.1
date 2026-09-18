@@ -138,6 +138,8 @@ public final class PollutionMagicBlocks {
     private static BlockEntry<Block> casing(String name) {
         return PollutionGTAddon.REGISTRATE
                 .block(name, Block::new)
+                .blockstate((context, provider) -> {
+                })
                 .properties(properties -> properties
                         .mapColor(MapColor.METAL)
                         .strength(5.0F, 10.0F)
@@ -150,6 +152,8 @@ public final class PollutionMagicBlocks {
     private static BlockEntry<Block> glass(String name) {
         return PollutionGTAddon.REGISTRATE
                 .block(name, Block::new)
+                .blockstate((context, provider) -> {
+                })
                 .properties(properties -> properties
                         .mapColor(MapColor.NONE)
                         .strength(5.0F, 5.0F)
@@ -169,6 +173,8 @@ public final class PollutionMagicBlocks {
     private static BlockEntry<Block> starstream(String name, int lightLevel) {
         return PollutionGTAddon.REGISTRATE
                 .block(name, Block::new)
+                .blockstate((context, provider) -> {
+                })
                 .properties(properties -> properties
                         .mapColor(MapColor.STONE)
                         .strength(12.0F, 80.0F)

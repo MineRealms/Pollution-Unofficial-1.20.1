@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "pollution:block/heart_fruit_stage2"
+  }
+}

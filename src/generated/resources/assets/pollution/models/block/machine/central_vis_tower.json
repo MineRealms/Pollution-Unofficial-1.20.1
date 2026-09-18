@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:central_vis_tower",
+  "variants": {
+    "is_formed=false": {
+      "model": "pollution:block/machine/central_vis_tower"
+    },
+    "is_formed=true": {
+      "model": "pollution:block/machine/central_vis_tower"
+    }
+  }
+}

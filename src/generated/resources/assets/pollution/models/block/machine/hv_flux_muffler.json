@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:hv_flux_muffler",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/flux_muffler_hv"
+    }
+  }
+}

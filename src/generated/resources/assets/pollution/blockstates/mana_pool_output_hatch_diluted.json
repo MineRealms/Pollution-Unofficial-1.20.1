@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted"
+    },
+    "facing=south": {
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "pollution:block/machine/mana_pool_output_hatch_diluted",
+      "y": 270
+    }
+  }
+}

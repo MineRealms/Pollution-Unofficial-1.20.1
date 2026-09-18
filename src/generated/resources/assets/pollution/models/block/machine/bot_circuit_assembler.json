@@ -1,0 +1,31 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:bot_circuit_assembler",
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "model": "pollution:block/machine/bot_circuit_assembler"
+    }
+  }
+}

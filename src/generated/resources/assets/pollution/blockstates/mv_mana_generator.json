@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "pollution:block/machine/mv_mana_generator",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "pollution:block/machine/mv_mana_generator",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pollution:block/machine/mv_mana_generator"
+    },
+    "facing=south": {
+      "model": "pollution:block/machine/mv_mana_generator",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "pollution:block/machine/mv_mana_generator",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "pollution:block/machine/mv_mana_generator",
+      "y": 270
+    }
+  }
+}

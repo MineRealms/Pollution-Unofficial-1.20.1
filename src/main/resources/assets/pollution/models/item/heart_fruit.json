@@ -1,3 +1,6 @@
 {
-  "parent": "pollution:block/heart_fruit"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "pollution:item/heart_fruit"
+  }
 }

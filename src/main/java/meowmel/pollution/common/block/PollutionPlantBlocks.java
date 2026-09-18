@@ -37,6 +37,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<FleshPlantBlock> FLESH_PLANT = PollutionGTAddon.REGISTRATE
             .block("flesh_plant", FleshPlantBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(0.6F)
@@ -48,6 +50,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<FleshFlowerBlock> FLESH_FLOWER = PollutionGTAddon.REGISTRATE
             .block("flesh_flower", FleshFlowerBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(0.6F)
@@ -59,6 +63,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<FleshLeavesBlock> FLESH_LEAVES = PollutionGTAddon.REGISTRATE
             .block("flesh_leaves", FleshLeavesBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(0.3F)
@@ -70,6 +76,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<FleshSaplingBlock> FLESH_SAPLING = PollutionGTAddon.REGISTRATE
             .block("flesh_sapling", FleshSaplingBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .instabreak()
@@ -82,6 +90,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<HeartFruitBlock> HEART_FRUIT = PollutionGTAddon.REGISTRATE
             .block("heart_fruit", HeartFruitBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(0.2F)
@@ -94,6 +104,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<EldritchEyeBlock> ELDRITCH_EYE = PollutionGTAddon.REGISTRATE
             .block("eldritch_eye", EldritchEyeBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(0.5F)
@@ -106,6 +118,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<TentacleBlock> TENTACLE = PollutionGTAddon.REGISTRATE
             .block("tentacle", TentacleBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(1.0F)
@@ -121,6 +135,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<RainbowLeavesBlock> RAINBOW_LEAVES = PollutionGTAddon.REGISTRATE
             .block("rainbow_leaves", RainbowLeavesBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.PLANT)
                     .strength(0.2F)
@@ -132,6 +148,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<RainbowSaplingBlock> RAINBOW_SAPLING = PollutionGTAddon.REGISTRATE
             .block("rainbow_sapling", RainbowSaplingBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.PLANT)
                     .instabreak()
@@ -148,6 +166,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<AlfheimWhiteGrapeBlock> ALFHEIM_WHITE_GRAPE = PollutionGTAddon.REGISTRATE
             .block("alfheim_white_grape", AlfheimWhiteGrapeBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.PLANT)
                     .strength(0.2F)
@@ -160,6 +180,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<AlfheimElvenSandBlock> ALFHEIM_ELVEN_SAND = PollutionGTAddon.REGISTRATE
             .block("alfheim_elven_sand", AlfheimElvenSandBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.SAND)
                     .strength(0.5F)
@@ -169,6 +191,8 @@ public final class PollutionPlantBlocks {
 
     public static final BlockEntry<AlfheimDreamLeavesBlock> ALFHEIM_DREAM_LEAVES = PollutionGTAddon.REGISTRATE
             .block("alfheim_dream_leaves", AlfheimDreamLeavesBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.PLANT)
                     .strength(0.2F)
@@ -185,6 +209,8 @@ public final class PollutionPlantBlocks {
     private static BlockEntry<AlfheimRedGrapeBlock> redGrape(String name, int stage) {
         return PollutionGTAddon.REGISTRATE
                 .block(name, properties -> new AlfheimRedGrapeBlock(properties, stage))
+                .blockstate((context, provider) -> {
+                })
                 .properties(properties -> properties
                         .mapColor(MapColor.PLANT)
                         .strength(0.2F)

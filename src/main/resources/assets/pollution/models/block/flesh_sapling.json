@@ -1,4 +1,4 @@
-﻿{
+{
   "parent": "minecraft:block/cross",
   "textures": {
     "cross": "pollution:block/flesh_sapling"

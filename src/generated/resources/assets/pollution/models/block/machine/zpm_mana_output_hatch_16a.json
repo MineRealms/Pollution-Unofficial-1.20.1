@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:zpm_mana_output_hatch_16a",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/mana_output_hatch_16a_zpm"
+    }
+  }
+}

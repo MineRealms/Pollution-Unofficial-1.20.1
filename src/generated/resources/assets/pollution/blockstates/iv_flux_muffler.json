@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "pollution:block/machine/iv_flux_muffler",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "pollution:block/machine/iv_flux_muffler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pollution:block/machine/iv_flux_muffler"
+    },
+    "facing=south": {
+      "model": "pollution:block/machine/iv_flux_muffler",
+      "y": 180
+    },
+    "facing=up": {
+      "gtceu:z": 180,
+      "model": "pollution:block/machine/iv_flux_muffler",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "pollution:block/machine/iv_flux_muffler",
+      "y": 270
+    }
+  }
+}

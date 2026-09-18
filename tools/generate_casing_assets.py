@@ -76,6 +76,10 @@ CASINGS = {
     "terra_4_casing": "gtceu:block/casings/voltage/ev/side",
     "terra_5_casing": "gtceu:block/casings/voltage/iv/side",
     "terra_6_casing": "gtceu:block/casings/voltage/luv/side",
+    # POStarstreamObelisk variants
+    "starstream_casing": "gtceu:block/casings/voltage/uv/side",
+    "starstream_runed_casing": "gtceu:block/casings/voltage/zpm/side",
+    "constellation_anchor": "gtceu:block/casings/voltage/uhv/side",
 }
 
 

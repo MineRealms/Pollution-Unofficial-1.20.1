@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:zpm_infused_fluid_hatch",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/infused_fluid_hatch_zpm"
+    }
+  }
+}

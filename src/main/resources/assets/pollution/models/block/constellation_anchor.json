@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "pollution:block/starstream/constellation_anchor"
+    "all": "gtceu:block/casings/voltage/uhv/side"
   }
 }

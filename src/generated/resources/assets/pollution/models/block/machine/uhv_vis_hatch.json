@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:uhv_vis_hatch",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/vis_hatch_uhv"
+    }
+  }
+}

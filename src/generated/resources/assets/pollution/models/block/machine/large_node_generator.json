@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:large_node_generator",
+  "variants": {
+    "is_formed=false": {
+      "model": "pollution:block/machine/large_node_generator"
+    },
+    "is_formed=true": {
+      "model": "pollution:block/machine/large_node_generator"
+    }
+  }
+}

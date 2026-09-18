@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:gt_essence_smelter",
+  "variants": {
+    "is_formed=false": {
+      "model": "pollution:block/machine/gt_essence_smelter"
+    },
+    "is_formed=true": {
+      "model": "pollution:block/machine/gt_essence_smelter"
+    }
+  }
+}

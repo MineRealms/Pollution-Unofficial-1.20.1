@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:mv_solar_plate_6",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/solar_plate_2_6"
+    }
+  }
+}

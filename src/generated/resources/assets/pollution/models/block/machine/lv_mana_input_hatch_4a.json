@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:lv_mana_input_hatch_4a",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/mana_input_hatch_4a_lv"
+    }
+  }
+}

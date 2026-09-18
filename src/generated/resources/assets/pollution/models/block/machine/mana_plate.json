@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:mana_plate",
+  "variants": {
+    "is_formed=false": {
+      "model": "pollution:block/machine/mana_plate"
+    },
+    "is_formed=true": {
+      "model": "pollution:block/machine/mana_plate"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:mega_mana_turbine",
+  "variants": {
+    "is_formed=false,recipe_logic_status=idle": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=false,recipe_logic_status=suspend": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=false,recipe_logic_status=waiting": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=false,recipe_logic_status=working": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=true,recipe_logic_status=idle": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=true,recipe_logic_status=suspend": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=true,recipe_logic_status=waiting": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    },
+    "is_formed=true,recipe_logic_status=working": {
+      "model": "pollution:block/machine/mega_mana_turbine"
+    }
+  }
+}

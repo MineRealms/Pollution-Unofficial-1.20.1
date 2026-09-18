@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:hv_mana_generator",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/mana_generator_hv"
+    }
+  }
+}

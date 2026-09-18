@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:hv_wireless_mana_input_hatch_64a",
+  "variants": {
+    "": {
+      "model": "pollution:block/machine/wireless_mana_input_hatch_64a_hv"
+    }
+  }
+}

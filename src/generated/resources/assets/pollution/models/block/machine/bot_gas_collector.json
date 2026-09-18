@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:bot_gas_collector",
+  "variants": {
+    "is_formed=false": {
+      "model": "pollution:block/machine/bot_gas_collector"
+    },
+    "is_formed=true": {
+      "model": "pollution:block/machine/bot_gas_collector"
+    }
+  }
+}

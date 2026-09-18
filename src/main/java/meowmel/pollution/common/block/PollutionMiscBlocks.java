@@ -44,6 +44,8 @@ public final class PollutionMiscBlocks {
 
     public static final BlockEntry<PortalBlock> PORTAL = PollutionGTAddon.REGISTRATE
             .block("portal", PortalBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_BLACK)
                     .strength(-1.0F, 3600000.0F)
@@ -54,6 +56,8 @@ public final class PollutionMiscBlocks {
 
     public static final BlockEntry<FleshHeartBlock> FLESH_HEART = PollutionGTAddon.REGISTRATE
             .block("flesh_heart", FleshHeartBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.COLOR_RED)
                     .strength(5.0F, 10.0F)
@@ -64,6 +68,8 @@ public final class PollutionMiscBlocks {
 
     public static final BlockEntry<MineralExtractorBlock> MINERAL_EXTRACTOR = PollutionGTAddon.REGISTRATE
             .block("mineral_extractor", MineralExtractorBlock::new)
+            .blockstate((context, provider) -> {
+            })
             .properties(properties -> properties
                     .mapColor(MapColor.METAL)
                     .strength(4.0F, 12.0F)
