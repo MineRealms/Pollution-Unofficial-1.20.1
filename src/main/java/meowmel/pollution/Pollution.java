@@ -95,8 +95,11 @@ public final class Pollution {
                     "block.pollution." + name, PollutionMagicBlocks.displayName(name)));
         });
 
+        meowmel.pollution.common.warp.PollutionWarpEvents.init();
+
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(meowmel.pollution.common.warp.WarpEventHandler::onServerTick);
 
         LOGGER.info("Pollution Unofficial booting: GregTech CEu Modern x Thaumcraft 4R integration");
     }

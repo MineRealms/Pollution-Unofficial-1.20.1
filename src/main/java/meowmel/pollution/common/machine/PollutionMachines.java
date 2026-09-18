@@ -43,6 +43,7 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicGreenHouseMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMaceratorMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMixerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicSifterMachine;
+import meowmel.pollution.common.machine.multiblock.magic.SmallChemicalPlantMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicSolidifierMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicWireMillMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
@@ -137,6 +138,7 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition GT_ESSENCE_SMELTER;
     public static MultiblockMachineDefinition ESSENCE_COLLECTOR;
     public static MultiblockMachineDefinition INDUSTRIAL_INFUSION;
+    public static MultiblockMachineDefinition SMALL_CHEMICAL_PLANT;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -460,6 +462,11 @@ public final class PollutionMachines {
         INDUSTRIAL_INFUSION = magicMultiblock("industrial_infusion", "Industrial Infusion",
                 IndustrialInfusionMachine::new, IndustrialInfusionMachine::createPattern,
                 PORecipeMaps.INDUSTRIAL_INFUSION_RECIPES);
+
+        SMALL_CHEMICAL_PLANT = magicMultiblock("small_chemical_plant", "Small Chemical Plant",
+                SmallChemicalPlantMachine::new, SmallChemicalPlantMachine::createPattern,
+                GTRecipeTypes.CHEMICAL_RECIPES, GTRecipeTypes.LARGE_CHEMICAL_RECIPES,
+                PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES);
     }
 
     private static MultiblockMachineDefinition fusionReactor(String name, String displayName, int tier) {

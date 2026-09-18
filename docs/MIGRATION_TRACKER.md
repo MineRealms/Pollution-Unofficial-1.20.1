@@ -690,7 +690,24 @@ Done (4.274s)! For help, type "help"
   自定义 `IndustrialInfusionRecipeLogic`；29 层结构脚本生成
 - 结构生成器：`tools/gen_node_patterns.py`（剥离注释、aisle 原样移植、谓词手写映射；
   已生成 NodeBlastFurnace/NodeFusionReactor/EssenceCollector/IndustrialInfusion/CentralVisTower 5 个结构类）
-- **集中冒烟测试（7.5.3，Batch 1-3 一次做完后）通过**：
+**Batch 4-7 进度（本轮）：**
+
+- **Batch 4（物品）✅ 核心完成**：`PollutionItems` 注册 40 个上游同 id 物品（电池外壳/电池、魔法电路 10 档、
+  滤芯 5 档、催化剂核心 7、符文字 3、强化件 6、封装节点）；`tools/generate_item_models.py` 生成占位模型；
+  物品行为（滤芯工作、护目镜、饰品等）待行为层
+- **Batch 5（能量/特殊）部分**：`SmallChemicalPlantMachine` ✅（化学+大化反+魔导化学反应釜三配方；
+  GTQT 化工厂配方缺失已记录）；`MagicBattery`/`MagicFusionReactor`/魔导涡轮 3 台 + 燃料表待做
+- **Batch 6（配方数据）未开始**：物品已就绪可开工；大文件（AERecipes/ThaumcraftRecipes/MagicGCYMRecipes）
+  按小批 6a/6b/6c 推进
+- **Batch 7（扭曲事件）✅ 核心完成**：`PollutionWarpEvents`（11 个事件：目盲/反胃/中毒/凋零/虚弱/跳跃/风推/
+  流血/落雷/黑曜石/蘑菇）+ `WarpEventHandler`（每 10s 按 `min(25%, warp/100)` 概率触发；
+  warp 读取 `TC4RBridge.warpOf` → TC4R 只读视图）；剩余 ~20 个事件类待补
+- **Test 组件 ✅**：`PollutionGameTests`（污染引擎读写/清洗、18 台魔导机器注册、封装节点 NBT 往返、
+  外壳方块注册）+ `tools/gen_gametest_structure.py`（生成 `data/pollution/structures/platform.nbt`）；
+  运行方式 `gradlew runGameTestServer`
+- 服务器已按要求关闭；集中冒烟（含 GameTest）待全部批次完成
+
+**集中冒烟测试（7.5.3，Batch 1-3 一次做完后）通过**：
   - `Done (5.455s)`；脚本生成的 5 个巨型结构（NodeBlastFurnace/NodeFusionReactor/IndustrialInfusion/
     EssenceCollector/CentralVisTower）在注册期全部构建成功（尺寸/矩形校验通过）
   - RCON 验证 8 台新机：`node_blast_furnace`、`luv/zpm/uv_node_fusion_reactor`、`central_vis_tower`、

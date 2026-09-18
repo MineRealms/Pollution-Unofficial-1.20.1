@@ -90,6 +90,7 @@ MULTIBLOCKS = {
     "gt_essence_smelter": "hv",
     "essence_collector": "ev",
     "industrial_infusion": "ev",
+    "small_chemical_plant": "ev",
 }
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
