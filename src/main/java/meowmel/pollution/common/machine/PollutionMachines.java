@@ -3,10 +3,13 @@ package meowmel.pollution.common.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
+import meowmel.pollution.common.machine.multiblock.magic.MagicMaceratorMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
@@ -65,6 +68,8 @@ public final class PollutionMachines {
     public static MachineDefinition[] VIS_HATCH;
     public static MachineDefinition[] INFUSED_FLUID_HATCH;
     public static MachineDefinition[] FLUX_MUFFLER;
+
+    public static MultiblockMachineDefinition MAGIC_MACERATOR;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -232,6 +237,15 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.flux_muffler.tooltip"))
                         .register(),
                 FLUX_MUFFLER_TIERS);
+
+        MAGIC_MACERATOR = PollutionGTAddon.REGISTRATE
+                .multiblock("magic_macerator", MagicMaceratorMachine::new)
+                .langValue("Magic Macerator")
+                .rotationState(RotationState.ALL)
+                .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+                .pattern(MagicMaceratorMachine::createPattern)
+                .simpleModel(model("magic_macerator"))
+                .register();
     }
 
     private static String tierName(int tier) {

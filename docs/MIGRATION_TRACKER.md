@@ -544,7 +544,25 @@ Done (4.274s)! For help, type "help"
    玻璃用原版玻璃），`tools/generate_casing_assets.py` 生成 blockstate/模型/物品模型；
    中英文语言键已加（en 走 datagen provider、zh_cn 手工文件）
    - 与上游差异：方块 id 由 `pollution:magic_block[variant=...]` 变为每变体独立 id（已记录）
-5. **下一步：魔导多块机器**（19 台）。7.5.3 结构 API 已核实：
+5. **魔导多块进度：第一台完成 + 全量结构数据已提取**。
+   - [x] `MagicMaceratorMachine`（模板机）：结构/机壳（SPELL_PRISM_EARTH + BEAM_CORE_0 + BAMINATED_GLASS）1:1 移植，
+     注册 `pollution:magic_macerator` + 占位模型，编译通过
+   - 现代结构写法：`FactoryBlockPattern.start().aisle(...)...where('S', Predicates.controller(Predicates.blocks(definition.get())))`
+     + `Predicates.blocks(casing)` / `Predicates.abilities(PartAbility.X)` / `Predicates.air()`；
+     上游“任意外壳格可放仓”的语义（helper `configureMagicRecipeCasing`，其 casing 字符 = `Elements.choice(外壳, abilities(...))`）
+     将用 `Predicates.blocks(casing).or(Predicates.autoAbilities(recipeTypes)).or(vis/infused 能力)` 对应
+   - **19 台机器的机壳映射已逐台提取**（见下轮生成用表）：主壳 = SPELL_PRISM_{EARTH/AIR/WATER/HOT/COLD/ORDER/VOID}，
+     次壳多为 BEAM_CORE_0..4 与 GLASS（LAMINATED/AAMINATED/BAMINATED/CAMINATED/DAMINATED），
+     另有若干机器使用尚未移植的辅助机壳：`POTurbine`（steel/bronze/stainless/titanium/tungstensteel 的 pipe/gearbox、
+     PTFE pipe）、`POManaPlate.MANA_BASIC`、`POBotBlock.TERRA_WATERTIGHT_CASING`（Assembler）、
+     GT 框架（HyperdimensionalSilver/KQGold）与 GT 锅炉管（POLYTETRAFLUOROETHYLENE_PIPE，ChemicalReactor）
+   - 分类：**结构直译组 12 台**（Bender/Centrifuge/WireMill/Autoclave/Electrolyzer/Extruder/Mixer/Sifter/
+     Solidifier/Brewery/Cutter/GreenHouse，均只差辅助机壳移植）；**特殊逻辑组 6 台**
+     （AlloyBlastSmelter、ElectricBlastFurnace（温度/预热）、Assembler（大结构+GT 框架）、
+     ChemicalBath（浸液结构+阻塞判定）、ChemicalReactor（大结构+GT 管）、Distillery（Elements.choice/分层能力））
+6. **下一步（按序）**：移植辅助机壳（POTurbine 变体 / ManaPlate / BotBlock）→ 生成 12 台结构直译机
+   → 逐台处理 6 台特殊机（含 GT 现代管/框架映射）→ 再进节点/源质/注魔系列
+7. 剩余已核实 API：
    `MultiblockMachineBuilder.pattern(Function<MultiblockMachineDefinition, BlockPattern>)` +
    `FactoryBlockPattern`/`Predicates`/`TraceabilityPredicate`（`api/pattern`）；
    机器定义需 `recipeType(s)`（由 `getDefinition().getRecipeTypes()` 自动注入 `WorkableMultiblockMachine`）+
@@ -553,7 +571,7 @@ Done (4.274s)! For help, type "help"
    - 上游结构里还用到多方块部件能力匹配（`Elements.hatch(...)` → 现代 `Predicates.abilities(...)`）
 5. **PORecipeMaps 的注册时机风险**：`GTRecipeTypes.register` 在 addon 静态初始化时执行，
    需在 GT 注册冻结前（`RegisterEvent` 流程内被机器类首次引用），运行期复验时重点检查
-6. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
+8. TC 配方数据（`AERecipes`/`ThaumcraftRecipes`/`NodeFusionRecipes` 等，按机器阶段逐批）
 2. `MagicRecipeMapMultiblockController`：仓口收集（`POMultiblockAbility.VIS_HATCH`/`INFUSED_FLUID_HATCH`）与消耗 API
 3. `PORecipeMaps`：基于 `GTRecipeType` 重建魔导配方类型
 4. 19 台魔导多块 + 节点/源质/注魔系列

@@ -17,6 +17,7 @@ Covered machines (block model key -> tiers):
   infused_fluid_hatch_<tier>      1..9   (multiblock part)
   flux_muffler_<tier>             1..9   (multiblock part)
   solar_plate_<tier>_<kind>       1..3 x 1..6
+  magic_macerator                (multiblock, placeholder)
 
 All placeholders use GregTech's voltage casing textures and the lava boiler
 front overlay until ported Pollution textures exist.
@@ -55,6 +56,10 @@ TIERED_MACHINES = {
 
 SOLAR_TIERS = [1, 2, 3]
 SOLAR_KINDS = [1, 2, 3, 4, 5, 6]
+
+MULTIBLOCKS = {
+    "magic_macerator": "hv",
+}
 
 OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
 
@@ -95,6 +100,8 @@ def main() -> int:
     for tier in SOLAR_TIERS:
         for kind in SOLAR_KINDS:
             write_model(f"solar_plate_{tier}_{kind}", TIER_NAMES[tier])
+    for name, casing_tier in MULTIBLOCKS.items():
+        write_model(name, casing_tier)
     return 0
 
 
