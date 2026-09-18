@@ -501,11 +501,25 @@ Done (4.274s)! For help, type "help"
 - `api/capability/ICleanVis.java`（上游原样：干净灵气标记接口）
 - 部件批次（见 5.10）：INFUSED_FLUID_HATCH、FLUX_MUFFLER、MagicItemHatch 基类
 
+**7.5.3 逻辑层 API 事实（已 javap 核实，下一轮直接据此实现）：**
+
+| 事项 | 7.5.3 实际 |
+|---|---|
+| 控制器基类 | `WorkableMultiblockMachine(IMachineBlockEntity, Object...)`，持有 `public final RecipeLogic recipeLogic`；`protected RecipeLogic createRecipeLogic(Object...)` 为注入点；`onStructureFormed/onStructureInvalid` 可覆写 |
+| 逻辑基类 | `RecipeLogic(IRecipeLogicMachine)`；`machine` 字段公开 |
+| 逻辑钩子 | `protected ActionResult checkRecipe(GTRecipe)`；`public ActionResult handleTickRecipe(GTRecipe)`（每 tick，资源扣费应在此）；`public void onRecipeFinish()`；`protected void regressRecipe()`；`resetRecipeLogic()`；`markLastRecipeDirty()` |
+| 失败返回 | `ActionResult.SUCCESS` / `ActionResult.fail(Component, RecipeCapability<?>, IO)` / `FAIL_NO_REASON` / `FAIL_NO_CAPABILITIES` |
+| 控制器接口 | `IRecipeLogicMachine`：`getRecipeTypes()/getRecipeType()/getActiveRecipeType()/setActiveRecipeType(int)` 等 |
+| 配方查询 | `RecipeLogic#searchRecipe()`/`findAndHandleRecipe()`/`handleSearchingRecipes(...)`；`GTRecipe` 经 `GTRecipeType` 数据管理器 |
+
 **下一步（TC 关键路径）：**
 
-1. `MagicRecipeLogic`：基于 `RecipeLogic` 重建资源扣费（vis/infused fluid/研究门槛），先做 TC 子集，
-   增幅/塔罗/星辉部分延后；需要先读 `RecipeLogic` 7.5.3 的模板方法面（`checkRecipe`/`handleRecipeWorking`/
-   `onRecipeFinish`/`completeRecipe` 等）以及 `WorkableMultiblockMachine` 的挂接方式
+1. `MagicRecipeLogic extends RecipeLogic`：在 `checkRecipe` 做研究门槛/vis 可支付校验，在 `handleTickRecipe` 扣
+   vis（每 craft 一次）+ infused fluid（每 tick），`onRecipeFinish` 清理状态；先做 TC 子集，
+   增幅/塔罗/星辉部分延后
+2. `MagicMultiblockController extends WorkableMultiblockMachine`：override `createRecipeLogic` 注入上面逻辑；
+   用 `getParts()` + `instanceof IVisHatch` / `InfusedFluidHatchMachine` 收集资源仓，暴露
+   `consumeVis(int, simulate)` / `drainInfusedFluid(int, simulate)`（上游同名 API）
 2. `MagicRecipeMapMultiblockController`：仓口收集（`POMultiblockAbility.VIS_HATCH`/`INFUSED_FLUID_HATCH`）与消耗 API
 3. `PORecipeMaps`：基于 `GTRecipeType` 重建魔导配方类型
 4. 19 台魔导多块 + 节点/源质/注魔系列
