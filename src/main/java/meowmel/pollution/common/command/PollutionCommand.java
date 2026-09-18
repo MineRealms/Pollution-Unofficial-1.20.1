@@ -2,12 +2,15 @@ package meowmel.pollution.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+
+import java.util.List;
 
 public final class PollutionCommand {
 
@@ -20,6 +23,15 @@ public final class PollutionCommand {
                     CommandSourceStack source = context.getSource();
                     double value = PollutionEngine.get(source.getLevel(), commandPos(source));
                     source.sendSuccess(() -> Component.literal(String.format("Chunk pollution: %.4f", value)), false);
+                    return 1;
+                }))
+                .then(Commands.literal("aspects").executes(context -> {
+                    CommandSourceStack source = context.getSource();
+                    List<String> lines = PollutionAspectMapping.describe();
+                    source.sendSuccess(() -> Component.literal("Aspect mapping (" + lines.size() + "):"), false);
+                    for (String line : lines) {
+                        source.sendSuccess(() -> Component.literal("  " + line), false);
+                    }
                     return 1;
                 }))
                 .then(Commands.literal("set")

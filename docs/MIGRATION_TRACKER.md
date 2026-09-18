@@ -146,6 +146,24 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 星辉/植物魔法线（ElvenElementium、Terrasteel、Orichalcum 等）→ Phase 6
 - 催化剂与化工线（Roughdraft、Substrate、AlchemicalResidue/Vapor 系列）→ 对应机器阶段
 
+### 5.4 TC4R 要素映射（已落地，2026-09-18）
+
+`api/magic/PollutionAspectMapping.java`：GT 材料 ↔ TC4R `VisChannel`/`AspectId` 双向映射。
+
+| GT 材料 | VisChannel | AspectId（TC4R 命名空间） |
+|---|---|---|
+| infused_air | AER (0) | `thaumcraft:aer` |
+| infused_earth | TERRA (1) | `thaumcraft:terra` |
+| infused_fire | IGNIS (2) | `thaumcraft:ignis` |
+| infused_water | AQUA (3) | `thaumcraft:aqua` |
+| infused_order | ORDO (4) | `thaumcraft:ordo` |
+| infused_entropy | PERDITIO (5) | `thaumcraft:perditio` |
+
+- 依据：上游 `POAspectToGtFluidList` 的 Aspect→Infused 材料语义；TC4R `VisChannel` 枚举（`aer/terra/ignis/aqua/ordo/perditio`，`VisChannel#aspectId()` 自带 `thaumcraft:` 命名空间）
+- 剩余 29 个复合要素（crystal/metal/life/...）等待对应 Infused 材料移植后加入映射
+- 调试入口：`/pollution aspects`
+- 运行期证据：`Mapped 6 aspect materials to Thaumcraft 4R vis channels`（runServer 日志）
+
 **资产工具（Python，默认只读）：**
 
 - `tools/asset_audit.py`：扫描 `docs/reference/legacy-assets`
@@ -261,3 +279,9 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 
 遗留非致命项：离线模式下 authlib 尝试连接 Mojang 超时（日志有 `Connection reset` 堆栈），
 不影响 dedicated server 启动，属于网络环境问题。
+
+### 2026-09-18 — TC4R 要素映射
+- 新增 `api/magic/PollutionAspectMapping.java`（材料 ↔ VisChannel ↔ AspectId 双向查询）
+- 映射依据上游 `POAspectToGtFluidList` 语义与 TC4R `VisChannel` 枚举，六要素全部对应
+- 新增调试命令 `/pollution aspects`
+- runServer 复测通过：`Mapped 6 aspect materials ...` → `Done (4.194s)`

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.unification.materials.ElementMaterials;
 import meowmel.pollution.api.unification.materials.FirstDegreeMaterials;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,6 +32,7 @@ public final class PollutionMaterialEvents {
     public static void onMaterial(MaterialEvent event) {
         ElementMaterials.register();
         FirstDegreeMaterials.register();
+        PollutionAspectMapping.init();
         Pollution.LOGGER.info("Registered Pollution materials: 6 aspect materials, 6 aspect alloys");
     }
 }
