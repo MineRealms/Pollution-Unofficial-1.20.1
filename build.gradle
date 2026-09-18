@@ -56,10 +56,38 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+// LDLib's published POM lists AE2 as an optional runtime integration. Its
+// coordinates are not hosted on any repository this project consumes, and
+// ForgeGradle resolves the full transitive graph of __obfuscated before it can
+// deobfuscate anything, so the module is excluded explicitly.
+configurations.configureEach { config ->
+    if (config.name == '__obfuscated') {
+        config.exclude group: 'appeng', module: 'appliedenergistics2-forge'
+    }
+}
+
+// Work around unreliable TLS to repo.maven.apache.org on this network:
+// transparently redirect every Maven Central repository (including the ones
+// ForgeGradle adds) to the Aliyun mirror.
+allprojects {
+    repositories.configureEach { repo ->
+        if (repo instanceof MavenArtifactRepository) {
+            def repoUrl = repo.url.toString()
+            if (repoUrl.startsWith('https://repo.maven.apache.org') || repoUrl.startsWith('https://repo1.maven.org')) {
+                repo.setUrl('https://maven.aliyun.com/repository/public')
+            }
+        }
+    }
+}
+
 repositories {
     maven {
         name = 'LocalPorts'
         url = uri('local-repo')
+    }
+    maven {
+        name = 'Aliyun'
+        url = 'https://maven.aliyun.com/repository/public'
     }
     maven {
         name = 'GTCEu'
@@ -98,34 +126,39 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    // All mod dependencies are resolved without their transitive graphs:
+    // published mod POMs declare optional integrations (AE2, Create, ...)
+    // that are not on the compile classpath and would break resolution.
+    // Everything actually needed is declared explicitly below.
+
     // Thaumcraft 4R 1.20.1 reconstruction (local dev jar from local-repo/)
-    compileOnly fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")
-    runtimeOnly fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")
+    compileOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
 
     // Curios / TerraBlender: runtime dependencies of Thaumcraft 4R
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-    runtimeOnly fg.deobf("com.github.glitchfiend:TerraBlender-forge:${terrablender_version}")
+    compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")) { transitive = false }
+    runtimeOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("com.github.glitchfiend:TerraBlender-forge:${terrablender_version}")) { transitive = false }
 
     // GregTech CEu Modern addon API
-    compileOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")
-    runtimeOnly fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")
-    compileOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")
-    runtimeOnly fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")
-    compileOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
-    runtimeOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    compileOnly(fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("com.gregtechceu.gtceu:gtceu-1.20.1:${gtceu_version}")) { transitive = false }
+    compileOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("com.lowdragmc.ldlib:ldlib-forge-1.20.1:${ldlib_version}")) { transitive = false }
+    compileOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")) { transitive = false }
 
     // JEI
-    compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+    compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")) { transitive = false }
+    compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
 
     // KubeJS: recipe removal / addition scripting
-    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    runtimeOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    runtimeOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    compileOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
+    compileOnly(fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("dev.architectury:architectury-forge:${architectury_version}")) { transitive = false }
 }
 
 tasks.named('processResources', ProcessResources).configure {

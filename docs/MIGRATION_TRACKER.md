@@ -32,8 +32,8 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| Phase 0 | 目标工程骨架、Gradle 8.8、依赖锁定、Git 初始化 | 进行中 |
-| Phase 1 | 污染核心：区块污染数据、命令、配置、负效应框架 | 未开始 |
+| Phase 0 | 目标工程骨架、Gradle 8.8、依赖锁定、Git 初始化 | 已完成（构建通过，已提交） |
+| Phase 1 | 污染核心：区块污染数据、命令、配置、负效应框架 | 进行中（数据/命令/配置已落地） |
 | Phase 2 | GTCEu 集成：addon 注册、机器排污、消声仓等级、爆炸归因 | 未开始 |
 | Phase 3 | TC4R 集成：灵气抽取/再生、咒波清洗、扭曲联动 | 未开始 |
 | Phase 4 | 基础机器：灵气发电机、灵气再生机、空气过滤机（单方块） | 未开始 |
@@ -50,15 +50,24 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - [x] 写入 `.gitignore`、`local-repo/README.md`
 - [x] 放入 TC4R 开发工件（`local-repo/dev/tc4port/...`，jar 不入库）
 - [x] 建立 `README.md` 与本跟踪文档
-- [ ] `git init` + 首次提交
-- [ ] `gradlew compileJava` 通过（允许依赖下载）
+- [x] `git init` + 首次提交（`6a58999`）
+- [x] `gradlew compileJava` 通过
+- [x] `gradlew build` 通过（含 reobfJar），产物 `build/libs/pollution-1.20.1-1.0.0-1.20.1-port.0.1.0.jar`
+- [x] 构建环境问题修复：
+  - Gradle JVM 不读 `HTTP_PROXY` → 在 `gradle.properties` 写入 `127.0.0.1:7890` 代理到 `org.gradle.jvmargs`
+  - `repo.maven.apache.org` TLS 不稳定 → 在 `build.gradle` 将 Maven Central 统一重定向到阿里云镜像
+  - LDLib POM 声明了不在任何仓库的 `appeng:appliedenergistics2-forge:15.0.4-beta` → 对 `__obfuscated` 配置排除该模块
+  - 所有 mod 依赖使用 `{ transitive = false }`，所需库显式声明
+  - Forge 47.4 弃用 `FMLJavaModLoadingContext.get()` → 改为构造器注入 `FMLJavaModLoadingContext` 并 `context.registerConfig(...)`
+- [x] 清理资产：1.12 旧格式资源（491 个文件）移至 `docs/reference/legacy-assets/`，避免被 1.20 资源加载器解析；`assets/pollution/lang/` 仅保留新 JSON
+- [x] 修复 `gradle.properties` 中文作者名乱码（改用 `\uXXXX` 转义）
 
 ## 4. Phase 1 清单（污染核心）
 
-- [ ] `PollutionData`：按区块的脏数据表（`SavedData`，稀疏存储）
-- [ ] `PollutionEngine`：读/加/清洗 API 与低频衰减 tick
-- [ ] `PollutionConfig`：开关、倍率、阈值
-- [ ] `/pollution get|add|set|scrub` 调试命令
+- [x] `PollutionData`：按区块的脏数据表（`SavedData`，稀疏存储）
+- [x] `PollutionEngine`：读/加/清洗 API 与低频衰减 tick
+- [x] `PollutionConfig`：开关、倍率、阈值
+- [x] `/pollution get|add|set|scrub` 调试命令
 - [ ] 玩家负效应（虚弱/挖掘疲劳/反胃/失明，按梯度）
 - [ ] 环境污染转化（草→沙、水→岩浆，带预算限流）
 - [ ] 客户端同步（仅邻近区块，阈值触发）
@@ -149,3 +158,19 @@ JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），
 - 核实 TC4R 公共 API（`VisNetworkApi`、`FluxApi`、`PlayerWarpApi`）与 GTCEu addon 机制（`@GTAddon` 注解扫描）
 - 放入 TC4R 本地 Maven 工件
 - 建立本跟踪文档
+
+### 2026-09-18 — Phase 0 完成 + Phase 1 起步
+- 首次提交 `6a58999`（工程骨架、构建配置、文档、核心类骨架、TC4R 工件占位）
+- `gradlew build` 全流程通过（compileJava → processResources → jar → reobfJar）
+- 产物：`build/libs/pollution-1.20.1-1.0.0-1.20.1-port.0.1.0.jar`（含 mods.toml 展开、语言文件、KubeJS 插件清单）
+- 已落地类：
+  - `meowmel.pollution.Pollution`（Forge 47.4 构造器注入、配置注册、命令/衰减监听）
+  - `meowmel.pollution.PollutionConfig`（污染开关/倍率/阈值/灵气发电机参数）
+  - `meowmel.pollution.api.pollution.PollutionData`（按区块稀疏 `SavedData`，long→double，NBT 存取）
+  - `meowmel.pollution.api.pollution.PollutionEngine`（get/add/set/scrub + 200 tick 衰减）
+  - `meowmel.pollution.common.command.PollutionCommand`（`/pollution get|set|add|scrub`）
+  - `meowmel.pollution.compat.tc4r.TC4RBridge`（`drainVis`、`scrubFlux`、`warpOf` 单点适配）
+  - `meowmel.pollution.compat.gtceu.PollutionGTAddon`（`@GTAddon`，GTRegistrate 初始化）
+  - `meowmel.pollution.compat.jei.PollutionJeiPlugin`（`@JeiPlugin` 骨架）
+  - `meowmel.pollution.compat.kubejs.PollutionKubeJSPlugin`（`kubejs.plugins.txt` 注册）
+- 环境说明：`gradle.properties` 内写死本机代理 `127.0.0.1:7890`，换机时需删除或修改

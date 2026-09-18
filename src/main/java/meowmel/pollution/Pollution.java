@@ -5,7 +5,6 @@ import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.command.PollutionCommand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -17,9 +16,8 @@ public final class Pollution {
     public static final String MOD_ID = "pollution";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public Pollution() {
-        FMLJavaModLoadingContext.get();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PollutionConfig.SPEC);
+    public Pollution(FMLJavaModLoadingContext context) {
+        context.registerConfig(ModConfig.Type.COMMON, PollutionConfig.SPEC);
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);
