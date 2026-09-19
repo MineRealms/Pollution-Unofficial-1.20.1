@@ -69,8 +69,9 @@ import java.util.Optional;
  *       returns the nearest valid source and the search is cheap enough at the
  *       tank's call rate (one query per tick).</li>
  *   <li>The upstream helper was dead code for the radius scan (only the tank's
- *       per-face push used it); the pull variant is wired to the tank's
- *       auto-output as a fallback, see {@code AspectTankMachine}.</li>
+ *       per-face push used it). The pull variant is not wired to the tank
+ *       either - the tank's input is the jar-style tube drain - so it is kept
+ *       for machines that want a radius pull.</li>
  *   <li>Aspect ids are validated with {@link AspectApi#contains} before any
  *       {@link EssentiaApi} call, because the native API throws
  *       {@link IllegalArgumentException} for unregistered aspects.</li>
@@ -88,6 +89,9 @@ public final class GTEssentiaHandler {
      * transport occupying {@code pos.relative(facing)} (jar, tube, reservoir,
      * another aspect tank, ...). Returns the amount actually inserted.
      *
+     * @param pos    the source block; {@link ThaumcraftApiHelper#getConnectableTransport}
+     *               resolves the neighbour itself, so this must not be
+     *               pre-offset by {@code facing}
      * @param facing direction from {@code pos} to the target block; the target's
      *               own face is {@code facing.getOpposite()}
      */
@@ -96,7 +100,7 @@ public final class GTEssentiaHandler {
         if (amount <= 0 || !isKnown(aspect)) {
             return 0;
         }
-        EssentiaTransport transport = ThaumcraftApiHelper.getConnectableTransport(level, pos.relative(facing), facing);
+        EssentiaTransport transport = ThaumcraftApiHelper.getConnectableTransport(level, pos, facing);
         if (transport == null) {
             return 0;
         }

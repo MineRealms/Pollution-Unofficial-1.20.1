@@ -24,10 +24,12 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import dev.tc4port.thaumcraft.api.ThaumcraftApiHelper;
 import dev.tc4port.thaumcraft.api.aspect.AspectAmounts;
 import dev.tc4port.thaumcraft.api.aspect.AspectApi;
 import dev.tc4port.thaumcraft.api.aspect.AspectContainerView;
 import dev.tc4port.thaumcraft.api.aspect.AspectId;
+import dev.tc4port.thaumcraft.api.essentia.EssentiaApi;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaContainerApi;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaSource;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode;
@@ -71,9 +73,11 @@ import java.util.Set;
  *   <li>{@link EssentiaTransport} - directional tube contract
  *       ({@code isConnectable/canInputFrom/canOutputTo/suctionType/suctionAmount/
  *       takeEssentia/addEssentia/essentiaType/essentiaAmount/minimumSuction}).
- *       The connectable face is the machine's front face (upstream hard-coded
+ *       The connectable faces are the machine's front face (upstream hard-coded
  *       {@code EnumFacing.UP}; the port uses the rotatable front so the port's
- *       rotation and overlay conventions apply).</li>
+ *       rotation and overlay conventions apply) and the configurable output
+ *       face, so tubes attached on either the input side or the rendered output
+ *       overlay are discovered by TC4R.</li>
  *   <li>{@link EssentiaSource} - face-less extraction used by mirrors and
  *       {@code EssentiaApi.extract}.</li>
  *   <li>{@link AspectContainerView} - display view; the filter is reported as a
@@ -97,9 +101,22 @@ import java.util.Set;
  *       right-click with a labelled/filled essentia container sets the aspect
  *       filter and shift-right-click clears it. The fancy tooltip shows the
  *       stored aspect, amount, lock, auto-output and voiding state.</li>
- *   <li>Suction constants are upstream's: 32 base / 64 with a filter while the
- *       tank holds less than 250 essentia, 0 above that;
- *       {@code minimumSuction} is 32/64.</li>
+ *   <li>Suction is re-derived for TC4R's pull rules, not kept from upstream,
+ *       and selects the transfer direction. Upstream reported 32 base / 64 with
+ *       a filter while the tank held less than 250 essentia and 0 above that,
+ *       with {@code minimumSuction} 32/64; TC4R tubes only pull from a
+ *       neighbour whose suction is strictly lower than their own and at least
+ *       the neighbour's {@code minimumSuction}, so that contract made the tank
+ *       look like a sink and essentia never left it. The port instead splits by
+ *       mode: with auto-output <em>on</em> the tank is a source
+ *       ({@code suctionAmount} {@link #SUCTION_IDLE} while it has room or is
+ *       voiding, {@code minimumSuction} 0), so a tube fed by a warded jar
+ *       (suction 32, tube 31) drains it and {@link #pushOutput(Level)} feeds
+ *       the output face; with auto-output <em>off</em> it is a sink like the
+ *       warded jar (32, or 64 with a lock) while it has room, so tubes
+ *       propagate suction into it and {@link #fillTankFromTubes(Level)} pulls
+ *       from them. {@code suctionType} stays {@code filter ?: stored}. See
+ *       {@link #suctionAmount(Direction)} and {@link #minimumSuction()}.</li>
  *   <li>Transfers are amount-based and may be partial, as TC4R requires:
  *       {@code takeEssentia}/{@code extractEssentia} return as much as is
  *       available up to the request, while upstream
@@ -114,10 +131,11 @@ import java.util.Set;
  *       because GTCEu machine items have no generic block-entity-data API.</li>
  *   <li>{@code setSuction} does not exist in TC4R; tubes compute suction from
  *       the source's own values, so upstream's no-op setter is dropped.</li>
- *   <li>The 1.12 radius FX packet is replaced by TC4R's own essentia FX. The
- *       native search ({@link GTEssentiaHandler#pullEssentiaFromNearby}) is used
- *       as the auto-output fallback when no transport accepts on the output
- *       face, mirroring the upstream helper's otherwise unused radius scan.</li>
+ *   <li>The 1.12 radius FX packet is replaced by TC4R's own essentia FX, and
+ *       the upstream helper's otherwise unused radius scan is not wired to the
+ *       tank: auto-output only pushes into the output face and input is handled
+ *       by the jar-style tube drain, so the tank never pulls essentia from
+ *       distant blocks.</li>
  * </ul>
  */
 public class AspectTankMachine extends TieredMachine
@@ -130,13 +148,30 @@ public class AspectTankMachine extends TieredMachine
     /** Upstream capacity of the LV tank; doubles per tier. */
     public static final int BASE_CAPACITY = 10_000;
 
-    /** Upstream suction threshold: below this amount the tank still sucks. */
-    private static final int SUCTION_AMOUNT_THRESHOLD = 250;
-    private static final int SUCTION_WITHOUT_FILTER = 32;
-    private static final int SUCTION_WITH_FILTER = 64;
+    /**
+     * Source suction reported in output mode (auto-output on) while the tank
+     * has room (or is voiding). TC4R tubes propagate suction as
+     * {@code max(neighbour.suctionAmount) - 1} and only pull from a neighbour
+     * whose suction is strictly lower than their own
+     * ({@code EssentiaTubeBlockEntity.equalizeWithNeighbours}), so upstream's
+     * 32/64 made the tank the highest-suction node in the network and the tube
+     * next to it (suction 31) never pulled. This is the lowest positive value:
+     * it still satisfies the golem deposit gate
+     * ({@code GolemEssentiaGoal.accepts}: {@code suctionAmount(face) > 0}) while
+     * a tube ignores it for propagation, because {@code calculateSuction} only
+     * adopts a neighbour with {@code suctionAmount > this.suction + 1}.
+     */
+    private static final int SUCTION_IDLE = 1;
 
-    /** Radius of the native essentia search used by the auto-output fallback. */
-    private static final int SEARCH_RANGE = GTEssentiaHandler.DEFAULT_SEARCH_RANGE;
+    /**
+     * Sink suction reported in input mode (auto-output off) while the tank has
+     * room, mirroring the warded jar: the adjacent tube adopts 31 from the
+     * 32-suction tank and {@link #fillTankFromTubes(Level)} pulls from it,
+     * because TC4R tubes never push. A locked tank raises it to
+     * {@link #SUCTION_SINK_FILTERED} exactly like a labelled jar.
+     */
+    private static final int SUCTION_SINK = 32;
+    private static final int SUCTION_SINK_FILTERED = 64;
 
     private final int maxCapacity;
 
@@ -251,7 +286,8 @@ public class AspectTankMachine extends TieredMachine
 
     /**
      * Upstream {@code update()} order: fill from the input container, drain the
-     * tank into the input container, then auto-output.
+     * tank into the input container, then either output (auto-output on) or
+     * input (auto-output off, jar-style tube drain).
      */
     private void tick() {
         Level level = getLevel();
@@ -261,9 +297,9 @@ public class AspectTankMachine extends TieredMachine
         fillTankFromContainer(level);
         fillContainerFromTank(level);
         if (autoOutput) {
-            if (!pushOutput(level)) {
-                pullNearby(level);
-            }
+            pushOutput(level);
+        } else {
+            fillTankFromTubes(level);
         }
     }
 
@@ -364,7 +400,9 @@ public class AspectTankMachine extends TieredMachine
 
     /**
      * Upstream {@code pushAspectIntoNearbyHandlers}: pushes one essentia into
-     * the output facing. Returns true when something was pushed.
+     * the transport on the output facing, which is resolved with the
+     * neighbour's own face toward the tank. Returns true when something was
+     * pushed.
      */
     private boolean pushOutput(Level level) {
         AspectId stored = getStoredAspect();
@@ -386,23 +424,56 @@ public class AspectTankMachine extends TieredMachine
     }
 
     /**
-     * Native replacement for upstream {@code GTEssentiaHandler.addEssentia}
-     * (its radius scan was never called by the tank upstream). Used when the
-     * output face cannot accept essentia: the tank draws one essentia from the
-     * nearest source in range, using its own aspect or, while empty, its lock.
+     * Input mode (auto-output off): TC4R tubes never push essentia, so the tank
+     * pulls like the warded jar's {@code fillJar}. For every connectable face
+     * the adjacent transport is asked for one unit while the tank's sink
+     * suction is higher than the tube's own suction and meets the tube's
+     * minimum. A voiding tank keeps pulling when full and discards the unit,
+     * mirroring the void jar's overflow deletion.
      */
-    private void pullNearby(Level level) {
-        AspectId target = getStoredAspect();
-        if (target == null) {
-            target = getAspectFilter();
-        }
-        if (target == null || amount >= maxCapacity) {
+    private void fillTankFromTubes(Level level) {
+        if (amount >= maxCapacity && !voiding) {
             return;
         }
-        int pulled = GTEssentiaHandler.pullEssentiaFromNearby(level, getPos(), target, 1, SEARCH_RANGE,
-                EssentiaTransferMode.EXECUTE);
-        if (pulled > 0) {
-            storeInternal(target, pulled);
+        for (Direction side : Direction.values()) {
+            if (!isConnectable(side)) {
+                continue;
+            }
+            EssentiaTransport tube = ThaumcraftApiHelper.getConnectableTransport(level, getPos(), side);
+            if (tube == null) {
+                continue;
+            }
+            Direction tubeFace = side.getOpposite();
+            if (!tube.canOutputTo(tubeFace)) {
+                continue;
+            }
+            int tankSuction = suctionAmount(side);
+            int tubeSuction = tube.suctionAmount(tubeFace);
+            if (tubeSuction >= tankSuction || tankSuction < tube.minimumSuction()) {
+                continue;
+            }
+            AspectId stored = getStoredAspect();
+            AspectId selected = getAspectFilter();
+            if (selected == null) {
+                if (stored != null && amount > 0) {
+                    selected = stored;
+                } else if (tube.essentiaAmount(tubeFace) > 0) {
+                    selected = tube.essentiaType(tubeFace);
+                }
+            }
+            if (selected == null || !doesContainerAccept(selected)) {
+                continue;
+            }
+            if (stored != null && !stored.equals(selected)) {
+                continue;
+            }
+            int taken = EssentiaApi.take(level, tube, selected, 1, tubeFace, EssentiaTransferMode.EXECUTE);
+            if (taken <= 0) {
+                continue;
+            }
+            if (amount < maxCapacity) {
+                storeInternal(selected, taken);
+            }
         }
     }
 
@@ -447,17 +518,17 @@ public class AspectTankMachine extends TieredMachine
 
     @Override
     public boolean isConnectable(Direction side) {
-        return side == getFrontFacing();
+        return side == getFrontFacing() || side == getOutputFacingFluids();
     }
 
     @Override
     public boolean canInputFrom(Direction side) {
-        return side == getFrontFacing();
+        return isConnectable(side);
     }
 
     @Override
     public boolean canOutputTo(Direction side) {
-        return side == getFrontFacing();
+        return isConnectable(side);
     }
 
     @Nullable
@@ -467,12 +538,30 @@ public class AspectTankMachine extends TieredMachine
         return filter != null ? filter : getStoredAspect();
     }
 
+    /**
+     * Face- and mode-dependent suction. Output mode (auto-output on) reports
+     * {@link #SUCTION_IDLE} so tubes can drain the tank and
+     * {@link #pushOutput(Level)} can feed the output face; input mode
+     * (auto-output off) reports the jar-like sink suction (32, or 64 with a
+     * lock) while the tank has room, so tubes propagate suction into it and
+     * {@link #fillTankFromTubes(Level)} can pull. A voiding tank keeps its
+     * suction when full, mirroring the TC4R void jar, so golems can still feed
+     * it.
+     */
     @Override
     public int suctionAmount(Direction side) {
-        if (amount >= SUCTION_AMOUNT_THRESHOLD) {
+        if (!isConnectable(side)) {
             return 0;
         }
-        return getAspectFilter() != null ? SUCTION_WITH_FILTER : SUCTION_WITHOUT_FILTER;
+        if (autoOutput) {
+            return voiding || amount < maxCapacity ? SUCTION_IDLE : 0;
+        }
+        if (voiding) {
+            return getAspectFilter() != null ? SUCTION_SINK_FILTERED : SUCTION_SINK;
+        }
+        return amount < maxCapacity
+                ? (getAspectFilter() != null ? SUCTION_SINK_FILTERED : SUCTION_SINK)
+                : 0;
     }
 
     @Override
@@ -528,9 +617,17 @@ public class AspectTankMachine extends TieredMachine
         return canOutputTo(side) ? getStoredAspect() : null;
     }
 
+    /**
+     * TC4R pullers reject a source whose minimum suction is above their own
+     * suction; a tube fed by a plain warded jar only reaches 31 (jar 32 - 1),
+     * so upstream's 32/64 floor made the tank undrainable. Zero mirrors the
+     * arcane alembic: in output mode any puller with positive suction may drain
+     * the tank, while in input mode the sink suction (32/64) keeps the tank
+     * above the adjacent tube's 31/63 anyway.
+     */
     @Override
     public int minimumSuction() {
-        return getAspectFilter() != null ? SUCTION_WITH_FILTER : SUCTION_WITHOUT_FILTER;
+        return 0;
     }
 
     @Override
