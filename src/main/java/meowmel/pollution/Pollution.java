@@ -75,17 +75,17 @@ public final class Pollution {
             provider.add("pollution.machine.solar_plate.tooltip",
                     "Solar plate MK%s: works in daylight with a per-kind boost condition");
             provider.add("pollution.machine.vis_hatch.tooltip.capacity",
-                    "Vis buffer: %s units");
+                    "Vis buffer: %s Vis");
             provider.add("pollution.machine.vis_hatch.tooltip.drain",
-                    "Slowly drains vis from the Thaumcraft 4R network");
+                    "Drains 0.05 Vis/s from the Thaumcraft 4R vis network");
             provider.add("pollution.machine.vis_hatch.tooltip.buffer",
-                    "Stores %s units per drain");
+                    "Stores %s Vis per successful drain");
             provider.add("pollution.machine.infused_fluid_hatch.tooltip",
-                    "Buffers infused fluids for magic multiblocks");
+                    "Stores infused fluids and supplies them to magic multiblock recipes");
             provider.add("pollution.machine.flux_muffler.tooltip.recovery",
                     "Item recovery chance: %s%%");
             provider.add("pollution.machine.flux_muffler.tooltip",
-                    "Magically filtered muffler: keeps byproducts out of the environment");
+                    "Magically filtered muffler: recovers machine byproducts; industrial pollution is vented here");
             provider.add("pollution.magic.failure.hatches",
                     "Missing required magic hatch");
             provider.add("pollution.magic.failure.vis",
@@ -171,30 +171,94 @@ public final class Pollution {
             provider.add("pollution.machine.endoflame_array.display.mana_pool", "Mana pool: %s / %s Mana");
             provider.add("pollution.machine.endoflame_array.display.output", "Actual mana output: %s Mana/t");
             provider.add("pollution.machine.mana_generator.tooltip", "Generates EU from a nearby Botania mana pool");
-            provider.add("pollution.machine.mana_hatch.tooltip", "Mana hatch: buffers mana for magic multiblocks");
+            provider.add("pollution.machine.mana_hatch.capacity", "Mana buffer: %s Mana");
+            provider.add("pollution.machine.mana_hatch.input_rate",
+                    "Supplies the multiblock: up to %s Mana/t (%s, %sA); receives Botania mana bursts");
+            provider.add("pollution.machine.mana_hatch.output_rate",
+                    "Outputs to adjacent devices: up to %s Mana/t (%s, %sA)");
+            provider.add("pollution.machine.mana_hatch.tooltip",
+                    "Energy-type mana hatch: uses Botania mana as the GT energy interface of magic multiblocks (1 Mana = 1 EU internally)");
             provider.add("pollution.machine.mana_plate.speed", "Speed: %s | Mana: %s");
             provider.add("pollution.machine.mana_plate.tier", "Tier: %s | Mana: %s / %s");
-            provider.add("pollution.machine.mana_pool_hatch.capacity", "Mana capacity: %s");
-            provider.add("pollution.machine.mana_pool_hatch.tooltip", "Mana pool hatch: buffers Botania mana pools");
-            provider.add("pollution.machine.mana_pool_hatch.transfer", "Transfer: %s Mana/t");
+            provider.add("pollution.machine.mana_pool_hatch.capacity", "Pure mana capacity: %s Mana");
+            provider.add("pollution.machine.mana_pool_hatch.tooltip",
+                    "Pure mana pool hatch: pays/receives recipe mana through IManaHatch; not a GT energy interface");
+            provider.add("pollution.machine.mana_pool_hatch.transfer", "Max transfer rate: %s Mana/t");
             provider.add("pollution.machine.mana_pool_hatch.type", "Mana pool type: %s");
             provider.add("pollution.machine.mana_pool_hatch.type.diluted", "Diluted");
             provider.add("pollution.machine.mana_pool_hatch.type.mythic", "Mythic");
             provider.add("pollution.machine.mana_pool_hatch.type.normal", "Normal");
-            provider.add("pollution.machine.mana_pool_input_hatch.tooltip", "Mana pool input hatch");
-            provider.add("pollution.machine.mana_pool_output_hatch.tooltip", "Mana pool output hatch");
+            provider.add("pollution.machine.mana_pool_input_hatch.tooltip",
+                    "Mana pool input hatch: supplies the multiblock; receives mana from Botania bursts/sparks and adjacent output hatches");
+            provider.add("pollution.machine.mana_pool_output_hatch.tooltip",
+                    "Mana pool output hatch: receives multiblock mana and pushes it to adjacent Botania receivers or input hatches");
             provider.add("pollution.machine.mega_mana_turbine.catalyst", "Catalyst tier: %s");
             provider.add("pollution.machine.mega_mana_turbine.max_output", "Max output: %s");
             provider.add("pollution.machine.mega_mana_turbine.parallel", "Parallels: %s | Coil tier: %s");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.buffer", "Garden EU buffer: %s");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.energy", "Garden energy: %s / %s");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode", "Garden mode: %s");
-            provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode0", "Accelerated growth");
-            provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode1", "Slowed growth");
-            provider.add("pollution.machine.wireless_mana_hatch.tooltip", "Wireless mana hatch");
-            provider.add("pollution.machine.wireless_mana_pool_hatch.tooltip", "Wireless mana pool hatch");
+            provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode0", "Energy output");
+            provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode1", "Fluid output");
+            provider.add("pollution.machine.wireless_mana_hatch.tooltip",
+                    "Wireless mana hatch: the wireless network is not ported yet; currently behaves like a normal mana hatch");
+            provider.add("pollution.machine.wireless_mana_pool_hatch.tooltip",
+                    "Wireless mana pool hatch: the wireless network is not ported yet; currently behaves like a normal mana pool hatch");
             provider.add("pollution.magic.failure.catalyst", "Missing required magic catalyst");
             provider.add("pollution.modeChanged.message", "Machine mode switched");
+            provider.add("pollution.item.vis_checker.tooltip",
+                    "Right-click to display your Thaumcraft warp");
+            provider.add("pollution.item.starstream_linker.mode.input",
+                    "Starstream Linker: input mode");
+            provider.add("pollution.item.starstream_linker.mode.network",
+                    "Starstream Linker: network mode");
+            provider.add("pollution.item.starstream_linker.tooltip.toggle",
+                    "Sneak + right-click air to switch mode");
+            provider.add("pollution.item.starstream_linker.tooltip.input",
+                    "Input mode: link constellation towers or relays to the starstream hub");
+            provider.add("pollution.item.starstream_linker.tooltip.network",
+                    "Network mode: configure relays, wireless terminals and cross-dimensional gateways");
+            provider.add("pollution.item.starstream_linker.unported",
+                    "The starstream network is not ported yet; linking is unavailable");
+            provider.add("pollution.machine.aspect_tank.tooltip",
+                    "Single-block aspect storage: the front face is the aspect port; wrench sets the output face, soft mallet toggles auto-output, sneak + soft mallet toggles voiding");
+            provider.add("pollution.machine.aspect_tank.help",
+                    "Insert aspect ampoules, jars or other aspect containers into the input slot to store or retrieve aspects");
+            provider.add("pollution.machine.aspect_tank.tooltip.auto_output",
+                    "§aAuto-output enabled");
+            provider.add("pollution.machine.aspect_tank.tooltip.capacity",
+                    "§5Aspect capacity: §f%s");
+            provider.add("pollution.machine.aspect_tank.tooltip.locked",
+                    "§f%1$s §cis locked!");
+            provider.add("pollution.machine.aspect_tank.tooltip.stored",
+                    "§9Stored aspects: §f%1$s §7× %2$s");
+            provider.add("pollution.machine.aspect_tank.tooltip.voiding",
+                    "§cVoiding enabled");
+            provider.add("pollution.machine.small_node_generator.tooltip",
+                    "Burns packaged aura nodes to generate EU; the multiplier depends on the node's properties and the machine tier");
+            provider.add("pollution.machine.source_charge.tooltip",
+                    "Consumes 1 mB/t of the matching aspect fluid to restore 1 charge to the bauble");
+            provider.add("pollution.jei.machine_info.title", "Magic Machine Info");
+            provider.add("pollution.jei.magic_hatch.title", "Magic Hatch Info");
+            provider.add("pollution.jei.magic_amplification.title", "Amplification Info");
+            provider.add("pollution.jei.magic_amplification.tags", "Process tags: %s");
+            provider.add("pollution.jei.magic_amplification.constellation",
+                    "Constellation (wafer) amplification:");
+            provider.add("pollution.jei.magic_amplification.tarot",
+                    "Tarot (tarot hatch) amplification:");
+            provider.add("pollution.jei.magic_amplification.footer",
+                    "Install the matching constellation wafer or tarot hatch to gain the amplification");
+            provider.add("pollution.jei.recipe.cost", "Magic cost: %s");
+            provider.add("pollution.jei.recipe.cost.vis", "Vis %s/craft");
+            provider.add("pollution.jei.recipe.cost.infused", "Infused fluid %s mB/t");
+            provider.add("pollution.jei.recipe.cost.mana", "Mana %s/t");
+            provider.add("pollution.jei.recipe.cost.life", "Life essence %s/t");
+            provider.add("pollution.jei.recipe.gate", "Recipe gate: %s");
+            provider.add("pollution.jei.recipe.gate.research", "Research %s");
+            provider.add("pollution.jei.recipe.gate.tarot", "Tarot %s");
+            provider.add("pollution.jei.recipe.gate.astral", "Astral condition");
+            provider.add("pollution.jei.recipe.gate.catalyst", "Catalyst protection input %s");
+            provider.add("pollution.jei.recipe.process_tags", "Process tags: %s");
         });
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();

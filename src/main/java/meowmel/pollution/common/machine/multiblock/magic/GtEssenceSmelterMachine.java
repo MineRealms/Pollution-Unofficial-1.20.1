@@ -73,9 +73,10 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
             return;
         }
         EnergyHatchPartMachine energy = findPart(EnergyHatchPartMachine.class);
-        FluidHatchPartMachine fluids = findPart(FluidHatchPartMachine.class);
+        FluidHatchPartMachine fluids = findFluidHatch(PartAbility.IMPORT_FLUIDS);
+        FluidHatchPartMachine outputFluids = findFluidHatch(PartAbility.EXPORT_FLUIDS);
         ItemBusPartMachine items = findPart(ItemBusPartMachine.class);
-        if (energy == null || fluids == null || items == null) {
+        if (energy == null || fluids == null || outputFluids == null || items == null) {
             reset();
             return;
         }
@@ -102,7 +103,7 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         }
         progress++;
         if (progress >= duration) {
-            transportEssence(fluids, pending);
+            transportEssence(outputFluids, pending);
             reset();
         }
     }
@@ -162,6 +163,16 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         for (IMultiPart part : getParts()) {
             if (type.isInstance(part.self())) {
                 return type.cast(part.self());
+            }
+        }
+        return null;
+    }
+
+    private FluidHatchPartMachine findFluidHatch(PartAbility ability) {
+        for (IMultiPart part : getParts()) {
+            if (part.self() instanceof FluidHatchPartMachine hatch
+                    && ability.isApplicable(hatch.getBlockState().getBlock())) {
+                return hatch;
             }
         }
         return null;

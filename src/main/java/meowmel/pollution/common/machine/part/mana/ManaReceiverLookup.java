@@ -27,7 +27,8 @@ final class ManaReceiverLookup {
 
     static long pushMana(Level level, BlockPos pos, Direction side, long amount) {
         if (amount <= 0L) return 0L;
-        if (MetaMachine.getMachine(level, pos) instanceof IManaHatch hatch) {
+        if (MetaMachine.getMachine(level, pos) instanceof IManaHatch hatch
+                && acceptsInternalMana(hatch)) {
             long before = hatch.getMana();
             hatch.receiveMana(amount);
             return Math.max(0L, hatch.getMana() - before);
@@ -41,6 +42,21 @@ final class ManaReceiverLookup {
         int before = receiver.getCurrentMana();
         receiver.receiveMana((int) Math.min(amount, Integer.MAX_VALUE));
         return Math.max(0L, (long) receiver.getCurrentMana() - before);
+    }
+
+    /**
+     * Upstream only pushed into input hatches ({@code !isExportHatch} /
+     * {@code !isExport}); without this guard an output hatch facing another
+     * output hatch would fill it instead of a receiver.
+     */
+    private static boolean acceptsInternalMana(IManaHatch hatch) {
+        if (hatch instanceof ManaHatchMachine manaHatch) {
+            return !manaHatch.isExportHatch;
+        }
+        if (hatch instanceof ManaPoolHatchMachine poolHatch) {
+            return !poolHatch.isExport;
+        }
+        return true;
     }
 
     private ManaReceiverLookup() {}

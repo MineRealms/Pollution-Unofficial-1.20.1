@@ -4,13 +4,13 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,17 +57,23 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine {
         if (!(getLevel() instanceof ServerLevel) || !isFormed()) {
             return;
         }
-        List<EnergyHatchPartMachine> hatches = new ArrayList<>();
+        EnergyHatchPartMachine input = null;
+        EnergyHatchPartMachine output = null;
         for (IMultiPart part : getParts()) {
             if (part.self() instanceof EnergyHatchPartMachine hatch) {
-                hatches.add(hatch);
+                if (input == null && PartAbility.INPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) {
+                    input = hatch;
+                } else if (output == null
+                        && PartAbility.OUTPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) {
+                    output = hatch;
+                }
             }
         }
-        if (hatches.size() < 2) {
+        if (input == null || output == null) {
             return;
         }
-        var source = hatches.get(0).energyContainer;
-        var target = hatches.get(hatches.size() - 1).energyContainer;
+        var source = input.energyContainer;
+        var target = output.energyContainer;
         long available = Math.max(0, source.getEnergyStored());
         long free = Math.max(0, target.getEnergyCapacity() - target.getEnergyStored());
         long moved = Math.min(Math.min(available, free), TRANSFER_RATE);

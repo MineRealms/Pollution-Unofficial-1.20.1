@@ -125,7 +125,7 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
             return;
         }
         if (modeIndex == MODE_ENERGY) {
-            EnergyHatchPartMachine energy = findPart(EnergyHatchPartMachine.class);
+            EnergyHatchPartMachine energy = findEnergyOutput();
             if (energy == null) {
                 return;
             }
@@ -298,7 +298,7 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
             textList.add(Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.mode",
                     Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.mode" + modeIndex)));
             textList.add(Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.buffer", energyBuffer));
-            EnergyHatchPartMachine energy = findPart(EnergyHatchPartMachine.class);
+            EnergyHatchPartMachine energy = findEnergyOutput();
             if (energy != null) {
                 textList.add(Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.energy",
                         energy.energyContainer.getEnergyStored(), energy.energyContainer.getEnergyCapacity()));
@@ -310,6 +310,17 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
         for (var part : getParts()) {
             if (type.isInstance(part.self())) {
                 return type.cast(part.self());
+            }
+        }
+        return null;
+    }
+
+    private EnergyHatchPartMachine findEnergyOutput() {
+        for (var part : getParts()) {
+            if (part.self() instanceof EnergyHatchPartMachine hatch
+                    && (PartAbility.OUTPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())
+                            || PartAbility.OUTPUT_LASER.isApplicable(hatch.getBlockState().getBlock()))) {
+                return hatch;
             }
         }
         return null;

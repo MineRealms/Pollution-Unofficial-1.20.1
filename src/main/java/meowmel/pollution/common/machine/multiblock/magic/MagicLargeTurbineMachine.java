@@ -18,9 +18,13 @@ import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
  * on a magic shell; the rotor durability mechanics of the GT base are not
  * reimplemented (documented deviation), and the upstream tier-filtered rotor
  * holder accepts any GT rotor holder in the port. Upstream's {@code R} slot
- * takes one rotor holder plus one mana output hatch; the port also keeps its
- * {@code OUTPUT_ENERGY} hatch (EU output deviation). The astral-lens and tarot
- * hatches of the upstream casing have no registered counterpart in the port.</p>
+ * takes one rotor holder plus one mana output hatch; the mana output hatch is
+ * the turbine's upstream EU output interface (the turbine pushes generated EU
+ * into it and the hatch emits it as Botania mana), so the port keeps the
+ * requirement and additionally accepts a standard {@code OUTPUT_ENERGY} hatch
+ * (port-side deviation, see {@code docs/HATCH_SEMANTICS.md}). The astral-lens
+ * and tarot hatches of the upstream casing have no registered counterpart in
+ * the port.</p>
  */
 public class MagicLargeTurbineMachine extends MagicMultiblockController {
 

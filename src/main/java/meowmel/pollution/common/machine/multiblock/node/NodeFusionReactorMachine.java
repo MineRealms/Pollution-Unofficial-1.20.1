@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
@@ -123,7 +124,7 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
             return;
         }
         ItemBusPartMachine items = findPart(ItemBusPartMachine.class);
-        FluidHatchPartMachine fluids = findPart(FluidHatchPartMachine.class);
+        FluidHatchPartMachine fluids = findFluidHatch(PartAbility.IMPORT_FLUIDS);
         if (items == null || fluids == null) {
             return;
         }
@@ -206,6 +207,16 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
         for (IMultiPart part : getParts()) {
             if (type.isInstance(part.self())) {
                 return type.cast(part.self());
+            }
+        }
+        return null;
+    }
+
+    private FluidHatchPartMachine findFluidHatch(PartAbility ability) {
+        for (IMultiPart part : getParts()) {
+            if (part.self() instanceof FluidHatchPartMachine hatch
+                    && ability.isApplicable(hatch.getBlockState().getBlock())) {
+                return hatch;
             }
         }
         return null;

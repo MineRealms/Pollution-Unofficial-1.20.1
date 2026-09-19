@@ -788,20 +788,19 @@ public final class PollutionMachines {
 
     private static List<Component> manaHatchTooltips(int tier, int amperage, boolean isExport, boolean wireless) {
         List<Component> tooltips = new ArrayList<>(5);
+        tooltips.add(Component.translatable("pollution.machine.mana_hatch.tooltip"));
+        long rate = GTValues.V[tier] * amperage;
         if (isExport) {
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.voltage_out",
-                    GTValues.V[tier], GTValues.VNF[tier]));
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.amperage_out_till", amperage));
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+            tooltips.add(Component.translatable("pollution.machine.mana_hatch.output_rate",
+                    rate, GTValues.VNF[tier], amperage));
+            tooltips.add(Component.translatable("pollution.machine.mana_hatch.capacity",
                     GTValues.V[tier] * 64L * amperage));
         } else {
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.voltage_in",
-                    GTValues.V[tier], GTValues.VNF[tier]));
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.amperage_in_till", amperage));
-            tooltips.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+            tooltips.add(Component.translatable("pollution.machine.mana_hatch.input_rate",
+                    rate, GTValues.VNF[tier], amperage));
+            tooltips.add(Component.translatable("pollution.machine.mana_hatch.capacity",
                     GTValues.V[tier] * 16L * amperage));
         }
-        tooltips.add(Component.translatable("pollution.machine.mana_hatch.tooltip"));
         if (wireless) {
             tooltips.add(Component.translatable("pollution.machine.wireless_mana_hatch.tooltip"));
         }
