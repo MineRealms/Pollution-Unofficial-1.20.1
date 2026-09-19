@@ -6,14 +6,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import dev.arbor.gtnn.data.GTNNMaterials;
 import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -34,13 +32,15 @@ import java.util.function.Consumer;
  * ItemsTC.visResonator / morphicResonator / BlocksTC.visBattery，
  * 且本移植版把过滤器等奥术配方改写为 GT 组装机配方。</p>
  *
- * <p><b>Newly ported macerations</b> (previously skipped):</p>
+ * <p><b>Newly ported maceration</b> (previously skipped):</p>
  * <ul>
- *   <li>// 上游: Botania {@code ModItems.manaResource} -&gt; 本移植版:
- *       {@code GTNNMaterials.ManaSteel} ingot（GTNN 魔力钢只有锭/流体形态）</li>
  *   <li>// 上游: {@code ItemsTC.ingots} (Thaumcraft ingot meta) -&gt;
  *       本移植版: TC4R {@code TCItems.THAUMIUM_INGOT}</li>
  * </ul>
+ *
+ * <p>// 魔力钢打粉不在此注册: GTNN 自带
+ * {@code gtceu:macerator/macerate_manasteel_ingot}，本移植版的重复配方
+ * 会被 GT 配方查找表拒绝。</p>
  */
 public final class ThaumcraftRecipes {
 
@@ -52,15 +52,11 @@ public final class ThaumcraftRecipes {
         macerations(provider);
     }
 
-    /** 打粉：魔力钢（Botania manaResource -> GTNN ManaSteel）与神秘锭（TC4R thaumium ingot -> StainlessSteel）。 */
+    /** 打粉：神秘锭（TC4R thaumium ingot -> StainlessSteel）。 */
     private static void macerations(Consumer<FinishedRecipe> provider) {
-        // 上游: Botania ModItems.manaResource -> 本移植版: GTNN ManaSteel ingot
-        GTRecipeBuilder.of(id("manasteel_dust"), GTRecipeTypes.MACERATOR_RECIPES)
-                .inputItems(BotaniaItems.manaSteel)
-                .outputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 1))
-                .duration(10)
-                .EUt(2)
-                .save(provider);
+        // 上游: Botania ModItems.manaResource -> GTNN ManaSteel 打粉不在此注册:
+        // GTNN 自带 gtceu:macerator/macerate_manasteel_ingot，重复配方会被
+        // GT 配方查找表拒绝（原 pollution:macerator/thaumcraft/manasteel_dust）。
 
         // 上游: Thaumcraft ItemsTC.ingots -> 本移植版: TC4R thaumium ingot
         GTRecipeBuilder.of(id("thaumium_dust"), GTRecipeTypes.MACERATOR_RECIPES)

@@ -245,6 +245,12 @@ public final class BotaniaRecipes {
      * not ported because the corresponding machines are not registered yet.
      * The resonance coil block (1 + 6 wireless recipes) is skipped while
      * {@code mana_resonance_coil} is unported.
+     *
+     * <p>Upstream's pure-mana pool input hatch recipes were byte-for-byte
+     * identical to the regular mana input hatch recipes of the same tier
+     * (same energy hatch, rune, gear and sensor), so GTCEu's recipe lookup DB
+     * rejected them. The pool input hatches therefore consume a mana diamond,
+     * which keeps them distinct while preserving the upstream ingredient set.</p>
      */
     private static void manahatch(Consumer<FinishedRecipe> provider) {
         ItemEntry<?>[] sensors = {
@@ -295,6 +301,9 @@ public final class BotaniaRecipes {
                     .inputItems(new ItemStack(BotaniaItems.runeMana))
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, poolGears[index], 2))
                     .inputItems(poolSensors[index].asStack(2))
+                    // 上游此配方与同档 mana_input_hatch 输入完全相同，会被 GT 查找表
+                    // 拒绝；额外消耗魔力钻石以区分纯魔力池输入仓。
+                    .inputItems(new ItemStack(BotaniaItems.manaDiamond, 2))
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
                     .outputItems(PollutionMachines.MANA_POOL_INPUT_HATCH[index])
                     .duration(100)

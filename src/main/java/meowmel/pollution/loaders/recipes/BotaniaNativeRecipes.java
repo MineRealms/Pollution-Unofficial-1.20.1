@@ -61,6 +61,15 @@ import java.util.function.Consumer;
  * alternative ingredients and a player-head output) and
  * {@code pure_daisy/snow_block} (input is the water fluid block, which has no
  * item form).</p>
+ *
+ * <p>Removed mana-infusion duplicates (5): {@code dead_bush_to_grass},
+ * {@code grass}, {@code grass_to_fern}, {@code mana_quartz} and
+ * {@code tiny_potato}. These re-implement Botania's own
+ * {@code botania:mana_infusion/*} recipes and collided inside GTCEu's recipe
+ * lookup DB with other transplanted entries that share their starting item
+ * (respectively {@code podzol_seeds}, {@code grass_seeds} twice,
+ * {@code quartz_dupe} and {@code potato_to_carrot}). Botania provides them
+ * natively, so the transplant keeps only the entries that add something new.</p>
  */
 public final class BotaniaNativeRecipes {
 
@@ -324,8 +333,9 @@ public final class BotaniaNativeRecipes {
                 "minecraft:mangrove_propagule", 1, 120, "botania:alchemy_catalyst");
         infusion(provider, "dark_quartz_deconstruct", "botania:dark_quartz", "botania:quartz_dark", 4, 25,
                 "botania:alchemy_catalyst");
-        infusion(provider, "dead_bush_to_grass", "minecraft:dead_bush", "minecraft:grass", 1, 500,
-                "botania:alchemy_catalyst");
+        // Removed: duplicates Botania's native mana_infusion/dead_bush_to_grass;
+        // the transplant collided in the GT lookup DB with podzol_seeds (both
+        // start from minecraft:dead_bush).
         infusion(provider, "deepslate_to_tuff", "minecraft:deepslate", "minecraft:tuff", 1, 200,
                 "botania:alchemy_catalyst");
         infusion(provider, "diorite_to_granite", "minecraft:diorite", "minecraft:granite", 1, 200,
@@ -352,11 +362,13 @@ public final class BotaniaNativeRecipes {
                 300, "botania:alchemy_catalyst");
         infusion(provider, "granite_to_andesite", "minecraft:granite", "minecraft:andesite", 1, 200,
                 "botania:alchemy_catalyst");
-        infusion(provider, "grass", "minecraft:grass", "minecraft:grass", 2, 800,
-                "botania:conjuration_catalyst");
+        // Removed: duplicates Botania's native mana_infusion/grass; the transplant
+        // collided in the GT lookup DB with grass_seeds (both start from
+        // minecraft:grass).
         infusion(provider, "grass_seeds", "minecraft:grass", "botania:grass_seeds", 1, 2500, null);
-        infusion(provider, "grass_to_fern", "minecraft:grass", "minecraft:fern", 1, 500,
-                "botania:alchemy_catalyst");
+        // Removed: duplicates Botania's native mana_infusion/grass_to_fern; the
+        // transplant collided in the GT lookup DB with grass_seeds (both start
+        // from minecraft:grass).
         infusion(provider, "gravel_dupe", "minecraft:gravel", "minecraft:gravel", 2, 720,
                 "botania:conjuration_catalyst");
         infusion(provider, "gunpowder_to_flint", "minecraft:gunpowder", "minecraft:flint", 1, 200,
@@ -395,7 +407,9 @@ public final class BotaniaNativeRecipes {
         infusion(provider, "mana_powder_dye",
                 "minecraft:white_dye|minecraft:light_gray_dye|minecraft:gray_dye|minecraft:black_dye|minecraft:brown_dye|minecraft:red_dye|minecraft:orange_dye|minecraft:yellow_dye|minecraft:lime_dye|minecraft:green_dye|minecraft:cyan_dye|minecraft:light_blue_dye|minecraft:blue_dye|minecraft:purple_dye|minecraft:magenta_dye|minecraft:pink_dye",
                 "botania:mana_powder", 1, 400, null);
-        infusion(provider, "mana_quartz", "minecraft:quartz", "botania:quartz_mana", 1, 250, null);
+        // Removed: duplicates Botania's native mana_infusion/mana_quartz; the
+        // transplant collided in the GT lookup DB with quartz_dupe (both start
+        // from minecraft:quartz).
         infusion(provider, "mana_quartz_deconstruct", "botania:mana_quartz", "botania:quartz_mana", 4, 25,
                 "botania:alchemy_catalyst");
         infusion(provider, "mana_string", "minecraft:string", "botania:mana_string", 1, 1250, null);
@@ -493,7 +507,9 @@ public final class BotaniaNativeRecipes {
                 "botania:alchemy_catalyst");
         infusion(provider, "terracotta_to_red_sand", "minecraft:terracotta", "minecraft:red_sand", 1, 50,
                 "botania:alchemy_catalyst");
-        infusion(provider, "tiny_potato", "minecraft:potato", "botania:tiny_potato", 1, 1337, null);
+        // Removed: duplicates Botania's native mana_infusion/tiny_potato; the
+        // transplant collided in the GT lookup DB with potato_to_carrot (both
+        // start from minecraft:potato).
         infusion(provider, "tropical_fish_to_pufferfish", "minecraft:tropical_fish", "minecraft:pufferfish", 1,
                 200, "botania:alchemy_catalyst");
         infusion(provider, "tuff_to_calcite", "minecraft:tuff", "minecraft:calcite", 1, 200,
@@ -508,7 +524,7 @@ public final class BotaniaNativeRecipes {
                 400, "botania:alchemy_catalyst");
         infusion(provider, "wool_deconstruct", "#minecraft:wool", "minecraft:string", 3, 100,
                 "botania:alchemy_catalyst");
-        // 139 recipes ported
+        // 134 recipes ported (5 Botania-native duplicates removed, see above)
     }
 
     private static void pureDaisy(Consumer<FinishedRecipe> provider) {

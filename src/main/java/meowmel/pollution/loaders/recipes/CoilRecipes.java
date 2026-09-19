@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import dev.arbor.gtnn.data.GTNNMaterials;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import net.minecraft.core.registries.Registries;
@@ -15,19 +14,16 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
 /**
  * Upstream {@code ThaumcraftRecipes} tail: the eight wire-coil conversions and
- * the two maceration recipes.
+ * the thaumium maceration.
  *
  * <ul>
  *   <li>Coil conversions: upstream {@code POCoilBlock.COIL_LEVEL_1..8} arc-furnaced
  *       with 1440 mB InfusedExchange into the matching GTCEu coil block.</li>
- *   <li>Mana resource maceration: Botania manasteel ingot -> GTNN mana steel dust
- *       (upstream {@code ModItems.manaResource} -&gt; Manasteel dust).</li>
  *   <li>Thaumium ingot maceration: {@code forge:ingots/thaumium} tag -&gt;
  *       stainless steel dust (the port's Thaumium substitute).</li>
  * </ul>
@@ -58,12 +54,9 @@ public final class CoilRecipes {
         coil(provider, "tritanium", PollutionMagicBlocks.WIRE_COIL_TRITANIUM.asStack(),
                 GTBlocks.COIL_TRITANIUM.asStack());
 
-        GTRecipeBuilder.of(id("mana_steel_dust"), GTRecipeTypes.MACERATOR_RECIPES)
-                .inputItems(BotaniaItems.manaSteel)
-                .outputItems(ChemicalHelper.get(TagPrefix.dust, GTNNMaterials.ManaSteel, 1))
-                .duration(10)
-                .EUt(2)
-                .save(provider);
+        // GTNN already provides botania:manasteel_ingot -> GTNN ManaSteel dust
+        // (gtceu:macerator/macerate_manasteel_ingot); the duplicate previously
+        // registered here was rejected by the GT recipe lookup DB, so it is removed.
 
         TagKey<Item> thaumiumIngot = TagKey.create(Registries.ITEM,
                 ResourceLocation.fromNamespaceAndPath("forge", "ingots/thaumium"));

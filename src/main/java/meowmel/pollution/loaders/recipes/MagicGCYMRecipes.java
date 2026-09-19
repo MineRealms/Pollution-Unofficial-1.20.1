@@ -599,21 +599,26 @@ public final class MagicGCYMRecipes {
      * 九个咒法棱镜外壳。// 上游: plate/frameGt 形态的六种魔法合金 ->
      * 本移植版: 同材料 ingot + HSSG frame（本移植版合金只有 ingot/fluid，
      * Mansussteel -> HSSG）。
+     *
+     * <p>上游用各合金自己的 plate/frame，本移植版统一映射为 ingot + HSSG frame，
+     * 导致 void/spell_void、order/blank、water/cold 三对棱镜输入完全相同，
+     * GTCEu 的配方查找表会拒绝后注册的一条。这里按棱镜序号给每条配方分配
+     * 独立的 circuitMeta，使每个棱镜仍由自己的合金制作且互不冲突。</p>
      */
     private static void spellPrismCasings(Consumer<FinishedRecipe> provider) {
-        prismCasing(provider, "air", PollutionMaterials.Aertitanium, PollutionMagicBlocks.SPELL_PRISM_AIR);
-        prismCasing(provider, "hot", PollutionMaterials.IgnisSteel, PollutionMagicBlocks.SPELL_PRISM_HOT);
-        prismCasing(provider, "water", PollutionMaterials.Aquasilver, PollutionMagicBlocks.SPELL_PRISM_WATER);
-        prismCasing(provider, "earth", PollutionMaterials.Terracopper, PollutionMagicBlocks.SPELL_PRISM_EARTH);
-        prismCasing(provider, "order", PollutionMaterials.Ordolead, PollutionMagicBlocks.SPELL_PRISM_ORDER);
-        prismCasing(provider, "void", PollutionMaterials.Perditioaluminium, PollutionMagicBlocks.VOID_PRISM);
-        prismCasing(provider, "blank", PollutionMaterials.Ordolead, PollutionMagicBlocks.SPELL_PRISM);
-        prismCasing(provider, "spell_void", PollutionMaterials.Perditioaluminium,
+        prismCasing(provider, "air", 1, PollutionMaterials.Aertitanium, PollutionMagicBlocks.SPELL_PRISM_AIR);
+        prismCasing(provider, "hot", 2, PollutionMaterials.IgnisSteel, PollutionMagicBlocks.SPELL_PRISM_HOT);
+        prismCasing(provider, "water", 3, PollutionMaterials.Aquasilver, PollutionMagicBlocks.SPELL_PRISM_WATER);
+        prismCasing(provider, "earth", 4, PollutionMaterials.Terracopper, PollutionMagicBlocks.SPELL_PRISM_EARTH);
+        prismCasing(provider, "order", 5, PollutionMaterials.Ordolead, PollutionMagicBlocks.SPELL_PRISM_ORDER);
+        prismCasing(provider, "void", 6, PollutionMaterials.Perditioaluminium, PollutionMagicBlocks.VOID_PRISM);
+        prismCasing(provider, "blank", 7, PollutionMaterials.Ordolead, PollutionMagicBlocks.SPELL_PRISM);
+        prismCasing(provider, "spell_void", 8, PollutionMaterials.Perditioaluminium,
                 PollutionMagicBlocks.SPELL_PRISM_VOID);
-        prismCasing(provider, "cold", PollutionMaterials.Aquasilver, PollutionMagicBlocks.SPELL_PRISM_COLD);
+        prismCasing(provider, "cold", 9, PollutionMaterials.Aquasilver, PollutionMagicBlocks.SPELL_PRISM_COLD);
     }
 
-    private static void prismCasing(Consumer<FinishedRecipe> provider, String name, Material alloy,
+    private static void prismCasing(Consumer<FinishedRecipe> provider, String name, int circuit, Material alloy,
                                     com.tterrag.registrate.util.entry.BlockEntry<net.minecraft.world.level.block.Block> output) {
         ItemStack ingots = ChemicalHelper.get(TagPrefix.ingot, alloy, 6);
         ItemStack frame = ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1);
@@ -625,7 +630,7 @@ public final class MagicGCYMRecipes {
                 .inputItems(ingots)
                 .inputItems(frame)
                 .outputItems(output.asStack())
-                .circuitMeta(6)
+                .circuitMeta(circuit)
                 .duration(300)
                 .EUt(120)
                 .save(provider);
