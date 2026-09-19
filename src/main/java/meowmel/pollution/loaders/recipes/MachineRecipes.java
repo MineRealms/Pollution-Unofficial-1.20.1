@@ -89,7 +89,7 @@ public final class MachineRecipes {
         int garden = lifeGarden(provider);
         Pollution.LOGGER.info("[machine] registered {} mana generator recipes (LV..IV)", mana);
         Pollution.LOGGER.info("[machine] registered {} source charge recipes", charge);
-        Pollution.LOGGER.info("[machine] registered {} small node generator recipes (LuV..UV)", nodeGenerators);
+        Pollution.LOGGER.info("[machine] registered {} small node generator recipes (LuV..UHV)", nodeGenerators);
         Pollution.LOGGER.info("[machine] registered {} node fusion reactor recipes (LuV/ZPM/UV)", reactors);
         Pollution.LOGGER.info("[machine] registered {} magic mega turbine recipes", megaTurbine);
         Pollution.LOGGER.info("[machine] registered {} magic greenhouse recipes", greenHouse);
@@ -299,10 +299,10 @@ public final class MachineRecipes {
     // ////////////////////////////////////
 
     /**
-     * LuV..UV (UHV intentionally skipped). Mirrors the upstream shaped recipe
-     * (hull + large node generator + emitter + circuit + vis hatch + field
-     * generator) as a magic assembler recipe and adds a packaged aura node, a
-     * tier frame, a tier-flavoured rune and node fluids.
+     * LuV..UHV. Mirrors the upstream shaped recipe (hull + large node generator
+     * + emitter + circuit + vis hatch + field generator) as a magic assembler
+     * recipe and adds a packaged aura node, a tier frame, a tier-flavoured rune
+     * and node fluids.
      * // 上游: MachineRecipes.SMALL_NODE_GENERATOR_*（有序合成）。
      */
     private static int smallNodeGenerators(Consumer<FinishedRecipe> provider) {
@@ -313,8 +313,8 @@ public final class MachineRecipes {
             return 0;
         }
         int added = 0;
-        for (int tier = GTValues.LuV; tier <= GTValues.UV; tier++) {
-            int rank = tier - GTValues.LuV; // LuV 0, ZPM 1, UV 2
+        for (int tier = GTValues.LuV; tier <= GTValues.UHV; tier++) {
+            int rank = tier - GTValues.LuV; // LuV 0, ZPM 1, UV 2, UHV 3
             MachineDefinition result = at(PollutionMachines.SMALL_NODE_GENERATOR, tier);
             MachineDefinition hull = at(GTMachines.HULL, tier);
             MachineDefinition visHatch = at(PollutionMachines.VIS_HATCH, tier);
@@ -326,7 +326,8 @@ public final class MachineRecipes {
             ItemStack rune = switch (rank) {
                 case 0 -> botania("rune_mana", 2);
                 case 1 -> botania("rune_spring", 4);
-                default -> botania("rune_summer", 8);
+                case 2 -> botania("rune_summer", 8);
+                default -> botania("rune_autumn", 16);
             };
             FluidStack aura = fluid(PollutionMaterials.InfusedAura, 4000 * (rank + 1));
             FluidStack light = fluid(PollutionMaterials.InfusedLight, 2000 * (rank + 1));
@@ -785,12 +786,11 @@ public final class MachineRecipes {
         };
     }
 
-    /** NaquadahAlloy -> Tritanium -> Neutronium: the node family structural frame. */
+    /** NaquadahAlloy -> Tritanium -> Neutronium: the node family structural frame (no Naquadria frame item). */
     private static Material nodeFrameMaterial(int tier) {
         return switch (tier) {
             case GTValues.ZPM -> GTMaterials.Tritanium;
-            case GTValues.UV -> GTMaterials.Neutronium;
-            default -> GTMaterials.NaquadahAlloy;
+            default -> tier >= GTValues.UV ? GTMaterials.Neutronium : GTMaterials.NaquadahAlloy;
         };
     }
 
@@ -804,6 +804,7 @@ public final class MachineRecipes {
             case GTValues.LuV -> SafeItems.of(PollutionItems.MAGIC_CIRCUIT_LUV);
             case GTValues.ZPM -> SafeItems.of(PollutionItems.MAGIC_CIRCUIT_ZPM);
             case GTValues.UV -> SafeItems.of(PollutionItems.MAGIC_CIRCUIT_UV);
+            case GTValues.UHV -> SafeItems.of(PollutionItems.MAGIC_CIRCUIT_UHV);
             default -> ItemStack.EMPTY;
         };
     }

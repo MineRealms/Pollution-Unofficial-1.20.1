@@ -1,21 +1,21 @@
 # Pollution 无配方产出物品/方块审计
 
-- 审计日期：2026-09-19
+- 审计日期：2026-09-20
 - 数据来源：`run/pollution-recipe-dump.txt`（服务器启动后从运行时 `RecipeManager` 全量转储）
 - 审计脚本：`tools/audit_unobtainable.py`
 - 物品注册总数（`pollution` 命名空间）：**3062**
-- 无任何配方产出的物品数：**1450**
+- 无任何配方产出的物品数：**1072**
 - 其中世界生成矿石：**1040**（可挖掘获得，仅无配方）
-- 其余（无配方且非世界生成矿石）：**410**
+- 其余（无配方且非世界生成矿石）：**32**
 
 ## 分类统计
 
 | 分类 | 数量 | 说明 |
 | --- | ---: | --- |
-| 机器/多方块 | 181 | `MetaMachineItem`，含单方块机器、多方块控制器、仓室 |
-| 方块 | 1058 | 其中世界生成矿石 1040、结构/装饰/植物方块 18 |
-| 物品 | 88 | 普通物品、材料部件、电路、饰品等 |
-| 桶/流体容器 | 123 | GT 流体桶（`GTBucketItem`） |
+| 机器/多方块 | 0 | `MetaMachineItem`，含单方块机器、多方块控制器、仓室 |
+| 方块 | 1047 | 其中世界生成矿石 1040、结构/装饰/植物方块 7 |
+| 物品 | 25 | 普通物品、材料部件、电路、饰品等 |
+| 桶/流体容器 | 0 | GT 流体桶（`GTBucketItem`） |
 | 其他 | 0 | 未归入以上分类 |
 | 无对应物品的方块 | 1 | 注册了方块但无物品形态 |
 
@@ -23,202 +23,22 @@
 
 1. **本表只统计“有配方产出”**：世界生成（矿石、植物）、生物掉落、结构箱子、任务奖励、JEI 隐藏物品等获取途径不计入配方。
 2. **世界生成矿石 1040 项**：这些是 GT 材料矿块，靠挖矿获得，没有（也不需要）配方，属于正常现象。
-3. **桶/流体容器**：`GTBucketItem` 没有配方产出；GT 的桶可右键流体源拾取，但 Pollution 的 GT 流体没有可放置的源方块，因此实际上只能创造模式获得。
+3. **桶/流体容器已补全**：Pollution 的 123 个 `GTBucketItem` 现在通过 `FluidBucketRecipes` 注册了注罐机（`gtceu:canner`）配方：空桶 + 1000 mB 对应流体 -> 流体桶。这些流体没有可放置的源方块，注罐机配方即其正规获取途径。
 4. **标签输出已展开**：GT 配方输出以 `Ingredient` 存储，转储时通过 `Ingredient.getItems()` 展开为具体物品，所以“标签产出的物品”已计入可制造。
 5. **KubeJS 运行时改动已包含**：转储读取的是 `RecipeManager` 的最终状态。
 6. 转储期间 `getResultItem`/输入展开异常：**0** 个。
-7. **机器/仓室缺失多为移植未完成**：例如 Aspect Tank、Flux Muffler、Infused Fluid Hatch 全等级无配方；Mana 输入仓只有 1A 等级有配方，4A/16A/64A 与输出仓、无线仓全部缺失；部分多方块控制器（Magic Greenhouse、Magic Mega Turbine、Bot Distillery、Mana Plate、Node Fusion Reactor 等）无配方。
-8. `pollution:test`、`pollution:test_item` 为调试/占位物品。
-9. 大量材料部件（dust/plate/ingot 等）的缺失需要人工复核上游配方链，本表只保证“运行时确实没有配方产出”。
-10. 名称解析使用的 GT 语言文件：`C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.gregtechceu.gtceu\gtceu-1.20.1\7.5.3\2e9de016b74826d43f0d4e619a755e8ec0253784\gtceu-1.20.1-7.5.3.jar`。
+7. **机器/仓室已全部补全**：UHV 档 Aspect Tank、Flux Muffler、Infused Fluid Hatch、Mana 输入/输出仓、无线仓与微型星光节点反应堆在补全轮中注册了配方，本表机器分类为空。
+8. `pollution:test`、`pollution:test_item` 为调试/占位物品，按任务排除。
+9. **任务排除项**（不再补配方）：`astral_*`（星辉体系）、`blood_*` / `flesh_*` / `heart_fruit*` / `tentacle`（血魔法体系）、调试物品、世界生成矿石，以及无物品形态的 `pollution:portal`。除这些之外，2026-09-20 的补全轮已处理全部无产出条目。
+10. 大量材料部件（dust/plate/ingot 等）的缺失需要人工复核上游配方链，本表只保证“运行时确实没有配方产出”。
+11. 名称解析使用的 GT 语言文件：`C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.gregtechceu.gtceu\gtceu-1.20.1\7.5.3\2e9de016b74826d43f0d4e619a755e8ec0253784\gtceu-1.20.1-7.5.3.jar`。
 
-## 机器/多方块（181）
+## 机器/多方块（0）
 
 | 注册名 (ID) | 英文名 | 中文名 | 备注 |
 | --- | --- | --- | --- |
-| `pollution:bot_distillery` | Terra Distillery | 泰拉蒸馏塔 | 无任何配方引用 |
-| `pollution:ev_aspect_tank` | §5EV Aspect Tank | 超级源质缸 IV（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_flux_muffler` | §5EV Flux Muffler | 净化消声仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_infused_fluid_hatch` | §5EV Infused Fluid Hatch | 源质流体输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_generator` | §5EV Mana Generator | 脉冲魔力发电机 | 无任何配方引用 |
-| `pollution:ev_mana_input_hatch_16a` | §5EV Mana Input Hatch (16A) | 16A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_input_hatch_4a` | §5EV Mana Input Hatch (4A) | 4A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_input_hatch_64a` | §5EV Mana Input Hatch (64A) | 64A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_output_hatch_16a` | §5EV Mana Output Hatch (16A) | 16A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_output_hatch_1a` | §5EV Mana Output Hatch (1A) | 1A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_output_hatch_4a` | §5EV Mana Output Hatch (4A) | 4A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_mana_output_hatch_64a` | §5EV Mana Output Hatch (64A) | 64A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_input_hatch_16a` | §5EV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_input_hatch_1a` | §5EV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_input_hatch_4a` | §5EV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_input_hatch_64a` | §5EV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_output_hatch_16a` | §5EV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_output_hatch_1a` | §5EV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_output_hatch_4a` | §5EV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:ev_wireless_mana_output_hatch_64a` | §5EV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§5EV§r） | 无任何配方引用 |
-| `pollution:hv_aspect_tank` | §6HV Aspect Tank | 超级源质缸 III（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_flux_muffler` | §6HV Flux Muffler | 净化消声仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_infused_fluid_hatch` | §6HV Infused Fluid Hatch | 源质流体输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_generator` | §6HV Mana Generator | 涡轮魔力发电机 | 无任何配方引用 |
-| `pollution:hv_mana_input_hatch_16a` | §6HV Mana Input Hatch (16A) | 16A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_input_hatch_4a` | §6HV Mana Input Hatch (4A) | 4A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_input_hatch_64a` | §6HV Mana Input Hatch (64A) | 64A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_output_hatch_16a` | §6HV Mana Output Hatch (16A) | 16A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_output_hatch_1a` | §6HV Mana Output Hatch (1A) | 1A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_output_hatch_4a` | §6HV Mana Output Hatch (4A) | 4A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_mana_output_hatch_64a` | §6HV Mana Output Hatch (64A) | 64A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_input_hatch_16a` | §6HV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_input_hatch_1a` | §6HV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_input_hatch_4a` | §6HV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_input_hatch_64a` | §6HV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_output_hatch_16a` | §6HV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_output_hatch_1a` | §6HV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_output_hatch_4a` | §6HV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:hv_wireless_mana_output_hatch_64a` | §6HV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§6HV§r） | 无任何配方引用 |
-| `pollution:iv_aspect_tank` | §9IV Aspect Tank | 量子源质缸 I（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_flux_muffler` | §9IV Flux Muffler | 净化消声仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_infused_fluid_hatch` | §9IV Infused Fluid Hatch | 源质流体输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_generator` | §9IV Mana Generator | 爆喷魔力发电机 | 无任何配方引用 |
-| `pollution:iv_mana_input_hatch_16a` | §9IV Mana Input Hatch (16A) | 16A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_input_hatch_4a` | §9IV Mana Input Hatch (4A) | 4A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_input_hatch_64a` | §9IV Mana Input Hatch (64A) | 64A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_output_hatch_16a` | §9IV Mana Output Hatch (16A) | 16A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_output_hatch_1a` | §9IV Mana Output Hatch (1A) | 1A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_output_hatch_4a` | §9IV Mana Output Hatch (4A) | 4A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_mana_output_hatch_64a` | §9IV Mana Output Hatch (64A) | 64A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_input_hatch_16a` | §9IV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_input_hatch_1a` | §9IV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_input_hatch_4a` | §9IV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_input_hatch_64a` | §9IV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_output_hatch_16a` | §9IV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_output_hatch_1a` | §9IV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_output_hatch_4a` | §9IV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:iv_wireless_mana_output_hatch_64a` | §9IV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§1IV§r） | 无任何配方引用 |
-| `pollution:luv_aspect_tank` | §dLuV Aspect Tank | 量子源质缸 II（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_flux_muffler` | §dLuV Flux Muffler | 净化消声仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_infused_fluid_hatch` | §dLuV Infused Fluid Hatch | 源质流体输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_input_hatch_16a` | §dLuV Mana Input Hatch (16A) | 16A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_input_hatch_4a` | §dLuV Mana Input Hatch (4A) | 4A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_input_hatch_64a` | §dLuV Mana Input Hatch (64A) | 64A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_output_hatch_16a` | §dLuV Mana Output Hatch (16A) | 16A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_output_hatch_1a` | §dLuV Mana Output Hatch (1A) | 1A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_output_hatch_4a` | §dLuV Mana Output Hatch (4A) | 4A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_mana_output_hatch_64a` | §dLuV Mana Output Hatch (64A) | 64A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_node_fusion_reactor` | LuV Node Fusion Reactor | LuV 节点聚变堆 | 无任何配方引用 |
-| `pollution:luv_small_node_generator` | §dLuV Micro Starlight Node Reactor | 微缩星光节点反应堆MKI（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_input_hatch_16a` | §dLuV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_input_hatch_1a` | §dLuV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_input_hatch_4a` | §dLuV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_input_hatch_64a` | §dLuV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_output_hatch_16a` | §dLuV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_output_hatch_1a` | §dLuV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_output_hatch_4a` | §dLuV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:luv_wireless_mana_output_hatch_64a` | §dLuV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§dLuV§r） | 无任何配方引用 |
-| `pollution:lv_aspect_tank` | §7LV Aspect Tank | 超级源质缸 I（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_flux_muffler` | §7LV Flux Muffler | 净化消声仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_infused_fluid_hatch` | §7LV Infused Fluid Hatch | 源质流体输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_generator` | §7LV Mana Generator | 基础魔力发电机 | 无任何配方引用 |
-| `pollution:lv_mana_input_hatch_16a` | §7LV Mana Input Hatch (16A) | 16A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_input_hatch_4a` | §7LV Mana Input Hatch (4A) | 4A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_input_hatch_64a` | §7LV Mana Input Hatch (64A) | 64A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_output_hatch_16a` | §7LV Mana Output Hatch (16A) | 16A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_output_hatch_1a` | §7LV Mana Output Hatch (1A) | 1A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_output_hatch_4a` | §7LV Mana Output Hatch (4A) | 4A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_mana_output_hatch_64a` | §7LV Mana Output Hatch (64A) | 64A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_input_hatch_16a` | §7LV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_input_hatch_1a` | §7LV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_input_hatch_4a` | §7LV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_input_hatch_64a` | §7LV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_output_hatch_16a` | §7LV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_output_hatch_1a` | §7LV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_output_hatch_4a` | §7LV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:lv_wireless_mana_output_hatch_64a` | §7LV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§7LV§r） | 无任何配方引用 |
-| `pollution:magic_green_house` | Magic Greenhouse | 魔导温室 | 无任何配方引用 |
-| `pollution:magic_mega_turbine` | Magic Mega Turbine | 特大源质要素轮机（§1IV§r） | 无任何配方引用 |
-| `pollution:mana_plate` | Mana Plate | 魔力基板加速器 | 无任何配方引用 |
-| `pollution:mv_aspect_tank` | §bMV Aspect Tank | 超级源质缸 II（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_flux_muffler` | §bMV Flux Muffler | 净化消声仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_infused_fluid_hatch` | §bMV Infused Fluid Hatch | 源质流体输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_generator` | §bMV Mana Generator | 进阶魔力发电机 | 无任何配方引用 |
-| `pollution:mv_mana_input_hatch_16a` | §bMV Mana Input Hatch (16A) | 16A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_input_hatch_4a` | §bMV Mana Input Hatch (4A) | 4A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_input_hatch_64a` | §bMV Mana Input Hatch (64A) | 64A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_output_hatch_16a` | §bMV Mana Output Hatch (16A) | 16A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_output_hatch_1a` | §bMV Mana Output Hatch (1A) | 1A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_output_hatch_4a` | §bMV Mana Output Hatch (4A) | 4A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_mana_output_hatch_64a` | §bMV Mana Output Hatch (64A) | 64A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_input_hatch_16a` | §bMV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_input_hatch_1a` | §bMV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_input_hatch_4a` | §bMV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_input_hatch_64a` | §bMV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_output_hatch_16a` | §bMV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_output_hatch_1a` | §bMV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_output_hatch_4a` | §bMV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:mv_wireless_mana_output_hatch_64a` | §bMV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§bMV§r） | 无任何配方引用 |
-| `pollution:node_washer` | Node Washer | 节点清洗机 | 无任何配方引用 |
-| `pollution:pollution_multi_dan_de_life_on` | Life Activation Garden | 启命花园 | 无任何配方引用 |
-| `pollution:source_charge` | Source Charge | 源质充能器 | 无任何配方引用 |
-| `pollution:uhv_aspect_tank` | §4UHV Aspect Tank | 量子源质缸 V（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_flux_muffler` | §4UHV Flux Muffler | 净化消声仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_infused_fluid_hatch` | §4UHV Infused Fluid Hatch | 源质流体输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_input_hatch_16a` | §4UHV Mana Input Hatch (16A) | 16A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_input_hatch_4a` | §4UHV Mana Input Hatch (4A) | 4A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_input_hatch_64a` | §4UHV Mana Input Hatch (64A) | 64A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_output_hatch_16a` | §4UHV Mana Output Hatch (16A) | 16A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_output_hatch_1a` | §4UHV Mana Output Hatch (1A) | 1A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_output_hatch_4a` | §4UHV Mana Output Hatch (4A) | 4A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_mana_output_hatch_64a` | §4UHV Mana Output Hatch (64A) | 64A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_small_node_generator` | §4UHV Micro Starlight Node Reactor | 微缩星光节点反应堆MKⅣ（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_input_hatch_16a` | §4UHV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_input_hatch_1a` | §4UHV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_input_hatch_4a` | §4UHV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_input_hatch_64a` | §4UHV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_output_hatch_16a` | §4UHV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_output_hatch_1a` | §4UHV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_output_hatch_4a` | §4UHV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uhv_wireless_mana_output_hatch_64a` | §4UHV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§4UHV§r） | 无任何配方引用 |
-| `pollution:uv_aspect_tank` | §3UV Aspect Tank | 量子源质缸 IV（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_flux_muffler` | §3UV Flux Muffler | 净化消声仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_infused_fluid_hatch` | §3UV Infused Fluid Hatch | 源质流体输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_input_hatch_16a` | §3UV Mana Input Hatch (16A) | 16A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_input_hatch_4a` | §3UV Mana Input Hatch (4A) | 4A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_input_hatch_64a` | §3UV Mana Input Hatch (64A) | 64A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_output_hatch_16a` | §3UV Mana Output Hatch (16A) | 16A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_output_hatch_1a` | §3UV Mana Output Hatch (1A) | 1A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_output_hatch_4a` | §3UV Mana Output Hatch (4A) | 4A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_mana_output_hatch_64a` | §3UV Mana Output Hatch (64A) | 64A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_node_fusion_reactor` | UV Node Fusion Reactor | UV 节点聚变堆 | 无任何配方引用 |
-| `pollution:uv_small_node_generator` | §3UV Micro Starlight Node Reactor | 微缩星光节点反应堆MKⅢ（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_input_hatch_16a` | §3UV Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_input_hatch_1a` | §3UV Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_input_hatch_4a` | §3UV Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_input_hatch_64a` | §3UV Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_output_hatch_16a` | §3UV Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_output_hatch_1a` | §3UV Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_output_hatch_4a` | §3UV Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:uv_wireless_mana_output_hatch_64a` | §3UV Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§3UV§r） | 无任何配方引用 |
-| `pollution:zpm_aspect_tank` | §cZPM Aspect Tank | 量子源质缸 III（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_flux_muffler` | §cZPM Flux Muffler | 净化消声仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_infused_fluid_hatch` | §cZPM Infused Fluid Hatch | 源质流体输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_input_hatch_16a` | §cZPM Mana Input Hatch (16A) | 16A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_input_hatch_4a` | §cZPM Mana Input Hatch (4A) | 4A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_input_hatch_64a` | §cZPM Mana Input Hatch (64A) | 64A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_output_hatch_16a` | §cZPM Mana Output Hatch (16A) | 16A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_output_hatch_1a` | §cZPM Mana Output Hatch (1A) | 1A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_output_hatch_4a` | §cZPM Mana Output Hatch (4A) | 4A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_mana_output_hatch_64a` | §cZPM Mana Output Hatch (64A) | 64A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_node_fusion_reactor` | ZPM Node Fusion Reactor | ZPM 节点聚变堆 | 无任何配方引用 |
-| `pollution:zpm_small_node_generator` | §cZPM Micro Starlight Node Reactor | 微缩星光节点反应堆MKⅡ（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_input_hatch_16a` | §cZPM Wireless Mana Input Hatch (16A) | 无线 16A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_input_hatch_1a` | §cZPM Wireless Mana Input Hatch (1A) | 无线 1A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_input_hatch_4a` | §cZPM Wireless Mana Input Hatch (4A) | 无线 4A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_input_hatch_64a` | §cZPM Wireless Mana Input Hatch (64A) | 无线 64A 魔力输入仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_output_hatch_16a` | §cZPM Wireless Mana Output Hatch (16A) | 无线 16A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_output_hatch_1a` | §cZPM Wireless Mana Output Hatch (1A) | 无线 1A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_output_hatch_4a` | §cZPM Wireless Mana Output Hatch (4A) | 无线 4A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
-| `pollution:zpm_wireless_mana_output_hatch_64a` | §cZPM Wireless Mana Output Hatch (64A) | 无线 64A 魔力输出仓（§cZPM§r） | 无任何配方引用 |
 
-## 方块（1058）
+## 方块（1047）
 
 ### 世界生成矿石（1040）
 
@@ -1265,27 +1085,16 @@
 | `pollution:venus_pyrargyrite_ore` | venus_pyrargyrite_ore | venus_pyrargyrite_ore | 世界生成矿石（可挖掘获得） |
 | `pollution:venus_scabyst_ore` | venus_scabyst_ore | venus_scabyst_ore | 世界生成矿石（可挖掘获得） |
 
-### 结构/装饰/植物方块（18）
+### 结构/装饰/植物方块（7）
 
 | 注册名 (ID) | 英文名 | 中文名 | 备注 |
 | --- | --- | --- | --- |
-| `pollution:alfheim_dream_leaves` | Alfheim Dream Leaves | 梦之树叶 | 无任何配方引用 |
-| `pollution:alfheim_elven_sand` | Alfheim Elven Sand | 精灵沙 | 无任何配方引用 |
-| `pollution:alfheim_red_grape_0` | Alfheim Red Grape 0 | 红葡萄藤 | 无任何配方引用 |
-| `pollution:alfheim_red_grape_1` | Alfheim Red Grape 1 | 红葡萄藤 | 无任何配方引用 |
-| `pollution:alfheim_red_grape_2` | Alfheim Red Grape 2 | 红葡萄藤 | 无任何配方引用 |
-| `pollution:alfheim_white_grape` | Alfheim White Grape | 白葡萄 | 无任何配方引用 |
-| `pollution:eldritch_eye` | Eldritch Eye | 深渊之眼 | 无任何配方引用 |
 | `pollution:flesh_flower` | Flesh Flower | 血肉之花 | 无任何配方引用 |
 | `pollution:flesh_heart` | Flesh Heart | 心脏核心 | 无任何配方引用 |
 | `pollution:flesh_leaves` | Flesh Leaves | 血肉树叶 | 无任何配方引用 |
 | `pollution:flesh_plant` | Flesh Plant | 血肉植物 | 无任何配方引用 |
 | `pollution:flesh_sapling` | Flesh Sapling | 血肉树苗 | 无任何配方引用 |
 | `pollution:heart_fruit` | Heart Fruit | 心鸣果 | 无任何配方引用 |
-| `pollution:mineral_extractor` | Mineral Extractor | 矿物提取器 | 无任何配方引用 |
-| `pollution:polytetrafluoroethylene_pipe` | Polytetrafluoroethylene Pipe | 聚四氟乙烯管道 | 仅作为配方原料 |
-| `pollution:rainbow_leaves` | Rainbow Leaves | 魔法彩虹树叶 | 无任何配方引用 |
-| `pollution:rainbow_sapling` | Rainbow Sapling | 魔法彩虹树苗 | 无任何配方引用 |
 | `pollution:tentacle` | Tentacle | 蠕动触手 | 无任何配方引用 |
 
 ### 无物品形态的方块（1）
@@ -1294,7 +1103,7 @@
 | --- | --- |
 | `pollution:portal` | 技术方块（无对应物品，无法以物品形式获得） |
 
-## 物品（88）
+## 物品（25）
 
 | 注册名 (ID) | 英文名 | 中文名 | 备注 |
 | --- | --- | --- | --- |
@@ -1303,8 +1112,6 @@
 | `pollution:astral_lens_basic` | Astral Lens Basic | 基础星辉透镜 | 仅作为配方原料 |
 | `pollution:astral_neural_bundle` | Astral Neural Bundle | 星辉神经束 | 无任何配方引用 |
 | `pollution:astral_resonance_coil` | Astral Resonance Coil | 星辉谐振线圈 | 仅作为配方原料 |
-| `pollution:attuned_crystal_wafer` | Attuned Crystal Wafer | 调谐晶体晶圆 | 无任何配方引用 |
-| `pollution:baubles.water_ring` | Water Ring | 灵水指环 | 无任何配方引用 |
 | `pollution:blood_circuit` | Blood Circuit | 原始培养物 | 仅作为配方原料 |
 | `pollution:blood_circuit.0` | Blood Circuit 0 | 血肉电路（MV） | 无任何配方引用 |
 | `pollution:blood_circuit.1` | Blood Circuit 1 | 血肉电路（HV） | 无任何配方引用 |
@@ -1322,195 +1129,11 @@
 | `pollution:blood_circuit_supreme` | Blood Circuit Supreme | 星血计算模板 | 无任何配方引用 |
 | `pollution:blood_circuit_ultimate` | Blood Circuit Ultimate | 人脑培养模板 | 无任何配方引用 |
 | `pollution:blood_port` | Blood Port | 血肉接口 | 仅作为配方原料 |
-| `pollution:causality_catalyst` | Causality Catalyst | 因果催化剂 | 无任何配方引用 |
-| `pollution:celestial_calibration_core` | Celestial Calibration Core | 天体校准核心 | 仅作为配方原料 |
-| `pollution:celestial_crystal_embryo` | Celestial Crystal Embryo | 天体晶体培养体 | 无任何配方引用 |
-| `pollution:cogito_defibrillator` | Cogito Defibrillator | 我思除颤仪 | 无任何配方引用 |
-| `pollution:constellation_data_wafer` | Constellation Data Wafer | 星座数据晶圆 | 无任何配方引用 |
-| `pollution:cultivated_crystal` | Cultivated Crystal | 培育水晶 | 无任何配方引用 |
-| `pollution:depleted_magic_core` | Depleted Magic Core | 耗竭魔导核心 | 无任何配方引用 |
-| `pollution:devay_pill.1` | Devay Pill 1 | 理智回复药（1） | 无任何配方引用 |
-| `pollution:devay_pill.10` | Devay Pill 10 | 理智回复药（10） | 无任何配方引用 |
-| `pollution:devay_pill.20` | Devay Pill 20 | 理智回复药（20） | 无任何配方引用 |
-| `pollution:devay_pill.5` | Devay Pill 5 | 理智回复药（5） | 无任何配方引用 |
-| `pollution:devay_pill.empty` | Devay Pill Empty | 空理智回复药 | 无任何配方引用 |
-| `pollution:endorphins_stabilizer` | Endorphins Stabilizer | 内啡肽稳定器 | 仅作为配方原料 |
-| `pollution:filter.i` | Filter I | 空气过滤器滤芯 I | 无任何配方引用 |
-| `pollution:filter.ii` | Filter Ii | 空气过滤器滤芯 II | 无任何配方引用 |
-| `pollution:filter.iii` | Filter Iii | 空气过滤器滤芯 III | 仅作为配方原料 |
-| `pollution:filter.iv` | Filter Iv | 空气过滤器滤芯 IV | 无任何配方引用 |
-| `pollution:filter.v` | Filter V | 空气过滤器滤芯 V | 无任何配方引用 |
-| `pollution:freeze_cooler` | Freeze Cooler | 寒冰冷冻器 | 无任何配方引用 |
-| `pollution:harmonizing_rune_core` | Harmonizing Rune Core | 谐律符文核心 | 仅作为配方原料 |
 | `pollution:heart_fruit_i` | Heart Fruit | 心鸣果 | 无任何配方引用 |
-| `pollution:ips_human_brain` | Ips Human Brain | iPS重建人脑 | 无任何配方引用 |
-| `pollution:living_magic_biofilm` | Living Magic Biofilm | 活体魔导生物膜 | 仅作为配方原料 |
-| `pollution:lysosome_stabilizer` | Lysosome Stabilizer | 自噬稳定器 | 无任何配方引用 |
-| `pollution:magic_circuit.ev` | Magic Circuit Ev | 蕴魔电路板 (§5EV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.hv` | Magic Circuit Hv | 蕴魔电路板 (§6HV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.iv` | Magic Circuit Iv | 蕴魔电路板 (§1IV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.luv` | Magic Circuit Luv | 蕴魔电路板 (§dLuV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.lv` | Magic Circuit Lv | 蕴魔电路板 (§7LV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.max` | Magic Circuit Max | 蕴魔电路板（§c§lMAX§r） | 无任何配方引用 |
-| `pollution:magic_circuit.mv` | Magic Circuit Mv | 蕴魔电路板 (§bMV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.opv` | Magic Circuit Opv | 蕴魔电路板（§9OpV§r） | 无任何配方引用 |
-| `pollution:magic_circuit.uev` | Magic Circuit Uev | 蕴魔电路板（§aUEV§r） | 无任何配方引用 |
-| `pollution:magic_circuit.uhv` | Magic Circuit Uhv | 蕴魔电路板 (§4UHV§r) | 无任何配方引用 |
-| `pollution:magic_circuit.uiv` | Magic Circuit Uiv | 蕴魔电路板（§2UIV§r） | 无任何配方引用 |
-| `pollution:magic_circuit.ulv` | Magic Circuit Ulv | 蕴魔电路板 (§8ULV§r) | 无任何配方引用 |
-| `pollution:magic_circuit.uv` | Magic Circuit Uv | 蕴魔电路板 (§3UV§r) | 仅作为配方原料 |
-| `pollution:magic_circuit.uxv` | Magic Circuit Uxv | 蕴魔电路板（§eUXV§r） | 无任何配方引用 |
-| `pollution:magic_circuit.zpm` | Magic Circuit Zpm | 蕴魔电路板 (§cZPM§r) | 仅作为配方原料 |
-| `pollution:magic_circuit_board.max` | Magic Circuit Board Max | 魔法电路板（§c§lMAX§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.opv` | Magic Circuit Board Opv | 魔法电路板（§9OpV§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.uev` | Magic Circuit Board Uev | 魔法电路板（§aUEV§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.uhv` | Magic Circuit Board Uhv | 魔法电路板（§4UHV§r） | 仅作为配方原料 |
-| `pollution:magic_circuit_board.uiv` | Magic Circuit Board Uiv | 魔法电路板（§2UIV§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.uv` | Magic Circuit Board Uv | 魔法电路板（§3UV§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.uxv` | Magic Circuit Board Uxv | 魔法电路板（§eUXV§r） | 无任何配方引用 |
-| `pollution:magic_circuit_board.zpm` | Magic Circuit Board Zpm | 魔法电路板（§cZPM§r） | 仅作为配方原料 |
-| `pollution:magic_sweep` | Magic Sweep | 魔法扫帚 | 无任何配方引用 |
-| `pollution:mitochondrion_power` | Mitochondrion Power | 线粒能源体 | 仅作为配方原料 |
-| `pollution:needle_of_mystic_interpellation` | Needle Of Mystic Interpellation | 密契询唤针 | 无任何配方引用 |
-| `pollution:packaged_aura_node` | Packaged Aura Node | 封装灵气节点 | 仅作为配方原料 |
-| `pollution:pesticide.empty` | Pesticide Empty | 空杀虫剂 | 无任何配方引用 |
-| `pollution:pesticide.full` | Pesticide Full | 杀虫剂 | 无任何配方引用 |
-| `pollution:precision_rune_blank` | Precision Rune Blank | 精密符文坯 | 仅作为配方原料 |
-| `pollution:primitive_meat` | Primitive Meat | 原始血肉团 | 无任何配方引用 |
-| `pollution:primordial_star_blood_crystal` | Primordial Star Blood Crystal | 原初星血晶体 | 无任何配方引用 |
-| `pollution:rat_brain` | Rat Brain | 鼠脑 | 仅作为配方原料 |
-| `pollution:rock_crystal_seed` | Rock Crystal Seed | 岩石水晶晶种 | 无任何配方引用 |
-| `pollution:silvered_glass_lens` | Silvered Glass Lens | 镀银玻璃透镜 | 仅作为配方原料 |
-| `pollution:stone_of_philosopher_final` | Stone Of Philosopher Final | §5§l真·贤者之石§r | 无任何配方引用 |
-| `pollution:tar_slime` | Tar Slime | 焦油史莱姆 | 仅作为配方原料 |
 | `pollution:test` | Test | 测试物品 | 调试/占位物品；无任何配方引用 |
 | `pollution:test_item` | Test Item | papa测试物品 | 调试/占位物品；无任何配方引用 |
-| `pollution:vis_checker` | Vis Checker | 污染检测器 | 仅作为配方原料 |
 
-## 桶/流体容器（123）
+## 桶/流体容器（0）
 
 | 注册名 (ID) | 英文名 | 中文名 | 备注 |
 | --- | --- | --- | --- |
-| `pollution:advanced_battery_hull_alloy_bucket` | Advanced Battery Hull Alloy Bucket | 进阶电池外壳合金桶 | GT 流体桶（无配方产出） |
-| `pollution:advanced_substrate_bucket` | Advanced Substrate Bucket | 高阶奇术基底桶 | GT 流体桶（无配方产出） |
-| `pollution:advanced_thaumic_superconductor_bucket` | Advanced Thaumic Superconductor Bucket | 高阶神秘超导体桶 | GT 流体桶（无配方产出） |
-| `pollution:aertitanium_bucket` | Aertitanium Bucket | 律动钛桶 | GT 流体桶（无配方产出） |
-| `pollution:aetheric_dark_steel_bucket` | Aetheric Dark Steel Bucket | 太虚玄钢桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_1_bucket` | Alchemical Vapor 1 Bucket | 一次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_2_bucket` | Alchemical Vapor 2 Bucket | 二次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_3_bucket` | Alchemical Vapor 3 Bucket | 三次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_4_bucket` | Alchemical Vapor 4 Bucket | 四次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_5_bucket` | Alchemical Vapor 5 Bucket | 五次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:alchemical_vapor_6_bucket` | Alchemical Vapor 6 Bucket | 六次升华蒸汽桶 | GT 流体桶（无配方产出） |
-| `pollution:aquasilver_bucket` | Aquasilver Bucket | 捩花银桶 | GT 流体桶（无配方产出） |
-| `pollution:arcane_ink_bucket` | Arcane Ink Bucket | 奥术墨液桶 | GT 流体桶（无配方产出） |
-| `pollution:authority_lead_bucket` | Authority Lead Bucket | 镇渊铅桶 | GT 流体桶（无配方产出） |
-| `pollution:basic_battery_hull_alloy_bucket` | Basic Battery Hull Alloy Bucket | 基础电池外壳合金桶 | GT 流体桶（无配方产出） |
-| `pollution:basic_substrate_bucket` | Basic Substrate Bucket | 通用奇术基底桶 | GT 流体桶（无配方产出） |
-| `pollution:basic_thaumic_superconductor_bucket` | Basic Thaumic Superconductor Bucket | 初阶神秘超导体桶 | GT 流体桶（无配方产出） |
-| `pollution:binding_metal_bucket` | Binding Metal Bucket | 缚束金属桶 | GT 流体桶（无配方产出） |
-| `pollution:blackmansus_bucket` | Blackmansus Bucket | 黑魔素桶 | GT 流体桶（无配方产出） |
-| `pollution:crude_lk_99_bucket` | Crude Lk 99 Bucket | LK-99 粗胚桶 | GT 流体桶（无配方产出） |
-| `pollution:dimensional_transforming_agent_bucket` | Dimensional Transforming Agent Bucket | 维度转化剂桶 | GT 流体桶（无配方产出） |
-| `pollution:dragon_pulse_fuel_bucket` | Dragon Pulse Fuel Bucket | 龙脉星轨燃剂桶 | GT 流体桶（无配方产出） |
-| `pollution:dumb_tin_bucket` | Dumb Tin Bucket | 哑泽锡桶 | GT 流体桶（无配方产出） |
-| `pollution:dumb_tin_plasma_bucket` | Dumb Tin Bucket | 哑泽锡桶 | GT 流体桶（无配方产出） |
-| `pollution:elven_bucket` | Elven Bucket | 精灵素桶 | GT 流体桶（无配方产出） |
-| `pollution:elven_elementium_bucket` | Elven Elementium Bucket | 精灵元素桶 | GT 流体桶（无配方产出） |
-| `pollution:embryo_magic_water_bucket` | Embryo Magic Water Bucket | 胚胎魔水桶 | GT 流体桶（无配方产出） |
-| `pollution:erich_aura_bucket` | Erich Aura Bucket | 血色灵气桶 | GT 流体桶（无配方产出） |
-| `pollution:ethyl_silicate_bucket` | Ethyl Silicate Bucket | 硅酸乙酯桶 | GT 流体桶（无配方产出） |
-| `pollution:existing_nexus_bucket` | Existing Nexus Bucket | 既存之枢桶 | GT 流体桶（无配方产出） |
-| `pollution:fading_nexus_bucket` | Fading Nexus Bucket | 消逝之枢桶 | GT 流体桶（无配方产出） |
-| `pollution:filth_water_bucket` | Filth Water Bucket | 污秽之水桶 | GT 流体桶（无配方产出） |
-| `pollution:hydrazoic_acid_bucket` | Hydrazoic Acid Bucket | 叠氮酸桶 | GT 流体桶（无配方产出） |
-| `pollution:hyper_substrate_bucket` | Hyper Substrate Bucket | 玄想奇术基底桶 | GT 流体桶（无配方产出） |
-| `pollution:hyperdimensional_silver_bucket` | Hyperdimensional Silver Bucket | 超次元秘银桶 | GT 流体桶（无配方产出） |
-| `pollution:hyperdimensional_silver_plasma_bucket` | Hyperdimensional Silver Bucket | 超次元秘银桶 | GT 流体桶（无配方产出） |
-| `pollution:ignissteel_bucket` | Ignissteel Bucket | 残日钢桶 | GT 流体桶（无配方产出） |
-| `pollution:iizunamaru_electrum_bucket` | Iizunamaru Electrum Bucket | 光风霁月琥珀金桶 | GT 流体桶（无配方产出） |
-| `pollution:impure_hyperdimensional_silver_bucket` | Impure Hyperdimensional Silver Bucket | 超次元含杂秘银桶 | GT 流体桶（无配方产出） |
-| `pollution:impure_mercuric_salt_solution_bucket` | Impure Mercuric Salt Solution Bucket | 含杂汞盐溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:impuremana_bucket` | Impuremana Bucket | 不纯魔力桶 | GT 流体桶（无配方产出） |
-| `pollution:infernal_blaze_propellant_bucket` | Infernal Blaze Propellant Bucket | 焚天烈焰推进剂桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_air_bucket` | Infused Air Bucket | 气桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_alchemy_bucket` | Infused Alchemy Bucket | 炼金桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_alien_bucket` | Infused Alien Bucket | 异桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_animal_bucket` | Infused Animal Bucket | 造化桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_armor_bucket` | Infused Armor Bucket | 胄桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_aura_bucket` | Infused Aura Bucket | 灵桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_cold_bucket` | Infused Cold Bucket | 寒桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_craft_bucket` | Infused Craft Bucket | 创桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_crystal_bucket` | Infused Crystal Bucket | 晶桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_dark_bucket` | Infused Dark Bucket | 暗桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_death_bucket` | Infused Death Bucket | 死桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_earth_bucket` | Infused Earth Bucket | 土桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_energy_bucket` | Infused Energy Bucket | 能桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_entropy_bucket` | Infused Entropy Bucket | 熵桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_exchange_bucket` | Infused Exchange Bucket | 易桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_fire_bucket` | Infused Fire Bucket | 焱桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_fly_bucket` | Infused Fly Bucket | 羽桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_greed_bucket` | Infused Greed Bucket | 贪桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_human_bucket` | Infused Human Bucket | 物灵桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_instrument_bucket` | Infused Instrument Bucket | 器桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_life_bucket` | Infused Life Bucket | 生桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_light_bucket` | Infused Light Bucket | 光桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_magic_bucket` | Infused Magic Bucket | 魔桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_mechanics_bucket` | Infused Mechanics Bucket | 械桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_metal_bucket` | Infused Metal Bucket | 金属桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_motion_bucket` | Infused Motion Bucket | 动桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_order_bucket` | Infused Order Bucket | 序桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_plant_bucket` | Infused Plant Bucket | 草木桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_sense_bucket` | Infused Sense Bucket | 感桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_soul_bucket` | Infused Soul Bucket | 魂桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_spatio_bucket` | Infused Spatio Bucket | 空桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_taint_bucket` | Infused Taint Bucket | 秽桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_tempus_bucket` | Infused Tempus Bucket | 时桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_thought_bucket` | Infused Thought Bucket | 思桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_tinctura_bucket` | Infused Tinctura Bucket | 艺桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_trap_bucket` | Infused Trap Bucket | 缚桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_undead_bucket` | Infused Undead Bucket | 僵桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_void_bucket` | Infused Void Bucket | 虚桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_water_bucket` | Infused Water Bucket | 流桶 | GT 流体桶（无配方产出） |
-| `pollution:infused_weapon_bucket` | Infused Weapon Bucket | 武桶 | GT 流体桶（无配方产出） |
-| `pollution:keqinggold_bucket` | Keqinggold Bucket | 刻金桶 | GT 流体桶（无配方产出） |
-| `pollution:keqinggold_plasma_bucket` | Keqinggold Bucket | 刻金桶 | GT 流体桶（无配方产出） |
-| `pollution:magic_activated_ferrous_chloride_ethanol_solution_bucket` | Magic Activated Ferrous Chloride Ethanol Solution Bucket | 魔力激活氯化亚铁甲醇溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:magic_activated_iron_chloride_solution_bucket` | Magic Activated Iron Chloride Solution Bucket | 魔力激活氯化铁溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:magic_nitrobenzene_bucket` | Magic Nitrobenzene Bucket | 魔力抗爆焦化硝基苯桶 | GT 流体桶（无配方产出） |
-| `pollution:magical_stannous_sulfate_solution_bucket` | Magical Stannous Sulfate Solution Bucket | 硫酸亚锡神秘溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:magical_superconductive_liquid_bucket` | Magical Superconductive Liquid Bucket | 灌魔超导液桶 | GT 流体桶（无配方产出） |
-| `pollution:magical_tin_solution_bucket` | Magical Tin Solution Bucket | 神秘锡溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:melt_gold_bucket` | Melt Gold Bucket | 铄世金桶 | GT 流体桶（无配方产出） |
-| `pollution:mercuric_salt_solution_bucket` | Mercuric Salt Solution Bucket | 神秘汞盐溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:molten_advanced_battery_hull_alloy_bucket` | molten_advanced_battery_hull_alloy_bucket | molten_advanced_battery_hull_alloy_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_aertitanium_bucket` | molten_aertitanium_bucket | molten_aertitanium_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_aquasilver_bucket` | molten_aquasilver_bucket | molten_aquasilver_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_basic_battery_hull_alloy_bucket` | molten_basic_battery_hull_alloy_bucket | molten_basic_battery_hull_alloy_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_crude_lk_99_bucket` | molten_crude_lk_99_bucket | molten_crude_lk_99_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_ignissteel_bucket` | molten_ignissteel_bucket | molten_ignissteel_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_ordolead_bucket` | molten_ordolead_bucket | molten_ordolead_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_perditioaluminium_bucket` | molten_perditioaluminium_bucket | molten_perditioaluminium_bucket | GT 流体桶（无配方产出） |
-| `pollution:molten_terracopper_bucket` | molten_terracopper_bucket | molten_terracopper_bucket | GT 流体桶（无配方产出） |
-| `pollution:moonlight_resin_bucket` | Moonlight Resin Bucket | 月光树脂桶 | GT 流体桶（无配方产出） |
-| `pollution:octine_bucket` | Octine Bucket | 炽炎铁桶 | GT 流体桶（无配方产出） |
-| `pollution:oil_with_llp_bucket` | Oil With Llp Bucket | 含 LLP 油桶 | GT 流体桶（无配方产出） |
-| `pollution:ordolead_bucket` | Ordolead Bucket | 司辰铅桶 | GT 流体桶（无配方产出） |
-| `pollution:perditioaluminium_bucket` | Perditioaluminium Bucket | 无极铝桶 | GT 流体桶（无配方产出） |
-| `pollution:pluto_zinc_bucket` | Pluto Zinc Bucket | 冥晶锌桶 | GT 流体桶（无配方产出） |
-| `pollution:pure_tar_bucket` | Pure Tar Bucket | 纯净焦油桶 | GT 流体桶（无配方产出） |
-| `pollution:purified_activated_ferrous_chloride_ethanol_solution_bucket` | Purified Activated Ferrous Chloride Ethanol Solution Bucket | 除杂激活氯化亚铁甲醇溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:pyrargyrite_bucket` | Pyrargyrite Bucket | 深红银桶 | GT 流体桶（无配方产出） |
-| `pollution:rich_aura_bucket` | Rich Aura Bucket | 富集灵气桶 | GT 流体桶（无配方产出） |
-| `pollution:scabyst_bucket` | Scabyst Bucket | 痂壳晶桶 | GT 流体桶（无配方产出） |
-| `pollution:sentient_metal_bucket` | Sentient Metal Bucket | 感知金属桶 | GT 流体桶（无配方产出） |
-| `pollution:starlight_pollen_bucket` | Starlight Pollen Bucket | 星光花粉桶 | GT 流体桶（无配方产出） |
-| `pollution:starrymansus_bucket` | Starrymansus Bucket | 星魔素桶 | GT 流体桶（无配方产出） |
-| `pollution:super_sticky_tar_bucket` | Super Sticky Tar Bucket | 超级黏性焦油桶 | GT 流体桶（无配方产出） |
-| `pollution:syrmorite_bucket` | Syrmorite Bucket | 赛摩铜桶 | GT 流体桶（无配方产出） |
-| `pollution:syrmorite_doped_magic_water_solution_bucket` | Syrmorite Doped Magic Water Solution Bucket | 赛摩铜掺杂魔水溶液桶 | GT 流体桶（无配方产出） |
-| `pollution:terracopper_bucket` | Terracopper Bucket | 定坤铜桶 | GT 流体桶（无配方产出） |
-| `pollution:unformed_embryo_magic_water_bucket` | Unformed Embryo Magic Water Bucket | 未成形胚胎魔水桶 | GT 流体桶（无配方产出） |
-| `pollution:valonite_bucket` | Valonite Bucket | 法罗钠桶 | GT 流体桶（无配方产出） |
-| `pollution:void_water_bucket` | Void Water Bucket | 虚空之水桶 | GT 流体桶（无配方产出） |
-| `pollution:whitemansus_bucket` | Whitemansus Bucket | 白魔素桶 | GT 流体桶（无配方产出） |

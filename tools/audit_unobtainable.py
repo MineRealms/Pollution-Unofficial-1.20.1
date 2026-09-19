@@ -276,23 +276,27 @@ def write_doc(path: Path, items: dict, blocks: dict, rows: list[dict], errors: l
         "任务奖励、JEI 隐藏物品等获取途径不计入配方。",
         f"2. **世界生成矿石 {len(ores)} 项**：这些是 GT 材料矿块，靠挖矿获得，"
         "没有（也不需要）配方，属于正常现象。",
-        "3. **桶/流体容器**：`GTBucketItem` 没有配方产出；GT 的桶可右键流体源拾取，"
-        "但 Pollution 的 GT 流体没有可放置的源方块，因此实际上只能创造模式获得。",
+        "3. **桶/流体容器已补全**：Pollution 的 123 个 `GTBucketItem` 现在通过 "
+        "`FluidBucketRecipes` 注册了注罐机（`gtceu:canner`）配方：空桶 + 1000 mB "
+        "对应流体 -> 流体桶。这些流体没有可放置的源方块，注罐机配方即其正规获取途径。",
         "4. **标签输出已展开**：GT 配方输出以 `Ingredient` 存储，转储时通过 "
         "`Ingredient.getItems()` 展开为具体物品，所以“标签产出的物品”已计入可制造。",
         "5. **KubeJS 运行时改动已包含**：转储读取的是 `RecipeManager` 的最终状态。",
         f"6. 转储期间 `getResultItem`/输入展开异常：**{len(errors)}** 个"
         + ("。" if not errors else "：" + "; ".join(errors)),
-        "7. **机器/仓室缺失多为移植未完成**：例如 Aspect Tank、Flux Muffler、"
-        "Infused Fluid Hatch 全等级无配方；Mana 输入仓只有 1A 等级有配方，"
-        "4A/16A/64A 与输出仓、无线仓全部缺失；部分多方块控制器（Magic Greenhouse、"
-        "Magic Mega Turbine、Bot Distillery、Mana Plate、Node Fusion Reactor 等）无配方。",
-        "8. `pollution:test`、`pollution:test_item` 为调试/占位物品。",
-        "9. 大量材料部件（dust/plate/ingot 等）的缺失需要人工复核上游配方链，"
+        "7. **机器/仓室已全部补全**：UHV 档 Aspect Tank、Flux Muffler、Infused Fluid "
+        "Hatch、Mana 输入/输出仓、无线仓与微型星光节点反应堆在补全轮中注册了配方，"
+        "本表机器分类为空。",
+        "8. `pollution:test`、`pollution:test_item` 为调试/占位物品，按任务排除。",
+        "9. **任务排除项**（不再补配方）：`astral_*`（星辉体系）、`blood_*` / "
+        "`flesh_*` / `heart_fruit*` / `tentacle`（血魔法体系）、调试物品、"
+        "世界生成矿石，以及无物品形态的 `pollution:portal`。除这些之外，"
+        "2026-09-20 的补全轮已处理全部无产出条目。",
+        "10. 大量材料部件（dust/plate/ingot 等）的缺失需要人工复核上游配方链，"
         "本表只保证“运行时确实没有配方产出”。",
     ]
     if gt_jar:
-        lines.append(f"10. 名称解析使用的 GT 语言文件：`{gt_jar}`。")
+        lines.append(f"11. 名称解析使用的 GT 语言文件：`{gt_jar}`。")
     lines.append("")
 
     lines += ["## 机器/多方块（" + str(len(machines)) + "）", ""]

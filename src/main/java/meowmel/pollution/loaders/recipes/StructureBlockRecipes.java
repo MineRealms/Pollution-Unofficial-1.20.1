@@ -54,9 +54,9 @@ import static meowmel.pollution.loaders.recipes.InfusionRecipes.infusion;
  * the {@code MagicChemicalRecipes.beamCore} shortcut scales with its index)
  * instead of being duplicated here.</p>
  *
- * <p><b>Skipped</b>: the world-gen plants (alfheim/rainbow, all grown or
- * generated) and the flesh family (task skip list); {@code pollution:portal}
- * has no item form.</p>
+ * <p><b>Skipped</b>: the flesh family (task skip list); {@code pollution:portal}
+ * has no item form. The world-gen plants (alfheim/rainbow) moved to
+ * {@link PlantBlockRecipes}.</p>
  */
 public final class StructureBlockRecipes {
 
@@ -162,7 +162,9 @@ public final class StructureBlockRecipes {
         return infusion(provider, "eldritch_eye", result, 8, central,
                 aspects("alienis", 64, "praecantatio", 32, "tenebrae", 32, "vacuos", 16),
                 ing(SafeItems.byId("thaumcraft", "void_seed", 1)),
-                ing(SafeItems.byId("thaumcraft", "shard", 4)),
+                // TC4R ships six primal shards plus the balanced shard; there is no plain
+                // "thaumcraft:shard" item (the 1.12 meta item was split).
+                ing(SafeItems.byId("thaumcraft", "balanced_shard", 4)),
                 ing(new ItemStack(Items.ENDER_EYE, 2)),
                 ing(new ItemStack(Items.ENDER_PEARL, 4)),
                 ing(SafeItems.byId("thaumcraft", "quicksilver", 2)),

@@ -78,7 +78,9 @@ import static meowmel.pollution.loaders.recipes.InfusionRecipes.machine;
 public final class HatchRecipes {
 
     private static final int FIRST_TIER = GTValues.LV;
-    private static final int LAST_TIER = GTValues.UV;
+    /** UHV is covered too: GTCEu 7.5.3 registers the UHV energy/muffler/fluid hatches and the
+     *  {@code uhv_sensor}/{@code uhv_emitter} components, and the port's machine arrays carry UHV. */
+    private static final int LAST_TIER = GTValues.UHV;
 
     /** Amperages of the mana input families that still need recipes (1A ships in BotaniaRecipes). */
     private static final int[] MANA_INPUT_AMPS = { 4, 16, 64 };
