@@ -184,7 +184,7 @@ SUBSYSTEM_PROBES = [
     # 1.12 registered one class per event; the port registers lambdas/records in a
     # single table, so probe the event ids instead of upstream class names.
     ('Warp event implementations',
-     r"'blind'|'nausea'|'poison'|'wither'|'countdown_bomb'|'inventory_scramble'|'zombie_siege'"),
+     r'"blind"|"nausea"|"countdown_bomb"|"inventory_scramble"|"zombie_siege"'),
     ('Flux warp accumulation', r'FluxWarpManager'),
     # The port only registers the MAGIC_SWEEP item; upstream SweepEventLoader
     # (flight grant + LivingAttackEvent immunity) has no counterpart yet.

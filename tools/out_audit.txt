@@ -1,4 +1,4 @@
-# Pollution 1.20.1 port - TC4 (Thaumcraft) completion audit
+﻿# Pollution 1.20.1 port - TC4 (Thaumcraft) completion audit
 
 ## 1. Scope: which source files belong to Thaumcraft
 
@@ -26,16 +26,16 @@ java files: upstream 423, port 273
 
 | upstream id | upstream class | port id | similarity |
 |---|---|---|---|
-| `flux_promoted_fuel_cell.ev` | MetaTileEntityFluxPromotedFuelCell | `hv_flux_fuel_cell` | 0.75 |
-| `flux_promoted_fuel_cell.hv` | MetaTileEntityFluxPromotedFuelCell | `hv_flux_fuel_cell` | 0.75 |
-| `flux_promoted_fuel_cell.iv` | MetaTileEntityFluxPromotedFuelCell | `hv_flux_fuel_cell` | 0.75 |
-| `flux_promoted_fuel_cell.lv` | MetaTileEntityFluxPromotedFuelCell | `hv_flux_fuel_cell` | 0.75 |
-| `flux_promoted_fuel_cell.mv` | MetaTileEntityFluxPromotedFuelCell | `hv_flux_fuel_cell` | 0.75 |
-| `pollution_small_node_generator.luv` | MetaTileEntitySmallNodeGenerator | `uhv_small_node_generator` | 0.75 |
-| `pollution_small_node_generator.uhv` | MetaTileEntitySmallNodeGenerator | `uhv_small_node_generator` | 0.75 |
-| `pollution_small_node_generator.uv` | MetaTileEntitySmallNodeGenerator | `uhv_small_node_generator` | 0.75 |
-| `pollution_small_node_generator.zpm` | MetaTileEntitySmallNodeGenerator | `uhv_small_node_generator` | 0.75 |
-| `vis.` | MetaTileEntityVisGenerator | `zpm_vis_hatch` | 0.5 |
+| `flux_promoted_fuel_cell.ev` | MetaTileEntityFluxPromotedFuelCell | `iv_flux_fuel_cell` | 0.75 |
+| `flux_promoted_fuel_cell.hv` | MetaTileEntityFluxPromotedFuelCell | `iv_flux_fuel_cell` | 0.75 |
+| `flux_promoted_fuel_cell.iv` | MetaTileEntityFluxPromotedFuelCell | `iv_flux_fuel_cell` | 0.75 |
+| `flux_promoted_fuel_cell.lv` | MetaTileEntityFluxPromotedFuelCell | `iv_flux_fuel_cell` | 0.75 |
+| `flux_promoted_fuel_cell.mv` | MetaTileEntityFluxPromotedFuelCell | `iv_flux_fuel_cell` | 0.75 |
+| `pollution_small_node_generator.luv` | MetaTileEntitySmallNodeGenerator | `luv_small_node_generator` | 0.75 |
+| `pollution_small_node_generator.uhv` | MetaTileEntitySmallNodeGenerator | `luv_small_node_generator` | 0.75 |
+| `pollution_small_node_generator.uv` | MetaTileEntitySmallNodeGenerator | `luv_small_node_generator` | 0.75 |
+| `pollution_small_node_generator.zpm` | MetaTileEntitySmallNodeGenerator | `luv_small_node_generator` | 0.75 |
+| `vis.` | MetaTileEntityVisGenerator | `uv_vis_provider` | 0.5 |
 
 | upstream id | upstream class |
 |---|---|
@@ -80,3 +80,4 @@ java files: upstream 423, port 273
 | Machine pollution emission | yes | MachinePollution.java, MachinePollutionEvents.java, MagicRecipeLogic.java |
 
 subsystem probes passed: 27/28
+

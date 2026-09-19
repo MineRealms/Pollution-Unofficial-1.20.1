@@ -1,0 +1,172 @@
+﻿==============================================================================
+1a. PORT flux_scrubber / flux_clear registrations
+==============================================================================
+  meowmel/pollution/PollutionConfig.java:12  public static final ForgeConfigSpec.DoubleValue FLUX_SCRUBBER_MULTIPLIER;
+  meowmel/pollution/PollutionConfig.java:33  FLUX_SCRUBBER_MULTIPLIER = builder
+  meowmel/pollution/common/machine/PollutionMachines.java:78  import meowmel.pollution.common.machine.single.FluxScrubberMachine;
+  meowmel/pollution/common/machine/PollutionMachines.java:115  private static final int[] FLUX_SCRUBBER_TIERS = { 1, 2, 3, 4, 5 };
+  meowmel/pollution/common/machine/PollutionMachines.java:142  public static MachineDefinition[] FLUX_SCRUBBER;
+  meowmel/pollution/common/machine/PollutionMachines.java:296  FLUX_SCRUBBER = GTMachineUtils.registerTieredMachines(
+  meowmel/pollution/common/machine/PollutionMachines.java:298  "flux_scrubber",
+  meowmel/pollution/common/machine/PollutionMachines.java:299  FluxScrubberMachine::new,
+  meowmel/pollution/common/machine/PollutionMachines.java:303  .simpleModel(model("flux_scrubber_" + tierName(tier)))
+  meowmel/pollution/common/machine/PollutionMachines.java:311  FLUX_SCRUBBER_TIERS);
+  meowmel/pollution/common/machine/single/FluxScrubberMachine.java:21  public class FluxScrubberMachine extends PollutionEnergyMachine {
+  meowmel/pollution/common/machine/single/FluxScrubberMachine.java:25  public FluxScrubberMachine(IMachineBlockEntity info, int tier) {
+  meowmel/pollution/common/machine/single/FluxScrubberMachine.java:42  scrubBuffer += Math.pow(2, getTier() - 1) * PollutionConfig.FLUX_SCRUBBER_MULTIPLIER.get();
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:109  addStack(machineCatalysts, machineStack(PollutionMachines.FLUX_SCRUBBER, 4));
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:154  addInfo(recipes, machineStack(PollutionMachines.FLUX_SCRUBBER, 4), List.of(
+  meowmel/pollution/loaders/recipes/MagicGCYMRecipes.java:1062  && PollutionMachines.FLUX_SCRUBBER != null && PollutionMachines.FLUX_SCRUBBER.length > 1
+  meowmel/pollution/loaders/recipes/MagicGCYMRecipes.java:1063  && PollutionMachines.FLUX_SCRUBBER[1] != null) {
+  meowmel/pollution/loaders/recipes/MagicGCYMRecipes.java:1066  .inputItems(PollutionMachines.FLUX_SCRUBBER[1])
+  meowmel/pollution/loaders/recipes/PollutionRecipes.java:44  registerFluxScrubber(provider);
+  meowmel/pollution/loaders/recipes/PollutionRecipes.java:68  Pollution.LOGGER.info("Registered flux scrubber crafting recipes for {} tiers", count(PollutionMachines.FLUX_SCRUBBER));
+  meowmel/pollution/loaders/recipes/PollutionRecipes.java:125  private static void registerFluxScrubber(Consumer<FinishedRecipe> provider) {
+  meowmel/pollution/loaders/recipes/PollutionRecipes.java:126  MetaTileEntityLoader.registerMachineRecipe(provider, PollutionMachines.FLUX_SCRUBBER,
+
+==============================================================================
+1b. UPSTREAM flux_clear ids
+==============================================================================
+  meowmel/pollution/common/metatileentity/PollutionMetaTileEntities.java:271  VIS_CLEAR[i] = registerMetaTileEntity(210 + i - 1, new MetaTileEntityFluxClear(PollutionID("flux_clear." + tierName), i + 1));
+  meowmel/pollution/common/metatileentity/PollutionMetaTileEntities.java:280  FLUX_CLEARS[0] = registerMetaTileEntity(300, new MetaTileEntityFluxClear(PollutionID("flux_clear.ev"), GTValues.EV));
+  meowmel/pollution/common/metatileentity/PollutionMetaTileEntities.java:281  FLUX_CLEARS[1] = registerMetaTileEntity(301, new MetaTileEntityFluxClear(PollutionID("flux_clear.iv"), GTValues.IV));
+
+==============================================================================
+2a. PORT muffler registrations
+==============================================================================
+  meowmel/pollution/Pollution.java:85  provider.add("pollution.machine.flux_muffler.tooltip.recovery",
+  meowmel/pollution/Pollution.java:87  provider.add("pollution.machine.flux_muffler.tooltip",
+  meowmel/pollution/common/machine/PollutionMachines.java:129  /** Upstream {@code FLUX_MUFFLERS[9]} for tiers LV..UHV. */
+  meowmel/pollution/common/machine/PollutionMachines.java:130  private static final int[] FLUX_MUFFLER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+  meowmel/pollution/common/machine/PollutionMachines.java:163  public static MachineDefinition[] FLUX_MUFFLER;
+  meowmel/pollution/common/machine/PollutionMachines.java:459  FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
+  meowmel/pollution/common/machine/PollutionMachines.java:461  "flux_muffler",
+  meowmel/pollution/common/machine/PollutionMachines.java:467  .simpleModel(model("flux_muffler_" + tierName(tier)))
+  meowmel/pollution/common/machine/PollutionMachines.java:469  Component.translatable("pollution.machine.flux_muffler.tooltip.recovery",
+  meowmel/pollution/common/machine/PollutionMachines.java:471  Component.translatable("pollution.machine.flux_muffler.tooltip"))
+  meowmel/pollution/common/machine/PollutionMachines.java:473  FLUX_MUFFLER_TIERS);
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:136  addStack(hatchCatalysts, machineStack(PollutionMachines.FLUX_MUFFLER, 1));
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:294  addInfo(recipes, machineStack(PollutionMachines.FLUX_MUFFLER, 1), List.of(
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:295  Component.translatable("pollution.machine.flux_muffler.tooltip"),
+  meowmel/pollution/compat/jei/PollutionJeiPlugin.java:296  Component.translatable("pollution.machine.flux_muffler.tooltip.recovery", 0)));
+
+==============================================================================
+2b. UPSTREAM muffler ids
+==============================================================================
+  meowmel/pollution/common/metatileentity/PollutionMetaTileEntities.java:276  FLUX_MUFFLERS[i] = registerMetaTileEntity(220 + i, new MetaTileEntityFluxMuffler(PollutionID("pollution_muffler_hatch." + tierName), i + 1));
+
+==============================================================================
+3a. PORT tarot usage
+==============================================================================
+  meowmel/pollution/Pollution.java:138  provider.add("pollution.tarot.the_fool.tooltip",
+  meowmel/pollution/Pollution.java:415  provider.add("pollution.jei.magic_amplification.tarot",
+  meowmel/pollution/Pollution.java:416  "Tarot (tarot hatch) amplification:");
+  meowmel/pollution/Pollution.java:418  "Install the matching constellation wafer or tarot hatch to gain the amplification");
+  meowmel/pollution/Pollution.java:426  provider.add("pollution.jei.recipe.gate.tarot", "Tarot %s");
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:12  AstralAmplifierSnapshot astral, TarotHatchView tarotHatch,
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:16  String tarot = tarotHatch == null ? "" : normalize(tarotHatch.getActiveTarot());
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:18  if ("the_star".equals(tarot)) strength *= 1.25D;
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:103  if ("the_fool".equals(tarot) && has(recipeTags, MagicProcessTag.EXPERIMENTAL)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:105  } else if ("the_magician".equals(tarot) && has(recipeTags, MagicProcessTag.MAGIC_CONVERSION,
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:108  } else if ("the_high_priestess".equals(tarot) && has(recipeTags, MagicProcessTag.HIDDEN_RITUAL)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:110  } else if ("the_empress".equals(tarot) && has(recipeTags, MagicProcessTag.BIOLOGICAL,
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:113  } else if ("the_emperor".equals(tarot) && has(recipeTags, MagicProcessTag.STRUCTURAL_CONTROL)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:116  } else if ("the_highophant".equals(tarot) && has(recipeTags, MagicProcessTag.INFUSION)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:118  } else if ("the_lovers".equals(tarot) && has(recipeTags, MagicProcessTag.DUAL_MATERIAL)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:120  } else if ("the_chariot".equals(tarot)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:122  } else if ("the_strength".equals(tarot)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:125  } else if ("the_hermit".equals(tarot) && singleParallel) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:128  } else if ("the_wheel_of_fortune".equals(tarot) && has(recipeTags, MagicProcessTag.CHANCE_OUTPUT)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:130  } else if ("the_justice".equals(tarot) && has(recipeTags, MagicProcessTag.CHANCE_OUTPUT)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:132  } else if ("the_hanged_man".equals(tarot) && recipeDuration >= 400) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:135  } else if ("death".equals(tarot) && has(recipeTags, MagicProcessTag.RECYCLING)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:137  } else if ("temperance".equals(tarot) && has(recipeTags, MagicProcessTag.MULTI_MAGIC)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:139  } else if ("the_devil".equals(tarot) && has(recipeTags, MagicProcessTag.DANGEROUS)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:141  } else if ("the_tower".equals(tarot) && has(recipeTags, MagicProcessTag.DESTRUCTIVE_RITUAL)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:144  } else if ("the_moon".equals(tarot) && astral.isNight() && has(recipeTags, MagicProcessTag.NIGHT_ALCHEMY)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:146  } else if ("the_sun".equals(tarot) && !astral.isNight() && has(recipeTags, MagicProcessTag.DAYLIGHT,
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:150  } else if ("judgement".equals(tarot) && has(recipeTags, MagicProcessTag.RECYCLING)) {
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:152  } else if ("the_world".equals(tarot) && has(recipeTags, MagicProcessTag.THREE_MAGIC_SYSTEMS,
+  meowmel/pollution/api/amplification/MagicAmplificationEngine.java:160  energyEfficiency, retention, furnaceTemperature, constellation, tarot);
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:23  private final String tarot;
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:29  String constellation, String tarot) {
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:42  this.tarot = tarot == null ? "" : tarot;
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:51  * lets the UI report a tarot card separately while the recipe logic still
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:68  constellation, tarot);
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:86  data.putString("tarot", tarot);
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:97  data.getString("constellation"), data.getString("tarot"));
+  meowmel/pollution/api/amplification/MagicAmplificationResult.java:112  public String getTarot() { return tarot; }
+  meowmel/pollution/api/amplification/MagicEnergyAmplification.java:17  * ({@link AstralHatchView} / {@link TarotHatchView}); once the capability package
+  meowmel/pollution/api/amplification/MagicEnergyAmplification.java:18  * is ported, {@code IAstralHatch} / {@code ITarotHatch} should extend them so
+
+==============================================================================
+3b. UPSTREAM tarot class header
+==============================================================================
+  meowmel/pollution/EarlyMixin.java:1  package meowmel.pollution;
+  meowmel/pollution/EarlyMixin.java:3  import net.minecraftforge.common.ForgeVersion;
+  meowmel/pollution/EarlyMixin.java:4  import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+  meowmel/pollution/EarlyMixin.java:5  import zone.rong.mixinbooter.IEarlyMixinLoader;
+  meowmel/pollution/EarlyMixin.java:7  import javax.annotation.Nullable;
+  meowmel/pollution/EarlyMixin.java:8  import java.util.Collections;
+  meowmel/pollution/EarlyMixin.java:9  import java.util.List;
+  meowmel/pollution/EarlyMixin.java:10  import java.util.Map;
+  meowmel/pollution/LateMixin.java:1  package meowmel.pollution;
+  meowmel/pollution/LateMixin.java:3  import zone.rong.mixinbooter.ILateMixinLoader;
+  meowmel/pollution/LateMixin.java:5  import java.util.Collections;
+  meowmel/pollution/LateMixin.java:6  import java.util.List;
+  meowmel/pollution/POConfig.java:1  package meowmel.pollution;
+  meowmel/pollution/POConfig.java:3  import net.minecraftforge.common.config.Config;
+  meowmel/pollution/Pollution.java:1  package meowmel.pollution;
+  meowmel/pollution/Pollution.java:3  import meowmel.pollution.api.POAPI;
+  meowmel/pollution/Pollution.java:4  import meowmel.pollution.api.recipes.builder.IndustrialInfusionBuilder;
+  meowmel/pollution/Pollution.java:5  import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
+  meowmel/pollution/Pollution.java:6  import meowmel.pollution.api.utils.PollutionLog;
+  meowmel/pollution/Pollution.java:7  import meowmel.pollution.common.CommonProxy;
+  meowmel/pollution/Pollution.java:8  import meowmel.pollution.common.command.CommandMagicAmplification;
+  meowmel/pollution/Pollution.java:9  import meowmel.pollution.common.block.PollutionMetaBlocks;
+  meowmel/pollution/Pollution.java:10  import meowmel.pollution.common.block.blocks.PollutionBlocksInit;
+  meowmel/pollution/Pollution.java:11  import meowmel.pollution.common.entity.PoEntitiesRegistry;
+  meowmel/pollution/Pollution.java:12  import meowmel.pollution.common.items.PollutionMetaItems;
+  meowmel/pollution/Pollution.java:13  import meowmel.pollution.common.metatileentity.PollutionMetaTileEntities;
+  meowmel/pollution/Pollution.java:14  import meowmel.pollution.common.metatileentity.multiblockpart.wireless.WirelessManager;
+  meowmel/pollution/Pollution.java:15  import meowmel.pollution.dimension.worldgen.PODimensionManager;
+  meowmel/pollution/Pollution.java:16  import meowmel.pollution.dimension.worldgen.PODimensionType;
+  meowmel/pollution/Pollution.java:17  import meowmel.pollution.dimension.worldgen.POStructureManager;
+  meowmel/pollution/Pollution.java:18  import meowmel.pollution.dimension.worldgen.PollutionOreVeins;
+  meowmel/pollution/Pollution.java:19  import meowmel.pollution.integration.POIntegration;
+  meowmel/pollution/Pollution.java:20  import meowmel.pollution.integration.botania.BotaniaMaterialUnification;
+  meowmel/pollution/Pollution.java:21  import meowmel.pollution.loaders.loot.GregTechLootTable;
+  meowmel/pollution/Pollution.java:22  import meowmel.pollution.loaders.recipes.MeteorsHelper;
+  meowmel/pollution/Pollution.java:23  import meowmel.pollution.loaders.recipes.mods.AstralSorcery;
+  meowmel/pollution/Pollution.java:24  import meowmel.pollution.loaders.recipes.mods.Botania;
+  meowmel/pollution/Pollution.java:25  import meowmel.pollution.common.ModGuiHandler;
+  meowmel/pollution/Pollution.java:26  import meowmel.pollution.common.warpevent.WarpEventHandler;
+  meowmel/pollution/Pollution.java:27  import meowmel.pollution.common.warpevent.net.MeowmelNetwork;
+
+==============================================================================
+4. small node generator: tier counts
+==============================================================================
+  upstream ids: ['pollution_small_node_generator.luv', 'pollution_small_node_generator.zpm', 'pollution_small_node_generator.uv', 'pollution_small_node_generator.uhv']
+  port SMALL_NODE_GENERATOR_TIERS: [' 6, 7, 8, 9 ']
+
+==============================================================================
+5. flux fuel cell: tier counts
+==============================================================================
+  upstream ids: ['flux_promoted_fuel_cell.lv', 'flux_promoted_fuel_cell.mv', 'flux_promoted_fuel_cell.hv', 'flux_promoted_fuel_cell.ev', 'flux_promoted_fuel_cell.iv']
+  port refs: ['FLUX_FUEL_CELL_TIERS = { 1, 2, 3, 4, 5 }', 'FLUX_FUEL_CELL = GTMachineUtils.registerTieredMachines(\n                PollutionGTAddon.REGISTRATE,\n                "flux_fuel_cell",\n  ']
+
+==============================================================================
+6. magic sweep: is it a stub item?
+==============================================================================
+  meowmel/pollution/common/item/PollutionItems.java:282  public static final ItemEntry<Item> MAGIC_SWEEP = register("magic_sweep");
+  --- upstream behaviour markers ---
+    allowFlying              -> 3 file(s)
+    capabilities.disableDamage -> 2 file(s)
+    setCanceled              -> 1 file(s)
+    getHeldItemMainhand      -> 3 file(s)
+    BaublesApi               -> 3 file(s)
+
+==============================================================================
+7. bm_hpca: which mod does upstream depend on?
+==============================================================================
+  imports:

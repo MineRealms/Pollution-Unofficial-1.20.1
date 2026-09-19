@@ -21,9 +21,11 @@ import java.util.Set;
 public final class PollutionMixinPlugin implements IMixinConfigPlugin {
 
     private static final String JEI_MOD_ID = "jei";
+    private static final org.slf4j.Logger LOGGER = com.mojang.logging.LogUtils.getLogger();
 
     @Override
     public void onLoad(String mixinPackage) {
+        LOGGER.info("[pollution] mixin config loaded (package={}), jei present={}", mixinPackage, isJeiLoaded());
     }
 
     @Override
@@ -34,7 +36,9 @@ public final class PollutionMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.contains("jei")) {
-            return isJeiLoaded();
+            boolean apply = isJeiLoaded();
+            LOGGER.info("[pollution] mixin {} -> target {} apply={}", mixinClassName, targetClassName, apply);
+            return apply;
         }
         return true;
     }
@@ -65,5 +69,6 @@ public final class PollutionMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName,
                           IMixinInfo mixinInfo) {
+        LOGGER.info("[pollution] mixin applied: {} -> {}", mixinClassName, targetClassName);
     }
 }

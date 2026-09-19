@@ -1,0 +1,181 @@
+﻿==============================================================================
+A. UPSTREAM registration lines for the 4 flagged machines
+==============================================================================
+    51 | // public static final MetaTileEntityMultiblockPart[] FLUX_MUFFLERS = new MetaTileEntityMultiblockPart[9];
+    55 | public static final MetaTileEntityMultiblockPart[] FLUX_MUFFLERS = new MetaTileEntityMultiblockPart[9];
+    56 | public static final MetaTileEntityFluxClear[] FLUX_CLEARS = new MetaTileEntityFluxClear[3];
+    59 | public static final WorkableTieredMetaTileEntity[] FLUX_PROMOTED_FUEL_CELL = new WorkableTieredMetaTileEntity[5];
+    61 | public static final TieredMetaTileEntity[] SMALL_NODE_GENERATOR = new TieredMetaTileEntity[4];
+    93 | public static MetaTileEntityTarotHatch TAROT_HATCH;
+   200 | FLUX_PROMOTED_FUEL_CELL[0] = registerMetaTileEntity(20, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.lv"), GTQTcoreReci
+   201 | FLUX_PROMOTED_FUEL_CELL[1] = registerMetaTileEntity(21, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.mv"), GTQTcoreReci
+   202 | FLUX_PROMOTED_FUEL_CELL[2] = registerMetaTileEntity(22, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.hv"), GTQTcoreReci
+   203 | FLUX_PROMOTED_FUEL_CELL[3] = registerMetaTileEntity(23, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.ev"), GTQTcoreReci
+   204 | FLUX_PROMOTED_FUEL_CELL[4] = registerMetaTileEntity(24, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.iv"), GTQTcoreReci
+   208 | SMALL_NODE_GENERATOR[0] = registerMetaTileEntity(20, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.luv"), 6));
+   209 | SMALL_NODE_GENERATOR[1] = registerMetaTileEntity(21, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.zpm"), 7));
+   210 | SMALL_NODE_GENERATOR[2] = registerMetaTileEntity(22, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.uv"), 8));
+   211 | SMALL_NODE_GENERATOR[3] = registerMetaTileEntity(23, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.uhv"), 9));
+   274 | for (int i = 0; i < FLUX_MUFFLERS.length; i++) {
+   276 | FLUX_MUFFLERS[i] = registerMetaTileEntity(220 + i, new MetaTileEntityFluxMuffler(PollutionID("pollution_muffler_hatch." + tierName), i + 1));
+   280 | FLUX_CLEARS[0] = registerMetaTileEntity(300, new MetaTileEntityFluxClear(PollutionID("flux_clear.ev"), GTValues.EV));
+   281 | FLUX_CLEARS[1] = registerMetaTileEntity(301, new MetaTileEntityFluxClear(PollutionID("flux_clear.iv"), GTValues.IV));
+   359 | TAROT_HATCH = registerMetaTileEntity(762,
+
+==============================================================================
+B. UPSTREAM tier id arrays (LOOP over VNF)
+==============================================================================
+    54 | public static final MetaTileEntityFluxClear[] VIS_CLEAR = new MetaTileEntityFluxClear[4];
+    56 | public static final MetaTileEntityFluxClear[] FLUX_CLEARS = new MetaTileEntityFluxClear[3];
+   200 | FLUX_PROMOTED_FUEL_CELL[0] = registerMetaTileEntity(20, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.lv"), GTQTcoreRecipeMaps.FUEL_CELL, Textures.POWER_SUBSTATION_OVERLA
+   201 | FLUX_PROMOTED_FUEL_CELL[1] = registerMetaTileEntity(21, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.mv"), GTQTcoreRecipeMaps.FUEL_CELL, Textures.POWER_SUBSTATION_OVERLA
+   202 | FLUX_PROMOTED_FUEL_CELL[2] = registerMetaTileEntity(22, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.hv"), GTQTcoreRecipeMaps.FUEL_CELL, Textures.POWER_SUBSTATION_OVERLA
+   203 | FLUX_PROMOTED_FUEL_CELL[3] = registerMetaTileEntity(23, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.ev"), GTQTcoreRecipeMaps.FUEL_CELL, Textures.POWER_SUBSTATION_OVERLA
+   204 | FLUX_PROMOTED_FUEL_CELL[4] = registerMetaTileEntity(24, new MetaTileEntityFluxPromotedFuelCell(PollutionID("flux_promoted_fuel_cell.iv"), GTQTcoreRecipeMaps.FUEL_CELL, Textures.POWER_SUBSTATION_OVERLA
+   208 | SMALL_NODE_GENERATOR[0] = registerMetaTileEntity(20, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.luv"), 6));
+   209 | SMALL_NODE_GENERATOR[1] = registerMetaTileEntity(21, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.zpm"), 7));
+   210 | SMALL_NODE_GENERATOR[2] = registerMetaTileEntity(22, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.uv"), 8));
+   211 | SMALL_NODE_GENERATOR[3] = registerMetaTileEntity(23, new MetaTileEntitySmallNodeGenerator(PollutionID("pollution_small_node_generator.uhv"), 9));
+   271 | VIS_CLEAR[i] = registerMetaTileEntity(210 + i - 1, new MetaTileEntityFluxClear(PollutionID("flux_clear." + tierName), i + 1));
+   276 | FLUX_MUFFLERS[i] = registerMetaTileEntity(220 + i, new MetaTileEntityFluxMuffler(PollutionID("pollution_muffler_hatch." + tierName), i + 1));
+   280 | FLUX_CLEARS[0] = registerMetaTileEntity(300, new MetaTileEntityFluxClear(PollutionID("flux_clear.ev"), GTValues.EV));
+   281 | FLUX_CLEARS[1] = registerMetaTileEntity(301, new MetaTileEntityFluxClear(PollutionID("flux_clear.iv"), GTValues.IV));
+   360 | new MetaTileEntityTarotHatch(PollutionID("tarot_hatch"), GTValues.LV));
+
+==============================================================================
+C. PORT: is there any tarot hatch / tarot capability at all?
+==============================================================================
+  src/main/java\meowmel\pollution\Pollution.java (5)
+      provider.add("pollution.tarot.the_fool.tooltip",
+      provider.add("pollution.jei.magic_amplification.tarot",
+      "Tarot (tarot hatch) amplification:");
+      "Install the matching constellation wafer or tarot hatch to gain the amplification");
+      provider.add("pollution.jei.recipe.gate.tarot", "Tarot %s");
+  src/main/java\meowmel\pollution\api\amplification\MagicAmplificationEngine.java (25)
+      AstralAmplifierSnapshot astral, TarotHatchView tarotHatch,
+      String tarot = tarotHatch == null ? "" : normalize(tarotHatch.getActiveTarot());
+      if ("the_star".equals(tarot)) strength *= 1.25D;
+      if ("the_fool".equals(tarot) && has(recipeTags, MagicProcessTag.EXPERIMENTAL)) {
+      } else if ("the_magician".equals(tarot) && has(recipeTags, MagicProcessTag.MAGIC_CONVERSION,
+  src/main/java\meowmel\pollution\api\amplification\MagicAmplificationResult.java (8)
+      private final String tarot;
+      String constellation, String tarot) {
+      this.tarot = tarot == null ? "" : tarot;
+      * lets the UI report a tarot card separately while the recipe logic still
+      constellation, tarot);
+  src/main/java\meowmel\pollution\api\amplification\MagicEnergyAmplification.java (20)
+      * ({@link AstralHatchView} / {@link TarotHatchView}); once the capability package
+      * is ported, {@code IAstralHatch} / {@code ITarotHatch} should extend them so
+      private final String tarot;
+      private MagicEnergyAmplification(AstralAmplifierSnapshot astral, String tarot, double strength,
+      this.tarot = tarot;
+  src/main/java\meowmel\pollution\api\amplification\MagicJeiHintResolver.java (5)
+      /** Stable client-side title for a major arcana id synced by a Tarot Hatch. */
+      public static String tarotDisplayName(String tarot) {
+      String id = normalize(tarot);
+      return id.isEmpty() ? "未插入" : tarot;
+      public static List<String> tarotHints(long tags) {
+  src/main/java\meowmel\pollution\api\amplification\MagicOutputProcessor.java (1)
+      * Safe, deterministic item-output settlement for constellation and tarot bonuses.
+  src/main/java\meowmel\pollution\api\amplification\TarotHatchView.java (5)
+      * Minimal view of a tarot hatch.
+      * <p>Upstream this role was played by {@code meowmel.pollution.api.capability.ITarotHatch}.
+      * package is ported, {@code ITarotHatch} should extend this interface so machine
+      public interface TarotHatchView {
+      String getActiveTarot();
+  src/main/java\meowmel\pollution\api\recipes\properties\MagicRecipeProperties.java (6)
+      * (Botania mana, Blood Magic life essence, Astral, Tarot) are reserved with the
+      public static final String TAROT = "pollution.magic.tarot";
+      /** Tarot card id (reserved). */
+      public static GTRecipeBuilder tarot(GTRecipeBuilder builder, String tarotId) {
+      return builder.addData(TAROT, tarotId == null ? "" : tarotId.trim());
+  src/main/java\meowmel\pollution\common\item\PollutionItems.java (6)
+      * entries: goggles, tarots, the water ring, the heart fruit, the rechargeable
+      /** The Fool tarot: sneak + right-click teleports to the level spawn (upstream behaviour). */
+      public static final ItemEntry<TarotTheFoolItem> TAROT_THE_FOOL = register(
+      properties -> new TarotTheFoolItem(properties.stacksTo(64)),
+      public static final ItemEntry<Item> BLANK_TAROT_CARD = register("blank_tarot_card");
+  src/main/java\meowmel\pollution\common\item\TarotTheFoolItem.java (5)
+      * Tarot — The Fool: behaviour port of upstream {@code Tarots.THE_FOOL}.
+      * plays the ender teleport sound. The remaining tarots are plain items
+      public class TarotTheFoolItem extends Item {
+      public TarotTheFoolItem(Properties properties) {
+      tooltip.add(Component.translatable("pollution.tarot.the_fool.tooltip"));
+  src/main/java\meowmel\pollution\common\machine\multiblock\MagicMultiblockController.java (3)
+      * fluid tank and the external-mod hatches (mana / blood / astral / tarot). The
+      * functional. Mana / life essence / astral / tarot stay reserved until their
+      if (!MagicRecipeProperties.getTarot(recipe).isEmpty()) {
+  src/main/java\meowmel\pollution\common\machine\multiblock\MagicRecipeLogic.java (5)
+      import meowmel.pollution.api.amplification.TarotHatchView;
+      *   <li><b>Astral / tarot hatches</b>: no lens or tarot hatch exists in the port
+      /** Phase 6 stub: no tarot hatch exists in the port yet. */
+      private static final TarotHatchView EMPTY_TAROT_HATCH = () -> "";
+      boolean chariot = "the_chariot".equals(result.getTarot());
+  src/main/java\meowmel\pollution\common\machine\multiblock\MagicStructureElements.java (1)
+      * blood-magic, astral-lens and tarot hatches have no counterpart in the port
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\IndustrialInfusionMachine.java (1)
+      * astral-lens and tarot hatches on the void-prism casing (0..1 each); none of
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicAlloyBlastSmelterMachine.java (1)
+      * only (exactly 1). The blood-magic, astral-lens and tarot hatches of the
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicBatteryMachine.java (1)
+      * tarot hatches on the casing (0..1 each); neither ability is registered in the
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicBreweryMachine.java (1)
+      * only (exactly 1). The blood-magic, astral-lens and tarot hatches of the
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicDistilleryMachine.java (1)
+      * <p>Structure deviations: the blood-magic, astral-lens and tarot hatches of
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicFusionReactorMachine.java (1)
+      * astral-lens and tarot hatches on the frame (0..1 each); none of those
+  src/main/java\meowmel\pollution\common\machine\multiblock\magic\MagicLargeTurbineMachine.java (1)
+      * and tarot hatches of the upstream casing have no registered counterpart in
+  src/main/java\meowmel\pollution\common\machine\multiblock\mana\ManaMultiblockController.java (1)
+      if (!MagicRecipeProperties.getTarot(recipe).isEmpty()) {
+  src/main/java\meowmel\pollution\compat\jei\MagicAmplificationInfoCategory.java (1)
+      * engine and the matching Astral constellation / Tarot card effects from
+  src/main/java\meowmel\pollution\compat\jei\MagicRecipeDataInfos.java (7)
+      * recipe properties (vis, infused fluid, mana, life essence, research, tarot,
+      /** Research / tarot / astral gates and catalyst-protection hints. */
+      String tarot = data.getString(MagicRecipeProperties.TAROT);
+      if (!tarot.isEmpty()) {
+      parts.add(text("pollution.jei.recipe.gate.tarot",
+  src/main/java\meowmel\pollution\compat\jei\PollutionJeiPlugin.java (4)
+      List<String> tarotHints = MagicJeiHintResolver.tarotHints(mask);
+      if (!tarotHints.isEmpty()) {
+      lines.add(Component.translatable("pollution.jei.magic_amplification.tarot"));
+      for (String hint : limit(tarotHints, 4)) {
+  src/main/java\meowmel\pollution\loaders\recipes\MagicIntegrationRecipes.java (31)
+      * advanced blood circuit, the tarot stock (blank card plus 22 Major Arcana),
+      *   <li>The Magician tarot. // 上游: ItemsTC.salisMundus -> 本移植版:
+      tarotStock(provider);
+      // ***** tarot stock *****//
+      private static void tarotStock(Consumer<FinishedRecipe> provider) {
+
+==============================================================================
+D. PORT: FUEL_CELL / SCRUBBER / MUFFLER / NODE_GEN class + superclass
+==============================================================================
+  FluxFuelCellMachine        public class FluxFuelCellMachine extends PollutionEnergyMachine 
+        public FluxFuelCellMachine(IMachineBlockEntity info, int tier) {
+        super(info, tier);
+  FluxScrubberMachine        public class FluxScrubberMachine extends PollutionEnergyMachine 
+        * {@code 2^(tier-1) * fluxScrubberMultiplier} matches upstream.</p>
+        public FluxScrubberMachine(IMachineBlockEntity info, int tier) {
+        super(info, tier);
+  FluxMufflerMachine         public class FluxMufflerMachine extends TieredPartMachine implements IMufflerMachine 
+        import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+        * in two ways: the recovery chance is {@code min((tier-1)*10, 100)} instead of
+        * GT's {@code tier*10}, and the recovery inventory is
+        * {@code (1 + min(UHV, tier))^2} slots. Upstream also overrode its old
+        public class FluxMufflerMachine extends TieredPartMachine implements IMufflerMachine {
+        public FluxMufflerMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier);
+        this.recoveryChance = Math.min((tier - 1) * 10, 100);
+  SmallNodeGeneratorMachine  public class SmallNodeGeneratorMachine extends PollutionEnergyMachine 
+        * Small node generator: burns a packaged aura node for EU, tiers LuV..UHV.
+        * multiplied a base capacity of 8192 by the node tier/type/essence multiplier
+        * and the machine tier, and added the result to its energy container
+        * ({@code V[tier] * 64} buffer, 1A emitter).</p>
+        *       tier/type and the capacity multiplier and exposes the fuel slot; the
+        public SmallNodeGeneratorMachine(IMachineBlockEntity info, int tier) {
+        super(info, tier);
+        * Upstream multiplier tables: node tier (Withering 0.25, Pale 0.5, Bright
+        switch (PackagedAuraNode.tier(node)) {
+        textList.add(Component.literal("Node: " + PackagedAuraNode.tier(node) + " "

@@ -1,0 +1,55 @@
+﻿106 :     private static final int[] VIS_GENERATOR_TIERS = { 1, 2, 3, 4, 5, 6 };
+108 :     private static final int[] VIS_PROVIDER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+110 :     private static final int[] MAGIC_ENERGY_ABSORBER_TIERS = { 1, 2, 3, 4, 5 };
+115 :     private static final int[] FLUX_SCRUBBER_TIERS = { 1, 2, 3, 4, 5 };
+116 :     /** Upstream {@code FLUX_PROMOTED_FUEL_CELL[5]} for tiers LV..IV. */
+117 :     private static final int[] FLUX_FUEL_CELL_TIERS = { 1, 2, 3, 4, 5 };
+119 :     private static final int[] MANA_GENERATOR_TIERS = { 1, 2, 3, 4, 5 };
+120 :     /** Upstream {@code SMALL_NODE_GENERATOR[4]} for tiers LuV..UHV. */
+121 :     private static final int[] SMALL_NODE_GENERATOR_TIERS = { 6, 7, 8, 9 };
+123 :     private static final int[] SOLAR_PLATE_TIERS = { 1, 2, 3 };
+126 :     private static final int[] VIS_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+128 :     private static final int[] INFUSED_FLUID_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+129 :     /** Upstream {@code FLUX_MUFFLERS[9]} for tiers LV..UHV. */
+130 :     private static final int[] FLUX_MUFFLER_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+132 :     private static final int[] MANA_HATCH_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+137 :     private static final int[] ASPECT_TANK_TIERS = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+142 :     public static MachineDefinition[] FLUX_SCRUBBER;
+143 :     public static MachineDefinition[] FLUX_FUEL_CELL;
+148 :      * {@code pollution_small_node_generator.luv}..{@code .uhv}), LuV..UHV.
+150 :     public static MachineDefinition[] SMALL_NODE_GENERATOR;
+163 :     public static MachineDefinition[] FLUX_MUFFLER;
+208 :     public static MultiblockMachineDefinition LARGE_NODE_GENERATOR;
+260 :                 VIS_GENERATOR_TIERS);
+277 :                 VIS_PROVIDER_TIERS);
+294 :                 MAGIC_ENERGY_ABSORBER_TIERS);
+296 :         FLUX_SCRUBBER = GTMachineUtils.registerTieredMachines(
+298 :                 "flux_scrubber",
+303 :                         .simpleModel(model("flux_scrubber_" + tierName(tier)))
+309 :                                 Component.translatable("pollution.machine.flux_scrubber.tooltip"))
+311 :                 FLUX_SCRUBBER_TIERS);
+313 :         FLUX_FUEL_CELL = GTMachineUtils.registerTieredMachines(
+315 :                 "flux_fuel_cell",
+320 :                         .simpleModel(model("flux_fuel_cell_" + tierName(tier)))
+326 :                                 Component.translatable("pollution.machine.flux_fuel_cell.tooltip"))
+328 :                 FLUX_FUEL_CELL_TIERS);
+345 :                 MANA_GENERATOR_TIERS);
+347 :         SMALL_NODE_GENERATOR = GTMachineUtils.registerTieredMachines(
+349 :                 "small_node_generator",
+360 :                                 Component.translatable("pollution.machine.small_node_generator.tooltip"))
+362 :                 SMALL_NODE_GENERATOR_TIERS);
+381 :         for (int tier : ASPECT_TANK_TIERS) {
+405 :             MachineDefinition[] perKind = new MachineDefinition[SOLAR_PLATE_TIERS.length];
+406 :             for (int index = 0; index < SOLAR_PLATE_TIERS.length; index++) {
+407 :                 int tier = SOLAR_PLATE_TIERS[index];
+441 :                 VIS_HATCH_TIERS);
+457 :                 INFUSED_FLUID_HATCH_TIERS);
+459 :         FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
+461 :                 "flux_muffler",
+466 :                         .abilities(PartAbility.MUFFLER)
+467 :                         .simpleModel(model("flux_muffler_" + tierName(tier)))
+469 :                                 Component.translatable("pollution.machine.flux_muffler.tooltip.recovery",
+471 :                                 Component.translatable("pollution.machine.flux_muffler.tooltip"))
+473 :                 FLUX_MUFFLER_TIERS);
+613 :         LARGE_NODE_GENERATOR = PollutionGTAddon.REGISTRATE
+786 :                 MANA_HATCH_TIERS);

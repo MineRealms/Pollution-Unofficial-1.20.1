@@ -1,0 +1,46 @@
+﻿============================================================================================
+TC4 RECIPE FAMILY COVERAGE  (entries = .buildAndRegister() / GTRecipeBuilder.of())
+============================================================================================
+family                                             UP ent PORT ent    UP ln  PORT ln
+--------------------------------------------------------------------------------------------
+Magic chemical (TC4 essentia/infusion chemistry)      134      104     1318     1984  78% 
+Magic GCYM (multiblock controller recipes)            120       45     2640     1247  38% 
+Magic integration (cross-mod magic bridge)             53       12     1086      437  23% 
+Thaumcraft bridging                                    22        8      837      195  36% 
+Forge alchemy (metal transmute)                        30       17      415      506  57% 
+Node fusion                                            20        7      252      182  35% 
+Compound aspects                                        2        2      138      174  100% 
+Magic fuel (magic fuel / flux)                         10        6      122      171  60% 
+Mana -> EU conversion                                   7        7       59      103  100% 
+Starstream nexus                                        8        3      241      120  38% 
+Machine crafting recipes                                5        0      240      162  0% 
+
+Astral Sorcery                                          2        0      136        0  0%*
+Blood Altar                                             0        0       65        0  n/a*
+Blood Circuit                                          20        0      247        0  0%*
+Botania                                                 4       11      101      423  275%*
+Constellation tower                                     1        0      126        0  0%*
+Crystal line                                            5        0      100        0  0%*
+Flesh tree                                              0        0       54        0  n/a*
+Magic guide                                             4        0      148        0  0%*
+Magic hatch                                             4        0       89        0  0%*
+Meteors                                                 1        0      251        0  0%*
+--------------------------------------------------------------------------------------------
+TC4-scope TOTAL                                       411      211              51%
+(* = out of scope: non-TC4 mod integration)
+
+============================================================================================
+SOURCE SIZE BY SUBSYSTEM (java lines, TC4 relevant)
+============================================================================================
+subsystem                                              UP lines PORT lines
+--------------------------------------------------------------------------------------------
+machines (common/machine, port) / metatileentity (up)      18691      11521  62%
+api (pollution core + magic api)                           8194       4666  57%
+recipes (loaders/recipes)                                 10631       8627  81%
+blocks (common/block)                                      8489       3802  45%
+items (common/item)                                        2603       1316  51%
+worldgen / dimension                                       7313       1823  25%
+warp events                                                1570        253  16%
+entities                                                   1338        866  65%
+materials (api/unification)                                1937       2167  112%
+client                                                     4155       1612  39%

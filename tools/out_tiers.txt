@@ -1,0 +1,37 @@
+﻿==============================================================================
+A. UPSTREAM tier ids per flagged machine
+==============================================================================
+  flux_promoted_fuel_cell          ['flux_promoted_fuel_cell.ev', 'flux_promoted_fuel_cell.hv', 'flux_promoted_fuel_cell.iv', 'flux_promoted_fuel_cell.lv', 'flux_promoted_fuel_cell.mv']
+  flux_clear                       ['flux_clear.', 'flux_clear.ev', 'flux_clear.iv']
+  pollution_muffler_hatch          ['pollution_muffler_hatch.']
+  pollution_small_node_generator   ['pollution_small_node_generator.luv', 'pollution_small_node_generator.uhv', 'pollution_small_node_generator.uv', 'pollution_small_node_generator.zpm']
+  tarot_hatch                      ['tarot_hatch']
+  bm_hpca                          ['bm_hpca', 'bm_hpca.advance_heat_sink_component', 'bm_hpca.bridge_component', 'bm_hpca.empty_component', 'bm_hpca.super_computation_component', 'bm_hpca.super_cooler_component', 'bm_hpca.ultimate_computation_component', 'bm_hpca.ultimate_cooler_component']
+  source_charge                    ['source_charge']
+
+==============================================================================
+B. PORT ids with the same stems
+==============================================================================
+  flux_fuel_cell           ['flux_fuel_cell']
+        flux_fuel_cell                         <- PollutionMachines.java
+  flux_scrubber            ['flux_scrubber']
+        flux_scrubber                          <- PollutionMachines.java
+  flux_muffler             ['flux_muffler']
+        flux_muffler                           <- PollutionMachines.java
+  small_node_generator     ['small_node_generator']
+        small_node_generator                   <- PollutionMachines.java
+  tarot                    ['blank_tarot_card', 'tarot']
+        blank_tarot_card                       <- MagicIntegrationRecipes.java, PollutionItems.java
+        tarot                                  <- MagicAmplificationResult.java
+  hpca                     []
+  source_charge            ['source_charge']
+        source_charge                          <- PollutionMachines.java
+
+==============================================================================
+C. UPSTREAM tier list constants (ManaGenerator/SolarPlate/etc.)
+==============================================================================
+  FluxPromotedFuelCell   
+  FluxClear(single)      
+  SmallNodeGenerator     
+  FluxMuffler(part)      int sizeRoot = 1 + Math.min(GTValues.UHV, getTier());
+  TarotHatch(part)       

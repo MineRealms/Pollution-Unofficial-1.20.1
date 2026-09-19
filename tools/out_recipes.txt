@@ -1,0 +1,58 @@
+﻿==============================================================================
+1. Machine crafting recipes
+==============================================================================
+  upstream MachineRecipes.java    {'buildAndRegister': 5, 'registerMachineRecipe': 7, 'GTRecipeBuilder': 0, 'recipeBuilder/other': 5}
+  port     MachineRecipes.java    None
+  upstream PollutionRecipes.java  None
+  port     PollutionRecipes.java  {'buildAndRegister': 0, 'registerMachineRecipe': 6, 'GTRecipeBuilder': 0, 'recipeBuilder/other': 0}
+
+==============================================================================
+2. Port PollutionRecipes: which machine recipe registrars are invoked
+==============================================================================
+  lines: 161
+    - registerVisGenerator
+    - registerVisProvider
+    - registerMagicEnergyAbsorber
+    - registerFluxScrubber
+    - registerFluxFuelCell
+    - registerVisHatch
+  registerMachineRecipe calls: 6
+
+==============================================================================
+3. TC4 recipe family recount (all four matchers)
+==============================================================================
+  family                     UP                                  PORT
+  MagicChemicalRecipes       up: buildAndRegist=134 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=134
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=104 recipeBuilder/=0
+  MagicGCYMRecipes           up: buildAndRegist=120 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=120
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=45 recipeBuilder/=0
+  MagicIntegrationRecipes    up: buildAndRegist=53 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=53
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=12 recipeBuilder/=0
+  ThaumcraftRecipes          up: buildAndRegist=22 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=22
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=8 recipeBuilder/=0
+  ForgeAlchemyRecipes        up: buildAndRegist=30 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=30
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=17 recipeBuilder/=0
+  NodeFusionRecipes          up: buildAndRegist=20 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=20
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=7 recipeBuilder/=0
+  CompoundAspectRecipes      up: buildAndRegist=2 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=2
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=2 recipeBuilder/=0
+  MagicFuelRecipes           up: buildAndRegist=10 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=10
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=6 recipeBuilder/=0
+  ManaToEuRecipes            up: buildAndRegist=7 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=7
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=7 recipeBuilder/=0
+  InfusionRecipes            up: missing
+                             po: buildAndRegist=0 registerMachin=0 GTRecipeBuilde=0 recipeBuilder/=0
+
+==============================================================================
+4. Test / validation assets in the port
+==============================================================================
+  unit tests                     0
+  gametest java                  1
+       src/main/java\meowmel\pollution\gametest\PollutionGameTests.java
+  gametest structures (data)     0
+  gametest structures (generated) 0
+
+==============================================================================
+5. Port source totals
+==============================================================================
+  java files: 273, lines: 36761
