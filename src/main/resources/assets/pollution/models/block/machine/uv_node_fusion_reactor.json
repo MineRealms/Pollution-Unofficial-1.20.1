@@ -4,15 +4,15 @@
     "bottom": "gtceu:block/casings/voltage/uv/bottom",
     "top": "gtceu:block/casings/voltage/uv/top",
     "side": "gtceu:block/casings/voltage/uv/side",
-    "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side_emissive": "gtceu:block/generators/boiler/lava/overlay_front"
+    "overlay_front": "pollution:block/hyper/hyper_3",
+    "overlay_back": "pollution:block/hyper/hyper_3",
+    "overlay_top": "pollution:block/hyper/hyper_3",
+    "overlay_bottom": "pollution:block/hyper/hyper_3",
+    "overlay_side": "pollution:block/hyper/hyper_3",
+    "overlay_front_emissive": "gtceu:block/void",
+    "overlay_back_emissive": "gtceu:block/void",
+    "overlay_top_emissive": "gtceu:block/void",
+    "overlay_bottom_emissive": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void"
   }
 }

@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import dev.tc4port.thaumcraft.registry.TCItems;
+import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
@@ -59,8 +60,14 @@ public final class ThaumcraftRecipes {
         // GT 配方查找表拒绝（原 pollution:macerator/thaumcraft/manasteel_dust）。
 
         // 上游: Thaumcraft ItemsTC.ingots -> 本移植版: TC4R thaumium ingot
+        ItemStack thaumiumIngot = SafeItems.byId("thaumcraft", "thaumium_ingot", 1);
+        if (thaumiumIngot.isEmpty()) {
+            Pollution.LOGGER.warn("Thaumcraft: thaumcraft:thaumium_ingot is not registered, "
+                    + "skipping thaumium_dust maceration");
+            return;
+        }
         GTRecipeBuilder.of(id("thaumium_dust"), GTRecipeTypes.MACERATOR_RECIPES)
-                .inputItems(TCItems.THAUMIUM_INGOT.get())
+                .inputItems(thaumiumIngot)
                 .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.StainlessSteel, 1))
                 .duration(10)
                 .EUt(2)

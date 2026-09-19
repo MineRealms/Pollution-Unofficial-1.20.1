@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.arbor.gtnn.data.GTNNMaterials;
-import dev.tc4port.thaumcraft.registry.TCBlocks;
-import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
@@ -374,14 +372,17 @@ public final class MagicChemicalRecipes {
         // ItemsTC.voidSeed -> 本移植版: ELDRITCH_OBJECT
         FluidStack iron576 = fluid(GTMaterials.Iron, 576);
         FluidStack infusedVoid576 = fluid(PollutionMaterials.InfusedVoid, 576);
-        if (!stone2.isEmpty() && iron576 != null && infusedVoid576 != null) {
+        ItemStack eldritchObject4 = SafeItems.byId("thaumcraft", "eldritch_object", 4);
+        ItemStack voidIngot = SafeItems.byId("thaumcraft", "void_ingot", 4);
+        if (!stone2.isEmpty() && iron576 != null && infusedVoid576 != null
+                && !eldritchObject4.isEmpty() && !voidIngot.isEmpty()) {
             GTRecipeBuilder.of(id("void_metal"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                     .notConsumable(stone2.copy())
                     .inputFluids(iron576)
                     .inputFluids(infusedVoid576)
-                    .inputItems(new ItemStack(TCItems.ELDRITCH_OBJECT.get(), 4))
+                    .inputItems(eldritchObject4)
                     .inputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.VoidMaterial, 1))
-                    .outputItems(new ItemStack(TCItems.VOID_INGOT.get(), 4))
+                    .outputItems(voidIngot)
                     .duration(2400)
                     .EUt(GTValues.VA[GTValues.LuV])
                     .save(provider);
@@ -391,18 +392,18 @@ public final class MagicChemicalRecipes {
 
         // 虚空种子增殖 // 上游: ItemsTC.voidSeed -> 本移植版: ELDRITCH_OBJECT
         FluidStack infusedVoid2304 = fluid(PollutionMaterials.InfusedVoid, 2304);
-        if (infusedVoid2304 != null) {
+        if (infusedVoid2304 != null && !eldritchObject4.isEmpty()) {
             GTRecipeBuilder.of(id("void_seed"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
                     .notConsumable(PollutionItems.EVOLUTION_CATALYST_CORE.asStack())
                     .inputFluids(infusedVoid2304)
                     .inputItems(net.minecraft.world.item.Items.WHEAT_SEEDS, 64)
                     .inputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.VoidMaterial, 1))
-                    .outputItems(new ItemStack(TCItems.ELDRITCH_OBJECT.get(), 4))
+                    .outputItems(eldritchObject4)
                     .duration(2400)
                     .EUt(GTValues.VA[GTValues.LuV])
                     .save(provider);
         } else {
-            Pollution.LOGGER.warn("Skipping magic_chemical/void_seed: InfusedVoid has no fluid");
+            Pollution.LOGGER.warn("Skipping magic_chemical/void_seed: a required input is missing");
         }
     }
 
@@ -1299,10 +1300,12 @@ public final class MagicChemicalRecipes {
         FluidStack unformedEmbryo1000 = fluid(PollutionMaterials.UnformedEmbryoMagicWater, 1000);
         FluidStack embryoMagicWater = fluid(PollutionMaterials.EmbryoMagicWater, 1000);
         ItemStack stone1 = philosopherStone(1);
-        if (unformedEmbryo1000 != null && embryoMagicWater != null && !stone1.isEmpty()) {
+        ItemStack primordialPearl = SafeItems.byId("thaumcraft", "primordial_pearl", 1);
+        if (unformedEmbryo1000 != null && embryoMagicWater != null && !stone1.isEmpty()
+                && !primordialPearl.isEmpty()) {
             GTRecipeBuilder.of(id("embryo_magic_water"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                     .inputFluids(unformedEmbryo1000)
-                    .notConsumable(new ItemStack(TCItems.PRIMORDIAL_PEARL.get()))
+                    .notConsumable(primordialPearl)
                     .notConsumable(stone1.copy())
                     .outputFluids(embryoMagicWater)
                     .duration(120)
@@ -1403,19 +1406,20 @@ public final class MagicChemicalRecipes {
         // // 上游: dust EnderEye -> 本移植版: gem EnderEye；
         // // 上游: ItemsTC.voidSeed -> 本移植版: TC4R ELDRITCH_OBJECT
         FluidStack aura10Out = fluid(PollutionMaterials.InfusedAura, 10);
-        if (aura10Out != null) {
+        ItemStack eldritchObject = SafeItems.byId("thaumcraft", "eldritch_object", 1);
+        if (aura10Out != null && !eldritchObject.isEmpty()) {
             GTRecipeBuilder.of(id("alchemical_residue_6_centrifuge"), GTRecipeTypes.CENTRIFUGE_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.AlchemicalResidue6, 10))
                     .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Redstone, 4))
                     .outputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.EnderEye, 3))
-                    .chancedOutput(new ItemStack(TCItems.ELDRITCH_OBJECT.get()), 100, 10)
+                    .chancedOutput(eldritchObject, 100, 10)
                     .outputFluids(aura10Out)
                     .duration(6400)
                     .EUt(30)
                     .save(provider);
         } else {
             Pollution.LOGGER.warn(
-                    "Skipping magic_chemical/alchemical_residue_6_centrifuge: InfusedAura has no fluid");
+                    "Skipping magic_chemical/alchemical_residue_6_centrifuge: a required input is missing");
         }
 
         // 超次元秘银+液态熵 工业高炉 六次升华蒸汽
@@ -1773,15 +1777,19 @@ public final class MagicChemicalRecipes {
     private static void paradoxAndHmf(Consumer<FinishedRecipe> provider) {
         FluidStack entropy = fluid(PollutionMaterials.InfusedEntropy, 2304);
         FluidStack energy = fluid(PollutionMaterials.InfusedEnergy, 2304);
-        if (entropy != null && energy != null) {
+        ItemStack alumentum = SafeItems.byId("thaumcraft", "alumentum", 1);
+        ItemStack primordialPearl = SafeItems.byId("thaumcraft", "primordial_pearl", 1);
+        if (entropy != null && energy != null && !alumentum.isEmpty() && !primordialPearl.isEmpty()) {
             GTRecipeBuilder.of(id("paradox_matter"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                     .inputFluids(entropy)
                     .inputFluids(energy)
-                    .inputItems(new ItemStack(TCItems.ALUMENTUM.get()))
-                    .outputItems(new ItemStack(TCItems.PRIMORDIAL_PEARL.get()))
+                    .inputItems(alumentum)
+                    .outputItems(primordialPearl)
                     .duration(200)
                     .EUt(120)
                     .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_chemical/paradox_matter: a required input is missing");
         }
 
         // 糖 -> HMF（// 上游: ZirconiumTetrachloride -> 本移植版:
@@ -1840,16 +1848,19 @@ public final class MagicChemicalRecipes {
         if (!stone1.isEmpty()) {
             FluidStack death = fluid(PollutionMaterials.InfusedDeath, 576);
             FluidStack soul = fluid(PollutionMaterials.InfusedSoul, 144);
-            if (death != null && soul != null) {
+            ItemStack zombieBrain = SafeItems.byId("thaumcraft", "zombie_brain", 1);
+            if (death != null && soul != null && !zombieBrain.isEmpty()) {
                 GTRecipeBuilder.of(id("zombie_brain"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                         .notConsumable(stone1.copy())
                         .inputItems(Items.ROTTEN_FLESH)
                         .inputFluids(death)
                         .inputFluids(soul)
-                        .outputItems(new ItemStack(TCItems.ZOMBIE_BRAIN.get()))
+                        .outputItems(zombieBrain)
                         .duration(120)
                         .EUt(120)
                         .save(provider);
+            } else {
+                Pollution.LOGGER.warn("Skipping magic_chemical/zombie_brain: a required input is missing");
             }
 
             FluidStack dta = fluid(PollutionMaterials.DimensionalTransformingAgent, 42);
@@ -1911,25 +1922,35 @@ public final class MagicChemicalRecipes {
             Pollution.LOGGER.warn("Skipping the magic_chemical wood-coking group: InfusedAura has no fluid");
             return;
         }
-        GTRecipeBuilder.of(id("greatwood_coking"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
-                .notConsumable(cokingCore.copy())
-                .inputItems(new ItemStack(TCBlocks.GREATWOOD_LOG.get(), 16))
-                .notConsumable(hotCore.copy())
-                .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash, 4))
-                .outputFluids(fluid(PollutionMaterials.InfusedAura, 576))
-                .duration(400)
-                .EUt(120)
-                .save(provider);
+        ItemStack greatwoodLog = SafeItems.byId("thaumcraft", "greatwood_log", 16);
+        if (greatwoodLog.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_chemical/greatwood_coking: thaumcraft:greatwood_log is missing");
+        } else {
+            GTRecipeBuilder.of(id("greatwood_coking"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
+                    .notConsumable(cokingCore.copy())
+                    .inputItems(greatwoodLog)
+                    .notConsumable(hotCore.copy())
+                    .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash, 4))
+                    .outputFluids(fluid(PollutionMaterials.InfusedAura, 576))
+                    .duration(400)
+                    .EUt(120)
+                    .save(provider);
+        }
 
-        GTRecipeBuilder.of(id("silverwood_coking"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
-                .notConsumable(cokingCore.copy())
-                .inputItems(new ItemStack(TCBlocks.SILVERWOOD_LOG.get(), 8))
-                .notConsumable(hotCore.copy())
-                .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash, 4))
-                .outputFluids(fluid(PollutionMaterials.InfusedAura, 576))
-                .duration(400)
-                .EUt(120)
-                .save(provider);
+        ItemStack silverwoodLog = SafeItems.byId("thaumcraft", "silverwood_log", 8);
+        if (silverwoodLog.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_chemical/silverwood_coking: thaumcraft:silverwood_log is missing");
+        } else {
+            GTRecipeBuilder.of(id("silverwood_coking"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
+                    .notConsumable(cokingCore.copy())
+                    .inputItems(silverwoodLog)
+                    .notConsumable(hotCore.copy())
+                    .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash, 4))
+                    .outputFluids(fluid(PollutionMaterials.InfusedAura, 576))
+                    .duration(400)
+                    .EUt(120)
+                    .save(provider);
+        }
     }
 
     // ////////////////////////////////////

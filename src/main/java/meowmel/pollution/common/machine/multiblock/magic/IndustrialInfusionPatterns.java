@@ -53,6 +53,9 @@ final class IndustrialInfusionPatterns {
                 .where('D', Predicates.blocks(PollutionMagicBlocks.TITANIUM_PIPE.get()))
                 .where('E', Predicates.blocks(PollutionMagicBlocks.TITANIUM_GEARBOX.get()))
                 .where('F', Predicates.blocks(PollutionMagicBlocks.MAGIC_BATTERY_CASING.get()))
+                // 上游: A=CP_COIL_CASING, G=CP_GLASS -> 本移植版: 加热线圈 / 夹层玻璃
+                .where('A', Predicates.heatingCoils())
+                .where('G', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))
                 .build();
     }
 

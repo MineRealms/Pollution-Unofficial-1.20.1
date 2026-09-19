@@ -3,10 +3,10 @@ package meowmel.pollution.loaders.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import meowmel.pollution.Pollution;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import net.minecraft.core.registries.Registries;
@@ -38,21 +38,21 @@ public final class CoilRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         coil(provider, "cupronickel", PollutionMagicBlocks.WIRE_COIL_CUPRONICKEL.asStack(),
-                GTBlocks.COIL_CUPRONICKEL.asStack());
+                SafeItems.gt("cupronickel_coil_block", 1));
         coil(provider, "kanthal", PollutionMagicBlocks.WIRE_COIL_KANTHAL.asStack(),
-                GTBlocks.COIL_KANTHAL.asStack());
+                SafeItems.gt("kanthal_coil_block", 1));
         coil(provider, "nichrome", PollutionMagicBlocks.WIRE_COIL_NICHROME.asStack(),
-                GTBlocks.COIL_NICHROME.asStack());
+                SafeItems.gt("nichrome_coil_block", 1));
         coil(provider, "rtm_alloy", PollutionMagicBlocks.WIRE_COIL_RTM_ALLOY.asStack(),
-                GTBlocks.COIL_RTMALLOY.asStack());
+                SafeItems.gt("rtm_alloy_coil_block", 1));
         coil(provider, "hssg", PollutionMagicBlocks.WIRE_COIL_HSSG.asStack(),
-                GTBlocks.COIL_HSSG.asStack());
+                SafeItems.gt("hssg_coil_block", 1));
         coil(provider, "naquadah", PollutionMagicBlocks.WIRE_COIL_NAQUADAH.asStack(),
-                GTBlocks.COIL_NAQUADAH.asStack());
+                SafeItems.gt("naquadah_coil_block", 1));
         coil(provider, "trinium", PollutionMagicBlocks.WIRE_COIL_TRINIUM.asStack(),
-                GTBlocks.COIL_TRINIUM.asStack());
+                SafeItems.gt("trinium_coil_block", 1));
         coil(provider, "tritanium", PollutionMagicBlocks.WIRE_COIL_TRITANIUM.asStack(),
-                GTBlocks.COIL_TRITANIUM.asStack());
+                SafeItems.gt("tritanium_coil_block", 1));
 
         // GTNN already provides botania:manasteel_ingot -> GTNN ManaSteel dust
         // (gtceu:macerator/macerate_manasteel_ingot); the duplicate previously
@@ -71,6 +71,10 @@ public final class CoilRecipes {
     private static void coil(Consumer<FinishedRecipe> provider, String name,
                              net.minecraft.world.item.ItemStack input,
                              net.minecraft.world.item.ItemStack output) {
+        if (input.isEmpty() || output.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping coil/{}: input or output item is missing", name);
+            return;
+        }
         GTRecipeBuilder.of(id("coil_" + name), GTRecipeTypes.ARC_FURNACE_RECIPES)
                 .inputItems(input)
                 .inputFluids(PollutionMaterials.InfusedExchange.getFluid(COIL_EXCHANGE))

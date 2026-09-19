@@ -14,6 +14,7 @@ Covered machines (block model key -> tiers):
   magic_energy_absorber_<tier>    1..5
   flux_scrubber_<tier>            1..5
   flux_fuel_cell_<tier>           1..5
+  mana_generator_<tier>           1..5
   source_charge                  (placeholder)
   vis_hatch_<tier>                1..9   (multiblock part)
   infused_fluid_hatch_<tier>      1..9   (multiblock part)
@@ -24,9 +25,30 @@ Covered machines (block model key -> tiers):
   wireless_mana_pool_(input|output)_hatch_<pool>
   solar_plate_<tier>_<kind>       1..3 x 1..6
   magic_macerator                (multiblock, placeholder)
+  ... all remaining magic/node/botania multiblocks
 
-All placeholders use GregTech's voltage casing textures and the lava boiler
-front overlay until ported Pollution textures exist.
+Overlays
+--------
+Every model keeps the GT generator template and the GT voltage casing base
+textures; only the overlay textures change. `MACHINE_OVERLAYS` maps the model
+key (the names used by this generator, e.g. `vis_generator_lv` or
+`magic_assembler`) to the texture upstream returned from `getBaseTexture()`:
+
+  * SimpleOverlayRenderer textures (MANA_BASIC, SPELL_PRISM_*, VIS_HATCH,
+    MANA_HATCH_*, ...) become `pollution:block/<path>` on the five overlay
+    faces. Their emissive layers are `gtceu:block/void` because the upstream
+    1.12 textures are plain casings with no emissive pass.
+  * Solar plates combine the tier OrientedOverlayRenderer directory
+    (`machines/solar_i`, only `overlay_top`/`overlay_bottom` exist) with the
+    kind element overlay on the four horizontal faces (`AIR`..`WATER` ->
+    `machines/solars/*side`); see MACHINE_TOP/BOTTOM_OVERLAYS.
+  * Machines whose upstream renderer is a GregTech standard (`Textures.*`,
+    `Textures.HPCA_OVERLAY`, ...) have no Pollution texture to restore and stay
+    on the lava-boiler placeholder: `vis_generator`, `vis_provider`,
+    `small_node_generator`, `magic_energy_absorber`, `flux_scrubber`,
+    `flux_fuel_cell`, `mana_generator`, `flux_muffler`, `source_charge`.
+    `gtceu:block/machines/overlay_front` does not exist in gtceu-1.20.1-7.5.3,
+    hence the boiler fallback.
 
 small_node_generator_<tier> and source_charge are not wired yet: upstream has
 no dedicated textures for them (1.12 MetaTileEntitySmallNodeGenerator renders
@@ -157,34 +179,209 @@ SINGLE_MACHINES = {
     "source_charge": "lv",
 }
 
-OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
+# ---------------------------------------------------------------------------
+# Overlays
+# ---------------------------------------------------------------------------
+
+# `gtceu:block/machines/overlay_front` does not exist in gtceu-1.20.1-7.5.3
+# (checked in the jar), so the lava boiler stays the neutral fallback for
+# machines whose upstream renderer is a GregTech standard (Textures.*).
+DEFAULT_OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
+# GTCEu's fully transparent texture: used for the emissive layers of machines
+# restored from 1.12 SimpleOverlayRenderer textures (no emissive pass upstream).
+TRANSPARENT_OVERLAY = "gtceu:block/void"
 
 
-def machine_model(casing_tier: str) -> dict:
+def pollution(path: str) -> str:
+    """Qualify a texture path with the Pollution namespace."""
+    return f"pollution:block/{path}"
+
+
+# Upstream multiblock getBaseTexture() -> POTextures constant -> texture path:
+#   MetaTileEntityMagicMacerator          SPELL_PRISM_EARTH   magicblock/spell_prism_earth
+#   MetaTileEntityMagicBender             SPELL_PRISM_ORDER   magicblock/spell_prism_order
+#   MetaTileEntityMagicCentrifuge         SPELL_PRISM_AIR     magicblock/spell_prism_air
+#   MetaTileEntityMagicWireMill           SPELL_PRISM_WATER   magicblock/spell_prism_water
+#   MetaTileEntityMagicAutoclave          SPELL_PRISM_AIR     magicblock/spell_prism_air
+#   MetaTileEntityMagicElectrolyzer       SPELL_PRISM_ORDER   magicblock/spell_prism_order
+#   MetaTileEntityMagicExtruder           SPELL_PRISM_ORDER   magicblock/spell_prism_order
+#   MetaTileEntityMagicMixer              SPELL_PRISM_VOID    magicblock/spell_prism_void
+#   MetaTileEntityMagicSifter             SPELL_PRISM_EARTH   magicblock/spell_prism_earth
+#   MetaTileEntityMagicSolidifier         SPELL_PRISM_ORDER   magicblock/spell_prism_order
+#   MetaTileEntityMagicBrewery            SPELL_PRISM_COLD    magicblock/spell_prism_cold
+#   MetaTileEntityMagicCutter             SPELL_PRISM_HOT     magicblock/spell_prism_hot
+#   MetaTileEntityMagicGreenHouse         SPELL_PRISM_WATER   magicblock/spell_prism_water
+#   MetaTileEntityMagicElectricBlastFurnace SPELL_PRISM_HOT   magicblock/spell_prism_hot
+#   MetaTileEntityMagicAlloyBlastSmelter  SPELL_PRISM_HOT     magicblock/spell_prism_hot
+#   MetaTileEntityMagicChemicalBath       SPELL_PRISM_WATER   magicblock/spell_prism_water
+#   MetaTileEntityMagicChemicalReactor    SPELL_PRISM_WATER   magicblock/spell_prism_water
+#   MetaTileEntityMagicDistillery         SPELL_PRISM_COLD    magicblock/spell_prism_cold
+#   MetaTileEntityMagicAssembler          MANA_BASIC          magicblock/mana_basic
+#   MetaTileEntityInfusedExchange         VOID_PRISM          magicblock/void_prism
+#   MetaTileEntityEssenceSmelter          SPELL_PRISM_VOID    magicblock/spell_prism_void
+#   MetaTileEntityNodeProducer            FRAME_I             fusion_reactor/frame_ii
+#   MetaTileEntityLargeNodeGenerator      FRAME_I             fusion_reactor/frame_ii
+#   MetaTileEntityNodeWasher              SPELL_PRISM_HOT     magicblock/spell_prism_hot
+#   MetaTileEntityNodeBlastFurnace        MANA_BASIC          magicblock/mana_basic
+#   MetaTileEntityNodeFusionReactor       HYPER_1/2/3         hyper/hyper_1..3
+#   MetaTileEntityCentralVisTower         MANA_BASIC          magicblock/mana_basic
+#   MetaTileEntityGtEssenceSmelter        SPELL_PRISM_VOID    magicblock/spell_prism_void
+#   MetaTileEntityEssenceCollector        SPELL_PRISM         magicblock/spell_prism
+#   MetaTileEntityIndustrialInfusion      SPELL_PRISM_VOID    magicblock/spell_prism_void
+#   MetaTileEntitySmallChemicalPlant      TERRA_WATERTIGHT_CASING botblock/terra_watertight_casing
+#   MetaTileEntityMagicFusionReactor      FRAME_I             fusion_reactor/frame_ii
+#   MetaTileEntityMagicBattery            MAGIC_BATTERY       magicblock/magic_battery
+#   MetaTileEntityMagicLargeTurbine       SPELL_PRISM_HOT     magicblock/spell_prism_hot
+#   MetaTileEntityMagicMegaTurbine        SPELL_PRISM_HOT     magicblock/spell_prism_hot
+#   MetaTileEntityManaPlate               MANA_BASIC          magicblock/mana_basic
+#   MetaTileEntityManaPetalApothecary     Livingrock_0        botblock/livingrock0
+#   MetaTileEntityManaRuneAltar           Livingrock_0        botblock/livingrock0
+#   MetaTileEntityIndustrialPureDaisy     Livingrock_0        botblock/livingrock0
+#   MetaTileEntityBotDistillery           TERRA_WATERTIGHT_CASING botblock/terra_watertight_casing
+#   MetaTileEntityBotVacuumFreezer        MANA_4              magicblock/mana_4
+#   MetaTileEntityBotCircuitAssembler     MANA_5              magicblock/mana_5
+#   MetaTileEntityBotGasCollector         TERRA_5_CASING      botblock/terra_5_casing
+#   MetaTileEntityEndoflameArray          TERRA_4_CASING      botblock/terra_4_casing
+#   MetaTileEntityManaInfusionReactor     Livingrock_0        botblock/livingrock0
+#   MetaTileEntityMegaManaTurbine         MANA_5              magicblock/mana_5
+#   MetaTileEntityMultiDanDeLifeOn        MANA_4              magicblock/mana_4
+#   MetaTileEntityManaPoolHatch           MANA_POOL_HATCH_*   overlay/machine/magic_hatch/mana_pool_*
+MULTIBLOCK_OVERLAYS = {
+    "magic_macerator": "magicblock/spell_prism_earth",
+    "magic_bender": "magicblock/spell_prism_order",
+    "magic_centrifuge": "magicblock/spell_prism_air",
+    "magic_wiremill": "magicblock/spell_prism_water",
+    "magic_autoclave": "magicblock/spell_prism_air",
+    "magic_electrolyzer": "magicblock/spell_prism_order",
+    "magic_extruder": "magicblock/spell_prism_order",
+    "magic_mixer": "magicblock/spell_prism_void",
+    "magic_sifter": "magicblock/spell_prism_earth",
+    "magic_solidifier": "magicblock/spell_prism_order",
+    "magic_brewery": "magicblock/spell_prism_cold",
+    "magic_cutter": "magicblock/spell_prism_hot",
+    "magic_green_house": "magicblock/spell_prism_water",
+    "magic_electric_blast_furnace": "magicblock/spell_prism_hot",
+    "magic_alloy_blast": "magicblock/spell_prism_hot",
+    "magic_chemical_bath": "magicblock/spell_prism_water",
+    "magic_chemical_reactor": "magicblock/spell_prism_water",
+    "magic_distillery": "magicblock/spell_prism_cold",
+    "magic_assembler": "magicblock/mana_basic",
+    "infused_exchange": "magicblock/void_prism",
+    "essence_smelter": "magicblock/spell_prism_void",
+    "node_producer": "fusion_reactor/frame_ii",
+    "large_node_generator": "fusion_reactor/frame_ii",
+    "node_washer": "magicblock/spell_prism_hot",
+    "node_blast_furnace": "magicblock/mana_basic",
+    "luv_node_fusion_reactor": "hyper/hyper_1",
+    "zpm_node_fusion_reactor": "hyper/hyper_2",
+    "uv_node_fusion_reactor": "hyper/hyper_3",
+    "central_vis_tower": "magicblock/mana_basic",
+    "gt_essence_smelter": "magicblock/spell_prism_void",
+    "essence_collector": "magicblock/spell_prism",
+    "industrial_infusion": "magicblock/spell_prism_void",
+    "small_chemical_plant": "botblock/terra_watertight_casing",
+    "magic_fusion_reactor": "fusion_reactor/frame_ii",
+    "magic_battery": "magicblock/magic_battery",
+    "magic_large_turbine": "magicblock/spell_prism_hot",
+    "magic_mega_turbine": "magicblock/spell_prism_hot",
+    "mana_plate": "magicblock/mana_basic",
+    "mana_petal_apothecary": "botblock/livingrock0",
+    "mana_rune_altar": "botblock/livingrock0",
+    "industrial_pure_daisy": "botblock/livingrock0",
+    "bot_distillery": "botblock/terra_watertight_casing",
+    "bot_vacuum_freezer": "magicblock/mana_4",
+    "bot_circuit_assembler": "magicblock/mana_5",
+    "bot_gas_collector": "botblock/terra_5_casing",
+    "endoflame_array": "botblock/terra_4_casing",
+    "mana_infusion_reactor": "botblock/livingrock0",
+    "mega_mana_turbine": "magicblock/mana_5",
+    "pollution_multi_dan_de_life_on": "magicblock/mana_4",
+    "mana_pool_input_hatch_diluted": "overlay/machine/magic_hatch/mana_pool_input",
+    "mana_pool_input_hatch_normal": "overlay/machine/magic_hatch/mana_pool_input",
+    "mana_pool_input_hatch_mythic": "overlay/machine/magic_hatch/mana_pool_input",
+    "mana_pool_output_hatch_diluted": "overlay/machine/magic_hatch/mana_pool_output",
+    "mana_pool_output_hatch_normal": "overlay/machine/magic_hatch/mana_pool_output",
+    "mana_pool_output_hatch_mythic": "overlay/machine/magic_hatch/mana_pool_output",
+    "wireless_mana_pool_input_hatch_diluted": "overlay/machine/magic_hatch/wireless_mana_pool_input",
+    "wireless_mana_pool_input_hatch_normal": "overlay/machine/magic_hatch/wireless_mana_pool_input",
+    "wireless_mana_pool_input_hatch_mythic": "overlay/machine/magic_hatch/wireless_mana_pool_input",
+    "wireless_mana_pool_output_hatch_diluted": "overlay/machine/magic_hatch/wireless_mana_pool_output",
+    "wireless_mana_pool_output_hatch_normal": "overlay/machine/magic_hatch/wireless_mana_pool_output",
+    "wireless_mana_pool_output_hatch_mythic": "overlay/machine/magic_hatch/wireless_mana_pool_output",
+}
+
+# model key -> overlay texture; keys not present use DEFAULT_OVERLAY.
+MACHINE_OVERLAYS: dict[str, str] = {
+    name: pollution(path) for name, path in MULTIBLOCK_OVERLAYS.items()
+}
+
+# Optional per-face overrides (model key -> top/bottom texture). Solar plates
+# combine the tier OrientedOverlayRenderer ("machines/solar_<tier>", only
+# overlay_top/overlay_bottom exist) with the kind element overlay on the four
+# horizontal faces (POTextures.AIR..WATER -> machines/solars/*side).
+MACHINE_TOP_OVERLAYS: dict[str, str] = {}
+MACHINE_BOTTOM_OVERLAYS: dict[str, str] = {}
+SOLAR_SIDE_OVERLAYS = {
+    1: "machines/solars/airside",
+    2: "machines/solars/darkside",
+    3: "machines/solars/earthside",
+    4: "machines/solars/fireside",
+    5: "machines/solars/orderside",
+    6: "machines/solars/waterside",
+}
+for tier, directory in ((1, "solar_i"), (2, "solar_ii"), (3, "solar_iii")):
+    for kind in SOLAR_KINDS:
+        key = f"solar_plate_{tier}_{kind}"
+        MACHINE_OVERLAYS[key] = pollution(SOLAR_SIDE_OVERLAYS[kind])
+        MACHINE_TOP_OVERLAYS[key] = pollution(f"machines/{directory}/overlay_top")
+        MACHINE_BOTTOM_OVERLAYS[key] = pollution(f"machines/{directory}/overlay_bottom")
+
+
+def _tiered_overlay(machine: str, path: str) -> None:
+    for tier in TIERED_MACHINES[machine]:
+        MACHINE_OVERLAYS[f"{machine}_{TIER_NAMES[tier]}"] = pollution(path)
+
+
+# multiblock parts: upstream getBaseTexture()/renderMetaTileEntity() overlays.
+_tiered_overlay("vis_hatch", "overlay/machine/magic_hatch/vis_hatch")
+_tiered_overlay("infused_fluid_hatch", "overlay/machine/magic_hatch/infused_fluid_hatch")
+for amp in ("1a", "4a", "16a", "64a"):
+    _tiered_overlay(f"mana_input_hatch_{amp}", f"overlay/machine/magic_hatch/mana_input_{amp}")
+    _tiered_overlay(f"mana_output_hatch_{amp}", f"overlay/machine/magic_hatch/mana_output_{amp}")
+    _tiered_overlay(f"wireless_mana_input_hatch_{amp}", "overlay/machine/magic_hatch/wireless_mana_input")
+    _tiered_overlay(f"wireless_mana_output_hatch_{amp}", "overlay/machine/magic_hatch/wireless_mana_output")
+
+
+def machine_model(key: str, casing_tier: str) -> dict:
     casing = f"gtceu:block/casings/voltage/{casing_tier}"
+    mapped = key in MACHINE_OVERLAYS
+    overlay = MACHINE_OVERLAYS.get(key, DEFAULT_OVERLAY)
+    top = MACHINE_TOP_OVERLAYS.get(key, overlay)
+    bottom = MACHINE_BOTTOM_OVERLAYS.get(key, overlay)
+    emissive = TRANSPARENT_OVERLAY if mapped else DEFAULT_OVERLAY
     return {
         "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
             "bottom": f"{casing}/bottom",
             "top": f"{casing}/top",
             "side": f"{casing}/side",
-            "overlay_front": OVERLAY,
-            "overlay_back": OVERLAY,
-            "overlay_top": OVERLAY,
-            "overlay_bottom": OVERLAY,
-            "overlay_side": OVERLAY,
-            "overlay_front_emissive": OVERLAY,
-            "overlay_back_emissive": OVERLAY,
-            "overlay_top_emissive": OVERLAY,
-            "overlay_bottom_emissive": OVERLAY,
-            "overlay_side_emissive": OVERLAY,
+            "overlay_front": overlay,
+            "overlay_back": overlay,
+            "overlay_top": top,
+            "overlay_bottom": bottom,
+            "overlay_side": overlay,
+            "overlay_front_emissive": emissive,
+            "overlay_back_emissive": emissive,
+            "overlay_top_emissive": emissive,
+            "overlay_bottom_emissive": emissive,
+            "overlay_side_emissive": emissive,
         },
     }
 
 
 def write_model(key: str, casing_tier: str) -> None:
     target = MODEL_DIR / f"{key}.json"
-    target.write_text(json.dumps(machine_model(casing_tier), indent=2) + "\n", encoding="utf-8")
+    target.write_text(json.dumps(machine_model(key, casing_tier), indent=2) + "\n", encoding="utf-8")
     print(f"wrote {target.relative_to(PROJECT_ROOT)}")
 
 

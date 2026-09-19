@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -16,7 +15,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.arbor.gtnn.data.GTNNMaterials;
 import dev.tc4port.thaumcraft.api.ThaumcraftContent;
 import dev.tc4port.thaumcraft.registry.TCBlocks;
-import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
@@ -28,8 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -139,30 +135,34 @@ public final class MagicGCYMRecipes {
     private static void enchantedSoil(Consumer<FinishedRecipe> provider) {
         FluidStack aura = fluid(PollutionMaterials.InfusedAura, 12800);
         ItemStack terraSteel = ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.TerraSteel, 64);
-        if (aura == null || terraSteel.isEmpty()) {
+        ItemStack overgrowthSeed = SafeItems.byId("botania", "overgrowth_seed", 64);
+        ItemStack grassSeeds = SafeItems.byId("botania", "grass_seeds", 64);
+        ItemStack enchantedSoil = SafeItems.byId("botania", "enchanted_soil", 128);
+        if (aura == null || terraSteel.isEmpty() || overgrowthSeed.isEmpty() || enchantedSoil.isEmpty()) {
             Pollution.LOGGER.warn("Skipping magic_gcym enchanted soil: a required input is missing");
             return;
         }
         GTRecipeBuilder.of(id("enchanted_soil"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(BotaniaItems.overgrowthSeed, 64)
+                .inputItems(overgrowthSeed)
                 .inputItems(net.minecraft.world.item.Items.GRASS_BLOCK, 128)
                 .inputItems(terraSteel)
                 .inputFluids(aura)
-                .outputItems(new ItemStack(BotaniaBlocks.enchantedSoil, 128))
+                .outputItems(enchantedSoil)
                 .duration(500)
                 .EUt(30720)
                 .save(provider);
 
         FluidStack auraSmall = fluid(PollutionMaterials.InfusedAura, 6400);
-        if (auraSmall == null) {
+        if (auraSmall == null || grassSeeds.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/infused_grass: a required input is missing");
             return;
         }
         GTRecipeBuilder.of(id("infused_grass"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(BotaniaItems.grassSeeds, 64)
+                .inputItems(grassSeeds)
                 .inputItems(net.minecraft.world.item.Items.GRASS_BLOCK, 128)
                 .inputItems(ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.Salisundus, 64))
                 .inputFluids(auraSmall)
-                .outputItems(new ItemStack(BotaniaBlocks.enchantedSoil, 128))
+                .outputItems(enchantedSoil)
                 .duration(500)
                 .EUt(8192)
                 .save(provider);
@@ -413,12 +413,17 @@ public final class MagicGCYMRecipes {
         int[] tiers = { GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV };
         String[] tierNames = { "luv", "zpm", "uv", "uhv" };
         ItemStack[] generators = {
-                GTItems.FIELD_GENERATOR_LuV.asStack(), GTItems.FIELD_GENERATOR_ZPM.asStack(),
-                GTItems.FIELD_GENERATOR_UV.asStack(), GTItems.FIELD_GENERATOR_UHV.asStack(),
+                SafeItems.gt("luv_field_generator", 1), SafeItems.gt("zpm_field_generator", 1),
+                SafeItems.gt("uv_field_generator", 1), SafeItems.gt("uhv_field_generator", 1),
         };
         for (int index = 0; index < tiers.length; index++) {
             int tier = tiers[index];
             if (GCYMMachines.PARALLEL_HATCH[tier] == null) {
+                continue;
+            }
+            if (generators[index].isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/parallel_hatch/{}: GT field generator is missing",
+                        tierNames[index]);
                 continue;
             }
             GTRecipeBuilder.of(id("parallel_hatch/" + tierNames[index]), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
@@ -434,71 +439,92 @@ public final class MagicGCYMRecipes {
 
         FluidStack turbineFuel = fluid(PollutionMaterials.InfusedAura, 16000);
         FluidStack lubricant = fluid(GTMaterials.Lubricant, 16000);
+        ItemStack motorIv = SafeItems.gt("iv_electric_motor", 16);
+        ItemStack pumpIv = SafeItems.gt("iv_electric_pump", 16);
+        ItemStack pumpLuv = SafeItems.gt("luv_electric_pump", 64);
+        ItemStack generatorLuv = SafeItems.gt("luv_field_generator", 16);
         if (turbineFuel != null && lubricant != null) {
             // 大型魔力轮机
-            GTRecipeBuilder.of(id("large_mana_turbine"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(PollutionMachines.MAGIC_ENERGY_ABSORBER[GTValues.EV], 8)
-                    .circuitMeta(1)
-                    .inputItems(GTItems.ELECTRIC_MOTOR_IV, 16)
-                    .inputItems(GTItems.ELECTRIC_PUMP_IV, 16)
-                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 32))
-                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 4))
-                    .inputFluids(turbineFuel)
-                    .inputFluids(lubricant)
-                    .outputItems(PollutionMachines.MAGIC_LARGE_TURBINE)
-                    .duration(1000)
-                    .EUt(30720)
-                    .save(provider);
+            if (motorIv.isEmpty() || pumpIv.isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/large_mana_turbine: a required GT item is missing");
+            } else {
+                GTRecipeBuilder.of(id("large_mana_turbine"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                        .inputItems(PollutionMachines.MAGIC_ENERGY_ABSORBER[GTValues.EV], 8)
+                        .circuitMeta(1)
+                        .inputItems(motorIv)
+                        .inputItems(pumpIv)
+                        .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 32))
+                        .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 4))
+                        .inputFluids(turbineFuel)
+                        .inputFluids(lubricant)
+                        .outputItems(PollutionMachines.MAGIC_LARGE_TURBINE)
+                        .duration(1000)
+                        .EUt(30720)
+                        .save(provider);
+            }
 
             // 巨型魔力轮机（装配线；上游的 84 个分级电路合并为配置电路）
-            GTRecipeBuilder.of(id("mega_mana_turbine"), GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
-                    .inputItems(PollutionMachines.MAGIC_LARGE_TURBINE, 64)
-                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 64))
-                    .circuitMeta(4)
-                    .inputItems(GTItems.ELECTRIC_PUMP_LuV, 64)
-                    .inputItems(GTItems.FIELD_GENERATOR_LuV, 16)
-                    .inputItems(ChemicalHelper.get(TagPrefix.plateDense, GTMaterials.TungstenSteel, 32))
-                    .inputItems(ChemicalHelper.get(TagPrefix.cableGtHex, GTMaterials.TungstenSteel, 16))
-                    .inputFluids(fluid(PollutionMaterials.InfusedAura, 64000))
-                    .inputFluids(fluid(GTMaterials.Lubricant, 64000))
-                    .outputItems(PollutionMachines.MEGA_MANA_TURBINE)
-                    .duration(1600)
-                    .EUt(GTValues.VA[GTValues.ZPM])
-                    .save(provider);
+            if (pumpLuv.isEmpty() || generatorLuv.isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/mega_mana_turbine: a required GT item is missing");
+            } else {
+                GTRecipeBuilder.of(id("mega_mana_turbine"), GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
+                        .inputItems(PollutionMachines.MAGIC_LARGE_TURBINE, 64)
+                        .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 64))
+                        .circuitMeta(4)
+                        .inputItems(pumpLuv)
+                        .inputItems(generatorLuv)
+                        .inputItems(ChemicalHelper.get(TagPrefix.plateDense, GTMaterials.TungstenSteel, 32))
+                        .inputItems(ChemicalHelper.get(TagPrefix.cableGtHex, GTMaterials.TungstenSteel, 16))
+                        .inputFluids(fluid(PollutionMaterials.InfusedAura, 64000))
+                        .inputFluids(fluid(GTMaterials.Lubricant, 64000))
+                        .outputItems(PollutionMachines.MEGA_MANA_TURBINE)
+                        .duration(1600)
+                        .EUt(GTValues.VA[GTValues.ZPM])
+                        .save(provider);
+            }
         } else {
             Pollution.LOGGER.warn("Skipping the magic_gcym mana turbine group: a required fluid is missing");
         }
 
         // 泰拉冰箱
-        GTRecipeBuilder.of(id("bot_vacuum_freezer"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTMultiMachines.VACUUM_FREEZER, 16)
-                .circuitMeta(16)
-                .inputItems(GTItems.FIELD_GENERATOR_IV, 4)
-                .inputItems(GTItems.ELECTRIC_PUMP_IV, 16)
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 32))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 4))
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 4))
-                .inputFluids(fluid(PollutionMaterials.InfusedAura, 10000))
-                .outputItems(PollutionMachines.BOT_VACUUM_FREEZER)
-                .duration(1000)
-                .EUt(30720)
-                .save(provider);
-
-        // 泰拉集气室（上游大型集气室在 7.5.3 中不存在，改用单方块集气室）
-        if (GTMachines.GAS_COLLECTOR.length > 1 && GTMachines.GAS_COLLECTOR[1] != null) {
-            GTRecipeBuilder.of(id("bot_gas_collector"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(GTMachines.GAS_COLLECTOR[1], 16)
+        ItemStack generatorIv = SafeItems.gt("iv_field_generator", 4);
+        if (generatorIv.isEmpty() || pumpIv.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/bot_vacuum_freezer: a required GT item is missing");
+        } else {
+            GTRecipeBuilder.of(id("bot_vacuum_freezer"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(GTMultiMachines.VACUUM_FREEZER, 16)
                     .circuitMeta(16)
-                    .inputItems(GTItems.FIELD_GENERATOR_IV, 4)
-                    .inputItems(GTItems.ELECTRIC_PUMP_IV, 16)
-                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.NaquadahAlloy, 32))
-                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
+                    .inputItems(generatorIv)
+                    .inputItems(pumpIv)
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 32))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 4))
                     .inputFluids(fluid(PollutionMaterials.InfusedAura, 10000))
-                    .outputItems(PollutionMachines.BOT_GAS_COLLECTOR)
+                    .outputItems(PollutionMachines.BOT_VACUUM_FREEZER)
                     .duration(1000)
                     .EUt(30720)
                     .save(provider);
+        }
+
+        // 泰拉集气室（上游大型集气室在 7.5.3 中不存在，改用单方块集气室）
+        if (GTMachines.GAS_COLLECTOR.length > 1 && GTMachines.GAS_COLLECTOR[1] != null) {
+            if (generatorIv.isEmpty() || pumpIv.isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/bot_gas_collector: a required GT item is missing");
+            } else {
+                GTRecipeBuilder.of(id("bot_gas_collector"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                        .inputItems(GTMachines.GAS_COLLECTOR[1], 16)
+                        .circuitMeta(16)
+                        .inputItems(generatorIv)
+                        .inputItems(pumpIv)
+                        .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.NaquadahAlloy, 32))
+                        .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
+                        .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
+                        .inputFluids(fluid(PollutionMaterials.InfusedAura, 10000))
+                        .outputItems(PollutionMachines.BOT_GAS_COLLECTOR)
+                        .duration(1000)
+                        .EUt(30720)
+                        .save(provider);
+            }
         } else {
             Pollution.LOGGER.warn("Skipping magic_gcym/bot_gas_collector: no GTCEu gas collector registered");
         }
@@ -506,11 +532,12 @@ public final class MagicGCYMRecipes {
         // 泰拉电路组装机（上游 BloodOfAvernus -> TungstenSteel，ElvenElementium -> NaquadahAlloy）
         ItemStack autoElenchus = item("auto_elenchus_device");
         ItemStack elucidator = item("elucidator_of_four_causes");
-        if (!autoElenchus.isEmpty() && !elucidator.isEmpty()) {
+        ItemStack generatorLuv4 = SafeItems.gt("luv_field_generator", 4);
+        if (!autoElenchus.isEmpty() && !elucidator.isEmpty() && !generatorLuv4.isEmpty()) {
             GTRecipeBuilder.of(id("bot_circuit_assembler"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.CIRCUIT_ASSEMBLER[GTValues.LuV], 4)
                     .inputItems(PollutionMagicBlocks.MANA_5.asStack(4))
-                    .inputItems(GTItems.FIELD_GENERATOR_LuV, 4)
+                    .inputItems(generatorLuv4)
                     .inputItems(autoElenchus.copyWithCount(4))
                     .inputItems(elucidator.copyWithCount(2))
                     .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 16))
@@ -535,17 +562,21 @@ public final class MagicGCYMRecipes {
         ItemStack infinity = ChemicalHelper.get(TagPrefix.dust, GTNNMaterials.Infinity, 1);
         FluidStack aura = fluid(PollutionMaterials.InfusedAura, 6400);
         FluidStack uuMatter = fluid(GTMaterials.UUMatter, 12800);
-        if (infinity.isEmpty() || aura == null || uuMatter == null) {
+        ItemStack infusedSeeds = SafeItems.byId("botania", "infused_seeds", 4);
+        ItemStack pixieDust = SafeItems.byId("botania", "pixie_dust", 4);
+        ItemStack overgrowthSeed = SafeItems.byId("botania", "overgrowth_seed", 4);
+        if (infinity.isEmpty() || aura == null || uuMatter == null
+                || infusedSeeds.isEmpty() || pixieDust.isEmpty() || overgrowthSeed.isEmpty()) {
             Pollution.LOGGER.warn("Skipping magic_gcym/overgrowth_seed: a required material or fluid is missing");
             return;
         }
         GTRecipeBuilder.of(id("overgrowth_seed"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(BotaniaItems.infusedSeeds, 4)
-                .inputItems(BotaniaItems.pixieDust, 4)
+                .inputItems(infusedSeeds)
+                .inputItems(pixieDust)
                 .inputItems(infinity)
                 .inputFluids(aura)
                 .inputFluids(uuMatter)
-                .outputItems(BotaniaItems.overgrowthSeed, 4)
+                .outputItems(overgrowthSeed)
                 .duration(5000)
                 .EUt(32768)
                 .save(provider);
@@ -674,12 +705,17 @@ public final class MagicGCYMRecipes {
 
         Material[] manaAlloys = { PollutionMaterials.IgnisSteel, PollutionMaterials.Aertitanium,
                 PollutionMaterials.Terracopper, PollutionMaterials.Aquasilver, PollutionMaterials.Terracopper };
-        Item[] manaRunes = { BotaniaItems.runeFire, BotaniaItems.runeAir, BotaniaItems.runeEarth,
-                BotaniaItems.runeSpring, BotaniaItems.runeAutumn };
+        ItemStack[] manaRunes = { SafeItems.byId("botania", "rune_fire", 1),
+                SafeItems.byId("botania", "rune_air", 1), SafeItems.byId("botania", "rune_earth", 1),
+                SafeItems.byId("botania", "rune_spring", 1), SafeItems.byId("botania", "rune_autumn", 1) };
         var manaBlocks = new com.tterrag.registrate.util.entry.BlockEntry[] {
                 PollutionMagicBlocks.MANA_1, PollutionMagicBlocks.MANA_2, PollutionMagicBlocks.MANA_3,
                 PollutionMagicBlocks.MANA_4, PollutionMagicBlocks.MANA_5 };
         for (int index = 0; index < manaAlloys.length; index++) {
+            if (manaRunes[index].isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/mana_casing/{}: a Botania rune is missing", index + 1);
+                continue;
+            }
             GTRecipeBuilder.of(id("mana_casing/" + (index + 1)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.ingot, manaAlloys[index], 3))
                     .inputItems(PollutionMagicBlocks.MANA_BASIC.asStack())
@@ -704,6 +740,7 @@ public final class MagicGCYMRecipes {
             Pollution.LOGGER.warn("Skipping the magic_gcym greenhouse group: InfusedEarth has no fluid");
             return;
         }
+        ItemStack fertilizer = SafeItems.gt("fertilizer", 1);
         GTRecipeBuilder.of(id("greenhouse/greatwood"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
                 .inputItems(new ItemStack(TCBlocks.GREATWOOD_SAPLING.get()))
                 .inputFluids(earth)
@@ -714,17 +751,21 @@ public final class MagicGCYMRecipes {
                 .EUt(120)
                 .save(provider);
 
-        GTRecipeBuilder.of(id("greenhouse/greatwood_fertilized"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
-                .inputItems(new ItemStack(TCBlocks.GREATWOOD_SAPLING.get()))
-                .inputItems(GTItems.FERTILIZER.asStack())
-                .inputFluids(fluid(PollutionMaterials.InfusedEarth, 144))
-                .outputItems(new ItemStack(TCBlocks.GREATWOOD_LOG.get(), 16))
-                .outputItems(new ItemStack(TCBlocks.GREATWOOD_SAPLING.get(), 4))
-                .outputItems(new ItemStack(TCBlocks.GREATWOOD_LEAVES.get(), 16))
-                .circuitMeta(2)
-                .duration(200)
-                .EUt(120)
-                .save(provider);
+        if (fertilizer.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/greenhouse/greatwood_fertilized: GT fertilizer is missing");
+        } else {
+            GTRecipeBuilder.of(id("greenhouse/greatwood_fertilized"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
+                    .inputItems(new ItemStack(TCBlocks.GREATWOOD_SAPLING.get()))
+                    .inputItems(fertilizer)
+                    .inputFluids(fluid(PollutionMaterials.InfusedEarth, 144))
+                    .outputItems(new ItemStack(TCBlocks.GREATWOOD_LOG.get(), 16))
+                    .outputItems(new ItemStack(TCBlocks.GREATWOOD_SAPLING.get(), 4))
+                    .outputItems(new ItemStack(TCBlocks.GREATWOOD_LEAVES.get(), 16))
+                    .circuitMeta(2)
+                    .duration(200)
+                    .EUt(120)
+                    .save(provider);
+        }
 
         FluidStack earth288 = fluid(PollutionMaterials.InfusedEarth, 288);
         if (earth288 == null) {
@@ -740,17 +781,21 @@ public final class MagicGCYMRecipes {
                 .EUt(480)
                 .save(provider);
 
-        GTRecipeBuilder.of(id("greenhouse/silverwood_fertilized"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
-                .inputItems(new ItemStack(TCBlocks.SILVERWOOD_SAPLING.get()))
-                .inputItems(GTItems.FERTILIZER.asStack())
-                .inputFluids(fluid(PollutionMaterials.InfusedEarth, 288))
-                .outputItems(new ItemStack(TCBlocks.SILVERWOOD_LOG.get(), 8))
-                .outputItems(new ItemStack(TCBlocks.SILVERWOOD_SAPLING.get(), 2))
-                .outputItems(new ItemStack(TCBlocks.SILVERWOOD_LEAVES.get(), 8))
-                .circuitMeta(2)
-                .duration(400)
-                .EUt(480)
-                .save(provider);
+        if (fertilizer.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/greenhouse/silverwood_fertilized: GT fertilizer is missing");
+        } else {
+            GTRecipeBuilder.of(id("greenhouse/silverwood_fertilized"), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
+                    .inputItems(new ItemStack(TCBlocks.SILVERWOOD_SAPLING.get()))
+                    .inputItems(fertilizer)
+                    .inputFluids(fluid(PollutionMaterials.InfusedEarth, 288))
+                    .outputItems(new ItemStack(TCBlocks.SILVERWOOD_LOG.get(), 8))
+                    .outputItems(new ItemStack(TCBlocks.SILVERWOOD_SAPLING.get(), 2))
+                    .outputItems(new ItemStack(TCBlocks.SILVERWOOD_LEAVES.get(), 8))
+                    .circuitMeta(2)
+                    .duration(400)
+                    .EUt(480)
+                    .save(provider);
+        }
     }
 
     // ////////////////////////////////////
@@ -767,49 +812,64 @@ public final class MagicGCYMRecipes {
         }
         // 节点高炉（上游 BlocksTC.smelterThaumium -> TC4R ALCHEMICAL_FURNACE，
         // frameGtTerrasteel -> TungstenSteel frame，gear HyperdimensionalSilver -> NaquadahAlloy gear）
-        GTRecipeBuilder.of(id("node_blast_furnace"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(64))
-                .inputItems(new ItemStack(TCBlocks.ALCHEMICAL_FURNACE.get(), 16))
-                .inputItems(GTItems.FIELD_GENERATOR_IV.asStack(16))
-                .inputItems(valonite9)
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
-                .inputItems(philosopherStone(1))
-                .inputFluids(dta)
-                .outputItems(PollutionMachines.NODE_BLAST_FURNACE)
-                .duration(10000)
-                .EUt(7680)
-                .save(provider);
+        ItemStack fieldGeneratorIv16 = SafeItems.gt("iv_field_generator", 16);
+        if (fieldGeneratorIv16.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/node_blast_furnace: GT field generator is missing");
+        } else {
+            GTRecipeBuilder.of(id("node_blast_furnace"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack(64))
+                    .inputItems(new ItemStack(TCBlocks.ALCHEMICAL_FURNACE.get(), 16))
+                    .inputItems(fieldGeneratorIv16)
+                    .inputItems(valonite9)
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
+                    .inputItems(philosopherStone(1))
+                    .inputFluids(dta)
+                    .outputItems(PollutionMachines.NODE_BLAST_FURNACE)
+                    .duration(10000)
+                    .EUt(7680)
+                    .save(provider);
+        }
 
         // 小化工厂（上游 GTQT CHEMICAL_PLANT -> GTCEu 大型化学反应釜）
-        GTRecipeBuilder.of(id("small_chemical_plant"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTMachines.CHEMICAL_REACTOR[GTValues.IV], 4)
-                .inputItems(GTMultiMachines.LARGE_CHEMICAL_REACTOR)
-                .inputItems(GTItems.FIELD_GENERATOR_IV.asStack(4))
-                .inputItems(valonite9)
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
-                .inputItems(PollutionItems.EVOLUTION_CATALYST_CORE.asStack())
-                .inputFluids(dta)
-                .outputItems(PollutionMachines.SMALL_CHEMICAL_PLANT)
-                .duration(10000)
-                .EUt(7680)
-                .save(provider);
+        ItemStack fieldGeneratorIv4 = SafeItems.gt("iv_field_generator", 4);
+        if (fieldGeneratorIv4.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/small_chemical_plant: GT field generator is missing");
+        } else {
+            GTRecipeBuilder.of(id("small_chemical_plant"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(GTMachines.CHEMICAL_REACTOR[GTValues.IV], 4)
+                    .inputItems(GTMultiMachines.LARGE_CHEMICAL_REACTOR)
+                    .inputItems(fieldGeneratorIv4)
+                    .inputItems(valonite9)
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.NaquadahAlloy, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel, 4))
+                    .inputItems(PollutionItems.EVOLUTION_CATALYST_CORE.asStack())
+                    .inputFluids(dta)
+                    .outputItems(PollutionMachines.SMALL_CHEMICAL_PLANT)
+                    .duration(10000)
+                    .EUt(7680)
+                    .save(provider);
+        }
 
         // GT 版炼金枢纽
         FluidStack aura = fluid(PollutionMaterials.InfusedAura, 1000);
+        ItemStack fieldGeneratorHv = SafeItems.gt("hv_field_generator", 8);
         if (aura != null) {
-            GTRecipeBuilder.of(id("gt_essence_smelter"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(PollutionMachines.ESSENCE_SMELTER)
-                    .inputItems(PollutionMachines.MAGIC_CHEMICAL_REACTOR)
-                    .inputItems(GTItems.FIELD_GENERATOR_HV.asStack(8))
-                    .inputItems(new ItemStack(TCBlocks.ALCHEMICAL_FURNACE.get(), 8))
-                    .inputFluids(aura)
-                    .outputItems(PollutionMachines.GT_ESSENCE_SMELTER)
-                    .circuitMeta(1)
-                    .duration(1000)
-                    .EUt(1920)
-                    .save(provider);
+            if (fieldGeneratorHv.isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/gt_essence_smelter: GT field generator is missing");
+            } else {
+                GTRecipeBuilder.of(id("gt_essence_smelter"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                        .inputItems(PollutionMachines.ESSENCE_SMELTER)
+                        .inputItems(PollutionMachines.MAGIC_CHEMICAL_REACTOR)
+                        .inputItems(fieldGeneratorHv)
+                        .inputItems(new ItemStack(TCBlocks.ALCHEMICAL_FURNACE.get(), 8))
+                        .inputFluids(aura)
+                        .outputItems(PollutionMachines.GT_ESSENCE_SMELTER)
+                        .circuitMeta(1)
+                        .duration(1000)
+                        .EUt(1920)
+                        .save(provider);
+            }
         }
     }
 
@@ -867,71 +927,97 @@ public final class MagicGCYMRecipes {
             return;
         }
 
-        // 理式核心
-        GTRecipeBuilder.of(id("component/core_of_idea"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.AethericDarkSteel, 2))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, PollutionMaterials.AethericDarkSteel, 1))
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.IizunamaruElectrum, 8))
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, PollutionMaterials.IizunamaruElectrum, 4))
-                .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get(), 16))
-                .inputItems(new ItemStack(TCItems.ESSENTIA_RESONATOR.get(), 16))
-                .inputItems(GTItems.FIELD_GENERATOR_LuV.asStack())
-                .inputFluids(aura)
-                .outputItems(coreOfIdea.copy())
-                .duration(400)
-                .EUt(30720)
-                .save(provider);
+        ItemStack fieldGeneratorLuv = SafeItems.gt("luv_field_generator", 1);
+        ItemStack pistonLuv = SafeItems.gt("luv_electric_piston", 2);
+        ItemStack robotArmLuv1 = SafeItems.gt("luv_robot_arm", 1);
+        ItemStack robotArmLuv2 = SafeItems.gt("luv_robot_arm", 2);
+        ItemStack pumpLuv = SafeItems.gt("luv_electric_pump", 2);
+        ItemStack sensorZpm = SafeItems.gt("zpm_sensor", 1);
+        ItemStack emitterZpm = SafeItems.gt("zpm_emitter", 1);
+        ItemStack emitterLuv = SafeItems.gt("luv_emitter", 8);
+        ItemStack sensorLuv = SafeItems.gt("luv_sensor", 8);
+        ItemStack fieldGeneratorLuv4 = SafeItems.gt("luv_field_generator", 4);
+        ItemStack essentiaResonator = SafeItems.byId("thaumcraft", "resonator", 16);
+        ItemStack voidIngot8 = SafeItems.byId("thaumcraft", "void_ingot", 8);
+        ItemStack voidIngot16 = SafeItems.byId("thaumcraft", "void_ingot", 16);
+        ItemStack primordialPearl = SafeItems.byId("thaumcraft", "primordial_pearl", 4);
 
-        // 自动反诘装置（BloodOfAvernus -> TungstenSteel）
-        ItemStack autoElenchus = item("auto_elenchus_device");
-        if (!autoElenchus.isEmpty()) {
-            GTRecipeBuilder.of(id("component/auto_elenchus"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 6))
-                    .inputItems(ChemicalHelper.get(TagPrefix.gearSmall, GTMaterials.TungstenSteel, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.IizunamaruElectrum, 4))
-                    .inputItems(ChemicalHelper.get(TagPrefix.rod, PollutionMaterials.AethericDarkSteel, 4))
-                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
-                    .inputItems(coreOfIdea.copyWithCount(2))
-                    .inputItems(GTItems.ELECTRIC_PISTON_LuV.asStack(2))
-                    .inputItems(GTItems.ROBOT_ARM_LuV.asStack())
+        // 理式核心
+        if (fieldGeneratorLuv.isEmpty() || essentiaResonator.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/component/core_of_idea: a required GT/TC item is missing");
+        } else {
+            GTRecipeBuilder.of(id("component/core_of_idea"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.AethericDarkSteel, 2))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, PollutionMaterials.AethericDarkSteel, 1))
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.IizunamaruElectrum, 8))
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, PollutionMaterials.IizunamaruElectrum, 4))
+                    .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get(), 16))
+                    .inputItems(essentiaResonator)
+                    .inputItems(fieldGeneratorLuv)
                     .inputFluids(aura)
-                    .outputItems(autoElenchus.copy())
+                    .outputItems(coreOfIdea.copy())
                     .duration(400)
                     .EUt(30720)
                     .save(provider);
         }
 
+        // 自动反诘装置（BloodOfAvernus -> TungstenSteel）
+        ItemStack autoElenchus = item("auto_elenchus_device");
+        if (!autoElenchus.isEmpty() && !pistonLuv.isEmpty() && !robotArmLuv1.isEmpty()
+                && !voidIngot8.isEmpty()) {
+            GTRecipeBuilder.of(id("component/auto_elenchus"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 6))
+                    .inputItems(ChemicalHelper.get(TagPrefix.gearSmall, GTMaterials.TungstenSteel, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.IizunamaruElectrum, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.rod, PollutionMaterials.AethericDarkSteel, 4))
+                    .inputItems(voidIngot8)
+                    .inputItems(coreOfIdea.copyWithCount(2))
+                    .inputItems(pistonLuv)
+                    .inputItems(robotArmLuv1)
+                    .inputFluids(aura)
+                    .outputItems(autoElenchus.copy())
+                    .duration(400)
+                    .EUt(30720)
+                    .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_gcym/component/auto_elenchus: a required item is missing");
+        }
+
         // 太一燃素瓶（BloodOfAvernus -> TungstenSteel）
         ItemStack bottle = item("bottle_of_phlogistonic_oneness");
         FluidStack fire = fluid(PollutionMaterials.InfusedFire, 64000);
-        if (!bottle.isEmpty() && fire != null) {
+        if (!bottle.isEmpty() && fire != null && !pumpLuv.isEmpty() && !voidIngot8.isEmpty()
+                && !primordialPearl.isEmpty()) {
             GTRecipeBuilder.of(id("component/phlogistonic_bottle"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.rotor, PollutionMaterials.IizunamaruElectrum, 2))
                     .inputItems(ChemicalHelper.get(TagPrefix.gearSmall, GTMaterials.TungstenSteel, 4))
                     .inputItems(ChemicalHelper.get(TagPrefix.ring, PollutionMaterials.IizunamaruElectrum, 32))
                     .inputItems(ChemicalHelper.get(TagPrefix.screw, PollutionMaterials.AethericDarkSteel, 12))
-                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
+                    .inputItems(voidIngot8)
                     .inputItems(coreOfIdea.copyWithCount(2))
-                    .inputItems(new ItemStack(TCItems.PRIMORDIAL_PEARL.get(), 4))
-                    .inputItems(GTItems.ELECTRIC_PUMP_LuV.asStack(2))
+                    .inputItems(primordialPearl)
+                    .inputItems(pumpLuv)
                     .inputFluids(fire)
                     .inputFluids(aura)
                     .outputItems(bottle.copy())
                     .duration(400)
                     .EUt(30720)
                     .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_gcym/component/phlogistonic_bottle: a required item is missing");
         }
 
         // 四因阐释器（BloodOfAvernus -> TungstenSteel）
         ItemStack elucidator = item("elucidator_of_four_causes");
-        if (!elucidator.isEmpty() && !autoElenchus.isEmpty()) {
+        if (!elucidator.isEmpty() && !autoElenchus.isEmpty() && !robotArmLuv2.isEmpty()
+                && !voidIngot16.isEmpty() && !primordialPearl.isEmpty()) {
             GTRecipeBuilder.of(id("component/elucidator"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.IizunamaruElectrum, 16))
                     .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.TungstenSteel, 16))
                     .inputItems(ChemicalHelper.get(TagPrefix.plate, PollutionMaterials.AethericDarkSteel, 16))
-                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 16))
-                    .inputItems(new ItemStack(TCItems.PRIMORDIAL_PEARL.get(), 4))
-                    .inputItems(GTItems.ROBOT_ARM_LuV.asStack(2))
+                    .inputItems(voidIngot16)
+                    .inputItems(primordialPearl)
+                    .inputItems(robotArmLuv2)
                     .inputItems(coreOfIdea.copyWithCount(2))
                     .inputItems(autoElenchus.copy())
                     .inputFluids(fluid(PollutionMaterials.DimensionalTransformingAgent, 8000))
@@ -940,19 +1026,22 @@ public final class MagicGCYMRecipes {
                     .duration(400)
                     .EUt(30720)
                     .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_gcym/component/elucidator: a required item is missing");
         }
 
         // 意志数据链（SentientMetal/BindingMetal 为真实材料；
         // VoidMetal -> TC4R void ingot）
         ItemStack dataLink = item("symptomatic_vis_data_link");
-        if (!dataLink.isEmpty() && !bottle.isEmpty()) {
+        if (!dataLink.isEmpty() && !bottle.isEmpty() && !sensorZpm.isEmpty() && !emitterZpm.isEmpty()
+                && !voidIngot16.isEmpty()) {
             GTRecipeBuilder.of(id("component/vis_data_link"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(ChemicalHelper.get(TagPrefix.plateDouble,
                             PollutionMaterials.IizunamaruElectrum, 16))
-                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 16))
+                    .inputItems(voidIngot16)
                     .inputItems(ChemicalHelper.get(TagPrefix.rodLong, PollutionMaterials.AethericDarkSteel, 8))
-                    .inputItems(GTItems.SENSOR_ZPM.asStack())
-                    .inputItems(GTItems.EMITTER_ZPM.asStack())
+                    .inputItems(sensorZpm)
+                    .inputItems(emitterZpm)
                     .inputItems(coreOfIdea.copyWithCount(2))
                     .inputItems(bottle.copy())
                     .inputFluids(fluid(PollutionMaterials.DimensionalTransformingAgent, 8000))
@@ -962,11 +1051,14 @@ public final class MagicGCYMRecipes {
                     .duration(400)
                     .EUt(122880)
                     .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_gcym/component/vis_data_link: a required item is missing");
         }
 
         // 中控塔（上游 ErichAura -> InfusedAura，HyperdimensionalSilver 为真实材料，
         // ItemsTC.morphicResonator -> NODE_TRANSDUCER）
-        if (!dataLink.isEmpty() && PollutionMachines.BOT_GAS_COLLECTOR != null
+        if (!dataLink.isEmpty() && !emitterLuv.isEmpty() && !sensorLuv.isEmpty()
+                && !fieldGeneratorLuv4.isEmpty() && PollutionMachines.BOT_GAS_COLLECTOR != null
                 && PollutionMachines.FLUX_SCRUBBER != null && PollutionMachines.FLUX_SCRUBBER.length > 1
                 && PollutionMachines.FLUX_SCRUBBER[1] != null) {
             GTRecipeBuilder.of(id("central_vis_tower"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
@@ -977,14 +1069,16 @@ public final class MagicGCYMRecipes {
                     .inputItems(new ItemStack(TCBlocks.NODE_TRANSDUCER.get(), 64))
                     .inputItems(ChemicalHelper.get(TagPrefix.frameGt,
                             PollutionMaterials.HyperdimensionalSilver, 16))
-                    .inputItems(GTItems.EMITTER_LuV.asStack(8))
-                    .inputItems(GTItems.SENSOR_LuV.asStack(8))
-                    .inputItems(GTItems.FIELD_GENERATOR_LuV.asStack(4))
+                    .inputItems(emitterLuv)
+                    .inputItems(sensorLuv)
+                    .inputItems(fieldGeneratorLuv4)
                     .inputFluids(fluid(PollutionMaterials.InfusedAura, 16000))
                     .outputItems(PollutionMachines.CENTRAL_VIS_TOWER)
                     .duration(4000)
                     .EUt(30720)
                     .save(provider);
+        } else {
+            Pollution.LOGGER.warn("Skipping magic_gcym/central_vis_tower: a required item or machine is missing");
         }
     }
 
@@ -1041,22 +1135,28 @@ public final class MagicGCYMRecipes {
                 PollutionMagicBlocks.TUNGSTENSTEEL_GEARBOX);
 
         // 电池外壳
-        GTRecipeBuilder.of(id("battery_casing"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSSG, 1))
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.StainlessSteel, 2))
-                .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1))
-                .inputItems(GTItems.FIELD_GENERATOR_MV.asStack())
-                .outputItems(PollutionMagicBlocks.MAGIC_BATTERY_CASING.asStack(16))
-                .duration(100)
-                .EUt(1920)
-                .save(provider);
+        ItemStack fieldGeneratorMv = SafeItems.gt("mv_field_generator", 1);
+        if (fieldGeneratorMv.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_gcym/battery_casing: GT field generator is missing");
+        } else {
+            GTRecipeBuilder.of(id("battery_casing"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSSG, 1))
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.StainlessSteel, 2))
+                    .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1))
+                    .inputItems(fieldGeneratorMv)
+                    .outputItems(PollutionMagicBlocks.MAGIC_BATTERY_CASING.asStack(16))
+                    .duration(100)
+                    .EUt(1920)
+                    .save(provider);
+        }
 
         // 过滤器 1..5
         var filters = new com.tterrag.registrate.util.entry.BlockEntry[] {
                 PollutionMagicBlocks.FILTER_1, PollutionMagicBlocks.FILTER_2, PollutionMagicBlocks.FILTER_3,
                 PollutionMagicBlocks.FILTER_4, PollutionMagicBlocks.FILTER_5 };
-        var generators = new ItemStack[] { GTItems.FIELD_GENERATOR_LV.asStack(), GTItems.FIELD_GENERATOR_MV.asStack(),
-                GTItems.FIELD_GENERATOR_HV.asStack(), GTItems.FIELD_GENERATOR_EV.asStack() };
+        var generators = new ItemStack[] { SafeItems.gt("lv_field_generator", 1),
+                SafeItems.gt("mv_field_generator", 1), SafeItems.gt("hv_field_generator", 1),
+                SafeItems.gt("ev_field_generator", 1) };
         GTRecipeBuilder.of(id("filter/1"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.HSSG, 3))
                 .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.HSSG, 1))
@@ -1066,6 +1166,10 @@ public final class MagicGCYMRecipes {
                 .EUt(480)
                 .save(provider);
         for (int index = 1; index < filters.length; index++) {
+            if (generators[index - 1].isEmpty()) {
+                Pollution.LOGGER.warn("Skipping magic_gcym/filter/{}: GT field generator is missing", index + 1);
+                continue;
+            }
             GTRecipeBuilder.of(id("filter/" + (index + 1)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(filters[index - 1].asStack(8))
                     .inputItems(generators[index - 1])

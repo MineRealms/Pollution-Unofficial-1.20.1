@@ -53,6 +53,8 @@ public class MagicAssemblerMachine extends MagicMultiblockController {
                 .where('C', MagicStructureElements.frame(GTMaterials.NaquadahAlloy))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))
                 .where('E', MagicStructureElements.frame(GTMaterials.TungstenSteel))
+                // 上游: tieredCasing('F', beamCores) -> 本移植版: 单档光束核心
+                .where('F', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_1.get()))
                 .where(' ', Predicates.any())
                 .build();
     }

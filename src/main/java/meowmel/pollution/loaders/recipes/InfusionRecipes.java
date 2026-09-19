@@ -7,15 +7,11 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import dev.arbor.gtnn.data.GTNNMaterials;
 import dev.tc4port.thaumcraft.api.ThaumcraftContent;
-import dev.tc4port.thaumcraft.registry.TCBlocks;
-import dev.tc4port.thaumcraft.registry.TCItems;
 import dev.tc4port.thaumcraft.registry.TCRecipes;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.unification.PollutionMaterials;
@@ -33,8 +29,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.block.BotaniaFlowerBlocks;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -168,23 +162,23 @@ public final class InfusionRecipes {
                     coreOfIdea.copy(),
                     aspects("cognitio", 32, "ordo", 24, "praecantatio", 24),
                     ing(circuit(GTValues.EV)),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()));
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)));
 
             infusion(provider, "ball_in_itself_board", item("ball_in_itself"), 6,
                     coreOfIdea.copy(),
                     aspects("cognitio", 32, "ordo", 24, "praecantatio", 24),
                     ing(PollutionItems.MAGIC_CIRCUIT_BOARD_EV.asStack()),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()));
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)));
         }
 
         // 节点稳定框架
@@ -208,10 +202,10 @@ public final class InfusionRecipes {
                 aspects("machina", 32, "praecantatio", 24, "auram", 16),
                 ing(PollutionItems.MANA_RESONANCE_COIL.asStack()),
                 ing(PollutionItems.BLOOD_PORT.asStack()),
-                ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                ing(GTItems.ROBOT_ARM_MV.asStack()),
-                ing(GTItems.SENSOR_MV.asStack()));
+                ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                ing(SafeItems.gt("mv_robot_arm", 1)),
+                ing(SafeItems.gt("mv_sensor", 1)));
     }
 
     // ////////////////////////////////////
@@ -241,14 +235,14 @@ public final class InfusionRecipes {
                 ing(PollutionItems.MAGIC_CIRCUIT_BOARD_UHV.asStack()),
                 ing(PollutionItems.CELESTIAL_CALIBRATION_CORE.asStack()),
                 ing(crystal("order")),
-                ing(GTItems.FIELD_GENERATOR_UHV.asStack()),
+                ing(SafeItems.gt("uhv_field_generator", 1)),
                 ing(PollutionItems.STARRY_RUNE.asStack()),
                 ing(crystal("order")),
                 ing(PollutionItems.ASTRAL_RESONANCE_COIL.asStack()),
                 ing(PollutionItems.MAGIC_CIRCUIT_BOARD_UHV.asStack()),
                 ing(PollutionItems.CELESTIAL_CALIBRATION_CORE.asStack()),
                 ing(crystal("order")),
-                ing(GTItems.FIELD_GENERATOR_UHV.asStack()));
+                ing(SafeItems.gt("uhv_field_generator", 1)));
     }
 
     // ////////////////////////////////////
@@ -263,9 +257,9 @@ public final class InfusionRecipes {
                 ing(PollutionItems.PRECISION_RUNE_BLANK.asStack()),
                 ing(PollutionItems.PRECISION_RUNE_BLANK.asStack()),
                 ing(PollutionItems.NATURAL_INFUSED_COIL.asStack()),
-                ing(GTItems.SMD_CAPACITOR.asStack(4)), ing(GTItems.SMD_CAPACITOR.asStack(4)),
-                ing(GTItems.SMD_TRANSISTOR.asStack(4)), ing(GTItems.SMD_TRANSISTOR.asStack(4)),
-                ing(GTItems.SMD_DIODE.asStack(4)), ing(GTItems.SMD_DIODE.asStack(4)));
+                ing(SafeItems.gt("smd_capacitor", 4)), ing(SafeItems.gt("smd_capacitor", 4)),
+                ing(SafeItems.gt("smd_transistor", 4)), ing(SafeItems.gt("smd_transistor", 4)),
+                ing(SafeItems.gt("smd_diode", 4)), ing(SafeItems.gt("smd_diode", 4)));
 
         infusion(provider, "magic_circuit_board_iv", PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack(), 6,
                 PollutionItems.MAGIC_CIRCUIT_BOARD_EV.asStack(),
@@ -274,9 +268,9 @@ public final class InfusionRecipes {
                 ing(PollutionItems.BLACK_RUNE.asStack()),
                 ing(PollutionItems.STARRY_RUNE.asStack()),
                 ing(PollutionItems.NODE_STABILIZATION_FRAME.asStack()),
-                ing(GTItems.SMD_CAPACITOR.asStack(8)), ing(GTItems.SMD_CAPACITOR.asStack(8)),
-                ing(GTItems.SMD_TRANSISTOR.asStack(8)), ing(GTItems.SMD_TRANSISTOR.asStack(8)),
-                ing(GTItems.SMD_DIODE.asStack(8)), ing(GTItems.SMD_DIODE.asStack(8)));
+                ing(SafeItems.gt("smd_capacitor", 8)), ing(SafeItems.gt("smd_capacitor", 8)),
+                ing(SafeItems.gt("smd_transistor", 8)), ing(SafeItems.gt("smd_transistor", 8)),
+                ing(SafeItems.gt("smd_diode", 8)), ing(SafeItems.gt("smd_diode", 8)));
     }
 
     // ////////////////////////////////////
@@ -313,7 +307,7 @@ public final class InfusionRecipes {
                 ing(crystal("air")), ing(crystal("fire")), ing(crystal("earth")),
                 ing(crystal("water")), ing(crystal("order")), ing(crystal("entropy")),
                 ing(frame(GTMaterials.HSSG, 1)),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()),
+                ing(SafeItems.gt("hv_field_generator", 1)),
                 ing(PollutionMagicBlocks.SPELL_PRISM.asStack()),
                 ing(PollutionMagicBlocks.BEAM_CORE_4.asStack()));
 
@@ -325,7 +319,7 @@ public final class InfusionRecipes {
                 ing(PollutionItems.MAGIC_BATTERY_MV.asStack()),
                 ing(PollutionItems.MAGIC_BATTERY_MV.asStack()),
                 ing(PollutionItems.MAGIC_BATTERY_MV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_MV.asStack()),
+                ing(SafeItems.gt("mv_field_generator", 1)),
                 ing(PollutionMagicBlocks.SPELL_PRISM_VOID.asStack()),
                 ing(PollutionMagicBlocks.BEAM_CORE_4.asStack()));
 
@@ -553,30 +547,30 @@ public final class InfusionRecipes {
                 ing(frame(GTMaterials.TungstenSteel, 1)),
                 ing(frame(GTMaterials.NaquadahAlloy, 1)),
                 ing(frame(GTMaterials.TungstenSteel, 1)),
-                ing(new ItemStack(TCBlocks.ARCANE_WORKTABLE.get())),
+                ing(SafeItems.byId("thaumcraft", "arcane_worktable", 1)),
                 ing(PollutionItems.INTEGRATION_CATALYST_CORE.asStack()),
                 ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
+                ing(SafeItems.gt("iv_field_generator", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)),
                 ing(machine(GTMachines.ASSEMBLER[GTValues.IV])));
 
         // 炼金枢纽 essence_smelter
         infusion(provider, "essence_smelter", PollutionMachines.ESSENCE_SMELTER.asStack(), 4,
-                new ItemStack(TCBlocks.ALCHEMICAL_FURNACE.get()),
+                SafeItems.byId("thaumcraft", "alchemical_furnace", 1),
                 aspects("permutatio", 128, "ignis", 64, "praecantatio", 32, "machina", 16),
                 ing(gem(PollutionMaterials.Valonite, 1)),
                 ing(frame(GTMaterials.StainlessSteel, 1)),
                 ing(frame(GTMaterials.HSSG, 1)),
-                ing(new ItemStack(TCBlocks.ALCHEMICAL_CONSTRUCT.get())),
-                ing(new ItemStack(TCBlocks.ALCHEMICAL_CONSTRUCT.get())),
+                ing(SafeItems.byId("thaumcraft", "alchemical_construct", 1)),
+                ing(SafeItems.byId("thaumcraft", "alchemical_construct", 1)),
                 ing(PollutionItems.INTEGRATION_CATALYST_CORE.asStack()),
                 ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
-                ing(GTItems.FIELD_GENERATOR_MV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_MV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_MV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_MV.asStack()),
+                ing(SafeItems.gt("mv_field_generator", 1)),
+                ing(SafeItems.gt("mv_field_generator", 1)),
+                ing(SafeItems.gt("mv_field_generator", 1)),
+                ing(SafeItems.gt("mv_field_generator", 1)),
                 ing(machine(GTMachines.CHEMICAL_REACTOR[GTValues.MV])));
 
         // 火红莲阵列 endoflame_array
@@ -584,13 +578,13 @@ public final class InfusionRecipes {
                 PollutionItems.HOT_CATALYST_CORE.asStack(),
                 aspects("herba", 250, "ignis", 128, "praecantatio", 32, "machina", 16),
                 ing(frame(GTMaterials.TungstenSteel, 1)),
-                ing(new ItemStack(BotaniaBlocks.naturaPylon)),
-                ing(new ItemStack(BotaniaFlowerBlocks.endoflame)),
+                ing(SafeItems.byId("botania", "natura_pylon", 1)),
+                ing(SafeItems.byId("botania", "endoflame", 1)),
                 ing(PollutionMagicBlocks.TERRA_4_CASING.asStack()),
                 ing(gem(PollutionMaterials.Valonite, 1)),
                 ing(circuit(GTValues.IV)), ing(circuit(GTValues.IV)),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()),
+                ing(SafeItems.gt("iv_field_generator", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)),
                 ing(machine(GTMultiMachines.LARGE_GAS_TURBINE)));
     }
 
@@ -607,8 +601,8 @@ public final class InfusionRecipes {
                 ing(gem(GTMaterials.Coke, 1)),
                 ing(gem(GTMaterials.Coal, 1)),
                 ing(gem(GTMaterials.Coal, 1)),
-                ing(new ItemStack(TCItems.ALUMENTUM.get())),
-                ing(new ItemStack(TCItems.ALUMENTUM.get())),
+                ing(SafeItems.byId("thaumcraft", "alumentum", 1)),
+                ing(SafeItems.byId("thaumcraft", "alumentum", 1)),
                 ing(crystal("entropy")),
                 ing(crystal("entropy")));
     }
@@ -624,9 +618,9 @@ public final class InfusionRecipes {
         int[] aspects = { 16, 64, 250 };
         int[] instability = { 2, 4, 6 };
         ItemStack[][] covers = {
-                { GTItems.COVER_SOLAR_PANEL_LV.asStack(), GTItems.COVER_SOLAR_PANEL_MV.asStack(),
-                        GTItems.COVER_SOLAR_PANEL_HV.asStack() },
-                { GTItems.SENSOR_LV.asStack(), GTItems.SENSOR_MV.asStack(), GTItems.SENSOR_HV.asStack() },
+                { SafeItems.gt("lv_solar_panel", 1), SafeItems.gt("mv_solar_panel", 1),
+                        SafeItems.gt("hv_solar_panel", 1) },
+                { SafeItems.gt("lv_sensor", 1), SafeItems.gt("mv_sensor", 1), SafeItems.gt("hv_sensor", 1) },
         };
         ItemStack[] circuits = { circuit(GTValues.LV), circuit(GTValues.MV), circuit(GTValues.HV) };
         Material[] cables = { GTMaterials.Tin, GTMaterials.Copper, GTMaterials.Gold };
@@ -671,10 +665,10 @@ public final class InfusionRecipes {
                 ing(dust(PollutionMaterials.Substrate, 9)),
                 ing(gem(GTMaterials.Amethyst, 1)),
                 ing(gem(GTMaterials.Opal, 1)),
-                ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())),
-                ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                ing(new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get())));
+                ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
+                ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                ing(SafeItems.byId("thaumcraft", "vis_charge_relay", 1)));
 
         infusion(provider, "hot_catalyst_core", PollutionItems.HOT_CATALYST_CORE.asStack(), 3,
                 PollutionItems.BLANK_CATALYST_CORE.asStack(),
@@ -697,8 +691,8 @@ public final class InfusionRecipes {
                 aspects("ordo", 128, "auram", 64),
                 ing(gem(GTMaterials.Diamond, 1)), ing(gem(GTMaterials.Diamond, 1)),
                 ing(crystal("order")), ing(crystal("order")),
-                ing(new ItemStack(TCBlocks.SILVERWOOD_LOG.get())),
-                ing(new ItemStack(TCBlocks.SILVERWOOD_LOG.get())),
+                ing(SafeItems.byId("thaumcraft", "silverwood_log", 1)),
+                ing(SafeItems.byId("thaumcraft", "silverwood_log", 1)),
                 ing(dust(GTMaterials.Lead, 2)), ing(dust(GTMaterials.Lead, 2)));
 
         infusion(provider, "segregation_catalyst_core", PollutionItems.SEGREGATION_CATALYST_CORE.asStack(), 5,
@@ -707,8 +701,8 @@ public final class InfusionRecipes {
                 ing(Items.ENDER_EYE), ing(Items.ENDER_EYE),
                 ing(crystal("entropy")), ing(crystal("entropy")),
                 // 上游: ItemsTC.voidSeed -> 本移植版: TC4R ELDRITCH_OBJECT
-                ing(new ItemStack(TCItems.ELDRITCH_OBJECT.get())),
-                ing(new ItemStack(TCItems.ELDRITCH_OBJECT.get())),
+                ing(SafeItems.byId("thaumcraft", "eldritch_object", 1)),
+                ing(SafeItems.byId("thaumcraft", "eldritch_object", 1)),
                 ing(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Gunpowder, 2)),
                 ing(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Gunpowder, 2)));
     }
@@ -723,16 +717,16 @@ public final class InfusionRecipes {
         infusion(provider, "artificial_valonite", gem(PollutionMaterials.Valonite, 1), 4,
                 gem(GTMaterials.Diamond, 1),
                 aspects("vitium", 16, "auram", 16, "humanus", 16),
-                ing(new ItemStack(TCBlocks.SILVERWOOD_LOG.get())),
+                ing(SafeItems.byId("thaumcraft", "silverwood_log", 1)),
                 ing(Items.DIAMOND),
                 // 上游: BlocksTC.crystalTaint -> 本移植版: TC4R FLUX_GOO
-                ing(new ItemStack(TCBlocks.FLUX_GOO.get())));
+                ing(SafeItems.byId("thaumcraft", "flux_goo", 1)));
 
         // 人工制造痂壳晶
         infusion(provider, "artificial_scabyst", gem(PollutionMaterials.Scabyst, 1), 2,
                 gem(GTMaterials.Amethyst, 1),
                 aspects("instrumentum", 25),
-                ing(new ItemStack(TCBlocks.GREATWOOD_LOG.get())),
+                ing(SafeItems.byId("thaumcraft", "greatwood_log", 1)),
                 ing(gem(GTMaterials.Amethyst, 1)),
                 ing(crystal("earth")));
 
@@ -743,8 +737,8 @@ public final class InfusionRecipes {
                 ing(Blocks.DIAMOND_BLOCK), ing(Blocks.EMERALD_BLOCK),
                 ing(Blocks.NETHERRACK), ing(Blocks.SOUL_SAND),
                 ing(gem(GTMaterials.Amethyst, 1)), ing(gem(GTMaterials.Opal, 1)),
-                ing(new ItemStack(TCItems.ELDRITCH_OBJECT.get())),
-                ing(new ItemStack(TCItems.ELDRITCH_OBJECT.get())),
+                ing(SafeItems.byId("thaumcraft", "eldritch_object", 1)),
+                ing(SafeItems.byId("thaumcraft", "eldritch_object", 1)),
                 ing(crystal("entropy")));
 
         // 黑土贤者之石
@@ -754,11 +748,11 @@ public final class InfusionRecipes {
             infusion(provider, "stone_of_philosopher_1", stone1, 12,
                     PollutionItems.BLANK_CATALYST_CORE.asStack(),
                     aspects("permutatio", 250, "fabrico", 250, "praecantatio", 250, "auram", 64),
-                    ing(GTItems.QUANTUM_STAR.asStack()), ing(GTItems.QUANTUM_EYE.asStack()),
-                    ing(new ItemStack(TCItems.ELDRITCH_OBJECT.get())),
-                    ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()), ing(GTItems.FIELD_GENERATOR_EV.asStack()),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()), ing(GTItems.FIELD_GENERATOR_EV.asStack()),
+                    ing(SafeItems.gt("quantum_star", 1)), ing(SafeItems.gt("quantum_eye", 1)),
+                    ing(SafeItems.byId("thaumcraft", "eldritch_object", 1)),
+                    ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)), ing(SafeItems.gt("ev_field_generator", 1)),
+                    ing(SafeItems.gt("ev_field_generator", 1)), ing(SafeItems.gt("ev_field_generator", 1)),
                     ing(gem(PollutionMaterials.Valonite, 1)),
                     // 上游: blockSubstrate -> 本移植版: Substrate dust x9
                     ing(dust(PollutionMaterials.Substrate, 9)),
@@ -769,56 +763,56 @@ public final class InfusionRecipes {
 
         // 纳米护目镜 / 纳米翅膀
         infusion(provider, "nano_goggles", PollutionItems.NANO_GOGGLES.asStack(), 6,
-                GTItems.NANO_HELMET.asStack(),
+                SafeItems.gt("nanomuscle_helmet", 1),
                 aspects("praecantatio", 128, "instrumentum", 128, "terra", 128, "sensus", 64),
                 ing(circuit(GTValues.HV)), ing(circuit(GTValues.HV)),
-                ing(GTItems.QUANTUM_EYE.asStack()),
-                ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                ing(GTItems.ELECTRIC_MOTOR_HV.asStack()), ing(GTItems.ELECTRIC_MOTOR_HV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()), ing(GTItems.FIELD_GENERATOR_HV.asStack()),
+                ing(SafeItems.gt("quantum_eye", 1)),
+                ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                ing(SafeItems.gt("hv_electric_motor", 1)), ing(SafeItems.gt("hv_electric_motor", 1)),
+                ing(SafeItems.gt("hv_field_generator", 1)), ing(SafeItems.gt("hv_field_generator", 1)),
                 ing(gem(PollutionMaterials.Valonite, 1)));
 
         infusion(provider, "wing_nano", PollutionItems.WING_NANO.asStack(), 6,
-                GTItems.NANO_CHESTPLATE.asStack(),
+                SafeItems.gt("nanomuscle_chestplate", 1),
                 aspects("praecantatio", 128, "instrumentum", 128, "terra", 128, "sensus", 64),
                 ing(circuit(GTValues.HV)), ing(circuit(GTValues.HV)),
-                ing(GTItems.QUANTUM_EYE.asStack()),
-                ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                ing(GTItems.ELECTRIC_PISTON_HV.asStack()), ing(GTItems.ELECTRIC_PISTON_HV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()), ing(GTItems.FIELD_GENERATOR_HV.asStack()),
+                ing(SafeItems.gt("quantum_eye", 1)),
+                ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                ing(SafeItems.gt("hv_electric_piston", 1)), ing(SafeItems.gt("hv_electric_piston", 1)),
+                ing(SafeItems.gt("hv_field_generator", 1)), ing(SafeItems.gt("hv_field_generator", 1)),
                 ing(gem(PollutionMaterials.Valonite, 1)));
 
         infusion(provider, "quantum_goggles", PollutionItems.QUANTUM_GOGGLES.asStack(), 8,
                 PollutionItems.NANO_GOGGLES.asStack(),
                 aspects("praecantatio", 250, "instrumentum", 250, "terra", 250, "sensus", 128),
                 ing(circuit(GTValues.IV)), ing(circuit(GTValues.IV)),
-                ing(GTItems.QUANTUM_HELMET.asStack()),
+                ing(SafeItems.gt("quarktech_helmet", 1)),
                 ing(PollutionItems.get("core_of_idea") == null ? ItemStack.EMPTY
                         : PollutionItems.get("core_of_idea").asStack()),
                 ing(PollutionItems.get("core_of_idea") == null ? ItemStack.EMPTY
                         : PollutionItems.get("core_of_idea").asStack()),
-                ing(GTItems.ELECTRIC_MOTOR_IV.asStack()), ing(GTItems.ELECTRIC_MOTOR_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()), ing(GTItems.FIELD_GENERATOR_IV.asStack()),
+                ing(SafeItems.gt("iv_electric_motor", 1)), ing(SafeItems.gt("iv_electric_motor", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)), ing(SafeItems.gt("iv_field_generator", 1)),
                 ing(gem(PollutionMaterials.Valonite, 1)));
 
         infusion(provider, "wing_quantum", PollutionItems.WING_QUANTUM.asStack(), 8,
                 PollutionItems.WING_NANO.asStack(),
                 aspects("praecantatio", 250, "instrumentum", 250, "terra", 250, "sensus", 128),
                 ing(circuit(GTValues.IV)), ing(circuit(GTValues.IV)),
-                ing(GTItems.QUANTUM_CHESTPLATE.asStack()),
+                ing(SafeItems.gt("quarktech_chestplate", 1)),
                 ing(PollutionItems.get("core_of_idea") == null ? ItemStack.EMPTY
                         : PollutionItems.get("core_of_idea").asStack()),
                 ing(PollutionItems.get("core_of_idea") == null ? ItemStack.EMPTY
                         : PollutionItems.get("core_of_idea").asStack()),
-                ing(GTItems.ELECTRIC_PISTON_IV.asStack()), ing(GTItems.ELECTRIC_PISTON_IV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_IV.asStack()), ing(GTItems.FIELD_GENERATOR_IV.asStack()),
+                ing(SafeItems.gt("iv_electric_piston", 1)), ing(SafeItems.gt("iv_electric_piston", 1)),
+                ing(SafeItems.gt("iv_field_generator", 1)), ing(SafeItems.gt("iv_field_generator", 1)),
                 ing(gem(PollutionMaterials.Valonite, 1)));
 
         // 创造肥皂（上游: ItemsTC.creativeFluxSponge -> 本移植版: TC4R SANITY_SOAP）
         ItemStack stone3 = PollutionItems.get("stone_of_philosopher_3") == null ? ItemStack.EMPTY
                 : PollutionItems.get("stone_of_philosopher_3").asStack();
         if (!stone3.isEmpty()) {
-            infusion(provider, "flux_soap", new ItemStack(TCItems.SANITY_SOAP.get()), 12, stone3,
+            infusion(provider, "flux_soap", SafeItems.byId("thaumcraft", "sanity_soap", 1), 12, stone3,
                     aspects("praecantatio", 250, "auram", 250, "ordo", 250, "aqua", 250, "vacuos", 250,
                             "victus", 250, "vitium", 250, "tutamen", 250),
                     ing(circuit(GTValues.ZPM)), ing(circuit(GTValues.ZPM)),
@@ -830,10 +824,10 @@ public final class InfusionRecipes {
                             : PollutionItems.get("auto_elenchus_device").asStack()),
                     ing(PollutionItems.get("bottle_of_phlogistonic_oneness") == null ? ItemStack.EMPTY
                             : PollutionItems.get("bottle_of_phlogistonic_oneness").asStack()),
-                    ing(GTItems.FIELD_GENERATOR_LuV.asStack()), ing(GTItems.FIELD_GENERATOR_LuV.asStack()),
+                    ing(SafeItems.gt("luv_field_generator", 1)), ing(SafeItems.gt("luv_field_generator", 1)),
                     ing(PollutionItems.BLACK_RUNE.asStack()), ing(PollutionItems.WHITE_RUNE.asStack()),
                     ing(PollutionItems.STARRY_RUNE.asStack()),
-                    ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
+                    ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
                     ing(Items.NETHER_STAR),
                     ing(gem(PollutionMaterials.Valonite, 1)));
         }
@@ -859,7 +853,7 @@ public final class InfusionRecipes {
                 new ItemStack(Items.TNT),
                 new ItemStack(Items.SOUL_SAND),
                 crystal("water"),
-                new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get()),
+                SafeItems.byId("thaumcraft", "vis_charge_relay", 1),
         };
         String[][] aspects = {
                 { "machina", "16", "praecantatio", "8", "metallum", "16" },
@@ -878,22 +872,22 @@ public final class InfusionRecipes {
                     aspects(aspects[index][0], 16, aspects[index][2], 8, aspects[index][4], 16),
                     ing(plate(GTMaterials.HSSG, 6)),
                     ing(frame(GTMaterials.HSSG, 1)),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
         }
     }
 
     /** 八个魔力线圈（上游 infusion magic_wirecoil-1..8）。 */
     private static void wireCoils(Consumer<FinishedRecipe> provider) {
         var coils = new Object[][] {
-                { "cupronickel", GTBlocks.COIL_CUPRONICKEL.asStack(), 4, 4, 1 },
-                { "kanthal", GTBlocks.COIL_KANTHAL.asStack(), 4, 4, 1 },
-                { "nichrome", GTBlocks.COIL_NICHROME.asStack(), 8, 8, 2 },
-                { "rtm_alloy", GTBlocks.COIL_RTMALLOY.asStack(), 8, 8, 2 },
-                { "hssg", GTBlocks.COIL_HSSG.asStack(), 16, 16, 3 },
-                { "naquadah", GTBlocks.COIL_NAQUADAH.asStack(), 16, 16, 3 },
-                { "trinium", GTBlocks.COIL_TRINIUM.asStack(), 32, 32, 4 },
-                { "tritanium", GTBlocks.COIL_TRITANIUM.asStack(), 32, 32, 4 },
+                { "cupronickel", SafeItems.gt("cupronickel_coil_block", 1), 4, 4, 1 },
+                { "kanthal", SafeItems.gt("kanthal_coil_block", 1), 4, 4, 1 },
+                { "nichrome", SafeItems.gt("nichrome_coil_block", 1), 8, 8, 2 },
+                { "rtm_alloy", SafeItems.gt("rtm_alloy_coil_block", 1), 8, 8, 2 },
+                { "hssg", SafeItems.gt("hssg_coil_block", 1), 16, 16, 3 },
+                { "naquadah", SafeItems.gt("naquadah_coil_block", 1), 16, 16, 3 },
+                { "trinium", SafeItems.gt("trinium_coil_block", 1), 32, 32, 4 },
+                { "tritanium", SafeItems.gt("tritanium_coil_block", 1), 32, 32, 4 },
         };
         ItemStack[] outputs = {
                 PollutionMagicBlocks.WIRE_COIL_CUPRONICKEL.asStack(), PollutionMagicBlocks.WIRE_COIL_KANTHAL.asStack(),
@@ -914,10 +908,10 @@ public final class InfusionRecipes {
                 components.add(ing(dust(PollutionMaterials.Substrate, 9)));
             }
             if (tier >= 4) {
-                components.add(ing(new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get())));
+                components.add(ing(SafeItems.byId("thaumcraft", "vis_charge_relay", 1)));
             }
-            components.add(ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())));
-            components.add(ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+            components.add(ing(SafeItems.byId("thaumcraft", "resonator", 1)));
+            components.add(ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
             infusion(provider, "wirecoil/" + coils[index][0], outputs[index], 4, central,
                     aspects("ignis", fire, "praecantatio", magic), components.toArray(new Ingredient[0]));
         }
@@ -927,9 +921,9 @@ public final class InfusionRecipes {
     private static void visHatches(Consumer<FinishedRecipe> provider) {
         int[] tiers = { GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV };
         var generators = new ItemStack[] {
-                GTItems.FIELD_GENERATOR_LV.asStack(), GTItems.FIELD_GENERATOR_MV.asStack(),
-                GTItems.FIELD_GENERATOR_HV.asStack(), GTItems.FIELD_GENERATOR_EV.asStack(),
-                GTItems.FIELD_GENERATOR_IV.asStack(),
+                SafeItems.gt("lv_field_generator", 1), SafeItems.gt("mv_field_generator", 1),
+                SafeItems.gt("hv_field_generator", 1), SafeItems.gt("ev_field_generator", 1),
+                SafeItems.gt("iv_field_generator", 1),
         };
         for (int index = 0; index < tiers.length; index++) {
             int tier = tiers[index];
@@ -944,15 +938,15 @@ public final class InfusionRecipes {
                     aspects("auram", 128, "praecantatio", 32, "lucrum", 64),
                     ing(plate(GTMaterials.HSSG, 8)),
                     ing(generators[index]),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
         }
     }
 
     /** 约束器框架 II..V 与裂变核心 I..IV（上游 FUSION_REACTOR -> GT 聚变外壳/线圈）。 */
     private static void reactorParts(Consumer<FinishedRecipe> provider) {
-        ItemStack frameCasing = GTBlocks.FUSION_CASING.asStack();
-        ItemStack composeCoil = GTBlocks.FUSION_COIL.asStack();
+        ItemStack frameCasing = SafeItems.gt("fusion_casing", 1);
+        ItemStack composeCoil = SafeItems.gt("fusion_coil", 1);
 
         ItemStack[] frameCentrals = { frameCasing, frameCasing, frameCasing, frameCasing };
         int[] frameInstability = { 2, 4, 6, 8 };
@@ -967,12 +961,12 @@ public final class InfusionRecipes {
             }
             components.add(ing(frameCrystals[index]));
             components.add(ing(dust(index < 2 ? GTMaterials.Thorium : GTMaterials.Uranium238, 1)));
-            components.add(ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())));
+            components.add(ing(SafeItems.byId("thaumcraft", "resonator", 1)));
             if (index >= 1) {
-                components.add(ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+                components.add(ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
             }
             if (index >= 3) {
-                components.add(ing(new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get())));
+                components.add(ing(SafeItems.byId("thaumcraft", "vis_charge_relay", 1)));
             }
             infusion(provider, "reactor_frame_" + (index + 2), frameCasing.copyWithCount(1), frameInstability[index],
                     frameCentrals[index], aspects("ordo", frameAspects[index][0], "tutamen", frameAspects[index][1]),
@@ -990,13 +984,13 @@ public final class InfusionRecipes {
                 components.add(ing(gem(GTMaterials.Amethyst, 1)));
             }
             if (index >= 3) {
-                components.add(ing(new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get())));
+                components.add(ing(SafeItems.byId("thaumcraft", "vis_charge_relay", 1)));
             }
             components.add(ing(crystal("entropy")));
             components.add(ing(composeCircuits[index]));
-            components.add(ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())));
+            components.add(ing(SafeItems.byId("thaumcraft", "resonator", 1)));
             if (index >= 1) {
-                components.add(ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+                components.add(ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
             }
             infusion(provider, "reactor_compose_" + (index + 1), composeCoil.copyWithCount(1),
                     composeInstability[index], composeCoil,
@@ -1022,42 +1016,42 @@ public final class InfusionRecipes {
         // 工业注魔主方块（上游: BlocksTC.infusionMatrix -> TC4R RUNIC_MATRIX；
         // matrixCost/matrixSpeed -> RUNIC_MATRIX；causalityCollapser -> PRIMORDIAL_PEARL）
         infusion(provider, "industrial_infusion", PollutionMachines.INDUSTRIAL_INFUSION.asStack(), 12,
-                new ItemStack(TCBlocks.RUNIC_MATRIX.get()),
+                SafeItems.byId("thaumcraft", "runic_matrix", 1),
                 aspects("praecantatio", 250, "auram", 250, "vacuos", 64, "cognitio", 128, "fabrico", 128),
                 ing(gem(PollutionMaterials.Valonite, 9)),
-                ing(new ItemStack(TCBlocks.RUNIC_MATRIX.get())),
-                ing(new ItemStack(TCBlocks.RUNIC_MATRIX.get())),
+                ing(SafeItems.byId("thaumcraft", "runic_matrix", 1)),
+                ing(SafeItems.byId("thaumcraft", "runic_matrix", 1)),
                 ing(PollutionItems.INTEGRATION_CATALYST_CORE.asStack()),
                 ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()), ing(GTItems.FIELD_GENERATOR_HV.asStack()),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()), ing(GTItems.FIELD_GENERATOR_HV.asStack()),
-                ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                ing(GTBlocks.FUSION_CASING.asStack()),
-                ing(GTBlocks.FUSION_COIL.asStack()));
+                ing(SafeItems.gt("hv_field_generator", 1)), ing(SafeItems.gt("hv_field_generator", 1)),
+                ing(SafeItems.gt("hv_field_generator", 1)), ing(SafeItems.gt("hv_field_generator", 1)),
+                ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                ing(SafeItems.gt("fusion_casing", 1)),
+                ing(SafeItems.gt("fusion_coil", 1)));
 
         // 节点生产机
         infusion(provider, "node_producer", PollutionMachines.NODE_PRODUCER.asStack(), 8,
-                GTBlocks.FUSION_CASING.asStack(),
+                SafeItems.gt("fusion_casing", 1),
                 aspects("praecantatio", 128, "machina", 250, "auram", 250, "vacuos", 250),
                 ing(gem(PollutionMaterials.Valonite, 1)),
                 ing(PollutionItems.INTEGRATION_CATALYST_CORE.asStack()),
                 ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
-                ing(new ItemStack(TCBlocks.SILVERWOOD_LOG.get())),
+                ing(SafeItems.byId("thaumcraft", "silverwood_log", 1)),
                 ing(crystal("air")), ing(crystal("fire")), ing(crystal("earth")),
                 ing(crystal("water")), ing(crystal("order")), ing(crystal("entropy")),
                 ing(frame(GTMaterials.HSSG, 1)),
-                ing(GTItems.FIELD_GENERATOR_HV.asStack()),
+                ing(SafeItems.gt("hv_field_generator", 1)),
                 ing(PollutionMagicBlocks.VOID_PRISM.asStack()));
 
         // 魔法聚变反应堆（上游 blockVoid -> 本移植版: TC4R void ingot x9）
         infusion(provider, "magic_fusion_reactor", PollutionMachines.MAGIC_FUSION_REACTOR.asStack(), 8,
-                GTBlocks.FUSION_CASING.asStack(),
+                SafeItems.gt("fusion_casing", 1),
                 aspects("potentia", 250, "perditio", 250, "praecantatio", 128, "vacuos", 64),
                 ing(gem(PollutionMaterials.Valonite, 1)),
                 ing(crystal("air")), ing(crystal("entropy")),
-                ing(new ItemStack(TCItems.PRIMORDIAL_PEARL.get())),
-                ing(new ItemStack(TCItems.VOID_INGOT.get(), 9)),
-                ing(GTItems.FIELD_GENERATOR_EV.asStack()),
+                ing(SafeItems.byId("thaumcraft", "primordial_pearl", 1)),
+                ing(SafeItems.byId("thaumcraft", "void_ingot", 9)),
+                ing(SafeItems.gt("ev_field_generator", 1)),
                 ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
                 ing(frame(GTMaterials.HSSG, 1)),
                 ing(ChemicalHelper.get(TagPrefix.block, GTMaterials.Uranium235, 1)),
@@ -1071,16 +1065,16 @@ public final class InfusionRecipes {
                     aspects("praecantatio", 128, "machina", 250, "auram", 250, "motus", 64),
                     ing(gem(PollutionMaterials.Valonite, 1)),
                     ing(gem(PollutionMaterials.Scabyst, 1)),
-                    ing(GTBlocks.FUSION_CASING.asStack()),
-                    ing(new ItemStack(TCBlocks.COMPOUND_RECHARGE_FOCUS.get())),
-                    ing(new ItemStack(TCBlocks.WAND_RECHARGE_PEDESTAL.get())),
-                    ing(new ItemStack(TCBlocks.VIS_CHARGE_RELAY.get())),
+                    ing(SafeItems.gt("fusion_casing", 1)),
+                    ing(SafeItems.byId("thaumcraft", "compound_recharge_focus", 1)),
+                    ing(SafeItems.byId("thaumcraft", "wand_recharge_pedestal", 1)),
+                    ing(SafeItems.byId("thaumcraft", "vis_charge_relay", 1)),
                     ing(PollutionItems.INTEGRATION_CATALYST_CORE.asStack()),
                     ing(PollutionItems.SEGREGATION_CATALYST_CORE.asStack()),
                     ing(frame(GTMaterials.HSSG, 1)),
                     ing(ChemicalHelper.get(TagPrefix.block, GTMaterials.TungstenSteel, 1)),
                     ing(ChemicalHelper.get(TagPrefix.block, GTMaterials.NaquadahAlloy, 1)),
-                    ing(GTItems.FIELD_GENERATOR_IV.asStack()),
+                    ing(SafeItems.gt("iv_field_generator", 1)),
                     ing(PollutionMagicBlocks.VOID_PRISM.asStack()));
         }
     }
@@ -1088,10 +1082,10 @@ public final class InfusionRecipes {
     /** 四台 Botania 风格机器（上游 plateManasteel -> GTNN ManaSteel ingot）。 */
     private static void botaniaMachines(Consumer<FinishedRecipe> provider) {
         ItemStack[] centres = {
-                new ItemStack(BotaniaFlowerBlocks.pureDaisy),
-                new ItemStack(BotaniaBlocks.alchemyCatalyst),
-                new ItemStack(BotaniaBlocks.runeAltar),
-                new ItemStack(BotaniaBlocks.defaultAltar),
+                SafeItems.byId("botania", "pure_daisy", 1),
+                SafeItems.byId("botania", "alchemy_catalyst", 1),
+                SafeItems.byId("botania", "runic_altar", 1),
+                SafeItems.byId("botania", "apothecary_default", 1),
         };
         MachineDefinition[] machines = {
                 PollutionMachines.INDUSTRIAL_PURE_DAISY,
@@ -1117,9 +1111,9 @@ public final class InfusionRecipes {
                     ing(ingot(GTNNMaterials.ManaSteel, 2)),
                     ing(plate(GTMaterials.HSSG, 2)),
                     ing(circuit(GTValues.EV)), ing(circuit(GTValues.EV)),
-                    ing(GTItems.FIELD_GENERATOR_EV.asStack()),
-                    ing(new ItemStack(TCItems.ESSENTIA_RESONATOR.get())),
-                    ing(new ItemStack(TCBlocks.NODE_TRANSDUCER.get())));
+                    ing(SafeItems.gt("ev_field_generator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
+                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
         }
     }
 

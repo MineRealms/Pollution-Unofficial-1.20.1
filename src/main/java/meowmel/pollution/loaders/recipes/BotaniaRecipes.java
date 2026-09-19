@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -25,10 +24,6 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import vazkii.botania.common.block.BotaniaBlocks;
-import vazkii.botania.common.block.BotaniaFlowerBlocks;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -116,8 +111,8 @@ public final class BotaniaRecipes {
         ItemEntry<Item> coreOfIdea = PollutionItems.get("core_of_idea");
 
         runeAltar(provider, "white_rune", runeBlank, coreOfIdea,
-                new ItemStack(BotaniaItems.runeFire), new ItemStack(BotaniaItems.runeSummer),
-                new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
+                SafeItems.byId("botania", "rune_fire", 1), SafeItems.byId("botania", "rune_summer", 1),
+                SafeItems.byId("botania", "rune_lust", 1), SafeItems.byId("botania", "rune_gluttony", 1),
                 ChemicalHelper.get(TagPrefix.block, PollutionMaterials.AethericDarkSteel),
                 ChemicalHelper.get(TagPrefix.block, PollutionMaterials.HyperdimensionalSilver),
                 PollutionItems.WHITE_RUNE.get());
@@ -125,15 +120,15 @@ public final class BotaniaRecipes {
         // // 上游: block BloodOfAvernus -> 本移植版: TungstenSteel block；
         // block VoidMetal -> 本移植版: TungstenSteel block
         runeAltar(provider, "black_rune", runeBlank, coreOfIdea,
-                new ItemStack(BotaniaItems.runeEarth), new ItemStack(BotaniaItems.runeAutumn),
-                new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
+                SafeItems.byId("botania", "rune_earth", 1), SafeItems.byId("botania", "rune_autumn", 1),
+                SafeItems.byId("botania", "rune_lust", 1), SafeItems.byId("botania", "rune_gluttony", 1),
                 ChemicalHelper.get(TagPrefix.block, GTMaterials.TungstenSteel),
                 ChemicalHelper.get(TagPrefix.block, GTMaterials.TungstenSteel),
                 PollutionItems.BLACK_RUNE.get());
 
         runeAltar(provider, "starry_rune", runeBlank, coreOfIdea,
-                new ItemStack(BotaniaItems.runeSpring), new ItemStack(BotaniaItems.runeMana),
-                new ItemStack(BotaniaItems.runeLust), new ItemStack(BotaniaItems.runeGluttony),
+                SafeItems.byId("botania", "rune_spring", 1), SafeItems.byId("botania", "rune_mana", 1),
+                SafeItems.byId("botania", "rune_lust", 1), SafeItems.byId("botania", "rune_gluttony", 1),
                 ChemicalHelper.get(TagPrefix.block, PollutionMaterials.IizunamaruElectrum),
                 ChemicalHelper.get(TagPrefix.block, PollutionMaterials.KQGold),
                 PollutionItems.STARRY_RUNE.get());
@@ -143,6 +138,12 @@ public final class BotaniaRecipes {
                                   ItemEntry<Item> runeBlank, ItemEntry<Item> coreOfIdea,
                                   ItemStack rune1, ItemStack rune2, ItemStack rune3, ItemStack rune4,
                                   ItemStack block1, ItemStack block2, Item output) {
+        if (rune1.isEmpty() || rune2.isEmpty() || rune3.isEmpty() || rune4.isEmpty()
+                || block1.isEmpty() || block2.isEmpty()) {
+            Pollution.LOGGER.warn("[botania] skipping rune altar recipe {}: a Botania rune or block is missing",
+                    id);
+            return;
+        }
         GTRecipeBuilder builder = GTRecipeBuilder
                 .of(id("rune_altar/" + id), BotaniaRecipeMaps.MANA_RUNE_ALTAR_RECIPES)
                 .inputItems(rune1)
@@ -167,69 +168,93 @@ public final class BotaniaRecipes {
     private static void flowers(Consumer<FinishedRecipe> provider) {
         // 白雏菊诱变改造
         flowerMutation(provider, "pure_daisy", Items.OXEYE_DAISY,
-                ChemicalHelper.get(TagPrefix.dust, GTMaterials.NetherStar), BotaniaFlowerBlocks.pureDaisy);
+                ChemicalHelper.get(TagPrefix.dust, GTMaterials.NetherStar),
+                SafeItems.byId("botania", "pure_daisy", 1));
         // 火红莲诱变改造
         flowerMutation(provider, "endoflame", Items.POPPY,
-                ChemicalHelper.get(TagPrefix.dust, GTMaterials.Blaze), BotaniaFlowerBlocks.endoflame);
+                ChemicalHelper.get(TagPrefix.dust, GTMaterials.Blaze),
+                SafeItems.byId("botania", "endoflame", 1));
         // 水绣球诱变改造 (upstream Llp dust -> SiliconDioxide)
         flowerMutation(provider, "hydroangeas", Items.POPPY,
-                ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide), BotaniaFlowerBlocks.hydroangeas);
+                ChemicalHelper.get(TagPrefix.dust, GTMaterials.SiliconDioxide),
+                SafeItems.byId("botania", "hydroangeas", 1));
 
         // 瓶装末地空气
-        GTRecipeBuilder.of(id("bottled_ender_air"), GTRecipeTypes.CANNER_RECIPES)
-                .inputFluids(GTMaterials.LiquidEnderAir.getFluid(1000))
-                .inputItems(Items.GLASS_BOTTLE)
-                .outputItems(new ItemStack(BotaniaItems.enderAirBottle))
-                .duration(200)
-                .EUt(GTValues.VA[GTValues.HV])
-                .save(provider);
+        ItemStack enderAirBottle = SafeItems.byId("botania", "ender_air_bottle", 1);
+        if (enderAirBottle.isEmpty()) {
+            Pollution.LOGGER.warn("[botania] skipping bottled_ender_air: botania:ender_air_bottle is missing");
+        } else {
+            GTRecipeBuilder.of(id("bottled_ender_air"), GTRecipeTypes.CANNER_RECIPES)
+                    .inputFluids(GTMaterials.LiquidEnderAir.getFluid(1000))
+                    .inputItems(Items.GLASS_BOTTLE)
+                    .outputItems(enderAirBottle)
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.HV])
+                    .save(provider);
+        }
 
         // 染料线：16 色花瓣
         for (int color = 0; color < COLORS.length; color++) {
             DyeColor dyeColor = COLORS[color];
             Item dye = DyeItem.byColor(dyeColor);
-            Item petal = BotaniaItems.getPetal(dyeColor);
+            ItemStack petal = SafeItems.byId("botania", dyeColor.getName() + "_petal", 1);
+            ItemStack mushroom = SafeItems.byId("botania", dyeColor.getName() + "_mushroom", 1);
 
-            petalSource(provider, "poppy", color, Items.POPPY, dye, petal);
-            petalSource(provider, "dandelion", color, Items.DANDELION, dye, petal);
-            petalSource(provider, "brown_mushroom", color, Items.BROWN_MUSHROOM, dye, petal);
-            petalSource(provider, "red_mushroom", color, Items.RED_MUSHROOM, dye, petal);
+            if (petal.isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping the {} petal recipes: botania:{}_petal is missing",
+                        dyeColor.getName(), dyeColor.getName());
+            } else {
+                petalSource(provider, "poppy", color, Items.POPPY, dye, petal.copyWithCount(4));
+                petalSource(provider, "dandelion", color, Items.DANDELION, dye, petal.copyWithCount(4));
+                petalSource(provider, "brown_mushroom", color, Items.BROWN_MUSHROOM, dye, petal.copyWithCount(4));
+                petalSource(provider, "red_mushroom", color, Items.RED_MUSHROOM, dye, petal.copyWithCount(4));
 
-            GTRecipeBuilder.of(id("petal_to_dye/" + color), GTRecipeTypes.MACERATOR_RECIPES)
-                    .inputItems(petal)
-                    .outputItems(dye, 2)
-                    .duration(40)
-                    .EUt(GTValues.VA[GTValues.LV])
-                    .save(provider);
+                GTRecipeBuilder.of(id("petal_to_dye/" + color), GTRecipeTypes.MACERATOR_RECIPES)
+                        .inputItems(petal)
+                        .outputItems(dye, 2)
+                        .duration(40)
+                        .EUt(GTValues.VA[GTValues.LV])
+                        .save(provider);
+            }
 
-            GTRecipeBuilder.of(id("mushroom_to_dye/" + color), GTRecipeTypes.MACERATOR_RECIPES)
-                    .inputItems(new ItemStack(BotaniaBlocks.getMushroom(dyeColor)))
-                    .outputItems(dye, 2)
-                    .duration(40)
-                    .EUt(GTValues.VA[GTValues.LV])
-                    .save(provider);
+            if (mushroom.isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping the {} mushroom recipe: botania:{}_mushroom is missing",
+                        dyeColor.getName(), dyeColor.getName());
+            } else {
+                GTRecipeBuilder.of(id("mushroom_to_dye/" + color), GTRecipeTypes.MACERATOR_RECIPES)
+                        .inputItems(mushroom)
+                        .outputItems(dye, 2)
+                        .duration(40)
+                        .EUt(GTValues.VA[GTValues.LV])
+                        .save(provider);
+            }
         }
     }
 
     private static void flowerMutation(Consumer<FinishedRecipe> provider, String id, Item host,
-                                       ItemStack catalyst, Block flower) {
+                                       ItemStack catalyst, ItemStack flower) {
+        if (flower.isEmpty()) {
+            Pollution.LOGGER.warn("[botania] skipping flower mutation {}: the Botania flower item is missing",
+                    id);
+            return;
+        }
         GTRecipeBuilder.of(id("flower/" + id), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
                 .inputItems(host)
                 .inputItems(catalyst)
                 .inputFluids(GTMaterials.SterileGrowthMedium.getFluid(100))
-                .chancedOutput(new ItemStack(flower), 5000, 0)
+                .chancedOutput(flower, 5000, 0)
                 .duration(200)
                 .EUt(GTValues.VA[GTValues.HV])
                 .save(provider);
     }
 
     private static void petalSource(Consumer<FinishedRecipe> provider, String source, int color,
-                                    Item host, Item dye, Item petal) {
+                                    Item host, Item dye, ItemStack petal) {
         GTRecipeBuilder.of(id("petal/" + source + "/" + color), PORecipeMaps.MAGIC_GREENHOUSE_RECIPES)
                 .inputFluids(GTMaterials.Water.getFluid(500))
                 .inputItems(host)
                 .inputItems(dye)
-                .outputItems(petal, 4)
+                .outputItems(petal)
                 .duration(200)
                 .EUt(GTValues.VA[GTValues.HV])
                 .save(provider);
@@ -253,13 +278,22 @@ public final class BotaniaRecipes {
      * which keeps them distinct while preserving the upstream ingredient set.</p>
      */
     private static void manahatch(Consumer<FinishedRecipe> provider) {
-        ItemEntry<?>[] sensors = {
-                GTItems.SENSOR_LV, GTItems.SENSOR_MV, GTItems.SENSOR_HV, GTItems.SENSOR_EV,
-                GTItems.SENSOR_IV, GTItems.SENSOR_LuV, GTItems.SENSOR_ZPM, GTItems.SENSOR_UV,
-                GTItems.SENSOR_UHV,
+        // Registry lookups instead of GTItems static fields: those fields can
+        // still be null while the owning class initialises. GTCEu registry ids
+        // are tier-prefixed ("lv_sensor" .. "uhv_sensor", "lv_emitter" ..).
+        ItemStack[] sensors = {
+                SafeItems.gt("lv_sensor", 2), SafeItems.gt("mv_sensor", 2), SafeItems.gt("hv_sensor", 2),
+                SafeItems.gt("ev_sensor", 2), SafeItems.gt("iv_sensor", 2), SafeItems.gt("luv_sensor", 2),
+                SafeItems.gt("zpm_sensor", 2), SafeItems.gt("uv_sensor", 2), SafeItems.gt("uhv_sensor", 2),
         };
-        ItemEntry<?>[] poolSensors = { GTItems.SENSOR_LV, GTItems.SENSOR_LuV, GTItems.SENSOR_UEV };
-        ItemEntry<?>[] poolEmitters = { GTItems.EMITTER_LV, GTItems.EMITTER_LuV, GTItems.EMITTER_UEV };
+        ItemStack[] poolSensors = {
+                SafeItems.gt("lv_sensor", 2), SafeItems.gt("luv_sensor", 2), SafeItems.gt("uev_sensor", 2),
+        };
+        ItemStack[] poolEmitters = {
+                SafeItems.gt("lv_emitter", 2), SafeItems.gt("luv_emitter", 2), SafeItems.gt("uev_emitter", 2),
+        };
+        ItemStack manaRune = SafeItems.byId("botania", "rune_mana", 1);
+        ItemStack manaDiamond = SafeItems.byId("botania", "mana_diamond", 2);
 
         // GT's registerTieredMachines returns a tier-indexed array (index 0 = ULV
         // is empty, LV starts at 1), so iterate by tier and skip unregistered slots.
@@ -267,12 +301,17 @@ public final class BotaniaRecipes {
             if (PollutionMachines.MANA_INPUT_HATCH_1A[tier] == null || tier > sensors.length) {
                 continue;
             }
+            if (sensors[tier - 1].isEmpty() || manaRune.isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping mana input hatch {}: a GT sensor or "
+                        + "botania:rune_mana is missing", GTValues.VN[tier]);
+                continue;
+            }
             Material gear = tier <= 5 ? GTMaterials.HSSG : GTMaterials.TungstenSteel;
             GTRecipeBuilder.of(id("mana_input_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier])
-                    .inputItems(new ItemStack(BotaniaItems.runeMana))
+                    .inputItems(manaRune)
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, gear, 2))
-                    .inputItems(sensors[tier - 1].asStack(2))
+                    .inputItems(sensors[tier - 1])
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
                     .outputItems(PollutionMachines.MANA_INPUT_HATCH_1A[tier])
                     .duration(100)
@@ -285,25 +324,37 @@ public final class BotaniaRecipes {
         Material[] poolGears = { GTMaterials.HSSG, GTMaterials.TungstenSteel, GTMaterials.NaquadahAlloy };
         for (int index = 0; index < poolTiers.length; index++) {
             int tier = poolTiers[index];
+            // 生产环境加载顺序下 GTCEu 的高等级传感器/发射器可能尚未注册，
+            // 此时跳过该档配方，避免产出空配料。
+            if (poolEmitters[index].isEmpty() || poolSensors[index].isEmpty() || manaRune.isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping mana pool hatch tier {}: a GT sensor/emitter or "
+                        + "botania:rune_mana is missing", GTValues.VN[tier]);
+                continue;
+            }
             GTRecipeBuilder.of(id("mana_pool_output_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_OUTPUT_HATCH[tier])
-                    .inputItems(new ItemStack(BotaniaItems.runeMana))
+                    .inputItems(manaRune)
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, poolGears[index], 2))
-                    .inputItems(poolEmitters[index].asStack(2))
+                    .inputItems(poolEmitters[index])
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
                     .outputItems(PollutionMachines.MANA_POOL_OUTPUT_HATCH[index])
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
 
+            if (manaDiamond.isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping mana pool input hatch {}: botania:mana_diamond "
+                        + "is missing", GTValues.VN[tier]);
+                continue;
+            }
             GTRecipeBuilder.of(id("mana_pool_input_hatch/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(GTMachines.ENERGY_INPUT_HATCH[tier])
-                    .inputItems(new ItemStack(BotaniaItems.runeMana))
+                    .inputItems(manaRune)
                     .inputItems(ChemicalHelper.get(TagPrefix.gear, poolGears[index], 2))
-                    .inputItems(poolSensors[index].asStack(2))
+                    .inputItems(poolSensors[index])
                     // 上游此配方与同档 mana_input_hatch 输入完全相同，会被 GT 查找表
                     // 拒绝；额外消耗魔力钻石以区分纯魔力池输入仓。
-                    .inputItems(new ItemStack(BotaniaItems.manaDiamond, 2))
+                    .inputItems(manaDiamond)
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
                     .outputItems(PollutionMachines.MANA_POOL_INPUT_HATCH[index])
                     .duration(100)
@@ -313,29 +364,39 @@ public final class BotaniaRecipes {
 
         // 无线升级所需的魔力谐振线圈（上游 BotaniaRecipes: spark + 末影之眼 +
         // 魔力钢线 + 马努斯钢齿轮 + 魔力）
-        GTRecipeBuilder.of(id("mana_resonance_coil"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(new ItemStack(BotaniaItems.spark))
-                .inputItems(new ItemStack(Items.ENDER_EYE))
-                // 上游: wireGtSingle ManaSteel x8 -> 本移植版: ingot ManaSteel x4
-                // （GTNN 魔力钢只有 ingot/fluid 形态，无 WIRE 属性；8 线 = 4 锭）
-                .inputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 4))
-                .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.HSSG, 1))
-                .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
-                .outputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
-                .duration(200)
-                .EUt(GTValues.VA[GTValues.LV])
-                .save(provider);
+        ItemStack spark = SafeItems.byId("botania", "spark", 1);
+        if (spark.isEmpty()) {
+            Pollution.LOGGER.warn("[botania] skipping mana_resonance_coil: botania:spark is missing");
+        } else {
+            GTRecipeBuilder.of(id("mana_resonance_coil"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(spark)
+                    .inputItems(new ItemStack(Items.ENDER_EYE))
+                    // 上游: wireGtSingle ManaSteel x8 -> 本移植版: ingot ManaSteel x4
+                    // （GTNN 魔力钢只有 ingot/fluid 形态，无 WIRE 属性；8 线 = 4 锭）
+                    .inputItems(ChemicalHelper.get(TagPrefix.ingot, GTNNMaterials.ManaSteel, 4))
+                    .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.HSSG, 1))
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
+                    .outputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
+                    .duration(200)
+                    .EUt(GTValues.VA[GTValues.LV])
+                    .save(provider);
+        }
 
         // 三档无线输入/输出仓由对应有线仓升级（方向不变）
         String[] poolNames = { "diluted", "normal", "mythic" };
         int[] poolEuTiers = { GTValues.LV, GTValues.LuV, GTValues.UEV };
         int[] poolCoils = { 1, 2, 4 };
         for (int i = 0; i < poolNames.length; i++) {
+            if (poolSensors[i].isEmpty() || poolEmitters[i].isEmpty()) {
+                Pollution.LOGGER.warn("[botania] skipping wireless mana pool hatch {}: a GT sensor/emitter "
+                        + "is missing", poolNames[i]);
+                continue;
+            }
             GTRecipeBuilder.of(id("wireless_mana_pool_input_hatch/" + poolNames[i]),
                             PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(PollutionMachines.MANA_POOL_INPUT_HATCH[i])
                     .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(poolCoils[i]))
-                    .inputItems(poolSensors[i].asStack(2))
+                    .inputItems(poolSensors[i])
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(2000))
                     .outputItems(PollutionMachines.WIRELESS_MANA_POOL_INPUT_HATCH[i])
                     .duration(200 + i * 100)
@@ -346,7 +407,7 @@ public final class BotaniaRecipes {
                             PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                     .inputItems(PollutionMachines.MANA_POOL_OUTPUT_HATCH[i])
                     .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(poolCoils[i]))
-                    .inputItems(poolEmitters[i].asStack(2))
+                    .inputItems(poolEmitters[i])
                     .inputFluids(PollutionMaterials.InfusedAura.getFluid(2000))
                     .outputItems(PollutionMachines.WIRELESS_MANA_POOL_OUTPUT_HATCH[i])
                     .duration(200 + i * 100)

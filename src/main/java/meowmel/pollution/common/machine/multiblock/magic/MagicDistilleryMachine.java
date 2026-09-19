@@ -45,6 +45,8 @@ public class MagicDistilleryMachine extends MagicMultiblockController {
                 .where('X', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_COLD.get())
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
                 .where('Z', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_COLD.get()))
+                // 上游: hatch('C', MUFFLER_HATCH) -> 本移植版: GT 消声仓能力
+                .where('C', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
                 .where('P', Predicates.blocks(PollutionMagicBlocks.TITANIUM_PIPE.get()))
                 .where('A', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_2.get()))
                 .where('T', Predicates.blocks(PollutionMagicBlocks.TITANIUM_GEARBOX.get()))

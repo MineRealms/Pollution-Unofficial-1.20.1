@@ -3,11 +3,11 @@ package meowmel.pollution.loaders.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import dev.arbor.gtnn.data.GTNNMaterials;
+import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
@@ -95,18 +95,24 @@ public final class NodeFusionRecipes {
                 .duration(400)
                 .save(provider);
 
-        GTRecipeBuilder.of(id("node_reactor_assembly"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.get("bottle_of_phlogistonic_oneness").get(), 8)
-                .inputItems(PollutionItems.get("auto_elenchus_device").get(), 4)
-                .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.NaquadahAlloy, 32))
-                .inputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Neutronium, 16))
-                .inputItems(new ItemStack(GTBlocks.SUPERCONDUCTING_COIL.get(), 4))
-                .inputFluids(PollutionMaterials.AethericDarkSteel.getFluid(36000))
-                .inputFluids(PollutionMaterials.KQGold.getFluid(36000))
-                .inputFluids(PollutionMaterials.InfusedAura.getFluid(10000))
-                .EUt(GTValues.VA[GTValues.ZPM])
-                .duration(40000)
-                .save(provider);
+        ItemStack superconductingCoil = SafeItems.gt("superconducting_coil", 4);
+        if (superconductingCoil.isEmpty()) {
+            Pollution.LOGGER.warn("Node fusion: gtceu:superconducting_coil is not registered, "
+                    + "skipping node_reactor_assembly");
+        } else {
+            GTRecipeBuilder.of(id("node_reactor_assembly"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(PollutionItems.get("bottle_of_phlogistonic_oneness").get(), 8)
+                    .inputItems(PollutionItems.get("auto_elenchus_device").get(), 4)
+                    .inputItems(ChemicalHelper.get(TagPrefix.plate, GTMaterials.NaquadahAlloy, 32))
+                    .inputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Neutronium, 16))
+                    .inputItems(superconductingCoil)
+                    .inputFluids(PollutionMaterials.AethericDarkSteel.getFluid(36000))
+                    .inputFluids(PollutionMaterials.KQGold.getFluid(36000))
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(10000))
+                    .EUt(GTValues.VA[GTValues.ZPM])
+                    .duration(40000)
+                    .save(provider);
+        }
     }
 
     private static void fusionFuels(Consumer<FinishedRecipe> provider) {

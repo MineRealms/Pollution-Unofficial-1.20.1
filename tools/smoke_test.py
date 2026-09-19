@@ -37,7 +37,25 @@ ERROR_PATTERNS = {
     "worldgen parse": re.compile(r"Failed to parse pollution:"),
     "start failure": re.compile(r"Failed to start the minecraft server"),
     "exception": re.compile(r"Exception in thread|java\.lang\.\w+Exception"),
+    # Pollution-specific warnings (recipe-id attribution via the `recipe_id`
+    # named group). Any hit in these categories fails the smoke test.
+    "pollution recipe conflict": re.compile(
+        r"Attempted to add GTRecipe: (?P<recipe_id>\S+), which conflicts with pollution:"),
+    "pollution staging add failure": re.compile(
+        r"failed to add recipe from staging into lookup DB: (?P<recipe_id>pollution:\S+)"),
+    "pollution invalid input": re.compile(
+        r"Input item is not one of:(?:\r?\n(?!id: )[^\r\n]*){0,3}\r?\nid: (?P<recipe_id>pollution:\S+)"),
+    "pollution empty item": re.compile(
+        r"(?:Input|Output) item \d+ of recipe (?P<recipe_id>pollution:\S+) is empty"),
 }
+
+# Categories that make the verdict FAIL when found in the server log.
+POLLUTION_ERROR_CATEGORIES = (
+    "pollution recipe conflict",
+    "pollution staging add failure",
+    "pollution invalid input",
+    "pollution empty item",
+)
 
 # machine id -> human label; one per machine family
 MACHINE_CHECKS = [
@@ -88,9 +106,19 @@ def wait_for_done(process: subprocess.Popen, timeout: float = 420.0) -> bool:
     return False
 
 
-def scan_log() -> dict[str, int]:
+def scan_log() -> tuple[dict[str, int], dict[str, list[str]]]:
+    """Count each error category and attribute pollution recipe ids."""
     text = LOG.read_text(encoding="utf-8", errors="ignore")
-    return {name: len(pattern.findall(text)) for name, pattern in ERROR_PATTERNS.items()}
+    counts: dict[str, int] = {}
+    recipe_ids: dict[str, list[str]] = {}
+    for name, pattern in ERROR_PATTERNS.items():
+        matches = list(pattern.finditer(text))
+        counts[name] = len(matches)
+        if "recipe_id" in pattern.groupindex:
+            attributed = [match.group("recipe_id") for match in matches]
+            if attributed:
+                recipe_ids[name] = attributed
+    return counts, recipe_ids
 
 
 def rcon(*commands: str) -> str:
@@ -130,8 +158,9 @@ def main() -> int:
 
     checks: list[tuple[str, bool, str]] = []
     errors: dict[str, int] = {}
+    pollution_ids: dict[str, list[str]] = {}
     if booted:
-        errors = scan_log()
+        errors, pollution_ids = scan_log()
         checks = run_rcon_checks()
         rcon("stop")
         time.sleep(8)
@@ -140,7 +169,8 @@ def main() -> int:
 
     failed_checks = [name for name, ok, _ in checks if not ok]
     error_total = sum(errors.values())
-    verdict = "PASS" if booted and not failed_checks else "FAIL"
+    pollution_error_total = sum(errors.get(name, 0) for name in POLLUTION_ERROR_CATEGORIES)
+    verdict = "PASS" if booted and not failed_checks and pollution_error_total == 0 else "FAIL"
 
     lines = [
         "# Pollution Port - Server Smoke Test",
@@ -148,12 +178,19 @@ def main() -> int:
         f"- date: {started:%Y-%m-%d %H:%M:%S}",
         f"- server booted (`Done (`): {'yes' if booted else 'NO'}",
         f"- log errors (all patterns): {error_total}",
+        f"- pollution-specific errors (fail on any): {pollution_error_total}",
         "",
         "## Log error categories",
         "",
     ]
     for name, count in errors.items():
-        lines.append(f"- {name}: {count}")
+        marker = " **[POLLUTION]**" if name in POLLUTION_ERROR_CATEGORIES else ""
+        lines.append(f"- {name}: {count}{marker}")
+    if pollution_error_total:
+        lines += ["", "## Pollution-specific errors (attributed recipe ids)", ""]
+        for name in POLLUTION_ERROR_CATEGORIES:
+            for recipe_id in pollution_ids.get(name, []):
+                lines.append(f"- {name}: {recipe_id}")
     lines += ["", "## RCON checks", ""]
     for name, ok, detail in checks:
         lines.append(f"- [{'x' if ok else ' '}] {name} - {detail}")

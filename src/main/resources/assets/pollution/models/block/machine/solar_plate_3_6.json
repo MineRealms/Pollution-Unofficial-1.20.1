@@ -4,15 +4,15 @@
     "bottom": "gtceu:block/casings/voltage/hv/bottom",
     "top": "gtceu:block/casings/voltage/hv/top",
     "side": "gtceu:block/casings/voltage/hv/side",
-    "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side_emissive": "gtceu:block/generators/boiler/lava/overlay_front"
+    "overlay_front": "pollution:block/machines/solars/waterside",
+    "overlay_back": "pollution:block/machines/solars/waterside",
+    "overlay_top": "pollution:block/machines/solar_iii/overlay_top",
+    "overlay_bottom": "pollution:block/machines/solar_iii/overlay_bottom",
+    "overlay_side": "pollution:block/machines/solars/waterside",
+    "overlay_front_emissive": "gtceu:block/void",
+    "overlay_back_emissive": "gtceu:block/void",
+    "overlay_top_emissive": "gtceu:block/void",
+    "overlay_bottom_emissive": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void"
   }
 }

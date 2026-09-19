@@ -1,13 +1,7 @@
 package meowmel.pollution.loaders.recipes;
 
-import appeng.api.util.AEColor;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ItemDefinition;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -32,15 +26,15 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plate;
  * The Thaumcraft arcane/infusion entries in the same upstream file belong to
  * {@code ThaumcraftRecipes} and are not duplicated here.</p>
  *
- * <p><b>AE2 APIs used</b> (verified with {@code javap} against
- * appliedenergistics2-forge 15.0.18): {@link AEItems}, {@link AEBlocks},
- * {@link AEParts} and their {@link ItemDefinition#stack(int)} accessors plus
- * {@code ColoredItemDefinition#stack(AEColor, int)} for cables. The 1.12.2
- * metadata indices from {@code ae2Index} map to named definitions:
- * material 16/17/18 = processor prints, 22/23/24 = logic/engineering/
- * calculation processor, 35-38 = item storage components, 43/44 =
- * formation/annihilation core; part 16/140 = glass cable/quartz fiber,
- * part 240/260 = import/export bus, part 460 = ME P2P tunnel.</p>
+ * <p><b>Item lookups</b>: every AE2 and GT item is resolved through
+ * {@link SafeItems} instead of the {@code AEItems} / {@code AEBlocks} /
+ * {@code AEParts} / {@code GTItems} static fields, which can still be null
+ * while their owning class initialises. The 1.12.2 metadata indices from
+ * {@code ae2Index} map to named definitions: material 16/17/18 = processor
+ * prints, 22/23/24 = logic/engineering/calculation processor, 35-38 = item
+ * storage components, 43/44 = formation/annihilation core; part 16/140 =
+ * glass cable/quartz fiber, part 240/260 = import/export bus, part 460 = ME P2P
+ * tunnel. The transparent glass cable is {@code ae2:fluix_glass_cable}.</p>
  *
  * <p><b>Material substitutions</b></p>
  * <ul>
@@ -54,7 +48,8 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plate;
  *       exists in GTCEu Modern)</li>
  *   <li>{@code MetaItems.CENTRAL_PROCESSING_UNIT}, {@code RANDOM_ACCESS_MEMORY},
  *       {@code ULTRA_LOW_POWER_INTEGRATED_CIRCUIT}, {@code LOW_POWER_INTEGRATED_CIRCUIT}
- *       -&gt; the {@code GTItems} equivalents</li>
+ *       -&gt; the GTCEu registry items {@code cpu_chip}, {@code ram_chip},
+ *       {@code ulpic_chip}, {@code lpic_chip}</li>
  * </ul>
  *
  * <p><b>AE2 15.0.18 merges</b> (upstream items that no longer exist separately)</p>
@@ -102,10 +97,17 @@ public final class AERecipes {
 
     /** 聚能石英玻璃：石英玻璃 + 萤石粉 -> 充能石英玻璃 */
     private static void chargedQuartzGlass(Consumer<FinishedRecipe> provider) {
+        ItemStack quartzGlass = ae("quartz_glass", 1);
+        ItemStack fluixDust = ae("fluix_dust", 2);
+        ItemStack vibrantGlass = ae("quartz_vibrant_glass", 1);
+        if (missing(quartzGlass, fluixDust, vibrantGlass)) {
+            Pollution.LOGGER.warn("Skipping ae2/vibrant_quartz_glass: a required AE2 item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("vibrant_quartz_glass"), GTRecipeTypes.BLAST_RECIPES)
-                .inputItems(ae(AEBlocks.QUARTZ_GLASS, 1))
-                .inputItems(ae(AEItems.FLUIX_DUST, 2))
-                .outputItems(ae(AEBlocks.QUARTZ_VIBRANT_GLASS, 1))
+                .inputItems(quartzGlass)
+                .inputItems(fluixDust)
+                .outputItems(vibrantGlass)
                 .duration(100)
                 .blastFurnaceTemp(1800)
                 .EUt(120)
@@ -114,11 +116,18 @@ public final class AERecipes {
 
     /** 破坏核心 / 成型核心 */
     private static void cores(Consumer<FinishedRecipe> provider) {
+        ItemStack fluixDust = ae("fluix_dust", 1);
+        ItemStack annihilationCore = ae("annihilation_core", 16);
+        ItemStack formationCore = ae("formation_core", 16);
+        if (missing(fluixDust, annihilationCore, formationCore)) {
+            Pollution.LOGGER.warn("Skipping the ae2 core group: a required AE2 item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("annihilation_core"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.CertusQuartz, 6))
-                .inputItems(ae(AEItems.FLUIX_DUST, 1))
+                .inputItems(fluixDust)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEItems.ANNIHILATION_CORE, 16))
+                .outputItems(annihilationCore)
                 .duration(160)
                 .circuitMeta(1)
                 .EUt(480)
@@ -126,9 +135,9 @@ public final class AERecipes {
 
         GTRecipeBuilder.of(id("formation_core"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.NetherQuartz, 6))
-                .inputItems(ae(AEItems.FLUIX_DUST, 1))
+                .inputItems(fluixDust)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEItems.FORMATION_CORE, 16))
+                .outputItems(formationCore)
                 .duration(160)
                 .circuitMeta(1)
                 .EUt(480)
@@ -137,29 +146,40 @@ public final class AERecipes {
 
     /** 三种电路板：逻辑 / 工程 / 运算处理器 */
     private static void processors(Consumer<FinishedRecipe> provider) {
+        ItemStack logicPrint = ae("printed_logic_processor", 4);
+        ItemStack engineeringPrint = ae("printed_engineering_processor", 4);
+        ItemStack calculationPrint = ae("printed_calculation_processor", 4);
+        ItemStack logicProcessor = ae("logic_processor", 16);
+        ItemStack engineeringProcessor = ae("engineering_processor", 16);
+        ItemStack calculationProcessor = ae("calculation_processor", 16);
+        if (missing(logicPrint, engineeringPrint, calculationPrint, logicProcessor, engineeringProcessor,
+                calculationProcessor)) {
+            Pollution.LOGGER.warn("Skipping the ae2 processor group: a required AE2 item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("logic_processor"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR_PRINT, 4))
+                .inputItems(logicPrint)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.RedAlloy, 1))
                 .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(ae(AEItems.LOGIC_PROCESSOR, 16))
+                .outputItems(logicProcessor)
                 .duration(160)
                 .EUt(480)
                 .save(provider);
 
         GTRecipeBuilder.of(id("engineering_processor"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ae(AEItems.ENGINEERING_PROCESSOR_PRINT, 4))
+                .inputItems(engineeringPrint)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.RedAlloy, 1))
                 .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(ae(AEItems.ENGINEERING_PROCESSOR, 16))
+                .outputItems(engineeringProcessor)
                 .duration(160)
                 .EUt(480)
                 .save(provider);
 
         GTRecipeBuilder.of(id("calculation_processor"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR_PRINT, 4))
+                .inputItems(calculationPrint)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.RedAlloy, 1))
                 .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(ae(AEItems.CALCULATION_PROCESSOR, 16))
+                .outputItems(calculationProcessor)
                 .duration(160)
                 .EUt(480)
                 .save(provider);
@@ -167,13 +187,22 @@ public final class AERecipes {
 
     /** ME 接口 / 流体接口 / 输入输出总线 */
     private static void interfacesAndBuses(Consumer<FinishedRecipe> provider) {
+        ItemStack formationCore = ae("formation_core", 1);
+        ItemStack annihilationCore = ae("annihilation_core", 1);
+        ItemStack meInterface = ae("interface", 16);
+        ItemStack importBus = ae("import_bus", 8);
+        ItemStack exportBus = ae("export_bus", 8);
+        if (missing(formationCore, annihilationCore, meInterface, importBus, exportBus)) {
+            Pollution.LOGGER.warn("Skipping the ae2 interface/bus group: a required AE2 item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("me_interface"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 6))
                 .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
-                .inputItems(ae(AEItems.FORMATION_CORE, 1))
-                .inputItems(ae(AEItems.ANNIHILATION_CORE, 1))
+                .inputItems(formationCore)
+                .inputItems(annihilationCore)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEBlocks.INTERFACE, 16))
+                .outputItems(meInterface)
                 .duration(160)
                 .circuitMeta(20)
                 .EUt(1920)
@@ -183,10 +212,10 @@ public final class AERecipes {
         GTRecipeBuilder.of(id("me_fluid_interface"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 6))
                 .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
-                .inputItems(ae(AEItems.FORMATION_CORE, 1))
-                .inputItems(ae(AEItems.ANNIHILATION_CORE, 1))
+                .inputItems(formationCore)
+                .inputItems(annihilationCore)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEBlocks.INTERFACE, 16))
+                .outputItems(meInterface)
                 .duration(160)
                 .circuitMeta(20)
                 .EUt(1920)
@@ -196,10 +225,10 @@ public final class AERecipes {
         GTRecipeBuilder.of(id("import_bus"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 4))
                 .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
-                .inputItems(ae(AEBlocks.INTERFACE, 1))
-                .inputItems(ae(AEItems.ANNIHILATION_CORE, 1))
+                .inputItems(meInterface.copyWithCount(1))
+                .inputItems(annihilationCore)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEParts.IMPORT_BUS, 8))
+                .outputItems(importBus)
                 .duration(160)
                 .circuitMeta(18)
                 .EUt(480)
@@ -209,10 +238,10 @@ public final class AERecipes {
         GTRecipeBuilder.of(id("export_bus"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 4))
                 .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
-                .inputItems(ae(AEBlocks.INTERFACE, 1))
-                .inputItems(ae(AEItems.FORMATION_CORE, 1))
+                .inputItems(meInterface.copyWithCount(1))
+                .inputItems(formationCore)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEParts.EXPORT_BUS, 8))
+                .outputItems(exportBus)
                 .duration(160)
                 .circuitMeta(19)
                 .EUt(480)
@@ -224,45 +253,67 @@ public final class AERecipes {
      * item cell component，因此两组配方分别使用逻辑处理器 / 运算处理器产出同一物品。
      */
     private static void storageComponents(Consumer<FinishedRecipe> provider) {
+        ItemStack cpuChip = SafeItems.gt("cpu_chip", 1);
+        ItemStack ramChip = SafeItems.gt("ram_chip", 1);
+        ItemStack ulpicChip = SafeItems.gt("ulpic_chip", 1);
+        ItemStack lpicChip = SafeItems.gt("lpic_chip", 1);
+        ItemStack logicProcessor1 = ae("logic_processor", 1);
+        ItemStack logicProcessor2 = ae("logic_processor", 2);
+        ItemStack logicProcessor4 = ae("logic_processor", 4);
+        ItemStack logicProcessor8 = ae("logic_processor", 8);
+        ItemStack calculationProcessor1 = ae("calculation_processor", 1);
+        ItemStack calculationProcessor2 = ae("calculation_processor", 2);
+        ItemStack calculationProcessor4 = ae("calculation_processor", 4);
+        ItemStack calculationProcessor8 = ae("calculation_processor", 8);
+        ItemStack component1k = ae("cell_component_1k", 4);
+        ItemStack component4k = ae("cell_component_4k", 4);
+        ItemStack component16k = ae("cell_component_16k", 4);
+        ItemStack component64k = ae("cell_component_64k", 4);
+        if (missing(cpuChip, ramChip, ulpicChip, lpicChip, logicProcessor1, logicProcessor2, logicProcessor4,
+                logicProcessor8, calculationProcessor1, calculationProcessor2, calculationProcessor4,
+                calculationProcessor8, component1k, component4k, component16k, component64k)) {
+            Pollution.LOGGER.warn("Skipping the ae2 storage component group: a required AE2/GT item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("cell_component_1k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.CENTRAL_PROCESSING_UNIT.asStack(1))
+                .inputItems(cpuChip)
                 .inputItems(CustomTags.LV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR, 1))
+                .inputItems(logicProcessor1)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEItems.CELL_COMPONENT_1K, 4))
+                .outputItems(component1k)
                 .duration(320)
                 .circuitMeta(22)
                 .EUt(30)
                 .save(provider);
 
         GTRecipeBuilder.of(id("cell_component_4k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.RANDOM_ACCESS_MEMORY.asStack(1))
+                .inputItems(ramChip)
                 .inputItems(CustomTags.MV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR, 2))
+                .inputItems(logicProcessor2)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(200))
-                .outputItems(ae(AEItems.CELL_COMPONENT_4K, 4))
+                .outputItems(component4k)
                 .duration(320)
                 .circuitMeta(22)
                 .EUt(120)
                 .save(provider);
 
         GTRecipeBuilder.of(id("cell_component_16k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(1))
+                .inputItems(ulpicChip)
                 .inputItems(CustomTags.HV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR, 4))
+                .inputItems(logicProcessor4)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(400))
-                .outputItems(ae(AEItems.CELL_COMPONENT_16K, 4))
+                .outputItems(component16k)
                 .duration(320)
                 .circuitMeta(22)
                 .EUt(480)
                 .save(provider);
 
         GTRecipeBuilder.of(id("cell_component_64k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(1))
+                .inputItems(lpicChip)
                 .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR, 8))
+                .inputItems(logicProcessor8)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(800))
-                .outputItems(ae(AEItems.CELL_COMPONENT_64K, 4))
+                .outputItems(component64k)
                 .duration(320)
                 .circuitMeta(22)
                 .EUt(1920)
@@ -270,44 +321,44 @@ public final class AERecipes {
 
         // 流体存储组件：AE2 15 中流体元件使用同一套 cell component
         GTRecipeBuilder.of(id("fluid_cell_component_1k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.CENTRAL_PROCESSING_UNIT.asStack(1))
+                .inputItems(cpuChip)
                 .inputItems(CustomTags.LV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR, 1))
+                .inputItems(calculationProcessor1)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEItems.CELL_COMPONENT_1K, 4))
+                .outputItems(component1k)
                 .duration(320)
                 .circuitMeta(23)
                 .EUt(30)
                 .save(provider);
 
         GTRecipeBuilder.of(id("fluid_cell_component_4k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.RANDOM_ACCESS_MEMORY.asStack(1))
+                .inputItems(ramChip)
                 .inputItems(CustomTags.MV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR, 2))
+                .inputItems(calculationProcessor2)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(200))
-                .outputItems(ae(AEItems.CELL_COMPONENT_4K, 4))
+                .outputItems(component4k)
                 .duration(320)
                 .circuitMeta(23)
                 .EUt(120)
                 .save(provider);
 
         GTRecipeBuilder.of(id("fluid_cell_component_16k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack(1))
+                .inputItems(ulpicChip)
                 .inputItems(CustomTags.HV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR, 4))
+                .inputItems(calculationProcessor4)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(400))
-                .outputItems(ae(AEItems.CELL_COMPONENT_16K, 4))
+                .outputItems(component16k)
                 .duration(320)
                 .circuitMeta(23)
                 .EUt(480)
                 .save(provider);
 
         GTRecipeBuilder.of(id("fluid_cell_component_64k"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(1))
+                .inputItems(lpicChip)
                 .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR, 8))
+                .inputItems(calculationProcessor8)
                 .inputFluids(PollutionMaterials.InfusedAura.getFluid(800))
-                .outputItems(ae(AEItems.CELL_COMPONENT_64K, 4))
+                .outputItems(component64k)
                 .duration(320)
                 .circuitMeta(23)
                 .EUt(1920)
@@ -321,25 +372,23 @@ public final class AERecipes {
      * 本移植版: appliedenergistics2:cell_component_256k
      */
     private static void storageComponentsHighTier(Consumer<FinishedRecipe> provider) {
-        highTierComponent(provider, "item_cell_component_256k", 22, GTItems.POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.IV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 16), 1600, GTValues.IV, 1);
-        highTierComponent(provider, "item_cell_component_1m", 22, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.LuV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 32), 3200, GTValues.LuV, 4);
-        highTierComponent(provider, "item_cell_component_4m", 22,
-                GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.ZPM_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 64), 6400, GTValues.ZPM, 16);
-        highTierComponent(provider, "item_cell_component_16m", 22, GTItems.NANO_CENTRAL_PROCESSING_UNIT.asStack(),
-                CustomTags.UV_CIRCUITS, ae(AEItems.LOGIC_PROCESSOR, 64), 12800, GTValues.UV, 64);
+        highTierComponent(provider, "item_cell_component_256k", 22, SafeItems.gt("mpic_chip", 1),
+                CustomTags.IV_CIRCUITS, ae("logic_processor", 16), 1600, GTValues.IV, 1);
+        highTierComponent(provider, "item_cell_component_1m", 22, SafeItems.gt("hpic_chip", 1),
+                CustomTags.LuV_CIRCUITS, ae("logic_processor", 32), 3200, GTValues.LuV, 4);
+        highTierComponent(provider, "item_cell_component_4m", 22, SafeItems.gt("uhpic_chip", 1),
+                CustomTags.ZPM_CIRCUITS, ae("logic_processor", 64), 6400, GTValues.ZPM, 16);
+        highTierComponent(provider, "item_cell_component_16m", 22, SafeItems.gt("nano_cpu_chip", 1),
+                CustomTags.UV_CIRCUITS, ae("logic_processor", 64), 12800, GTValues.UV, 64);
 
-        highTierComponent(provider, "fluid_cell_component_256k", 23, GTItems.POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.IV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 16), 1600, GTValues.IV, 1);
-        highTierComponent(provider, "fluid_cell_component_1m", 23, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.LuV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 32), 3200, GTValues.LuV, 4);
-        highTierComponent(provider, "fluid_cell_component_4m", 23,
-                GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack(),
-                CustomTags.ZPM_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 64), 6400, GTValues.ZPM, 16);
-        highTierComponent(provider, "fluid_cell_component_16m", 23, GTItems.NANO_CENTRAL_PROCESSING_UNIT.asStack(),
-                CustomTags.UV_CIRCUITS, ae(AEItems.CALCULATION_PROCESSOR, 64), 12800, GTValues.UV, 64);
+        highTierComponent(provider, "fluid_cell_component_256k", 23, SafeItems.gt("mpic_chip", 1),
+                CustomTags.IV_CIRCUITS, ae("calculation_processor", 16), 1600, GTValues.IV, 1);
+        highTierComponent(provider, "fluid_cell_component_1m", 23, SafeItems.gt("hpic_chip", 1),
+                CustomTags.LuV_CIRCUITS, ae("calculation_processor", 32), 3200, GTValues.LuV, 4);
+        highTierComponent(provider, "fluid_cell_component_4m", 23, SafeItems.gt("uhpic_chip", 1),
+                CustomTags.ZPM_CIRCUITS, ae("calculation_processor", 64), 6400, GTValues.ZPM, 16);
+        highTierComponent(provider, "fluid_cell_component_16m", 23, SafeItems.gt("nano_cpu_chip", 1),
+                CustomTags.UV_CIRCUITS, ae("calculation_processor", 64), 12800, GTValues.UV, 64);
     }
 
     private static void highTierComponent(Consumer<FinishedRecipe> provider, String name, int circuit, ItemStack chip,
@@ -350,12 +399,17 @@ public final class AERecipes {
             Pollution.LOGGER.warn("Skipping ae2/{}: InfusedAura has no fluid", name);
             return;
         }
+        ItemStack output = ae("cell_component_256k", outputCount);
+        if (missing(chip, processor, output)) {
+            Pollution.LOGGER.warn("Skipping ae2/{}: a required AE2/GT item is missing", name);
+            return;
+        }
         GTRecipeBuilder.of(id(name), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
                 .inputItems(chip)
                 .inputItems(circuitTag, 4)
                 .inputItems(processor)
                 .inputFluids(aura.getFluid(mana))
-                .outputItems(ae(AEItems.CELL_COMPONENT_256K, outputCount))
+                .outputItems(output)
                 .duration(320)
                 .circuitMeta(circuit)
                 .EUt(GTValues.VA[tier])
@@ -364,70 +418,119 @@ public final class AERecipes {
 
     /** 分子装配室 / P2P / 玻璃线缆 / ME 驱动器 / ME 控制器 */
     private static void networkBlocks(Consumer<FinishedRecipe> provider) {
-        GTRecipeBuilder.of(id("molecular_assembler"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ae(AEBlocks.QUARTZ_GLASS, 4))
-                .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
-                .inputItems(ae(AEItems.FORMATION_CORE, 2))
-                .inputItems(ae(AEItems.ANNIHILATION_CORE, 2))
-                .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEBlocks.MOLECULAR_ASSEMBLER, 4))
-                .duration(400)
-                .circuitMeta(21)
-                .EUt(7680)
-                .save(provider);
+        ItemStack quartzGlass4 = ae("quartz_glass", 4);
+        ItemStack formationCore2 = ae("formation_core", 2);
+        ItemStack annihilationCore2 = ae("annihilation_core", 2);
+        ItemStack molecularAssembler = ae("molecular_assembler", 4);
+        if (missing(quartzGlass4, formationCore2, annihilationCore2, molecularAssembler)) {
+            Pollution.LOGGER.warn("Skipping ae2/molecular_assembler: a required AE2 item is missing");
+        } else {
+            GTRecipeBuilder.of(id("molecular_assembler"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(quartzGlass4)
+                    .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
+                    .inputItems(formationCore2)
+                    .inputItems(annihilationCore2)
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
+                    .outputItems(molecularAssembler)
+                    .duration(400)
+                    .circuitMeta(21)
+                    .EUt(7680)
+                    .save(provider);
+        }
 
-        GTRecipeBuilder.of(id("p2p_tunnel"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(cable(2))
-                .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
-                .inputItems(ae(AEItems.ENGINEERING_PROCESSOR, 1))
-                .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
-                .outputItems(ae(AEParts.ME_P2P_TUNNEL, 16))
-                .duration(100)
-                .circuitMeta(21)
-                .EUt(1920)
-                .save(provider);
+        ItemStack p2pCable = cable(2);
+        ItemStack engineeringProcessor = ae("engineering_processor", 1);
+        ItemStack p2pTunnel = ae("me_p2p_tunnel", 16);
+        if (missing(p2pCable, engineeringProcessor, p2pTunnel)) {
+            Pollution.LOGGER.warn("Skipping ae2/p2p_tunnel: a required AE2 item is missing");
+        } else {
+            GTRecipeBuilder.of(id("p2p_tunnel"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(p2pCable)
+                    .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
+                    .inputItems(engineeringProcessor)
+                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(100))
+                    .outputItems(p2pTunnel)
+                    .duration(100)
+                    .circuitMeta(21)
+                    .EUt(1920)
+                    .save(provider);
+        }
 
-        GTRecipeBuilder.of(id("glass_cable"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ae(AEParts.QUARTZ_FIBER, 16))
-                .inputItems(ae(AEItems.FLUIX_CRYSTAL, 1))
-                .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(cable(64))
-                .duration(100)
-                .EUt(480)
-                .save(provider);
+        ItemStack quartzFiber16 = ae("quartz_fiber", 16);
+        ItemStack fluixCrystal = ae("fluix_crystal", 1);
+        ItemStack glassCable64 = cable(64);
+        if (missing(quartzFiber16, fluixCrystal, glassCable64)) {
+            Pollution.LOGGER.warn("Skipping ae2/glass_cable: a required AE2 item is missing");
+        } else {
+            GTRecipeBuilder.of(id("glass_cable"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(quartzFiber16)
+                    .inputItems(fluixCrystal)
+                    .inputFluids(GTMaterials.HSSG.getFluid(144))
+                    .outputItems(glassCable64)
+                    .duration(100)
+                    .EUt(480)
+                    .save(provider);
+        }
 
-        GTRecipeBuilder.of(id("drive"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 4))
-                .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
-                .inputItems(cable(2))
-                .inputItems(ae(AEItems.LOGIC_PROCESSOR, 2))
-                .inputItems(ae(AEItems.ENGINEERING_PROCESSOR, 2))
-                .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(ae(AEBlocks.DRIVE, 8))
-                .duration(400)
-                .circuitMeta(20)
-                .EUt(1920)
-                .save(provider);
+        ItemStack driveCable = cable(2);
+        ItemStack driveLogic = ae("logic_processor", 2);
+        ItemStack driveEngineering = ae("engineering_processor", 2);
+        ItemStack drive = ae("drive", 8);
+        if (missing(driveCable, driveLogic, driveEngineering, drive)) {
+            Pollution.LOGGER.warn("Skipping ae2/drive: a required AE2 item is missing");
+        } else {
+            GTRecipeBuilder.of(id("drive"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(plate, GTMaterials.Titanium, 4))
+                    .inputItems(ChemicalHelper.get(frameGt, GTMaterials.TungstenSteel, 1))
+                    .inputItems(driveCable)
+                    .inputItems(driveLogic)
+                    .inputItems(driveEngineering)
+                    .inputFluids(GTMaterials.HSSG.getFluid(144))
+                    .outputItems(drive)
+                    .duration(400)
+                    .circuitMeta(20)
+                    .EUt(1920)
+                    .save(provider);
+        }
 
-        GTRecipeBuilder.of(id("controller"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(ChemicalHelper.get(plate, GTMaterials.TungstenSteel, 4))
-                .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
-                .inputItems(ae(AEParts.QUARTZ_FIBER, 16))
-                .inputItems(ae(AEItems.CALCULATION_PROCESSOR, 4))
-                .inputFluids(GTMaterials.HSSG.getFluid(144))
-                .outputItems(ae(AEBlocks.CONTROLLER, 8))
-                .duration(400)
-                .circuitMeta(20)
-                .EUt(1920)
-                .save(provider);
+        ItemStack controllerFiber = ae("quartz_fiber", 16);
+        ItemStack controllerCalculation = ae("calculation_processor", 4);
+        ItemStack controller = ae("controller", 8);
+        if (missing(controllerFiber, controllerCalculation, controller)) {
+            Pollution.LOGGER.warn("Skipping ae2/controller: a required AE2 item is missing");
+        } else {
+            GTRecipeBuilder.of(id("controller"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
+                    .inputItems(ChemicalHelper.get(plate, GTMaterials.TungstenSteel, 4))
+                    .inputItems(ChemicalHelper.get(frameGt, GTMaterials.NaquadahAlloy, 1))
+                    .inputItems(controllerFiber)
+                    .inputItems(controllerCalculation)
+                    .inputFluids(GTMaterials.HSSG.getFluid(144))
+                    .outputItems(controller)
+                    .duration(400)
+                    .circuitMeta(20)
+                    .EUt(1920)
+                    .save(provider);
+        }
     }
 
-    private static ItemStack ae(ItemDefinition<?> definition, int count) {
-        return definition.stack(count);
+    /** Registry lookup for an AE2 item; empty when the item is not registered. */
+    private static ItemStack ae(String path, int count) {
+        return SafeItems.byId("ae2", path, count);
     }
 
+    /** The transparent ME glass cable ({@code ae2:fluix_glass_cable}). */
     private static ItemStack cable(int count) {
-        return AEParts.GLASS_CABLE.stack(AEColor.TRANSPARENT, count);
+        return SafeItems.byId("ae2", "fluix_glass_cable", count);
+    }
+
+    /** @return true when any of the given stacks is empty, so the recipe must be skipped */
+    private static boolean missing(ItemStack... stacks) {
+        for (ItemStack stack : stacks) {
+            if (stack.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ResourceLocation id(String path) {

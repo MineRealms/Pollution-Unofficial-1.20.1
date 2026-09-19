@@ -4,15 +4,15 @@
     "bottom": "gtceu:block/casings/voltage/zpm/bottom",
     "top": "gtceu:block/casings/voltage/zpm/top",
     "side": "gtceu:block/casings/voltage/zpm/side",
-    "overlay_front": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_front_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_back_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_top_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_bottom_emissive": "gtceu:block/generators/boiler/lava/overlay_front",
-    "overlay_side_emissive": "gtceu:block/generators/boiler/lava/overlay_front"
+    "overlay_front": "pollution:block/overlay/machine/magic_hatch/infused_fluid_hatch",
+    "overlay_back": "pollution:block/overlay/machine/magic_hatch/infused_fluid_hatch",
+    "overlay_top": "pollution:block/overlay/machine/magic_hatch/infused_fluid_hatch",
+    "overlay_bottom": "pollution:block/overlay/machine/magic_hatch/infused_fluid_hatch",
+    "overlay_side": "pollution:block/overlay/machine/magic_hatch/infused_fluid_hatch",
+    "overlay_front_emissive": "gtceu:block/void",
+    "overlay_back_emissive": "gtceu:block/void",
+    "overlay_top_emissive": "gtceu:block/void",
+    "overlay_bottom_emissive": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void"
   }
 }

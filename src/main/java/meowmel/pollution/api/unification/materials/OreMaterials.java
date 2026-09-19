@@ -49,9 +49,9 @@ public final class OreMaterials {
                         PollutionMaterials.InfusedEarth, 5,
                         PollutionMaterials.InfusedOrder, 10)
                 .iconSet(MaterialIconSet.GEM_HORIZONTAL)
-                .flags(GENERATE_PLATE, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_ROD,
-                        DECOMPOSITION_BY_CENTRIFUGING, GENERATE_BOLT_SCREW, GENERATE_RING,
-                        GENERATE_FRAME, GENERATE_DENSE, GENERATE_FOIL)
+                .flags(GENERATE_PLATE, GENERATE_GEAR, GENERATE_ROD,
+                        DECOMPOSITION_BY_CENTRIFUGING, GENERATE_BOLT_SCREW,
+                        GENERATE_FRAME, GENERATE_DENSE)
                 .formula("((SiO2)4Fe)(IgTerOrd2)5)4", true)
                 .buildAndRegister();
 

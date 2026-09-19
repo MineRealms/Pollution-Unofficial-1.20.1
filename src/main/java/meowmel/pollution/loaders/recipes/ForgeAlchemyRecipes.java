@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import dev.arbor.gtnn.data.GTNNMaterials;
-import dev.tc4port.thaumcraft.registry.TCItems;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.unification.PollutionMaterials;
@@ -17,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -388,20 +386,26 @@ public final class ForgeAlchemyRecipes {
 
             // 精灵元素（ElvenElementium -> GTNN Elementium）
             if (hasFluid(GTNNMaterials.Elementium)) {
-                GTRecipeBuilder.of(id("catalyst/elementium"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
-                        .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
-                        .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
-                        .inputFluids(aura(4000))
-                        .inputItems(ingot(GTNNMaterials.TerraSteel, 2))
-                        .inputItems(ingot(GTNNMaterials.ManaSteel, 2))
-                        .inputItems(BotaniaItems.runeMana)
-                        .notConsumable(stone2.copy())
-                        .outputFluids(GTNNMaterials.Elementium.getFluid(FLUID_AMOUNT))
-                        .circuitMeta(20)
-                        .blastFurnaceTemp(4500)
-                        .duration(15000)
-                        .EUt(7680)
-                        .save(provider);
+                ItemStack runeMana = SafeItems.byId("botania", "rune_mana", 1);
+                if (runeMana.isEmpty()) {
+                    Pollution.LOGGER.warn("Forge alchemy: botania:rune_mana is not registered, "
+                            + "skipping catalyst/elementium");
+                } else {
+                    GTRecipeBuilder.of(id("catalyst/elementium"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                            .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(144))
+                            .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(42))
+                            .inputFluids(aura(4000))
+                            .inputItems(ingot(GTNNMaterials.TerraSteel, 2))
+                            .inputItems(ingot(GTNNMaterials.ManaSteel, 2))
+                            .inputItems(runeMana)
+                            .notConsumable(stone2.copy())
+                            .outputFluids(GTNNMaterials.Elementium.getFluid(FLUID_AMOUNT))
+                            .circuitMeta(20)
+                            .blastFurnaceTemp(4500)
+                            .duration(15000)
+                            .EUt(7680)
+                            .save(provider);
+                }
             }
 
             // 氦气
@@ -432,19 +436,25 @@ public final class ForgeAlchemyRecipes {
 
             // 太虚玄钢（AethericDarkSteel 为真实材料；VoidMetal -> TC4R void ingot，
             // ElvenElementium -> GTNN Elementium）
-            GTRecipeBuilder.of(id("catalyst/aetheric_dark_steel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
-                    .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
-                    .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
-                    .inputFluids(aura(20000))
-                    .inputItems(new ItemStack(TCItems.VOID_INGOT.get(), 8))
-                    .inputItems(ingot(GTNNMaterials.Elementium, 8))
-                    .notConsumable(stone2.copy())
-                    .outputFluids(PollutionMaterials.AethericDarkSteel.getFluid(1152))
-                    .circuitMeta(21)
-                    .blastFurnaceTemp(7200)
-                    .duration(12000)
-                    .EUt(30720)
-                    .save(provider);
+            ItemStack voidIngot = SafeItems.byId("thaumcraft", "void_ingot", 8);
+            if (voidIngot.isEmpty()) {
+                Pollution.LOGGER.warn("Forge alchemy: thaumcraft:void_ingot is not registered, "
+                        + "skipping catalyst/aetheric_dark_steel");
+            } else {
+                GTRecipeBuilder.of(id("catalyst/aetheric_dark_steel"), PORecipeMaps.FORGE_ALCHEMY_RECIPES)
+                        .inputFluids(PollutionMaterials.AdvancedSubstrate.getFluid(1440))
+                        .inputFluids(PollutionMaterials.DimensionalTransformingAgent.getFluid(420))
+                        .inputFluids(aura(20000))
+                        .inputItems(voidIngot)
+                        .inputItems(ingot(GTNNMaterials.Elementium, 8))
+                        .notConsumable(stone2.copy())
+                        .outputFluids(PollutionMaterials.AethericDarkSteel.getFluid(1152))
+                        .circuitMeta(21)
+                        .blastFurnaceTemp(7200)
+                        .duration(12000)
+                        .EUt(30720)
+                        .save(provider);
+            }
 
             // 阿弗纳斯之血：// 跳过: 整合包无 Blood Magic（life essence 缺失）
         }

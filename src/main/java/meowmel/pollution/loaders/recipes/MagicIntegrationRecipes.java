@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -19,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.fluids.FluidStack;
-import vazkii.botania.common.item.BotaniaItems;
 
 import java.util.function.Consumer;
 
@@ -147,13 +145,18 @@ public final class MagicIntegrationRecipes {
             Pollution.LOGGER.warn("Skipping magic_integration/natural_infused_coil: InfusedAura has no fluid");
             return;
         }
+        // 上游 Botania 符文 meta 3 = runeAir
+        ItemStack runeAir = SafeItems.byId("botania", "rune_air", 1);
+        if (runeAir.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_integration/natural_infused_coil: Botania rune_air is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("natural_infused_coil"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
                 // 上游用 InfusedPlant 粉尘；复合要素材料在本移植中只有宝石形态
                 .inputItems(ChemicalHelper.get(TagPrefix.gem, PollutionMaterials.InfusedPlant, 4))
                 .inputItems(PollutionItems.RUBBER_SLIME.asStack())
-                // 上游 Botania 符文 meta 3 = runeAir
-                .inputItems(new ItemStack(BotaniaItems.runeAir))
+                .inputItems(runeAir)
                 .inputFluids(mana)
                 .outputItems(PollutionItems.NATURAL_INFUSED_COIL.asStack())
                 .duration(400)
@@ -331,6 +334,9 @@ public final class MagicIntegrationRecipes {
             Pollution.LOGGER.warn("Skipping the magic_integration LV..HV circuit board group: a required input is missing");
             return;
         }
+        ItemStack resistor = SafeItems.gt("resistor", 2);
+        ItemStack essentiaResonator = SafeItems.byId("thaumcraft", "resonator", 1);
+
         // 上游为奥术工作台配方；LV 板需要两种流体，改用魔导组装机地图
         // （ASSEMBLER_RECIPES 只支持 1 种流体输入，魔导组装机支持 3 种）。
         GTRecipeBuilder.of(id("magic_circuit_board_lv"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
@@ -344,30 +350,38 @@ public final class MagicIntegrationRecipes {
                 .EUt(GTValues.VA[GTValues.LV])
                 .save(provider);
 
-        GTRecipeBuilder.of(id("magic_circuit_board_mv"), GTRecipeTypes.ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LV.asStack())
-                .inputItems(PollutionItems.STERILE_SLATE_BLANK.asStack(2))
-                .inputItems(ChemicalHelper.get(TagPrefix.wireFine, GTMaterials.Silver, 8))
-                .inputItems(GTItems.RESISTOR.asStack(2))
-                .inputFluids(fluid(PollutionMaterials.InfusedLife, 288))
-                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
-                .duration(220)
-                .EUt(GTValues.VA[GTValues.MV])
-                .save(provider);
+        if (resistor.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_integration/magic_circuit_board_mv: GT resistor is missing");
+        } else {
+            GTRecipeBuilder.of(id("magic_circuit_board_mv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                    .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LV.asStack())
+                    .inputItems(PollutionItems.STERILE_SLATE_BLANK.asStack(2))
+                    .inputItems(ChemicalHelper.get(TagPrefix.wireFine, GTMaterials.Silver, 8))
+                    .inputItems(resistor)
+                    .inputFluids(fluid(PollutionMaterials.InfusedLife, 288))
+                    .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
+                    .duration(220)
+                    .EUt(GTValues.VA[GTValues.MV])
+                    .save(provider);
+        }
 
         // 上游 notConsumable ItemsTC.visResonator -> 本移植版 ESSENTIA_RESONATOR；
         // liquid starlight -> InfusedAura
-        GTRecipeBuilder.of(id("magic_circuit_board_hv"), GTRecipeTypes.ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
-                .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz, 2))
-                .inputItems(PollutionItems.SILVERED_GLASS_LENS.asStack())
-                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
-                .notConsumable(new ItemStack(dev.tc4port.thaumcraft.registry.TCItems.ESSENTIA_RESONATOR.get()))
-                .inputFluids(fluid(PollutionMaterials.InfusedAura, 500))
-                .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_HV.asStack())
-                .duration(300)
-                .EUt(GTValues.VA[GTValues.HV])
-                .save(provider);
+        if (essentiaResonator.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_integration/magic_circuit_board_hv: TC resonator is missing");
+        } else {
+            GTRecipeBuilder.of(id("magic_circuit_board_hv"), GTRecipeTypes.ASSEMBLER_RECIPES)
+                    .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_MV.asStack())
+                    .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz, 2))
+                    .inputItems(PollutionItems.SILVERED_GLASS_LENS.asStack())
+                    .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack())
+                    .notConsumable(essentiaResonator)
+                    .inputFluids(fluid(PollutionMaterials.InfusedAura, 500))
+                    .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_HV.asStack())
+                    .duration(300)
+                    .EUt(GTValues.VA[GTValues.HV])
+                    .save(provider);
+        }
     }
 
     // ////////////////////////////////////
@@ -384,13 +398,19 @@ public final class MagicIntegrationRecipes {
         if (bioMedium == null) {
             return;
         }
+        ItemStack smdCapacitor = SafeItems.gt("advanced_smd_capacitor", 8);
+        ItemStack smdTransistor = SafeItems.gt("advanced_smd_transistor", 8);
+        if (smdCapacitor.isEmpty() || smdTransistor.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping magic_integration/magic_circuit_board_luv: a required SMD item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("magic_circuit_board_luv"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack())
                 .inputItems(PollutionItems.LIVING_MAGIC_BIOFILM.asStack(2))
                 .inputItems(PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack())
                 .inputItems(PollutionItems.ASTRAL_LENS_ADVANCED.asStack())
-                .inputItems(GTItems.ADVANCED_SMD_CAPACITOR.asStack(8))
-                .inputItems(GTItems.ADVANCED_SMD_TRANSISTOR.asStack(8))
+                .inputItems(smdCapacitor)
+                .inputItems(smdTransistor)
                 .inputFluids(bioMedium)
                 .outputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_LUV.asStack())
                 .duration(600)

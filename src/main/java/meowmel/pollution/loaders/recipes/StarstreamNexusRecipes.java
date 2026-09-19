@@ -3,7 +3,6 @@ package meowmel.pollution.loaders.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import meowmel.pollution.Pollution;
@@ -12,6 +11,7 @@ import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.function.Consumer;
@@ -86,12 +86,18 @@ public final class StarstreamNexusRecipes {
                 .save(provider);
 
         // 星轨链接器 // 上游: liquid starlight -> 本移植版: InfusedAura
+        ItemStack emitter = SafeItems.gt("iv_emitter", 2);
+        ItemStack sensor = SafeItems.gt("iv_sensor", 2);
+        if (emitter.isEmpty() || sensor.isEmpty()) {
+            Pollution.LOGGER.warn("Skipping starstream_linker: a required GT item is missing");
+            return;
+        }
         GTRecipeBuilder.of(id("starstream_linker"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(PollutionItems.ASTRAL_LENS_BASIC.asStack())
                 .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(2))
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack(2))
-                .inputItems(GTItems.EMITTER_IV.asStack(2))
-                .inputItems(GTItems.SENSOR_IV.asStack(2))
+                .inputItems(emitter)
+                .inputItems(sensor)
                 .inputFluids(fluid(PollutionMaterials.InfusedAura, 2000))
                 .outputItems(PollutionItems.STARSTREAM_LINKER.asStack())
                 .duration(600)
