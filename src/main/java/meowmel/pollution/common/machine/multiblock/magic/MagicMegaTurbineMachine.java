@@ -43,6 +43,7 @@ public class MagicMegaTurbineMachine extends MagicMultiblockController {
                         .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3))
                         .or(Predicates.abilities(POMultiblockAbility.MANA_OUTPUT_HATCH).setMaxGlobalLimited(8))
+                        .or(Predicates.abilities(POMultiblockAbility.TAROT_HATCH).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .build();
     }

@@ -22,9 +22,9 @@ import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
  * the turbine's upstream EU output interface (the turbine pushes generated EU
  * into it and the hatch emits it as Botania mana), so the port keeps the
  * requirement and additionally accepts a standard {@code OUTPUT_ENERGY} hatch
- * (port-side deviation, see {@code docs/HATCH_SEMANTICS.md}). The astral-lens
- * and tarot hatches of the upstream casing have no registered counterpart in
- * the port.</p>
+ * (port-side deviation, see {@code docs/HATCH_SEMANTICS.md}). Upstream's
+ * tarot hatch is accepted on the casing and read by the amplification engine;
+ * the astral-lens hatch has no registered counterpart in the port yet.</p>
  */
 public class MagicLargeTurbineMachine extends MagicMultiblockController {
 
@@ -44,7 +44,8 @@ public class MagicLargeTurbineMachine extends MagicMultiblockController {
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(2))
                         .or(Predicates.abilities(PartAbility.MUFFLER).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(POMultiblockAbility.TAROT_HATCH).setMaxGlobalLimited(1)))
                 .where('R', Predicates.abilities(PartAbility.ROTOR_HOLDER).setExactLimit(1)
                         .or(Predicates.abilities(POMultiblockAbility.MANA_OUTPUT_HATCH).setExactLimit(1)))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.TUNGSTENSTEEL_GEARBOX.get()))

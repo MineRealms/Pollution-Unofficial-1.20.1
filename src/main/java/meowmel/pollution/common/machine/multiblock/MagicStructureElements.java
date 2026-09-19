@@ -22,15 +22,16 @@ import net.minecraft.world.level.block.Block;
  * ({@link POMultiblockAbility#VIS_HATCH},
  * {@link POMultiblockAbility#INFUSED_FLUID_HATCH},
  * {@link POMultiblockAbility#MANA_INPUT_HATCH},
- * {@link POMultiblockAbility#MANA_INPUT_POOL}).</p>
+ * {@link POMultiblockAbility#MANA_INPUT_POOL},
+ * {@link POMultiblockAbility#TAROT_HATCH}).</p>
  *
  * <p>Limits mirror upstream's {@code globalAbilityLimit} calls:
  * the mana/energy pair shares the {@code abilityGroup(MANA_INPUT_HATCH, 1, 2)}
  * window, maintenance and infused-fluid are {@code 1..1}, muffler is
  * {@code 1..1} when the machine has no dedicated muffler character (otherwise
- * it stays on that character), vis and mana-pool are {@code 0..1}. Upstream's
- * blood-magic, astral-lens and tarot hatches have no counterpart in the port
- * (documented deviation, see the machine javadocs).</p>
+ * it stays on that character), vis, mana-pool and tarot are {@code 0..1}.
+ * Upstream's blood-magic and astral-lens hatches still have no counterpart in
+ * the port (documented deviation, see the machine javadocs).</p>
  */
 public final class MagicStructureElements {
 
@@ -75,7 +76,8 @@ public final class MagicStructureElements {
                 .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                 .or(Predicates.abilities(POMultiblockAbility.VIS_HATCH).setMaxGlobalLimited(1))
                 .or(Predicates.abilities(POMultiblockAbility.INFUSED_FLUID_HATCH).setExactLimit(1))
-                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1));
+                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))
+                .or(Predicates.abilities(POMultiblockAbility.TAROT_HATCH).setMaxGlobalLimited(1));
         if (includeMuffler) {
             predicate = predicate.or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
         }

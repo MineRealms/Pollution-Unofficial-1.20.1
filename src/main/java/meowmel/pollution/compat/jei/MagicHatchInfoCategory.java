@@ -8,8 +8,8 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * JEI category documenting the magic hatches of the port: the vis hatch, the
- * infused fluid hatch, the mana energy hatches (including the wireless and
- * mana pool variants) and the flux muffler.
+ * infused fluid hatch, the tarot hatch, the mana energy hatches (including the
+ * wireless and mana pool variants) and the flux muffler.
  *
  * <p>Upstream only exposed these through item tooltips; the port keeps the
  * tooltips and additionally collects the hatch rules on one JEI page so the

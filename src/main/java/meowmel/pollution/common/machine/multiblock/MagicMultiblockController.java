@@ -27,6 +27,10 @@ import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import meowmel.pollution.api.amplification.MagicJeiHintResolver;
+import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
+import meowmel.pollution.api.amplification.MagicProcessTag;
+import meowmel.pollution.api.capability.ITarotHatch;
 import meowmel.pollution.api.capability.IVisHatch;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
@@ -55,10 +59,12 @@ import java.util.Set;
  * collection is done by GregTech itself, while the magic resources are read
  * directly from the parts collected here.</p>
  *
- * <p>Scope (2026-09-18): Thaumcraft-facing resources (vis, infused fluids) are
- * functional. Mana / life essence / astral / tarot stay reserved until their
- * systems are ported; recipes that ask for them fail the requirement check
- * exactly like upstream did when the hatch was missing.</p>
+ * <p>Scope (2026-09-20): Thaumcraft-facing resources (vis, infused fluids) and
+ * the tarot hatch are functional. Mana / life essence / astral stay reserved
+ * until their systems are ported; recipes that ask for them fail the
+ * requirement check exactly like upstream did when the hatch was missing. The
+ * tarot hatch is discovered here and handed to the amplification engine, but
+ * its bonuses still require a calibrated astral wafer (upstream gating).</p>
  *
  * <p>UI (2026-09-19): the controller implements {@link IFancyUIMachine} and
  * {@link IDisplayUIMachine} following GregTech's
@@ -72,6 +78,7 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
 
     protected IVisHatch visHatch;
     protected InfusedFluidHatchMachine infusedFluidHatch;
+    protected ITarotHatch tarotHatch;
     protected ICoilType coilType;
 
     /** Runtime cache of the energy hatches of the formed structure. */
@@ -93,12 +100,16 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         super.onStructureFormed();
         visHatch = null;
         infusedFluidHatch = null;
+        tarotHatch = null;
         for (IMultiPart part : getParts()) {
             if (visHatch == null && part.self() instanceof IVisHatch hatch) {
                 visHatch = hatch;
             }
             if (infusedFluidHatch == null && part.self() instanceof InfusedFluidHatchMachine hatch) {
                 infusedFluidHatch = hatch;
+            }
+            if (tarotHatch == null && part.self() instanceof ITarotHatch hatch) {
+                tarotHatch = hatch;
             }
         }
         Object matchedCoil = getMultiblockState().getMatchContext().get("CoilType");
@@ -111,6 +122,7 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         super.onStructureInvalid();
         visHatch = null;
         infusedFluidHatch = null;
+        tarotHatch = null;
         coilType = null;
         energyContainer = null;
         if (recipeLogic instanceof MagicRecipeLogic magicLogic) {
@@ -209,7 +221,13 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
 
     /**
      * Validates non-consumable magic authorizations before a recipe starts
-     * (port of upstream {@code checkMagicRequirements}, Thaumcraft subset).
+     * (port of upstream {@code checkMagicRequirements}).
+     *
+     * <p>The tarot gate has two layers, matching upstream: an explicit
+     * {@code TAROT} recipe property must be present in the hatch, and the
+     * process tags {@code EXPERIMENTAL}, {@code MAGIC_CONVERSION},
+     * {@code HIDDEN_RITUAL}, {@code RECYCLING} and {@code THREE_MAGIC_SYSTEMS}
+     * additionally require their authorizing major arcana.</p>
      */
     public boolean checkMagicRequirements(GTRecipe recipe) {
         if (MagicRecipeProperties.getManaPerTick(recipe) > 0) {
@@ -224,10 +242,61 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         if (MagicRecipeProperties.getInfusedFluidPerTick(recipe) > 0 && infusedFluidHatch == null) {
             return false;
         }
-        if (!MagicRecipeProperties.getTarot(recipe).isEmpty()) {
+        String tarot = MagicRecipeProperties.getTarot(recipe);
+        if (!tarot.isEmpty() && !hasTarot(tarot)) {
+            return false;
+        }
+        if (!checkTarotProcessGate(recipe)) {
             return false;
         }
         return !recipe.data.contains(MagicRecipeProperties.ASTRAL_CONDITION);
+    }
+
+    /** Upstream tag gates: certain process domains require their authorizing card. */
+    private boolean checkTarotProcessGate(GTRecipe recipe) {
+        long tags = getMagicProcessTags(recipe);
+        if (MagicProcessTag.hasAny(tags, MagicProcessTag.EXPERIMENTAL) && !hasTarot("the_fool")) {
+            return false;
+        }
+        if (MagicProcessTag.hasAny(tags, MagicProcessTag.MAGIC_CONVERSION) && !hasTarot("the_magician")) {
+            return false;
+        }
+        if (MagicProcessTag.hasAny(tags, MagicProcessTag.HIDDEN_RITUAL) && !hasTarot("the_high_priestess")) {
+            return false;
+        }
+        if (MagicProcessTag.hasAny(tags, MagicProcessTag.RECYCLING)
+                && !hasTarot("death") && !hasTarot("judgement")) {
+            return false;
+        }
+        return !MagicProcessTag.hasAny(tags, MagicProcessTag.THREE_MAGIC_SYSTEMS) || hasTarot("the_world");
+    }
+
+    private boolean hasTarot(String tarotId) {
+        return tarotHatch != null && tarotHatch.hasTarot(tarotId);
+    }
+
+    /**
+     * Explicit recipe tags win; legacy recipes fall back to the machine's
+     * registered profile so they still receive the safe first-batch bonuses.
+     */
+    public long getMagicProcessTags(GTRecipe recipe) {
+        long tags = recipe == null ? 0L : MagicRecipeProperties.getProcessTagMask(recipe);
+        if (tags != 0L) {
+            return tags;
+        }
+        return MagicMachineProfileRegistry.getFallbackTags(getDefinition().getId());
+    }
+
+    /** Tarot hatch of the formed structure, or {@code null} when none is installed. */
+    public ITarotHatch getTarotHatch() {
+        return tarotHatch;
+    }
+
+    /** Keeps the non-consumable card stable for one running recipe. */
+    public void setMagicFocusLocked(boolean locked) {
+        if (tarotHatch != null) {
+            tarotHatch.setFocusLocked(locked);
+        }
     }
 
     // ////////////////////////////////////
@@ -332,6 +401,11 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
             if (hasCoil()) {
                 textList.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
                         getCurrentTemperature() + "K"));
+            }
+            if (tarotHatch != null) {
+                String activeTarot = tarotHatch.getActiveTarot();
+                textList.add(Component.translatable("pollution.machine.tarot_hatch.active",
+                        activeTarot.isEmpty() ? "-" : MagicJeiHintResolver.tarotDisplayName(activeTarot)));
             }
         }
         IDisplayUIMachine.super.addDisplayText(textList);

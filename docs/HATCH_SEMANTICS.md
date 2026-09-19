@@ -122,9 +122,15 @@ Upstream references:
   Botania-capability callers), matching upstream's internal transfer
   behaviour; the `ManaReceiverLookup` guard only prevents output→output
   pushes.
-* **Astral/tarot/blood hatches** remain unregistered (see
+* **Astral/blood hatches** remain unregistered (see
   `docs/HATCH_AUDIT.md` §3.1); machine tooltips that referenced them were not
-  re-added.
+  re-added. The **tarot hatch** is ported (2026-09-20): `TarotHatchMachine`
+  holds one filtered card, `MagicMultiblockController` discovers it through
+  `ITarotHatch` and the amplification engine reads it. Because upstream gates
+  all amplification behind a calibrated astral wafer, the card's bonuses only
+  take effect once the astral lens hatch lands; the recipe gates (`TAROT`
+  property and the `EXPERIMENTAL` / `MAGIC_CONVERSION` / `HIDDEN_RITUAL` /
+  `RECYCLING` / `THREE_MAGIC_SYSTEMS` process tags) are enforced now.
 * **MegaManaTurbine (botania)** resolves its catalyst fluids by id at runtime;
   when the GTQT materials are absent the catalyst level stays 0, so its
   tooltip (`最大输出功率`) shows the UV base cap. This is the documented

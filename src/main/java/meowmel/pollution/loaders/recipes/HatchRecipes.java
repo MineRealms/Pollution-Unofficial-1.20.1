@@ -95,6 +95,7 @@ public final class HatchRecipes {
         int tanks = aspectTanks(provider);
         int mufflers = fluxMufflers(provider);
         int infused = infusedFluidHatches(provider);
+        int tarot = tarotHatch(provider);
         int infusions = highTierInfusions(provider);
         Pollution.LOGGER.info("[hatch] registered {} mana input hatch recipes (4A/16A/64A)", manaInput);
         Pollution.LOGGER.info("[hatch] registered {} mana output hatch recipes (1A/4A/16A/64A)", manaOutput);
@@ -102,6 +103,7 @@ public final class HatchRecipes {
         Pollution.LOGGER.info("[hatch] registered {} aspect tank recipes", tanks);
         Pollution.LOGGER.info("[hatch] registered {} flux muffler recipes", mufflers);
         Pollution.LOGGER.info("[hatch] registered {} infused fluid hatch recipes", infused);
+        Pollution.LOGGER.info("[hatch] registered {} tarot hatch recipes", tarot);
         Pollution.LOGGER.info("[hatch] registered {} high-tier hatch infusion recipes", infusions);
     }
 
@@ -428,6 +430,59 @@ public final class HatchRecipes {
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
+            added++;
+        }
+        return added;
+    }
+
+    // ////////////////////////////////////
+    // ***** tarot hatch *****//
+    // ////////////////////////////////////
+
+    /**
+     * Upstream {@code MagicHatchRecipes.registerTarotHatch}: an LV assembler
+     * recipe combining the tier hull, sensor and field generator with the
+     * blank card and arcane ink, plus a Thaumcraft infusion-altar alternative.
+     * The upstream {@code ItemsTC.salisMundus} emblem maps to Salisundus dust.
+     */
+    private static int tarotHatch(Consumer<FinishedRecipe> provider) {
+        MachineDefinition result = PollutionMachines.TAROT_HATCH;
+        MachineDefinition base = at(GTMachines.HULL, GTValues.LV);
+        ItemStack card = SafeItems.of(PollutionItems.BLANK_TAROT_CARD);
+        ItemStack ink = SafeItems.of(PollutionItems.ARCANE_INK_CAPSULE);
+        ItemStack sensor = tierComponent(GTValues.LV, "sensor", 1);
+        ItemStack fieldGenerator = SafeItems.gt("lv_field_generator", 1);
+        ItemStack circuit = SafeItems.of(PollutionItems.MAGIC_CIRCUIT_LV);
+        ItemStack salis = ChemicalHelper.get(TagPrefix.dust, PollutionMaterials.Salisundus, 1);
+        if (result == null || base == null || card.isEmpty() || ink.isEmpty()
+                || sensor.isEmpty() || fieldGenerator.isEmpty() || circuit.isEmpty() || salis.isEmpty()) {
+            Pollution.LOGGER.warn("[hatch] skipping tarot hatch recipe: a required component is missing");
+            return 0;
+        }
+
+        List<ItemStack> components = new ArrayList<>();
+        components.add(base.asStack());
+        components.add(sensor);
+        components.add(fieldGenerator);
+        components.add(card);
+        components.add(ink);
+        components.add(salis);
+        components.add(circuit);
+        GTRecipeBuilder builder = GTRecipeBuilder.of(id("tarot_hatch"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+        for (ItemStack component : components) {
+            builder.inputItems(component);
+        }
+        builder.inputFluids(PollutionMaterials.InfusedMagic.getFluid(144));
+        builder.outputItems(result)
+                .duration(240)
+                .EUt(GTValues.VA[GTValues.MV])
+                .save(provider);
+
+        int added = 1;
+        if (infusion(provider, "hatch_tarot_hatch/iv", machine(result), 8,
+                card,
+                aspects("cognitio", 8, "praecantatio", 16, "permutatio", 8, "sensus", 8, "spiritus", 8),
+                ing(ink), ing(salis), ing(circuit), ing(sensor), ing(fieldGenerator))) {
             added++;
         }
         return added;

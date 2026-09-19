@@ -32,5 +32,8 @@ public final class POMultiblockAbility {
     /** Pure Botania mana pool hatch (output). */
     public static final PartAbility MANA_OUTPUT_POOL = new PartAbility("pollution_mana_output_pool");
 
+    /** Tarot hatch: one major-arcana card as a non-consumable authorization. */
+    public static final PartAbility TAROT_HATCH = new PartAbility("pollution_tarot_hatch");
+
     private POMultiblockAbility() {}
 }

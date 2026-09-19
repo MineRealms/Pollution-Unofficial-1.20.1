@@ -68,7 +68,7 @@ initializer and in `init()` are both listed.
 | `INFUSED_FLUID_HATCH` | SimpleOverlayRenderer | `overlay/machine/magic_hatch/infused_fluid_hatch` |
 | `BLOOD_MAGIC_HATCH` | SimpleOverlayRenderer | `overlay/machine/magic_hatch/blood_magic_hatch` (not ported) |
 | `ASTRAL_LENS_HATCH` | SimpleOverlayRenderer | `overlay/machine/magic_hatch/astral_lens_hatch` (not ported) |
-| `TAROT_HATCH` | SimpleOverlayRenderer | `overlay/machine/magic_hatch/tarot_hatch` (not ported) |
+| `TAROT_HATCH` | SimpleOverlayRenderer | `overlay/machine/magic_hatch/tarot_hatch` |
 | `BMCOMPUTER_CASING` | SidedCubeRenderer | `casings/bm_computer/computer_casing` (not ported) |
 | `BMADVANCED_COMPUTER_CASING` | SidedCubeRenderer | `casings/bm_computer/advanced_computer_casing` (not ported) |
 | `BMHPCA_*_OVERLAY` | SimpleOverlayRenderer | `overlay/machine/bm_hpca/*` (not ported) |
@@ -109,7 +109,7 @@ texture.
 | `MetaTileEntityWirelessManaPoolHatch` | `WIRELESS_MANA_POOL_HATCH_INPUT/OUTPUT` | `overlay/machine/magic_hatch/wireless_mana_pool_(input|output)` | `wireless_mana_pool_(input|output)_hatch_<pool>` |
 | `MetaTileEntityAstralLensHatch` | `POTextures.ASTRAL_LENS_HATCH` | `overlay/machine/magic_hatch/astral_lens_hatch` | - |
 | `MetaTileEntityBloodMagicHatch` | `POTextures.BLOOD_MAGIC_HATCH` | `overlay/machine/magic_hatch/blood_magic_hatch` | - |
-| `MetaTileEntityTarotHatch` | `POTextures.TAROT_HATCH` | `overlay/machine/magic_hatch/tarot_hatch` | - |
+| `MetaTileEntityTarotHatch` | `POTextures.TAROT_HATCH` | `overlay/machine/magic_hatch/tarot_hatch` | `tarot_hatch_lv` |
 | `MetaTileEntityMagicItemHatch` | none (GT default) | GT standard | - |
 | `MetaTileEntityBMHPCAComponent` and subclasses | `BMHPCA_*_OVERLAY`, `BMCOMPUTER/BMADVANCED_COMPUTER_CASING` | `overlay/machine/bm_hpca/*`, `casings/bm_computer/*` | - |
 | `MetaTileEntityBMHPCA` | `BMHPCA_OVERLAY`, `BMCOMPUTER/BMADVANCED_COMPUTER_CASING` | `multiblock/bm_hpca`, `casings/bm_computer/*` | - |

@@ -67,6 +67,7 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicSolidifierMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicWireMillMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
+import meowmel.pollution.common.machine.part.TarotHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
 import meowmel.pollution.common.machine.part.mana.ManaHatchMachine;
 import meowmel.pollution.common.machine.part.mana.ManaPoolHatchMachine;
@@ -160,6 +161,8 @@ public final class PollutionMachines {
     public static MachineDefinition[][] SOLAR_PLATE;
     public static MachineDefinition[] VIS_HATCH;
     public static MachineDefinition[] INFUSED_FLUID_HATCH;
+    /** Upstream registered a single LV tarot hatch, so the port keeps one definition. */
+    public static MachineDefinition TAROT_HATCH;
     public static MachineDefinition[] FLUX_MUFFLER;
     public static MachineDefinition[] MANA_INPUT_HATCH_1A;
     public static MachineDefinition[] MANA_INPUT_HATCH_4A;
@@ -455,6 +458,19 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.infused_fluid_hatch.tooltip"))
                         .register(),
                 INFUSED_FLUID_HATCH_TIERS);
+
+        TAROT_HATCH = PollutionGTAddon.REGISTRATE
+                .machine("tarot_hatch", info -> new TarotHatchMachine(info, GTValues.LV))
+                .tier(GTValues.LV)
+                .langValue("LV Tarot Hatch")
+                .rotationState(RotationState.ALL)
+                .abilities(POMultiblockAbility.TAROT_HATCH)
+                .simpleModel(model("tarot_hatch_lv"))
+                .tooltips(
+                        Component.translatable("pollution.machine.tarot_hatch.tooltip.1"),
+                        Component.translatable("pollution.machine.tarot_hatch.tooltip.2"),
+                        Component.translatable("pollution.machine.tarot_hatch.tooltip.3"))
+                .register();
 
         FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
                 PollutionGTAddon.REGISTRATE,

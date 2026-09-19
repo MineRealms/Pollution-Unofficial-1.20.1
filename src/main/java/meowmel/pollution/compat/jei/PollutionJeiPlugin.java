@@ -112,6 +112,7 @@ public final class PollutionJeiPlugin implements IModPlugin {
         addStack(hatchCatalysts, machineStack(PollutionMachines.MANA_POOL_OUTPUT_HATCH,
                 ManaPoolHatchMachine.PoolType.NORMAL.ordinal()));
         addStack(hatchCatalysts, machineStack(PollutionMachines.FLUX_MUFFLER, 1));
+        addStack(hatchCatalysts, singleStack(PollutionMachines.TAROT_HATCH));
         if (!hatchCatalysts.isEmpty()) {
             registration.addRecipeCatalysts(MagicHatchInfoCategory.RECIPE_TYPE,
                     hatchCatalysts.toArray(new ItemStack[0]));
@@ -272,6 +273,11 @@ public final class PollutionJeiPlugin implements IModPlugin {
         addInfo(recipes, machineStack(PollutionMachines.FLUX_MUFFLER, 1), List.of(
                 Component.translatable("pollution.machine.flux_muffler.tooltip"),
                 Component.translatable("pollution.machine.flux_muffler.tooltip.recovery", 0)));
+
+        addInfo(recipes, singleStack(PollutionMachines.TAROT_HATCH), List.of(
+                Component.translatable("pollution.machine.tarot_hatch.tooltip.1"),
+                Component.translatable("pollution.machine.tarot_hatch.tooltip.2"),
+                Component.translatable("pollution.machine.tarot_hatch.tooltip.3")));
 
         return recipes;
     }

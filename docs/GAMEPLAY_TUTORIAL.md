@@ -552,7 +552,7 @@ TC4R 没有 TC6 的“环境灵气”，灵气只存在于 **灵气节点（Aura
 - `MagicFuelRecipes`：化学配方消耗 1152 mB Infused Energy 制造高级燃料（`MagicFuelRecipes.java:81-92, 109-122, 136-144`）。
 - `Source Charge`：用水环等饰品 + Infused Water 充能（`SourceChargeMachine.java:17-35`，容量 4000 mB，`:51`）。
 
-**注意**：Mana / Life Essence / Astral / Tarot 资源在 `MagicMultiblockController` 里是保留系统——要求它们的配方会像上游缺少仓室时一样失败（`MagicMultiblockController.java:30-34, 160-191`）。
+**注意**：Mana / Life Essence / Astral 资源在 `MagicMultiblockController` 里仍是保留系统——要求它们的配方会像上游缺少仓室时一样失败（`MagicMultiblockController.java:30-34, 160-191`）。塔罗仓已移植：`TarotHatchMachine` 提供一个过滤卡槽，控制器通过 `ITarotHatch` 发现它；`TAROT` 配方属性与 `EXPERIMENTAL` / `MAGIC_CONVERSION` / `HIDDEN_RITUAL` / `RECYCLING` / `THREE_MAGIC_SYSTEMS` 工序标签的授权检查现已生效。受上游设计限制，塔罗的增幅数值仍需配合星辉晶圆（星辉透镜仓尚未移植）。
 
 ---
 
@@ -885,7 +885,7 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 13. **魔法涡轮无转子耐久消耗**（类注释 `MagicLargeTurbineMachine.java:16-18`）。
 14. **Life Activation Garden 模式 1（魔力流体）依赖未移植的 `pollution:mana` 流体**：流体缺失时能量缓存只存不发（`MultiDanDeLifeOnMachine.java:142-147`）。
 15. **Mana Generator 不引用 `mana_gen_recipes`**：该配方表存在但没有配方，转换逻辑是 1 mana = 1 EU（`ManaGeneratorMachine.java:20-24`、`BotaniaRecipeMaps.java:53-56`）。
-16. **Magic Multiblock 的 Mana / Life Essence / Astral / Tarot 资源**：`MagicMultiblockController` 保留为未实现系统；要求这些资源的配方会失败（`MagicMultiblockController.java:30-34, 160-191`、`MagicRecipeLogic.java:79-93`）。
+16. **Magic Multiblock 的 Mana / Life Essence / Astral 资源**：`MagicMultiblockController` 保留为未实现系统；要求这些资源的配方会失败（`MagicMultiblockController.java:30-34, 160-191`、`MagicRecipeLogic.java:79-93`）。**Tarot 已移植**（`TarotHatchMachine` + `ITarotHatch` 发现 + 配方授权检查）；增幅数值仍受星辉晶圆门槛限制（见 `docs/HATCH_SEMANTICS.md` §4）。
 17. **Mega Mana Turbine 催化剂材料**：代码运行时按 `pollution:black_mansus` 等 id 解析；若注册表缺失则催化剂等级为 0（`MegaManaTurbineMachine.java:44-54, 209-216`）。
 
 **已修复/有意偏差（相对上游）**

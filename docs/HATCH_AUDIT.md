@@ -51,7 +51,8 @@ Upstream casing predicate (`DeclarativePatternBuilder#where(symbol, choice(casin
 | INF | `[1,1]` | `setMaxGlobalLimited(1)` | `setExactLimit(1)` | FIXED |
 | MP | `[0,1]` | absent | `setMaxGlobalLimited(1)` | FIXED |
 | I_IN/I_OUT/F_IN/F_OUT | recipe-dependent, no individual limit | `autoAbilities` (energy + items/fluids) | `autoAbilities(recipes, false,false,true,true,true,true)` | FIXED |
-| BLOOD/ASTRAL/TAROT | `[0,1]` each | not registered in the port | not accepted | DEVIATION (documented) |
+| TAROT | `[0,1]` | not registered in the port | `TAROT[-,1]` | FIXED (2026-09-20) |
+| BLOOD/ASTRAL | `[0,1]` each | not registered in the port | not accepted | DEVIATION (documented) |
 | `Elements.abilities(0, maxHatches, …)` shared slot cap | present | not expressible | not expressible (casing position count caps it) | DEVIATION (documented) |
 
 ### 1.2 `BotaniaStructureElements` (upstream `configureManaRecipeCasing`)
@@ -104,20 +105,20 @@ All machines below use `MagicStructureElements.magicCasing(...)` (§1.1) except
 | MagicSifter | X | §1.1 (maxHatches 9) | casing + autoAbilities + VIS/INF | §1.1 | FIXED |
 | MagicSolidifier | X | §1.1 (maxHatches 35) | casing + autoAbilities + VIS/INF | §1.1 | FIXED |
 | MagicWireMill | X | §1.1 (maxHatches 9) | casing + autoAbilities + VIS/INF | §1.1 | FIXED |
-| MagicFusionReactor | A | E_IN, I_IN, I_OUT, F_IN, F_OUT, MAINT `[1,1]`, MUFF `[1,1]`, VIS `[0,1]`, INF `[1,1]`, MP `[0,1]`, BLOOD/ASTRAL/TAROT `[0,1]` | frame + `autoAbilities` (E_IN `[1,2]` + items/fluids) | frame + items/fluids + E_IN unlimited + MAINT `[1,1]` + MUFF `[1,1]` + VIS `[-,1]` + INF `[1,1]` + MP `[-,1]` | FIXED (BLOOD/ASTRAL/TAROT deviation) |
-| MagicBattery | A | MAINT `[1,1]`, E_IN `[1,16]`, E_OUT `[1,16]`, ASTRAL/TAROT `[0,1]` | E_IN `[-,16]`, E_OUT `[-,16]`, MAINT `[-,1]` | E_IN `[1,16]`, E_OUT `[1,16]`, MAINT `[1,1]` | FIXED (ASTRAL/TAROT deviation) |
+| MagicFusionReactor | A | E_IN, I_IN, I_OUT, F_IN, F_OUT, MAINT `[1,1]`, MUFF `[1,1]`, VIS `[0,1]`, INF `[1,1]`, MP `[0,1]`, BLOOD/ASTRAL/TAROT `[0,1]` | frame + `autoAbilities` (E_IN `[1,2]` + items/fluids) | frame + items/fluids + E_IN unlimited + MAINT `[1,1]` + MUFF `[1,1]` + VIS `[-,1]` + INF `[1,1]` + MP `[-,1]` + TAROT `[-,1]` | FIXED (BLOOD/ASTRAL deviation) |
+| MagicBattery | A | MAINT `[1,1]`, E_IN `[1,16]`, E_OUT `[1,16]`, ASTRAL/TAROT `[0,1]` | E_IN `[-,16]`, E_OUT `[-,16]`, MAINT `[-,1]` | E_IN `[1,16]`, E_OUT `[1,16]`, MAINT `[1,1]` | FIXED (ASTRAL deviation; TAROT not accepted because the port battery is display-only and has no recipe logic to consume the card) |
 | MagicLargeTurbine | R | tiered `ROTOR_HOLDER` `[1,1]` + `MANA_OUTPUT_HATCH` `[1,1]` | `ROTOR_HOLDER[-,2]` | `ROTOR_HOLDER[1,1]` + `MO[1,1]` | FIXED (tier filter dropped, documented) |
-| MagicLargeTurbine | H | MAINT `[1,1]`, MUFF `[0,1]`, F_IN `[0,4]`, F_OUT `[0,4]`, ASTRAL/TAROT `[0,1]` | F_IN `[-,2]`, F_OUT `[-,1]`, E_OUT `[-,2]`, MAINT `[-,1]` | F_IN `[-,4]`, F_OUT `[-,4]`, E_OUT `[-,2]` (port EU deviation), MUFF `[-,1]`, MAINT `[1,1]` | FIXED (E_OUT extra, ASTRAL/TAROT deviation) |
+| MagicLargeTurbine | H | MAINT `[1,1]`, MUFF `[0,1]`, F_IN `[0,4]`, F_OUT `[0,4]`, ASTRAL/TAROT `[0,1]` | F_IN `[-,2]`, F_OUT `[-,1]`, E_OUT `[-,2]`, MAINT `[-,1]` | F_IN `[-,4]`, F_OUT `[-,4]`, E_OUT `[-,2]` (port EU deviation), MUFF `[-,1]`, MAINT `[1,1]`, TAROT `[-,1]` | FIXED (E_OUT extra, ASTRAL deviation) |
 | MagicMegaTurbine | R | `REINFORCED_ROTOR_HOLDER` unlimited | `ROTOR_HOLDER[-,3]` | `ROTOR_HOLDER` unlimited | FIXED (ability mapping documented) |
 | MagicMegaTurbine | M | `MUFFLER_HATCH` hatch, no limit | `MUFF[-,1]` | `MUFF` unlimited | FIXED |
-| MagicMegaTurbine | A | MAINT `[1,1]`, I_IN `[0,1]`, F_IN `[1,4]`, F_OUT `[1,4]`, `MANA_OUTPUT_HATCH[0,8]`, ASTRAL/TAROT `[0,1]` | F_IN `[-,3]`, F_OUT `[-,1]`, E_OUT `[-,3]`, MAINT `[-,1]` | F_IN `[1,4]`, F_OUT `[1,4]`, I_IN `[-,1]`, `MO[-,8]`, E_OUT `[-,3]` (port EU deviation), MAINT `[1,1]` | FIXED (E_OUT extra, ASTRAL/TAROT deviation) |
+| MagicMegaTurbine | A | MAINT `[1,1]`, I_IN `[0,1]`, F_IN `[1,4]`, F_OUT `[1,4]`, `MANA_OUTPUT_HATCH[0,8]`, ASTRAL/TAROT `[0,1]` | F_IN `[-,3]`, F_OUT `[-,1]`, E_OUT `[-,3]`, MAINT `[-,1]` | F_IN `[1,4]`, F_OUT `[1,4]`, I_IN `[-,1]`, `MO[-,8]`, E_OUT `[-,3]` (port EU deviation), MAINT `[1,1]`, TAROT `[-,1]` | FIXED (E_OUT extra, ASTRAL deviation) |
 | SmallChemicalPlant | G | E_IN `[1,23]`, MAINT `[1,1]`, MUFF `[1,1]`, I_IN/I_OUT/F_IN/F_OUT `[1,23]` | all max-only (`[-,N]`) | min limits added, MAINT/MUFF exact | FIXED |
 | EssenceCollector | A | MAINT `[1,1]`, E_IN `[0,2]` | E_IN `[-,2]`, MAINT `[-,1]` | E_IN `[-,2]`, MAINT `[1,1]` | FIXED |
 | EssenceCollector | D | F_OUT `[6,6]` | `F_OUT[6,6]` | unchanged | OK |
 | EssenceCollector | O | I_IN `[0,2]` | `I_IN[-,2]` | unchanged | OK |
 | EssenceSmelter | B | I_IN `[1,27]`, F_IN `[1,1]`, E_IN `[0,2]`, MAINT `[1,1]` | I_IN `[-,1]`, F_IN `[-,1]`, E_IN `[-,2]`, MAINT `[-,1]` | I_IN `[1,27]`, F_IN `[1,1]`, E_IN `[-,2]`, MAINT `[1,1]` | FIXED |
 | GtEssenceSmelter | B | I_IN `[1,27]`, F_IN `[1,1]`, F_OUT `[6,27]`, E_IN `[0,2]`, MAINT `[1,1]` | I_IN `[-,1]`, F_IN `[-,1]`, F_OUT `[-,6]`, E_IN `[-,2]`, MAINT `[-,1]` | I_IN `[1,27]`, F_IN `[1,1]`, F_OUT `[6,27]`, E_IN `[-,2]`, MAINT `[1,1]` | FIXED |
-| IndustrialInfusion | B | E_IN, I_IN, I_OUT, F_IN, F_OUT, VIS `[0,1]`, INF `[1,1]`, MP `[0,1]`, BLOOD/ASTRAL/TAROT `[0,1]` | E_IN `[-,16]`, MAINT `[-,1]` | E_IN, I_IN, I_OUT, F_IN, F_OUT, VIS `[-,1]`, INF `[1,1]`, MP `[-,1]` | FIXED (BLOOD/ASTRAL/TAROT deviation) |
+| IndustrialInfusion | B | E_IN, I_IN, I_OUT, F_IN, F_OUT, VIS `[0,1]`, INF `[1,1]`, MP `[0,1]`, BLOOD/ASTRAL/TAROT `[0,1]` | E_IN `[-,16]`, MAINT `[-,1]` | E_IN, I_IN, I_OUT, F_IN, F_OUT, VIS `[-,1]`, INF `[1,1]`, MP `[-,1]`, TAROT `[-,1]` | FIXED (BLOOD/ASTRAL deviation) |
 | InfusedExchange | A | F_OUT `[0,1]` | `F_OUT` unlimited | `F_OUT[-,1]` | FIXED |
 
 ### 2.2 Node machines (`node/**`)
@@ -161,14 +162,18 @@ All machines below use `MagicStructureElements.magicCasing(...)` (§1.1) except
 
 ## 3. Remaining deviations (intentional / documented)
 
-1. **BLOOD_MAGIC_HATCH / ASTRAL_LENS_HATCH / TAROT_HATCH** — upstream accepted
-   them (`[0,1]`) on the magic casing / frame of `MagicAlloyBlastSmelter`,
+1. **BLOOD_MAGIC_HATCH / ASTRAL_LENS_HATCH** — upstream accepted them
+   (`[0,1]`) on the magic casing / frame of `MagicAlloyBlastSmelter`,
    `MagicBrewery`, `MagicDistillery`, `MagicElectricBlastFurnace` (via
    `configureMagicRecipeCasing`), `MagicFusionReactor`, `MagicBattery`,
-   `MagicLargeTurbine`, `MagicMegaTurbine`, `IndustrialInfusion`. These abilities
-   are not registered in the port (`POMultiblockAbility` only defines VIS,
-   INFUSED_FLUID, MANA_INPUT/OUTPUT_HATCH, MANA_INPUT/OUTPUT_POOL), so the port
-   cannot accept the parts. Noted in the affected machine javadocs.
+   `MagicLargeTurbine`, `MagicMegaTurbine`, `IndustrialInfusion`. These two
+   abilities are not registered in the port yet, so the port cannot accept the
+   parts. Noted in the affected machine javadocs.
+   `TAROT_HATCH` was ported on 2026-09-20 (`POMultiblockAbility.TAROT_HATCH`,
+   `TarotHatchMachine`, `TAROT[-,1]` on the shared magic casing and the explicit
+   fusion-reactor / turbine / industrial-infusion patterns). `MagicBattery`
+   deliberately does not accept it: the port battery is display-only and has no
+   recipe logic that could consume the card.
 2. **CentralVisTower `MANA_INPUT_POOL[1,1]` → `INPUT_ENERGY[1,1]` +
    `IMPORT_FLUIDS[1,1]` (InfusedAura)** — the machine was rewritten around EU and
    an InfusedAura upkeep because TC4R has no ambient aura; documented in
@@ -207,5 +212,6 @@ All machines below use `MagicStructureElements.magicCasing(...)` (§1.1) except
 CelestialObservationArray, ConstellationTower, IndustrialLightwell,
 IndustrialStarlightInfuser, StarstreamNexusObelisk),
 `bloodMagic/MetaTileEntityBMHPCA`, `MetaTileEntityFluxClear`.
-Their patterns (including the ASTRAL/TAROT/BLOOD hatches) have no port
-counterpart and are out of scope of this audit.
+Their patterns (including the ASTRAL/BLOOD hatches; the TAROT hatch itself is
+ported and wired into the magic casing) have no port counterpart and are out of
+scope of this audit.

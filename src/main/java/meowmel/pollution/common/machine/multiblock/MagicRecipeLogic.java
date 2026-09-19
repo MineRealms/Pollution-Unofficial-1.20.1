@@ -17,9 +17,7 @@ import meowmel.pollution.api.amplification.AstralAmplifierSnapshot;
 import meowmel.pollution.api.amplification.AstralHatchView;
 import meowmel.pollution.api.amplification.MagicAmplificationEngine;
 import meowmel.pollution.api.amplification.MagicAmplificationResult;
-import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
 import meowmel.pollution.api.amplification.MagicOutputProcessor;
-import meowmel.pollution.api.amplification.TarotHatchView;
 import meowmel.pollution.api.pollution.MachinePollution;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
 import net.minecraft.nbt.CompoundTag;
@@ -84,10 +82,13 @@ import java.util.Map;
  *       definitions register neither a parallel hatch nor a modifier, so
  *       {@link MagicAmplificationResult#getExtraParallel()} cannot be added
  *       without touching off-limits registration code.</li>
- *   <li><b>Astral / tarot hatches</b>: no lens or tarot hatch exists in the port
- *       yet (Phase 6). {@link #EMPTY_ASTRAL_HATCH} / {@link #EMPTY_TAROT_HATCH}
- *       make the engine return {@link MagicAmplificationResult#NONE}; the real
- *       hatches will replace these stubs and feed the same call.</li>
+ *   <li><b>Astral hatch</b>: no calibrated lens hatch exists in the port yet
+ *       (Phase 6). {@link #EMPTY_ASTRAL_HATCH} makes the engine return
+ *       {@link MagicAmplificationResult#NONE}; the real hatch will replace the
+ *       stub and feed the same call. The tarot hatch is ported and is read
+ *       from the formed controller ({@code controller#getTarotHatch()}), but
+ *       upstream gating means its bonuses only apply together with an astral
+ *       data wafer.</li>
  *   <li><b>Furnace temperature bonus</b> and the <b>star afterglow</b>
  *       natural-sky match are not applied (no consumers yet).</li>
  * </ul>
@@ -142,9 +143,6 @@ public class MagicRecipeLogic extends RecipeLogic {
         }
     };
 
-    /** Phase 6 stub: no tarot hatch exists in the port yet. */
-    private static final TarotHatchView EMPTY_TAROT_HATCH = () -> "";
-
     private final MagicMultiblockController controller;
 
     private boolean visPaidThisCraft;
@@ -181,6 +179,9 @@ public class MagicRecipeLogic extends RecipeLogic {
         activeAmplification = MagicAmplificationResult.NONE;
         amplifiedTickRecipe = null;
         progressRetentionTicks = 0;
+        if (controller != null) {
+            controller.setMagicFocusLocked(false);
+        }
     }
 
     @Override
@@ -210,6 +211,9 @@ public class MagicRecipeLogic extends RecipeLogic {
         }
         if (activeAmplification.getEutReduction() > 0.0D) {
             amplifiedTickRecipe = buildEutReducedRecipe(recipe);
+        }
+        if (activeAmplification.isActive() && !activeAmplification.getTarot().isEmpty()) {
+            controller.setMagicFocusLocked(true);
         }
     }
 
@@ -400,19 +404,17 @@ public class MagicRecipeLogic extends RecipeLogic {
         int stacks = recipe.id != null && recipe.id.equals(lastCompletedRecipeId) ? chariotStacks : 0;
         boolean singleParallel = recipe.getTotalRuns() <= 1;
         return MagicAmplificationEngine.calculate(processTagsFor(recipe), recipe.duration, snapshot,
-                EMPTY_TAROT_HATCH, stacks, singleParallel);
+                controller.getTarotHatch(), stacks, singleParallel);
     }
 
     /**
      * Explicit recipe tags win; legacy recipes fall back to the machine's
      * registered profile so they still receive the safe first-batch bonuses.
+     * Shared with {@code MagicMultiblockController#checkMagicRequirements} so
+     * the recipe gate and the amplification engine read the same tag mask.
      */
     private long processTagsFor(GTRecipe recipe) {
-        long tags = MagicRecipeProperties.getProcessTagMask(recipe);
-        if (tags != 0L) {
-            return tags;
-        }
-        return MagicMachineProfileRegistry.getFallbackTags(controller.getDefinition().getId());
+        return controller.getMagicProcessTags(recipe);
     }
 
     private void updateChariotStacks(GTRecipe finished, MagicAmplificationResult result) {

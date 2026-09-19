@@ -184,6 +184,7 @@ public final class Pollution {
             provider.add("gtceu.ability.pollution_mana_output_hatch", "Mana Output Hatch");
             provider.add("gtceu.ability.pollution_mana_input_pool", "Mana Pool Input Hatch");
             provider.add("gtceu.ability.pollution_mana_output_pool", "Mana Pool Output Hatch");
+            provider.add("gtceu.ability.pollution_tarot_hatch", "Tarot Hatch");
             provider.add("tagprefix.proxima_centauri_b", "Proxima Centauri B Stone");
             provider.add("material.gtceu.manasteel", "Manasteel");
             provider.add("material.gtceu.terrasteel", "Terrasteel");
@@ -410,6 +411,13 @@ public final class Pollution {
                     "Burns packaged aura nodes to generate EU; the multiplier depends on the node's properties and the machine tier");
             provider.add("pollution.machine.source_charge.tooltip",
                     "Consumes 1 mB/t of the matching aspect fluid to restore 1 charge to the bauble");
+            provider.add("pollution.machine.tarot_hatch.tooltip.1",
+                    "Insert one Major Arcana tarot card to authorize the corresponding ritual recipe");
+            provider.add("pollution.machine.tarot_hatch.tooltip.2",
+                    "The tarot card is an authorization medium and is never consumed by recipes");
+            provider.add("pollution.machine.tarot_hatch.tooltip.3",
+                    "Crafted from an LV machine hull, a sensor, a field generator, a blank tarot card and an arcane ink capsule");
+            provider.add("pollution.machine.tarot_hatch.active", "Active tarot: %s");
             provider.add("pollution.jei.machine_info.title", "Magic Machine Info");
             provider.add("pollution.jei.magic_hatch.title", "Magic Hatch Info");
             provider.add("pollution.jei.magic_amplification.title", "Amplification Info");

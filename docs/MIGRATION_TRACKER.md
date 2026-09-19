@@ -390,9 +390,9 @@ Done (4.274s)! For help, type "help"
    - 上游 `getPollutionAmount()=0` 语义：消声仓回收本身不增加工业污染（现代 GT 已移除该钩子，注释记录）
    - 能力使用 GT 标准 `PartAbility.MUFFLER`，可被现有 GT 多方块识别
 4. [x] **MagicItemHatch 基类**：`MagicItemHatchMachine`（抽象，focus 槽 + 过滤 + 锁定；`NotifiableItemStackHandler`
-   暴露物品能力）。具体子类（Tarot 等）随对应联动阶段；本轮不注册机器定义
+   暴露物品能力）。**TarotHatchMachine 已于 2026-09-20 移植并注册**（LV，`POMultiblockAbility.TAROT_HATCH`）；其余子类（Blood/Astral）随对应联动阶段
 5. [ ] 容器类：`ManaContainer`、`VisContainer`（当前 VIS_HATCH 用整型字段替代 `VisContainer`，待魔法配方系统落地后再评估是否需要独立容器抽象）
-6. [ ] 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`/`TarotHatch`（Phase 6）、BM-HPCA 系列 5 个（Phase 6）
+6. [ ] 外部模组部件延期：`ManaHatch`/`ManaPoolHatch`/无线款式（Botania，Phase 6）、`BloodMagicHatch`（Phase 6）、`AstralLensHatch`（Phase 6，`TarotHatch` 已于 2026-09-20 移植）、BM-HPCA 系列 5 个（Phase 6）
 
 **魔法多方块（upstream `multiblock` 19 类 + `multiblock/magic` 18 类 + `multiblock/generator` 3 类）— 规划：**
 
@@ -520,9 +520,9 @@ Done (4.274s)! For help, type "help"
 
 - `common/machine/multiblock/MagicMultiblockController.java`（上游 `MagicRecipeMapMultiblockController` 的 TC 子集）：
   - `extends WorkableMultiblockMachine`；`createRecipeLogic` 注入 `MagicRecipeLogic`
-  - `onStructureFormed` 从 `getParts()` 收集 `IVisHatch` 与 `InfusedFluidHatchMachine`
+  - `onStructureFormed` 从 `getParts()` 收集 `IVisHatch`、`InfusedFluidHatchMachine` 与 `ITarotHatch`（2026-09-20）
   - `consumeVis(int,boolean)` / `drainInfusedFluid(int,boolean)`（后者校验流体属于 `PollutionAspectMapping` 映射材料）
-  - `checkMagicRequirements(GTRecipe)`：mana/life/astral/tarot 配方在对应仓未移植前直接判失败（与上游“缺仓即失败”语义一致）
+  - `checkMagicRequirements(GTRecipe)`：mana/life/astral 配方在对应仓未移植前直接判失败（与上游“缺仓即失败”语义一致）；tarot 已接线：`TAROT` 属性 + `EXPERIMENTAL`/`MAGIC_CONVERSION`/`HIDDEN_RITUAL`/`RECYCLING`/`THREE_MAGIC_SYSTEMS` 工序标签按上游要求对应塔罗牌
   - `consumeMana`/`consumeLifeEssence` 预留（恒 `amount<=0`）
 - `common/machine/multiblock/MagicRecipeLogic.java`（上游 `MagicMultiblockRecipeLogic` 的 TC 子集）：
   - `checkRecipe`：额外校验 `checkMagicRequirements` + vis 可支付（SIMULATE）
@@ -893,10 +893,10 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 | 域 | 剩余 | 原因/依赖 |
 |---|---|---|
 | 配方 | `MagicChemicalRecipes`(57KB)、`MagicGCYMRecipes` 剩余、`MagicIntegrationRecipes`(62KB)、`ForgeAlchemyRecipes`(20KB)、`BloodAltar`/`BloodCircuit`、`AstralSorcery`、`ConstellationTowerRecipes`、`StarstreamNexusRecipes`、`CrystalLine`/`TarChain`/`MaterialsLine`/`MeteorsHelper`/`CircuitManager`/`MagicGuideRecipes`/`MachineRecipes` 剩余、`MagicHatchRecipes`/`MufflerHatchRecipes` | 多数依赖未接依赖的联动（Astral Sorcery / Blood Magic）或未移植物品 |
-| 机器-部件 | `BloodMagicHatch`、`AstralLensHatch`(+/advanced)、`TarotHatch`、BM-HPCA 系列 5、`ManaContainer`/`VisContainer`(语义已内联) | 需 Astral/Blood 依赖或物品层 |
+| 机器-部件 | `BloodMagicHatch`、`AstralLensHatch`(+/advanced)、BM-HPCA 系列 5、`ManaContainer`/`VisContainer`(语义已内联)；`TarotHatch` 已完成（2026-09-20） | 需 Astral/Blood 依赖或物品层 |
 | 机器-多块 | Starstream 系列（Obelisk/Relay/OperationCore/ChunkAnchor）、`ConstellationTower` + 8 台星辉机、`MetaTileEntityBMHPCA`、`SmallChemicalPlant` 已做；其余为 Astral/Blood 专属 | Astral Sorcery / Blood Magic 依赖缺失 |
 | 机器-单方块 | `SmallNodeGenerator`（物品已就绪，可做）、`SourceCharge`（需饰品+灌注流体映射） | 物品行为层 |
-| 物品 | 行为层：`GogglesNano`/`GogglesQuantum`（护目镜）、`Tarots`（塔罗）、`PollutionBaubles`（→Curios）、`ItemHeartFruit`、`PollutionBattery`、MetaItem 变体（注魔/塔罗牌） | 未实现 |
+| 物品 | 行为层：`GogglesNano`/`GogglesQuantum`（护目镜）、`PollutionBaubles`（→Curios）、`ItemHeartFruit`、`PollutionBattery`、MetaItem 变体（注魔）；`Tarots`（塔罗，The Fool 行为 + 22 张牌配方）已完成 | 部分未实现 |
 | 方块 | `POHyper` 系外壳（5）、`POConstellationCrystal`、Starstream 方块（4）、矿物提取机正式 GUI、血肉之心生长（需 Blood LP）、`POFusionReactor`/`POComputerCasing`（GT 已有，可跳过） | 依赖物品/联动/客户端 |
 | 维度/世界生成 | 地下世界自定义 ChunkGenerator 与洞穴地图生成（现用 vanilla carver）、Alfheim 世界引擎/梦幻树（现用 vanilla 树）、结构（地下桥/Garden，需 jigsaw + NBT）、GT 矿脉 `PollutionOreVeins`（材料未移植）、表面规则 noise_settings、3 个新维度的群系引用仍为 `minecraft:plains` 占位（群系 JSON 已就绪，可直接切换） | 数据/结构重写 |
 | 客户端 | 矿物提取机 GUI/Container、魔法电池进度条与环形渲染、`AspectTank` 组件（QuantumAspectTank 系列）、TESR（魔法阵/储罐/星辉）、`client/gui` 25 类、粒子与音效、正式贴图替换（机器/方块/物品仍是占位） | 表现层批次 |
