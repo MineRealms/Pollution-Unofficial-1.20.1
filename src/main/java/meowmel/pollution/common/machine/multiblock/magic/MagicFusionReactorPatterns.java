@@ -29,7 +29,6 @@ final class MagicFusionReactorPatterns {
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where(' ', Predicates.any())
                 .where('A', MagicStructureElements.frame(GTMaterials.TungstenSteel)
-                        .setMinGlobalLimited(105)
                         .or(Predicates.autoAbilities(meowmel.pollution.api.recipes.PORecipeMaps.MAGIC_FUSION_REACTOR)))
                 .where('B', Predicates.heatingCoils())
                 .where('C', Predicates.blocks(PollutionMagicBlocks.VOID_PRISM.get()))
