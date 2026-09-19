@@ -846,7 +846,15 @@ public final class InfusionRecipes {
         botaniaMachines(provider);
     }
 
-    /** 五个阵法核心。 */
+    /**
+     * 五个阵法核心：核心 0..4 逐级放大。
+     *
+     * <p>上游五个核心共用一套 4 件基座（HSSG 板/框架 + 谐振器 + 节点换能器），
+     * 只在中央物品上不同。本移植版把每个核心做成独立配方：板/框架从 HSSG
+     * 升级到 TungstenSteel，基座从 4 件增加到最多 8 件，要素与不稳定度随核心
+     * 等级上升，并混入 Botania 符文/粉末与 Thaumcraft 材料（炼金煤、水银、
+     * 琥珀、要素瓶、原始珍珠、异域物体）。// 上游: 五核同构 -> 本移植版: 分级异化</p>
+     */
     private static void beamCores(Consumer<FinishedRecipe> provider) {
         ItemStack[] centres = {
                 ChemicalHelper.get(TagPrefix.block, GTMaterials.SteelMagnetic, 1),
@@ -855,25 +863,77 @@ public final class InfusionRecipes {
                 crystal("water"),
                 SafeItems.byId("thaumcraft", "vis_charge_relay", 1),
         };
-        String[][] aspects = {
-                { "machina", "16", "praecantatio", "8", "metallum", "16" },
-                { "machina", "16", "praecantatio", "8", "perditio", "16" },
-                { "machina", "16", "praecantatio", "8", "sensus", "16" },
-                { "machina", "16", "praecantatio", "8", "aqua", "16" },
-                { "machina", "16", "praecantatio", "8", "potentia", "16" },
+        ItemStack[] plates = {
+                plate(GTMaterials.HSSG, 4),
+                plate(GTMaterials.HSSG, 4),
+                plate(GTMaterials.HSSG, 6),
+                plate(GTMaterials.TungstenSteel, 4),
+                plate(GTMaterials.TungstenSteel, 6),
         };
+        ItemStack[] frames = {
+                frame(GTMaterials.HSSG, 1),
+                frame(GTMaterials.HSSG, 1),
+                frame(GTMaterials.HSSG, 1),
+                frame(GTMaterials.TungstenSteel, 1),
+                frame(GTMaterials.TungstenSteel, 1),
+        };
+        String[] flavours = { "metallum", "perditio", "sensus", "aqua", "potentia" };
+        int[] instabilities = { 4, 5, 6, 8, 10 };
         for (int index = 0; index < 5; index++) {
             String name = "beam_core_" + index;
-            if (centres[index].isEmpty()) {
+            ItemStack core = beamCore(index);
+            if (centres[index].isEmpty() || core.isEmpty() || plates[index].isEmpty()
+                    || frames[index].isEmpty()) {
                 Pollution.LOGGER.warn("Skipping infusion/{}: central item is missing", name);
                 continue;
             }
-            infusion(provider, name, beamCore(index), 6, centres[index],
-                    aspects(aspects[index][0], 16, aspects[index][2], 8, aspects[index][4], 16),
-                    ing(plate(GTMaterials.HSSG, 6)),
-                    ing(frame(GTMaterials.HSSG, 1)),
-                    ing(SafeItems.byId("thaumcraft", "resonator", 1)),
-                    ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
+            java.util.List<Ingredient> components = new java.util.ArrayList<>();
+            components.add(ing(plates[index]));
+            components.add(ing(frames[index]));
+            components.add(ing(SafeItems.byId("thaumcraft", "resonator", 1)));
+            components.add(ing(SafeItems.byId("thaumcraft", "node_transducer", 1)));
+            switch (index) {
+                case 0 -> {
+                    addIfPresent(components, ChemicalHelper.get(TagPrefix.rod, GTMaterials.IronMagnetic, 4));
+                    addIfPresent(components, SafeItems.byId("botania", "mana_powder", 4));
+                    addIfPresent(components, SafeItems.byId("botania", "rune_air", 1));
+                }
+                case 1 -> {
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "alumentum", 2));
+                    addIfPresent(components, SafeItems.byId("botania", "rune_fire", 1));
+                    addIfPresent(components, new ItemStack(Items.BLAZE_POWDER, 4));
+                }
+                case 2 -> {
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "quicksilver", 2));
+                    addIfPresent(components, SafeItems.byId("botania", "rune_water", 1));
+                    addIfPresent(components, crystal("water"));
+                }
+                case 3 -> {
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "amber", 2));
+                    addIfPresent(components, SafeItems.byId("botania", "rune_earth", 1));
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "essence_phial", 1));
+                }
+                default -> {
+                    addIfPresent(components, SafeItems.of(PollutionItems.MANA_RESONANCE_COIL, 2));
+                    addIfPresent(components, SafeItems.byId("botania", "rune_mana", 2));
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "primordial_pearl", 1));
+                    addIfPresent(components, SafeItems.byId("thaumcraft", "vis_charge_relay", 1));
+                }
+            }
+            Map<String, Integer> aspectMap = aspects("machina", 16 + 12 * index,
+                    "praecantatio", 8 + 8 * index, flavours[index], 16 + 12 * index);
+            if (index >= 2) {
+                aspectMap.put("auram", 8 + 8 * index);
+            }
+            infusion(provider, name, core, instabilities[index], centres[index], aspectMap,
+                    components.toArray(new Ingredient[0]));
+        }
+    }
+
+    /** 基座可选件：缺失时只让配方更精简，不跳过配方。 */
+    private static void addIfPresent(java.util.List<Ingredient> components, ItemStack stack) {
+        if (!stack.isEmpty() && components.size() < 8) {
+            components.add(ing(stack));
         }
     }
 

@@ -932,16 +932,22 @@ public final class MagicChemicalRecipes {
         beamCore(provider, stone1, frame, energy, 5, PollutionMagicBlocks.BEAM_CORE_4.asStack());
     }
 
+    /**
+     * 化学法快捷路线：材料/耗时/EU 随核心等级线性放大（核心 0 一份框架 +
+     * 576 mB 魔力，核心 4 五份框架 + 2880 mB 魔力），避免五个核心只靠电路
+     * 编号区分。注魔正线见 {@code InfusionRecipes.beamCores}。
+     */
     private static void beamCore(Consumer<FinishedRecipe> provider, ItemStack stone, ItemStack frame,
                                  FluidStack energy, int circuit, ItemStack output) {
-        GTRecipeBuilder.of(id("beam_core_" + (circuit - 1)), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
+        int rank = circuit - 1; // 0..4
+        GTRecipeBuilder.of(id("beam_core_" + rank), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                 .notConsumable(stone.copy())
-                .inputItems(frame.copy())
-                .inputFluids(energy)
+                .inputItems(frame.copyWithCount(rank + 1))
+                .inputFluids(new FluidStack(energy.getFluid(), energy.getAmount() * (rank + 1)))
                 .outputItems(output)
                 .circuitMeta(circuit)
-                .duration(1000)
-                .EUt(GTValues.VA[GTValues.HV])
+                .duration(1000 * (rank + 1))
+                .EUt(GTValues.VA[GTValues.HV] * (rank + 1))
                 .save(provider);
     }
 
