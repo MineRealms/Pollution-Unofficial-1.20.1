@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Pollution 1.12.2 -> 1.20.1 port audit.
 
 Compares the upstream 1.12.2 sources with the unofficial 1.20.1 port and
@@ -28,41 +28,54 @@ PORT = os.path.normpath(PORT)
 # Order matters: first match wins.
 DOMAIN_RULES = [
     # --- excluded: other mod integrations -----------------------------------
-    ("other:botania", ("botania", "mana", "alfheim", "endoflame", "terrasteel",
-                       "petal", "runealtar", "pure daisy", "puredaisy", "garden of glass")),
+    ("other:botania", ("botania", "alfheim", "endoflame", "terrasteel", "petal",
+                       "pure_daisy", "puredaisy", "daisymachine", "manaturbine",
+                       "megamanaturbine", "manainfusion", "manareceiver", "manaplate",
+                       "manahatch", "manapool", "manacontainer", "sourcecharge",
+                       "source_charge", "garden", "dreamleaves", "elvensand", "grape",
+                       "rainbow", "botcircuit", "botdistillery", "botgascollector",
+                       "botvacuumfreezer", "industrialpuredaisy", "managenerator",
+                       "manatoeu", "botaniarecipes", "notifiablemana", "multiblockmana",
+                       "abstractmanacontrol")),
     ("other:astral", ("astral", "constellation", "celestial", "starlight", "starstream",
                       "lightwell", "calibration", "crystalgrowth")),
     ("other:bloodmagic", ("blood", "bmhpca", "bmaltar", "sacrific")),
     ("other:ae2", ("ae2", "aeitem", "appeng", "meteor")),
     ("other:gtnn", ("rocket", "gtnn", "gcyr")),
     # --- TC4 core ----------------------------------------------------------
-    ("tc4:aspect", ("aspect", "compoundaspect", "objectaspect", "aspecttank")),
+    ("tc4:aspect", ("aspect", "compoundaspect", "objectaspect")),
     ("tc4:vis", ("vis", "cleanvis", "aural", "aura")),
     ("tc4:infusion", ("infusion", "infused", "infusedfluid")),
     ("tc4:warp", ("warp", "fluxwarp")),
-    ("tc4:flux", ("flux")),
+    ("tc4:flux", ("flux",)),
     ("tc4:node", ("node",)),
     ("tc4:essence", ("essence",)),
     ("tc4:thaum-other", ("thaum", "eldritch", "taint", "flesh", "arcane", "alchemical",
                          "golem", "pech", "wand", "staff", "salis", "mundus", "demiplane",
-                         "crystalcluster", "crystal")),
+                         "crystalcluster", "crystal", "spellprism", "spell_prism")),
     ("tc4:magic-machine", ("magic",)),
     # --- shared infrastructure ---------------------------------------------
-    ("core:machine", ("machine",)),
+    ("core:machine", ("machine", "metatileentity")),
     ("core:material", ("material", "element", "oreprefix", "stonetype")),
-    ("core:api", ("api", "capability", "pattern", "recipe", "amplification", "utils")),
-    ("core:block-item", ("block", "item", "potion", "entity")),
-    ("core:worldgen", ("dimension", "biome", "worldgen", "chunkgenerator", "structure", "feature")),
-    ("core:client", ("client", "gui", "render", "screen", "widget", "tesr")),
+    ("core:worldgen", ("dimension", "biome", "worldgen", "chunkgenerator", "structure",
+                       "feature", "orevein")),
+    ("core:client", ("client", "gui", "render", "screen", "widget", "tesr", "texture")),
+    ("core:api", ("api", "capability", "pattern", "recipe", "amplification", "util",
+                  "integration", "loader", "mixin", "command", "event", "network",
+                  "config", "proxy")),
+    ("core:block-item", ("block", "item", "potion", "entity", "armor", "bauble")),
     ("core:misc", ()),
 ]
 
 
 def classify(path: str) -> str:
     low = path.replace("\\", "/").lower()
+    parts = low.split("/")
+    stem = os.path.splitext(parts[-1])[0]
+    hay = stem + " " + " ".join(parts[:-1])
     for domain, tokens in DOMAIN_RULES:
         for token in tokens:
-            if token in low:
+            if re.search(r"(?<![a-z])" + re.escape(token), hay):
                 return domain
     return "core:misc"
 
@@ -126,6 +139,18 @@ def upstream_machine_ids(up_root: str) -> set:
 
 def port_machine_ids(port_root: str) -> set:
     ids = set()
+    path = os.path.join(port_root, "meowmel", "pollution", "common", "machine",
+                        "PollutionMachines.java")
+    text = read(path)
+    for m in re.finditer(r'\.machine\(\s*"([a-z0-9_]+)"', text):
+        ids.add(m.group(1))
+    for m in re.finditer(r'\.machine\(\s*tierName\((\w+)\)\s*\+\s*"([a-z0-9_]+)"', text):
+        ids.add("tiered:*" + m.group(2))
+    for m in re.finditer(r'\.machine\(\s*"([a-z0-9_]+)"\s*\+\s*"_"\s*\+\s*(?:kind|plateKind)', text):
+        ids.add("kind:" + m.group(1))
+    return ids
+
+
 # --------------------------------------------------------------------------
 # matching
 # --------------------------------------------------------------------------
@@ -197,7 +222,8 @@ def todo_stats(root: str) -> tuple:
             files.append((rel(root, path), len(hits)))
     files.sort(key=lambda x: -x[1])
     return count, files
-    path = os.path.join(port_root, "meowmel", "pollution", "common", "machine",
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--md", default=None, help="write a markdown report to this path")
@@ -335,12 +361,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-                        "PollutionMachines.java")
-    text = read(path)
-    for m in re.finditer(r'\.machine\(\s*"([a-z0-9_]+)"', text):
-        ids.add(m.group(1))
-    for m in re.finditer(r'\.machine\(\s*tierName\((\w+)\)\s*\+\s*"([a-z0-9_]+)"', text):
-        ids.add("tiered:*" + m.group(2))
-    for m in re.finditer(r'\.machine\(\s*"([a-z0-9_]+)"\s*\+\s*"_"\s*\+\s*(?:kind|plateKind)', text):
-        ids.add("kind:" + m.group(1))
-    return ids
