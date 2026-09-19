@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -74,8 +75,8 @@ public class CentralVisTowerMachine extends MultiblockControllerMachine {
             return;
         }
         EnergyHatchPartMachine energy = findPart(EnergyHatchPartMachine.class);
-        FluidHatchPartMachine fluids = findPart(FluidHatchPartMachine.class);
-        if (energy == null || fluids == null) {
+        FluidHatchPartMachine input = findFluidHatch(PartAbility.IMPORT_FLUIDS);
+        if (energy == null || input == null) {
             return;
         }
         long voltage = Math.max(1, energy.energyContainer.getInputVoltage());
@@ -84,7 +85,7 @@ public class CentralVisTowerMachine extends MultiblockControllerMachine {
         }
         FluidStack upkeep = PollutionMaterials.InfusedAura.getFluid(4);
         if (!upkeep.isEmpty() &&
-                fluids.tank.drain(upkeep, IFluidHandler.FluidAction.SIMULATE).getAmount() < 4) {
+                input.tank.drain(upkeep, IFluidHandler.FluidAction.SIMULATE).getAmount() < 4) {
             return;
         }
 
@@ -100,13 +101,13 @@ public class CentralVisTowerMachine extends MultiblockControllerMachine {
 
         energy.energyContainer.changeEnergy(-voltage);
         if (!upkeep.isEmpty()) {
-            fluids.tank.drain(upkeep, IFluidHandler.FluidAction.EXECUTE);
+            input.tank.drain(upkeep, IFluidHandler.FluidAction.EXECUTE);
         }
         if (excess > 0) {
-            fill(fluids, PollutionMaterials.InfusedLight.getFluid(excess * 10));
+            fillOutputFluid(PollutionMaterials.InfusedLight.getFluid(excess * 10));
         }
         if (scrubbed > 0) {
-            fill(fluids, PollutionMaterials.InfusedDark.getFluid(scrubbed * 10));
+            fillOutputFluid(PollutionMaterials.InfusedDark.getFluid(scrubbed * 10));
         }
     }
 
@@ -146,10 +147,26 @@ public class CentralVisTowerMachine extends MultiblockControllerMachine {
         return sum;
     }
 
-    private void fill(FluidHatchPartMachine fluids, FluidStack stack) {
-        if (!stack.isEmpty()) {
-            fluids.tank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
+    private void fillOutputFluid(FluidStack stack) {
+        if (stack.isEmpty()) {
+            return;
         }
+        for (IMultiPart part : getParts()) {
+            if (part.self() instanceof FluidHatchPartMachine hatch
+                    && PartAbility.EXPORT_FLUIDS.isApplicable(hatch.getBlockState().getBlock())) {
+                hatch.tank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
+            }
+        }
+    }
+
+    private FluidHatchPartMachine findFluidHatch(PartAbility ability) {
+        for (IMultiPart part : getParts()) {
+            if (part.self() instanceof FluidHatchPartMachine hatch
+                    && ability.isApplicable(hatch.getBlockState().getBlock())) {
+                return hatch;
+            }
+        }
+        return null;
     }
 
     private <T> T findPart(Class<T> type) {

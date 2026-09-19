@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -62,8 +63,8 @@ public class NodeBlastFurnaceMachine extends MagicMultiblockController {
         if (getOffsetTimer() % 20 != 0) {
             return;
         }
-        ItemBusPartMachine items = findPart(ItemBusPartMachine.class);
-        FluidHatchPartMachine fluids = findPart(FluidHatchPartMachine.class);
+        ItemBusPartMachine items = findInputBus();
+        FluidHatchPartMachine fluids = findOutputFluidHatch();
         if (items == null || fluids == null) {
             return;
         }
@@ -112,10 +113,21 @@ public class NodeBlastFurnaceMachine extends MagicMultiblockController {
         }
     }
 
-    private <T> T findPart(Class<T> type) {
+    private ItemBusPartMachine findInputBus() {
         for (IMultiPart part : getParts()) {
-            if (type.isInstance(part.self())) {
-                return type.cast(part.self());
+            if (part.self() instanceof ItemBusPartMachine bus
+                    && PartAbility.IMPORT_ITEMS.isApplicable(bus.getBlockState().getBlock())) {
+                return bus;
+            }
+        }
+        return null;
+    }
+
+    private FluidHatchPartMachine findOutputFluidHatch() {
+        for (IMultiPart part : getParts()) {
+            if (part.self() instanceof FluidHatchPartMachine hatch
+                    && PartAbility.EXPORT_FLUIDS.isApplicable(hatch.getBlockState().getBlock())) {
+                return hatch;
             }
         }
         return null;

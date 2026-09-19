@@ -44,6 +44,7 @@ final class CentralVisTowerPatterns {
                 .where('K', Predicates.blocks(PollutionMagicBlocks.MANA_BASIC.get())
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
                                 .setMinGlobalLimited(3).setMaxGlobalLimited(8))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
                         .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
                 .build();

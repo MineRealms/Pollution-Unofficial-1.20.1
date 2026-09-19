@@ -82,22 +82,24 @@ public class NodeProducerMachine extends MultiblockControllerMachine {
         duration = Math.max(1, (int) Math.ceil(30.0F / (euTier - 3)));
         infusedCost = 144 * (1 << Math.max(0, euTier - 4));
 
-        FluidStack infusedEnergy = PollutionMaterials.InfusedEnergy.getFluid(infusedCost);
-        ItemStack preview = createRandomNode();
-        if (!ItemHandlerHelper.insertItemStacked(output.getInventory().storage, preview, true).isEmpty()) {
-            return;
-        }
         if (energy.energyContainer.getEnergyStored() < voltage) {
             return;
         }
-        if (!infusedEnergy.isEmpty() &&
-                fluids.tank.drain(infusedEnergy, IFluidHandler.FluidAction.SIMULATE).getAmount() < infusedCost) {
+
+        FluidStack infusedEnergy = PollutionMaterials.InfusedEnergy.getFluid(infusedCost);
+        if (!infusedEnergy.isEmpty()
+                && fluids.tank.drain(infusedEnergy, IFluidHandler.FluidAction.SIMULATE).getAmount() < infusedCost) {
             return;
         }
 
-        energy.energyContainer.changeEnergy(-voltage);
-        if (!infusedEnergy.isEmpty()) {
-            fluids.tank.drain(infusedEnergy, IFluidHandler.FluidAction.EXECUTE);
+        ItemStack preview = createRandomNode();
+        if (!ItemHandlerHelper.insertItemStacked(output.getInventory().storage, preview, true).isEmpty()) {
+            timer = 0;
+        } else {
+            energy.energyContainer.changeEnergy(-voltage);
+            if (!infusedEnergy.isEmpty()) {
+                fluids.tank.drain(infusedEnergy, IFluidHandler.FluidAction.EXECUTE);
+            }
         }
 
         if (getOffsetTimer() % 20 == 0) {
