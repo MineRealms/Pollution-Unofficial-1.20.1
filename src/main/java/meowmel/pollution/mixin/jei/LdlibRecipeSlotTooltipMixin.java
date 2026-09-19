@@ -3,13 +3,12 @@ package meowmel.pollution.mixin.jei;
 import com.lowdragmc.lowdraglib.gui.ingredient.IRecipeIngredientSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -32,10 +31,17 @@ import java.util.List;
  * tooltip lines fixes the rich path (via JEI's fallback chain) as well as the
  * plain {@code getPlainTooltipForSearch} path.</p>
  *
+ * <p>The captured {@code val$slot} field is read reflectively instead of via
+ * {@code @Shadow}: Mixin AP 0.8.5's
+ * {@code TypeHandleASM.findField} feeds each target field descriptor through
+ * {@code TypeUtils.getJavaSignature}, which interprets it as a method
+ * descriptor and throws {@code StringIndexOutOfBoundsException} for the 63-char
+ * descriptor of this field, aborting compilation.</p>
+ *
  * <p>Signatures verified with {@code javap -p} against
  * {@code ldlib-forge-1.20.1-1.0.40.b} (compile classpath, deobf),
  * {@code ldlib-forge-1.20.1-1.0.50} and {@code ldlib-forge-1.20.1-1.0.52.a}
- * (target pack): all three declare
+ * (target pack): all declare
  * {@code final IRecipeIngredientSlot val$slot},
  * {@code List<Component> getTooltip(Object, TooltipFlag)} (stub) and
  * {@code void getTooltip(ITooltipBuilder, Object, TooltipFlag)} (rich).
@@ -46,10 +52,6 @@ import java.util.List;
 @Mixin(targets = "com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory$2", remap = false)
 public abstract class LdlibRecipeSlotTooltipMixin {
 
-    @Shadow
-    @Final
-    private IRecipeIngredientSlot val$slot;
-
     @Inject(
             method = "getTooltip(Ljava/lang/Object;Lnet/minecraft/world/item/TooltipFlag;)Ljava/util/List;",
             at = @At("HEAD"),
@@ -58,13 +60,20 @@ public abstract class LdlibRecipeSlotTooltipMixin {
     )
     private void pollution$restoreSlotTooltip(Object ingredient, TooltipFlag tooltipFlag,
                                               CallbackInfoReturnable<List<Component>> cir) {
+        List<Component> lines = List.of();
         try {
-            List<Component> lines = this.val$slot.getFullTooltipTexts();
-            if (lines != null) {
-                cir.setReturnValue(lines);
+            Field slotField = this.getClass().getDeclaredField("val$slot");
+            slotField.setAccessible(true);
+            Object slot = slotField.get(this);
+            if (slot instanceof IRecipeIngredientSlot ingredientSlot) {
+                List<Component> fullTooltip = ingredientSlot.getFullTooltipTexts();
+                if (fullTooltip != null) {
+                    lines = fullTooltip;
+                }
             }
         } catch (Throwable ignored) {
-            // Fall through to the original stub rather than crashing the recipe screen.
+            // Keep the empty fallback rather than crashing the recipe screen.
         }
+        cir.setReturnValue(lines);
     }
 }
