@@ -35,11 +35,10 @@ public final class PollutionMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.contains("jei")) {
-            boolean apply = isJeiLoaded();
-            LOGGER.info("[pollution] mixin {} -> target {} apply={}", mixinClassName, targetClassName, apply);
-            return apply;
-        }
+        // No ModList gate: the mixin only runs when its target class is loaded,
+        // and JEI's classes only exist when JEI is installed. Checking ModList
+        // here fails because the config is evaluated before JEI registers.
+        LOGGER.info("[pollution] mixin {} -> target {}", mixinClassName, targetClassName);
         return true;
     }
 
