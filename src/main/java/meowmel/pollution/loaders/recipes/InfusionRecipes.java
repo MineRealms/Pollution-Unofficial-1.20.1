@@ -1156,28 +1156,30 @@ public final class InfusionRecipes {
         return material.getFluid(amount);
     }
 
-    private static void infusion(Consumer<FinishedRecipe> provider, String name, ItemStack result, int instability,
-                                 ItemStack central, Map<String, Integer> aspects, Ingredient... components) {
+    /** @return true when the recipe was emitted, false when a required stack is missing */
+    static boolean infusion(Consumer<FinishedRecipe> provider, String name, ItemStack result, int instability,
+                            ItemStack central, Map<String, Integer> aspects, Ingredient... components) {
         if (result.isEmpty()) {
             Pollution.LOGGER.warn("Skipping infusion/{}: result item is missing", name);
-            return;
+            return false;
         }
         if (central.isEmpty()) {
             Pollution.LOGGER.warn("Skipping infusion/{}: central item is missing", name);
-            return;
+            return false;
         }
         for (Ingredient component : components) {
             if (component.isEmpty()) {
                 Pollution.LOGGER.warn("Skipping infusion/{}: a component item is missing", name);
-                return;
+                return false;
             }
         }
         provider.accept(new InfusionFinishedRecipe(
                 ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "infusion/" + name),
                 Ingredient.of(central), List.of(components), result, instability, aspects));
+        return true;
     }
 
-    private static Ingredient ing(ItemStack... stacks) {
+    static Ingredient ing(ItemStack... stacks) {
         return Ingredient.of(stacks);
     }
 
@@ -1189,7 +1191,7 @@ public final class InfusionRecipes {
         return Ingredient.of(block.asItem());
     }
 
-    private static Map<String, Integer> aspects(Object... pairs) {
+    static Map<String, Integer> aspects(Object... pairs) {
         Map<String, Integer> aspects = new LinkedHashMap<>();
         for (int index = 0; index + 1 < pairs.length; index += 2) {
             aspects.put((String) pairs[index], (Integer) pairs[index + 1]);
@@ -1209,7 +1211,7 @@ public final class InfusionRecipes {
         return ChemicalHelper.get(TagPrefix.frameGt, material, count);
     }
 
-    private static ItemStack machine(MachineDefinition definition) {
+    static ItemStack machine(MachineDefinition definition) {
         return definition == null ? ItemStack.EMPTY : definition.asStack();
     }
 

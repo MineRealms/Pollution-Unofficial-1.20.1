@@ -54,6 +54,7 @@ public final class PollutionRecipes {
         ForgeAlchemyRecipes.init(provider);
         AERecipes.init(provider);
         BotaniaRecipes.init(provider);
+        HatchRecipes.init(provider);
         BotaniaNativeRecipes.init(provider);
         ManaToEuRecipes.init(provider);
         DandelifeonRecipe.init(provider);
