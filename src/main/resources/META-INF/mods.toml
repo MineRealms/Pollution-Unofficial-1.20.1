@@ -9,8 +9,8 @@ displayName="${mod_name}"
 authors="${mod_authors}"
 description='''${mod_description}'''
 
-[[mixins]]
-config="pollution.mixins.json"
+# Mixin config is registered through the jar manifest `MixinConfigs` attribute
+# (mods.toml [[mixins]] is not honoured by Forge 1.20.1).
 
 [[dependencies.${mod_id}]]
     modId="forge"
