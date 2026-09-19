@@ -112,6 +112,11 @@ import java.util.function.Consumer;
  *       -&gt; 9x gem/dust (the port materials carry no block form)</li>
  *   <li>blockKeqinggold -&gt; TungstenSteel block, blockHyperdimensionalSilver
  *       -&gt; NaquadahAlloy block, blockUranium235 -&gt; Uranium235 block</li>
+ *   <li>BLOOD_PORT -&gt; {@link PollutionItems#BLOOD_IPS_HUMAN_BRAIN}
+ *       (the blood port is unobtainable; the culture-chain brain is the
+ *       obtainable equivalent), ASTRAL_RESONANCE_COIL -&gt;
+ *       {@link PollutionItems#MANA_RESONANCE_COIL} (Astral Sorcery is not in
+ *       the pack)</li>
  * </ul>
  *
  * <p><b>Still skipped</b>:</p>
@@ -153,7 +158,8 @@ public final class InfusionRecipes {
      * 球中球、节点稳定框架、魔导控制组件。// 上游: ItemsTC.visResonator ->
      * ESSENTIA_RESONATOR，ItemsTC.morphicResonator / ItemsAS.skyResonator ->
      * NODE_TRANSDUCER，frameGtMansussteel -> HSSG frame，FILTER_MKIII ->
-     * 本移植版 FILTER_III。
+     * 本移植版 FILTER_III；BLOOD_PORT -> 本移植版 BLOOD_IPS_HUMAN_BRAIN
+     * （整合包无 Blood Magic，血肉培养链产物可量产）。
      */
     private static void integrationComponents(Consumer<FinishedRecipe> provider) {
         ItemStack coreOfIdea = item("core_of_idea");
@@ -201,7 +207,8 @@ public final class InfusionRecipes {
                 circuit,
                 aspects("machina", 32, "praecantatio", 24, "auram", 16),
                 ing(PollutionItems.MANA_RESONANCE_COIL.asStack()),
-                ing(PollutionItems.BLOOD_PORT.asStack()),
+                // 上游: BLOOD_PORT（整合包无 Blood Magic）-> 本移植版: BLOOD_IPS_HUMAN_BRAIN
+                ing(PollutionItems.BLOOD_IPS_HUMAN_BRAIN.asStack()),
                 ing(SafeItems.byId("thaumcraft", "resonator", 1)),
                 ing(SafeItems.byId("thaumcraft", "node_transducer", 1)),
                 ing(SafeItems.gt("mv_robot_arm", 1)),
@@ -214,7 +221,9 @@ public final class InfusionRecipes {
 
     /**
      * 星轨星座锚点。// 上游: ritual crystal（POConstellationCrystal）未移植 ->
-     * 本移植版: TC4R order 水晶簇；liquid starlight -> InfusedAura。
+     * 本移植版: TC4R order 水晶簇；liquid starlight -> InfusedAura；
+     * ASTRAL_RESONANCE_COIL x2 -> 本移植版 MANA_RESONANCE_COIL x2
+     * （整合包无 Astral Sorcery，魔力谐振线圈可量产）。
      * 方尖碑核心（OBELISK_CORE）与星轨主机未移植，保持跳过
      * （// 跳过: 星辉网络方块/机器未移植）。
      */
@@ -231,14 +240,15 @@ public final class InfusionRecipes {
                 aspects("praecantatio", 512, "auram", 512, "ordo", 256, "potentia", 256, "lux", 256),
                 ing(PollutionItems.STARRY_RUNE.asStack()),
                 ing(crystal("order")),
-                ing(PollutionItems.ASTRAL_RESONANCE_COIL.asStack()),
+                // 上游: ASTRAL_RESONANCE_COIL -> 本移植版: MANA_RESONANCE_COIL
+                ing(PollutionItems.MANA_RESONANCE_COIL.asStack()),
                 ing(PollutionItems.MAGIC_CIRCUIT_BOARD_UHV.asStack()),
                 ing(PollutionItems.CELESTIAL_CALIBRATION_CORE.asStack()),
                 ing(crystal("order")),
                 ing(SafeItems.gt("uhv_field_generator", 1)),
                 ing(PollutionItems.STARRY_RUNE.asStack()),
                 ing(crystal("order")),
-                ing(PollutionItems.ASTRAL_RESONANCE_COIL.asStack()),
+                ing(PollutionItems.MANA_RESONANCE_COIL.asStack()),
                 ing(PollutionItems.MAGIC_CIRCUIT_BOARD_UHV.asStack()),
                 ing(PollutionItems.CELESTIAL_CALIBRATION_CORE.asStack()),
                 ing(crystal("order")),

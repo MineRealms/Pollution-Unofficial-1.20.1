@@ -32,16 +32,17 @@ import static meowmel.pollution.loaders.recipes.InfusionRecipes.infusion;
  * 的完整合成链。
  *
  * <p><b>Why.</b> The port registered the 15 magic circuits and the 15 boards but
- * only carried the board recipes up to LuV (and the LuV one is blood/astral
- * gated); the circuits had no recipe at all. This class completes the line
- * following the GT circuit-progression pattern, magic-flavoured and
+ * only carried the board recipes up to LuV (whose legacy recipe in
+ * {@link MagicIntegrationRecipes} now uses the obtainable culture-chain
+ * substitutes); the circuits had no recipe at all. This class completes the
+ * line following the GT circuit-progression pattern, magic-flavoured and
  * tier-scaled.</p>
  *
  * <p><b>Chain shape.</b></p>
  * <ul>
- *   <li><b>Boards ZPM..MAX</b> (8 infusions, plus an obtainable LuV alternative
- *       that avoids the blood/astral gated recipe in
- *       {@link MagicIntegrationRecipes}): each board is the previous board
+ *   <li><b>Boards ZPM..MAX</b> (8 infusions, plus an alternative LuV route in
+ *       addition to the legacy recipe in {@link MagicIntegrationRecipes}):
+ *       each board is the previous board
  *       infused with tier metal foil/plate, an advanced SMD part, Salisundus
  *       dust, Botania runes/gems and Thaumcraft pearls. ULV..IV boards keep
  *       their existing recipes (assembler / magic assembler / infusion).</li>
@@ -64,9 +65,10 @@ import static meowmel.pollution.loaders.recipes.InfusionRecipes.infusion;
  * only log a warning if a recipe would exceed them.</p>
  *
  * <p><b>Skip list respected.</b> No Astral Sorcery or Blood Magic item is
- * referenced anywhere in this chain (the gated {@code astral_lens_advanced},
- * {@code blood_circuit_advanced} and {@code living_magic_biofilm} inputs of the
- * legacy LuV board recipe are replaced by the magic alternative above). Every
+ * referenced anywhere in this chain; the legacy LuV board recipe in
+ * {@link MagicIntegrationRecipes} now takes the culture-chain
+ * {@code ips_human_brain} and {@code cultivated_crystal} in place of the gated
+ * {@code blood_circuit_advanced} / {@code astral_lens_advanced} inputs. Every
  * stack goes through {@link SafeItems}; a missing item only skips the affected
  * recipe.</p>
  */
@@ -116,12 +118,12 @@ public final class MagicCircuitRecipes {
     }
 
     /**
-     * Obtainable LuV board route. The legacy recipe in
-     * {@link MagicIntegrationRecipes} consumes the blood/astral gated
-     * {@code living_magic_biofilm}, {@code blood_circuit_advanced} and
-     * {@code astral_lens_advanced}; this infusion builds the same board from
-     * NaquadahAlloy, advanced SMDs and Botania mana parts instead, so the
-     * ZPM+ chain below is self-consistent.
+     * Obtainable LuV board alternative. The legacy recipe in
+     * {@link MagicIntegrationRecipes} also builds this board from the culture
+     * chain ({@code living_magic_biofilm}, {@code ips_human_brain}) and
+     * {@code cultivated_crystal}; this infusion adds a second, purely magical
+     * route from NaquadahAlloy, advanced SMDs and Botania mana parts so the
+     * ZPM+ chain below stays self-consistent either way.
      */
     private static boolean luvBoardAlternative(Consumer<FinishedRecipe> provider) {
         ItemStack result = board(GTValues.LuV);

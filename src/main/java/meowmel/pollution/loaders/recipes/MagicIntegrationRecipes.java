@@ -49,8 +49,10 @@ import java.util.function.Consumer;
  *   <li>EV/IV circuit boards (registered as TC4R infusions in
  *       {@code InfusionRecipes}).</li>
  *   <li>LuV circuit board. // 上游: CelestialBiologicalMedium ->
- *       本移植版: InfusedAura；ASTRAL_LENS_ADVANCED 物品存在（其来源链属
- *       Astral Sorcery，仍跳过）</li>
+ *       本移植版: InfusedAura；BLOOD_CIRCUIT_ADVANCED ->
+ *       本移植版 BLOOD_IPS_HUMAN_BRAIN；ASTRAL_LENS_ADVANCED ->
+ *       本移植版 CULTIVATED_CRYSTAL（整合包无 Blood Magic / Astral
+ *       Sorcery）</li>
  * </ul>
  *
  * <p><b>Skipped</b></p>
@@ -61,10 +63,12 @@ import java.util.function.Consumer;
  *       ZPM/UV/UHV+ circuit boards): Astral Sorcery is not in the pack and its
  *       items, liquid starlight and recipe maps are absent.
  *       // 跳过: 整合包无 Astral Sorcery</li>
- *   <li>Blood Magic bridge (blood altar slate) and the blood culture line
- *       (living biofilm, ultimate/supreme boards): Blood Magic life essence /
+ *   <li>Blood Magic bridge (blood altar slate) and the blood circuit tiers
+ *       above advanced (ultimate/supreme boards): Blood Magic life essence /
  *       BloodPlasma / CelestialBiologicalMedium / InfusedPurifiedBlood are not
- *       in the pack. // 跳过: 整合包无 Blood Magic</li>
+ *       in the pack. The culture line itself (living biofilm, iPS human brain,
+ *       the stabilizers) is produced by {@code RemainingItemRecipes}.
+ *       // 跳过: 整合包无 Blood Magic</li>
  *   <li>// 跳过: 整合包无 Astral Sorcery / Blood Magic（星图晶圆、星辉晶核、
  *       血液培养链、终极/至高血液电路板、ZPM 及以上电路板、星空机器）。</li>
  * </ul>
@@ -390,8 +394,10 @@ public final class MagicIntegrationRecipes {
 
     /**
      * LuV 电路板。// 上游: CelestialBiologicalMedium -> 本移植版: InfusedAura
-     * （血液培养基属 Blood Magic，整合包无）。ZPM 及以上需要星图晶圆/星辉，
-     * 跳过（整合包无 Astral Sorcery）。
+     * （血液培养基属 Blood Magic，整合包无）；BLOOD_CIRCUIT_ADVANCED ->
+     * 本移植版 BLOOD_IPS_HUMAN_BRAIN（血肉培养链产物）；
+     * ASTRAL_LENS_ADVANCED -> 本移植版 CULTIVATED_CRYSTAL
+     * （整合包无 Astral Sorcery）。ZPM 及以上需要星图晶圆/星辉，跳过。
      */
     private static void magicCircuitBoardLuv(Consumer<FinishedRecipe> provider) {
         FluidStack bioMedium = fluid(PollutionMaterials.InfusedAura, 500);
@@ -407,8 +413,10 @@ public final class MagicIntegrationRecipes {
         GTRecipeBuilder.of(id("magic_circuit_board_luv"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack())
                 .inputItems(PollutionItems.LIVING_MAGIC_BIOFILM.asStack(2))
-                .inputItems(PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack())
-                .inputItems(PollutionItems.ASTRAL_LENS_ADVANCED.asStack())
+                // 上游: BLOOD_CIRCUIT_ADVANCED -> 本移植版: BLOOD_IPS_HUMAN_BRAIN
+                .inputItems(PollutionItems.BLOOD_IPS_HUMAN_BRAIN.asStack())
+                // 上游: ASTRAL_LENS_ADVANCED -> 本移植版: CULTIVATED_CRYSTAL
+                .inputItems(PollutionItems.CULTIVATED_CRYSTAL.asStack())
                 .inputItems(smdCapacitor)
                 .inputItems(smdTransistor)
                 .inputFluids(bioMedium)

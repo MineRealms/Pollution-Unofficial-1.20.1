@@ -23,16 +23,18 @@ import java.util.function.Consumer;
  *
  * <p><b>Ported</b>: the two structural casings. The Astral Sorcery marble
  * bricks are replaced by GTCEu marble (Astral Sorcery is not a dependency of
- * the port), and Starrymansus maps to InfusedAura per the substitution
- * table.</p>
+ * the port), the {@code ASTRAL_RESONANCE_COIL} input is replaced by the
+ * obtainable {@code MANA_RESONANCE_COIL}, and Starrymansus maps to InfusedAura
+ * per the substitution table.</p>
  *
  * <p><b>Newly ported</b></p>
  * <ul>
- *   <li>Starstream linker. // 上游: liquid starlight -> 本移植版: InfusedAura
- *       （整合包无 Astral Sorcery）。ASTRAL_LENS_BASIC 物品存在（其自身来源链
- *       属 Astral Sorcery，仍跳过）。</li>
+ *   <li>Starstream linker. // 上游: liquid starlight -> 本移植版: InfusedAura；
+ *       ASTRAL_LENS_BASIC -> 本移植版 SILVERED_GLASS_LENS；
+ *       ASTRAL_RESONANCE_COIL -> 本移植版 MANA_RESONANCE_COIL
+ *       （整合包无 Astral Sorcery）。</li>
  *   <li>Constellation anchor infusion: registered by {@code InfusionRecipes}
- *       (see there for the ritual-crystal substitution).</li>
+ *       (see there for the ritual-crystal and resonance-coil substitutions).</li>
  * </ul>
  *
  * <p><b>Skipped</b></p>
@@ -44,8 +46,10 @@ import java.util.function.Consumer;
  *       blocks and the {@code STARSTREAM_NEXUS_OBELISK} machine are unported.
  *       // 跳过: 星辉网络方块/机器未移植</li>
  *   <li>Liquid starlight inputs are Astral Sorcery content; the two recipes
- *       that remain (anchor, linker) substitute InfusedAura, the rest of the
- *       Astral chain stays skipped. // 跳过: 整合包无 Astral Sorcery</li>
+ *       that remain (anchor, linker) substitute InfusedAura plus
+ *       {@code MANA_RESONANCE_COIL} / {@code SILVERED_GLASS_LENS} for the
+ *       astral items, the rest of the Astral chain stays skipped.
+ *       // 跳过: 整合包无 Astral Sorcery</li>
  * </ul>
  */
 public final class StarstreamNexusRecipes {
@@ -59,11 +63,13 @@ public final class StarstreamNexusRecipes {
             return;
         }
 
-        // 星轨外壳（上游 Astral Sorcery 大理石砖 -> GTCEu 大理石）
+        // 星轨外壳（上游 Astral Sorcery 大理石砖 -> GTCEu 大理石；
+        // 上游: ASTRAL_RESONANCE_COIL x4 -> 本移植版: MANA_RESONANCE_COIL x4，
+        // 数量不变：整合包无 Astral Sorcery，魔力谐振线圈同档可量产）
         GTRecipeBuilder.of(id("starstream_casing"), GTRecipeTypes.ASSEMBLER_RECIPES)
                 .inputItems(GTBlocks.MARBLE.asStack(8))
                 .inputItems(PollutionItems.STARRY_RUNE.asStack(2))
-                .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(4))
+                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(4))
                 .inputFluids(mana)
                 .outputItems(PollutionMagicBlocks.STARSTREAM_CASING.asStack(8))
                 .duration(600)
@@ -85,7 +91,10 @@ public final class StarstreamNexusRecipes {
                 .EUt(GTValues.VA[GTValues.UHV])
                 .save(provider);
 
-        // 星轨链接器 // 上游: liquid starlight -> 本移植版: InfusedAura
+        // 星轨链接器 // 上游: liquid starlight -> 本移植版: InfusedAura；
+        // 上游: ASTRAL_LENS_BASIC -> 本移植版: SILVERED_GLASS_LENS；
+        // 上游: ASTRAL_RESONANCE_COIL x2 -> 本移植版: MANA_RESONANCE_COIL x2
+        // （整合包无 Astral Sorcery）
         ItemStack emitter = SafeItems.gt("iv_emitter", 2);
         ItemStack sensor = SafeItems.gt("iv_sensor", 2);
         if (emitter.isEmpty() || sensor.isEmpty()) {
@@ -93,8 +102,8 @@ public final class StarstreamNexusRecipes {
             return;
         }
         GTRecipeBuilder.of(id("starstream_linker"), GTRecipeTypes.ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.ASTRAL_LENS_BASIC.asStack())
-                .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(2))
+                .inputItems(PollutionItems.SILVERED_GLASS_LENS.asStack())
+                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(2))
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack(2))
                 .inputItems(emitter)
                 .inputItems(sensor)
