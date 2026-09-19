@@ -1,29 +1,52 @@
 {
   "mob.basalz.ambient": {
-    "sounds": ["mob/basalz/ambient"]
+    "sounds": [
+      "pollution:mob/basalz/ambient"
+    ]
   },
   "mob.basalz.attack": {
-    "sounds": ["mob/basalz/attack"]
+    "sounds": [
+      "pollution:mob/basalz/attack"
+    ]
   },
   "mob.basalz.breathe": {
-    "sounds": ["mob/basalz/breathe0", "mob/basalz/breathe1"]
+    "sounds": [
+      "pollution:mob/basalz/breathe0",
+      "pollution:mob/basalz/breathe1"
+    ]
   },
   "mob.blitz.ambient": {
-    "sounds": ["mob/blitz/ambient"]
+    "sounds": [
+      "pollution:mob/blitz/ambient"
+    ]
   },
   "mob.blitz.attack": {
-    "sounds": ["mob/blitz/attack"]
+    "sounds": [
+      "pollution:mob/blitz/attack"
+    ]
   },
   "mob.blitz.breathe": {
-    "sounds": ["mob/blitz/breathe0", "mob/blitz/breathe1", "mob/blitz/breathe2"]
+    "sounds": [
+      "pollution:mob/blitz/breathe0",
+      "pollution:mob/blitz/breathe1",
+      "pollution:mob/blitz/breathe2"
+    ]
   },
   "mob.blizz.ambient": {
-    "sounds": ["mob/blizz/ambient"]
+    "sounds": [
+      "pollution:mob/blizz/ambient"
+    ]
   },
   "mob.blizz.attack": {
-    "sounds": ["mob/blizz/attack"]
+    "sounds": [
+      "pollution:mob/blizz/attack"
+    ]
   },
   "mob.blizz.breathe": {
-    "sounds": ["mob/blizz/breathe0", "mob/blizz/breathe1", "mob/blizz/breathe2"]
+    "sounds": [
+      "pollution:mob/blizz/breathe0",
+      "pollution:mob/blizz/breathe1",
+      "pollution:mob/blizz/breathe2"
+    ]
   }
 }
