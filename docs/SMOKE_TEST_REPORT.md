@@ -1,8 +1,9 @@
 # Pollution Port - Server Smoke Test
 
-- date: 2026-09-19 07:56:28
+- date: 2026-09-19 23:34:04
 - server booted (`Done (`): yes
 - log errors (all patterns): 22
+- pollution-specific errors (fail on any): 0
 
 ## Log error categories
 
@@ -15,6 +16,10 @@
 - worldgen parse: 0
 - start failure: 0
 - exception: 14
+- pollution recipe conflict: 0 **[POLLUTION]**
+- pollution staging add failure: 0 **[POLLUTION]**
+- pollution invalid input: 0 **[POLLUTION]**
+- pollution empty item: 0 **[POLLUTION]**
 
 ## RCON checks
 

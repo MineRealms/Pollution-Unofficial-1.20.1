@@ -17,7 +17,11 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -54,14 +58,22 @@ import static meowmel.pollution.loaders.recipes.InfusionRecipes.machine;
  * input-identical to the existing mana pool output hatch recipes at LV/LuV
  * (the same conflict the port already solved for the pool input hatch).</p>
  *
+ * <p><b>Ingredient enrichment.</b> Every family carries tier-scaled flavour on
+ * top of its GT base: mana powder at LV, an elemental rune from MV, thaumium
+ * at HV/EV, a tier plate from EV, void ingots from IV, gaia ingots from LuV,
+ * plus a SolderingAlloy bath from EV (see
+ * {@link #addHatchEnrichment(List, int)}). The enriched lists stay at or below
+ * the magic assembler recipe type's 9 item + 3 fluid slot budget, and the
+ * extra stacks are optional — a missing item only makes the recipe leaner.</p>
+ *
  * <p><b>High tiers.</b> IV..UV additionally get one Thaumcraft infusion-altar
  * recipe per family (mana in 1A, mana out 1A, wireless mana in 1A, aspect
  * tank, flux muffler, infused fluid hatch), scaling the aspect cost with the
- * tier. Components use the TC4R/Botania items that are actually registered
- * ({@code thaumcraft:thaumium_ingot}, {@code thaumcraft:void_ingot},
- * {@code thaumcraft:primordial_pearl}, {@code botania:terrasteel_ingot},
- * {@code botania:gaia_ingot}); a missing item only skips the affected
- * recipes.</p>
+ * tier and filling all 8 pedestals with the TC4R/Botania items that are
+ * actually registered ({@code thaumcraft:thaumium_ingot},
+ * {@code thaumcraft:void_ingot}, {@code thaumcraft:primordial_pearl},
+ * {@code botania:terrasteel_ingot}, {@code botania:gaia_ingot}); a missing item
+ * only skips the affected recipe.</p>
  */
 public final class HatchRecipes {
 
@@ -96,7 +108,7 @@ public final class HatchRecipes {
     // ////////////////////////////////////
 
     private static int manaInputHatches(Consumer<FinishedRecipe> provider) {
-        ItemStack rune = SafeItems.byId("botania", "rune_mana", 1);
+        ItemStack rune = botania("rune_mana", 1);
         if (rune.isEmpty()) {
             Pollution.LOGGER.warn("[hatch] skipping all mana input hatch recipes: botania:rune_mana is missing");
             return 0;
@@ -114,7 +126,7 @@ public final class HatchRecipes {
     }
 
     private static int manaOutputHatches(Consumer<FinishedRecipe> provider) {
-        ItemStack rune = SafeItems.byId("botania", "rune_mana", 1);
+        ItemStack rune = botania("rune_mana", 1);
         if (rune.isEmpty()) {
             Pollution.LOGGER.warn("[hatch] skipping all mana output hatch recipes: botania:rune_mana is missing");
             return 0;
@@ -170,27 +182,36 @@ public final class HatchRecipes {
         // the existing mana pool output hatch recipes at LV and LuV, which GT's
         // recipe lookup DB rejects. Like the port's mana pool input fix, the
         // recipe consumes an extra mana diamond to stay distinct.
-        ItemStack diamond = !input && amps == 1 ? SafeItems.byId("botania", "mana_diamond", 1) : ItemStack.EMPTY;
+        ItemStack diamond = !input && amps == 1 ? botania("mana_diamond", 1) : ItemStack.EMPTY;
         if (!input && amps == 1 && diamond.isEmpty()) {
             Pollution.LOGGER.warn("[hatch] skipping {} hatch {}A {}: the distinguishing "
                     + "botania:mana_diamond is missing", family, amps, tierName(tier));
             return false;
         }
-        GTRecipeBuilder builder = GTRecipeBuilder.of(
-                        id("mana_" + (input ? "input" : "output") + "_hatch_" + amps + "a/" + tierName(tier)),
-                        PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(base)
-                .inputItems(rune)
-                .inputItems(gear)
-                .inputItems(sensor);
+        List<ItemStack> components = new ArrayList<>();
+        components.add(base.asStack());
+        components.add(rune);
+        components.add(gear);
+        components.add(sensor);
         if (!wire.isEmpty()) {
-            builder.inputItems(wire);
+            components.add(wire);
         }
         if (!diamond.isEmpty()) {
-            builder.inputItems(diamond);
+            components.add(diamond);
         }
-        builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
-                .outputItems(result)
+        addHatchEnrichment(components, tier);
+        GTRecipeBuilder builder = GTRecipeBuilder.of(
+                id("mana_" + (input ? "input" : "output") + "_hatch_" + amps + "a/" + tierName(tier)),
+                PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+        for (ItemStack component : components) {
+            builder.inputItems(component);
+        }
+        builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(1000));
+        FluidStack solder = hatchSolder(tier);
+        if (!solder.isEmpty()) {
+            builder.inputFluids(solder);
+        }
+        builder.outputItems(result)
                 .duration(100)
                 .EUt(GTValues.VA[tier])
                 .save(provider);
@@ -203,7 +224,7 @@ public final class HatchRecipes {
 
     private static int wirelessManaHatches(Consumer<FinishedRecipe> provider) {
         ItemStack coil = PollutionItems.MANA_RESONANCE_COIL.asStack();
-        ItemStack spark = SafeItems.byId("botania", "spark", 1);
+        ItemStack spark = botania("spark", 1);
         ItemStack link = SafeItems.byId("ae2", "wireless_receiver", 1);
         if (link.isEmpty()) {
             link = new ItemStack(Items.ENDER_EYE);
@@ -242,15 +263,27 @@ public final class HatchRecipes {
                     direction, amps, tierName(tier));
             return false;
         }
-        GTRecipeBuilder.of(
-                        id("wireless_mana_" + direction + "_hatch_" + amps + "a/" + tierName(tier)),
-                        PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(wired)
-                .inputItems(coil)
-                .inputItems(spark)
-                .inputItems(link)
-                .inputFluids(PollutionMaterials.InfusedAura.getFluid(2000))
-                .outputItems(result)
+        List<ItemStack> components = new ArrayList<>();
+        components.add(wired.asStack());
+        components.add(coil);
+        components.add(spark);
+        components.add(link);
+        addHatchEnrichment(components, tier);
+        if (tier >= GTValues.EV) {
+            addIfPresent(components, tierComponent(tier, "emitter", 2));
+        }
+        GTRecipeBuilder builder = GTRecipeBuilder.of(
+                id("wireless_mana_" + direction + "_hatch_" + amps + "a/" + tierName(tier)),
+                PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+        for (ItemStack component : components) {
+            builder.inputItems(component);
+        }
+        builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(2000));
+        FluidStack solder = hatchSolder(tier);
+        if (!solder.isEmpty()) {
+            builder.inputFluids(solder);
+        }
+        builder.outputItems(result)
                 .duration(200)
                 .EUt(GTValues.VA[tier])
                 .save(provider);
@@ -286,13 +319,22 @@ public final class HatchRecipes {
                         tierName(tier));
                 continue;
             }
-            GTRecipeBuilder.of(id("aspect_tank/" + tierName(tier)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(base)
-                    .inputItems(jar)
-                    .inputItems(focus)
-                    .inputItems(glass)
-                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
-                    .outputItems(result)
+            List<ItemStack> components = new ArrayList<>();
+            components.add(base.asStack());
+            components.add(jar);
+            components.add(focus);
+            components.add(glass);
+            addHatchEnrichment(components, tier);
+            GTRecipeBuilder builder = GTRecipeBuilder.of(id("aspect_tank/" + tierName(tier)),
+                    PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+            for (ItemStack component : components) {
+                builder.inputItems(component);
+            }
+            builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(1000));
+            if (tier >= GTValues.HV) {
+                builder.inputFluids(PollutionMaterials.InfusedMagic.getFluid(500));
+            }
+            builder.outputItems(result)
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
@@ -307,7 +349,7 @@ public final class HatchRecipes {
 
     private static int fluxMufflers(Consumer<FinishedRecipe> provider) {
         ItemStack goo = SafeItems.byId("thaumcraft", "flux_goo", 2);
-        ItemStack catalyst = SafeItems.byId("botania", "alchemy_catalyst", 1);
+        ItemStack catalyst = botania("alchemy_catalyst", 1);
         if (goo.isEmpty()) {
             Pollution.LOGGER.warn("[hatch] skipping all flux muffler recipes: thaumcraft:flux_goo is missing");
             return 0;
@@ -321,15 +363,23 @@ public final class HatchRecipes {
                         tierName(tier));
                 continue;
             }
-            GTRecipeBuilder builder = GTRecipeBuilder.of(
-                            id("flux_muffler/" + tierName(tier)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(base)
-                    .inputItems(goo);
+            List<ItemStack> components = new ArrayList<>();
+            components.add(base.asStack());
+            components.add(goo);
             if (!catalyst.isEmpty()) {
-                builder.inputItems(catalyst);
+                components.add(catalyst);
             }
-            builder.inputFluids(PollutionMaterials.InfusedTaint.getFluid(500))
-                    .outputItems(result)
+            addHatchEnrichment(components, tier);
+            GTRecipeBuilder builder = GTRecipeBuilder.of(
+                    id("flux_muffler/" + tierName(tier)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+            for (ItemStack component : components) {
+                builder.inputItems(component);
+            }
+            builder.inputFluids(PollutionMaterials.InfusedTaint.getFluid(500));
+            if (tier >= GTValues.HV) {
+                builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(500));
+            }
+            builder.outputItems(result)
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
@@ -343,7 +393,7 @@ public final class HatchRecipes {
     // ////////////////////////////////////
 
     private static int infusedFluidHatches(Consumer<FinishedRecipe> provider) {
-        ItemStack rune = SafeItems.byId("botania", "rune_mana", 1);
+        ItemStack rune = botania("rune_mana", 1);
         if (rune.isEmpty()) {
             Pollution.LOGGER.warn("[hatch] skipping all infused fluid hatch recipes: botania:rune_mana is missing");
             return 0;
@@ -358,12 +408,21 @@ public final class HatchRecipes {
                         tierName(tier));
                 continue;
             }
-            GTRecipeBuilder.of(id("infused_fluid_hatch/" + tierName(tier)), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                    .inputItems(base)
-                    .inputItems(rune)
-                    .inputItems(gear)
-                    .inputFluids(PollutionMaterials.InfusedAura.getFluid(1000))
-                    .outputItems(result)
+            List<ItemStack> components = new ArrayList<>();
+            components.add(base.asStack());
+            components.add(rune);
+            components.add(gear);
+            addHatchEnrichment(components, tier);
+            GTRecipeBuilder builder = GTRecipeBuilder.of(id("infused_fluid_hatch/" + tierName(tier)),
+                    PORecipeMaps.MAGIC_ASSEMBLER_RECIPES);
+            for (ItemStack component : components) {
+                builder.inputItems(component);
+            }
+            builder.inputFluids(PollutionMaterials.InfusedAura.getFluid(1000));
+            if (tier >= GTValues.HV) {
+                builder.inputFluids(PollutionMaterials.InfusedMagic.getFluid(500));
+            }
+            builder.outputItems(result)
                     .duration(100)
                     .EUt(GTValues.VA[tier])
                     .save(provider);
@@ -379,26 +438,31 @@ public final class HatchRecipes {
     /**
      * IV..UV infusion-altar alternatives for six hatch families. Aspect costs
      * scale with the tier (IV: 8 per primal, UV: 20 per primal + 40
-     * praecantatio). Every component is checked by {@link InfusionRecipes#infusion};
-     * a missing item only skips that recipe.
+     * praecantatio) and every family fills all 8 pedestals with the tier's
+     * sensor/emitter, thaumium, void ingots, terrasteel/gaia and a Botania
+     * rune/diamond accent. Every component is checked by
+     * {@link InfusionRecipes#infusion}; a missing item only skips that recipe.
      */
     private static int highTierInfusions(Consumer<FinishedRecipe> provider) {
-        ItemStack rune = SafeItems.byId("botania", "rune_mana", 2);
-        ItemStack spark = SafeItems.byId("botania", "spark", 2);
+        ItemStack rune = botania("rune_mana", 2);
+        ItemStack spark = botania("spark", 2);
         ItemStack coil = PollutionItems.MANA_RESONANCE_COIL.asStack(2);
-        ItemStack terrasteel = SafeItems.byId("botania", "terrasteel_ingot", 1);
-        ItemStack gaia = SafeItems.byId("botania", "gaia_ingot", 1);
-        ItemStack manaPearl = SafeItems.byId("botania", "mana_pearl", 1);
+        ItemStack terrasteel = botania("terrasteel_ingot", 1);
+        ItemStack gaia = botania("gaia_ingot", 1);
+        ItemStack manaPearl = botania("mana_pearl", 1);
+        ItemStack manaDiamond = botania("mana_diamond", 1);
+        ItemStack endoflame = botania("endoflame", 1);
         ItemStack thaumium = SafeItems.byId("thaumcraft", "thaumium_ingot", 2);
         ItemStack voidIngot = SafeItems.byId("thaumcraft", "void_ingot", 1);
         ItemStack pearl = SafeItems.byId("thaumcraft", "primordial_pearl", 1);
         ItemStack eldritch = SafeItems.byId("thaumcraft", "eldritch_object", 1);
+        ItemStack alumentum = SafeItems.byId("thaumcraft", "alumentum", 2);
         ItemStack phial = SafeItems.byId("thaumcraft", "essence_phial", 1);
         ItemStack jar = firstOf(
                 SafeItems.byId("thaumcraft", "warded_jar", 1),
                 SafeItems.byId("thaumcraft", "void_jar", 1));
         ItemStack goo = SafeItems.byId("thaumcraft", "flux_goo", 2);
-        ItemStack catalyst = SafeItems.byId("botania", "alchemy_catalyst", 1);
+        ItemStack catalyst = botania("alchemy_catalyst", 1);
         ItemStack glass = firstOf(
                 SafeItems.byId("gtceu", "tempered_glass", 1),
                 new ItemStack(Items.GLASS));
@@ -419,9 +483,9 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.MANA_INPUT_HATCH_1A, tier)), instability,
                     machine(at(GTMachines.ENERGY_INPUT_HATCH, tier)),
                     aspects("aer", primal, "ignis", primal, "aqua", primal, "terra", primal,
-                            "ordo", primal, "praecantatio", praecantatio),
-                    ing(rune), ing(tierComponent(tier, "sensor", 2)), ing(thaumium), ing(voidIngot),
-                    ing(terrasteel), ing(pearl))) {
+                            "ordo", primal, "praecantatio", praecantatio, "potentia", primal),
+                    pedestals(List.of(ing(rune), ing(tierComponent(tier, "sensor", 2)), ing(thaumium),
+                            ing(voidIngot), ing(terrasteel), ing(pearl)), manaDiamond, phial))) {
                 added++;
             }
 
@@ -430,9 +494,9 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.MANA_OUTPUT_HATCH_1A, tier)), instability,
                     machine(at(GTMachines.ENERGY_OUTPUT_HATCH, tier)),
                     aspects("aer", primal, "ignis", primal, "aqua", primal, "terra", primal,
-                            "ordo", primal, "praecantatio", praecantatio),
-                    ing(rune), ing(tierComponent(tier, "emitter", 2)), ing(thaumium), ing(voidIngot),
-                    ing(terrasteel), ing(pearl))) {
+                            "ordo", primal, "praecantatio", praecantatio, "potentia", primal),
+                    pedestals(List.of(ing(rune), ing(tierComponent(tier, "emitter", 2)), ing(thaumium),
+                            ing(voidIngot), ing(terrasteel), ing(pearl)), manaDiamond, endoflame))) {
                 added++;
             }
 
@@ -441,8 +505,10 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.WIRELESS_MANA_INPUT_HATCH_1A, tier)), instability,
                     machine(at(PollutionMachines.MANA_INPUT_HATCH_1A, tier)),
                     aspects("aer", primal, "ignis", primal, "aqua", primal, "terra", primal,
-                            "ordo", primal, "praecantatio", praecantatio, "potentia", primal),
-                    ing(coil), ing(spark), ing(link), ing(thaumium), ing(voidIngot), ing(gaia), ing(pearl))) {
+                            "ordo", primal, "praecantatio", praecantatio, "potentia", primal,
+                            "auram", Math.max(1, primal / 2)),
+                    pedestals(List.of(ing(coil), ing(spark), ing(link), ing(thaumium),
+                            ing(voidIngot), ing(gaia), ing(pearl)), manaDiamond))) {
                 added++;
             }
 
@@ -451,8 +517,10 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.ASPECT_TANK, tier)), instability,
                     machine(at(GTMachines.FLUID_IMPORT_HATCH, tier)),
                     aspects("permutatio", primal, "vacuos", primal, "aqua", primal, "ordo", primal,
-                            "praecantatio", praecantatio),
-                    ing(jar), ing(manaPearl), ing(glass), ing(thaumium), ing(voidIngot), ing(eldritch))) {
+                            "praecantatio", praecantatio, "auram", Math.max(1, primal / 2),
+                            "cognitio", Math.max(1, primal / 2)),
+                    pedestals(List.of(ing(jar), ing(manaPearl), ing(glass), ing(thaumium),
+                            ing(voidIngot), ing(eldritch)), manaDiamond, phial))) {
                 added++;
             }
 
@@ -461,8 +529,9 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.FLUX_MUFFLER, tier)), instability,
                     machine(at(GTMachines.MUFFLER_HATCH, tier)),
                     aspects("vitium", primal, "perditio", primal, "ignis", primal, "aqua", primal,
-                            "praecantatio", praecantatio),
-                    ing(goo), ing(catalyst), ing(thaumium), ing(voidIngot), ing(eldritch), ing(pearl))) {
+                            "praecantatio", praecantatio, "vacuos", Math.max(1, primal / 2)),
+                    pedestals(List.of(ing(goo), ing(catalyst), ing(thaumium), ing(voidIngot),
+                            ing(eldritch), ing(pearl)), alumentum, endoflame))) {
                 added++;
             }
 
@@ -471,8 +540,10 @@ public final class HatchRecipes {
                     machine(at(PollutionMachines.INFUSED_FLUID_HATCH, tier)), instability,
                     machine(at(GTMachines.FLUID_IMPORT_HATCH, tier)),
                     aspects("aqua", primal, "vitreus", primal, "permutatio", primal,
-                            "praecantatio", praecantatio),
-                    ing(rune), ing(phial), ing(thaumium), ing(voidIngot), ing(terrasteel), ing(pearl))) {
+                            "praecantatio", praecantatio, "ordo", Math.max(1, primal / 2),
+                            "motus", Math.max(1, primal / 2)),
+                    pedestals(List.of(ing(rune), ing(phial), ing(thaumium), ing(voidIngot),
+                            ing(terrasteel), ing(pearl)), manaDiamond, glass))) {
                 added++;
             }
         }
@@ -482,6 +553,103 @@ public final class HatchRecipes {
     // ////////////////////////////////////
     // ***** helpers *****//
     // ////////////////////////////////////
+
+    /**
+     * Tier-scaled flavour on top of the GT base: mana powder at LV, one
+     * elemental rune from MV, thaumium at HV/EV, a tier plate from EV, void
+     * ingots from IV and gaia ingots from LuV. Every stack is optional: a
+     * missing item only makes the recipe leaner.
+     */
+    private static void addHatchEnrichment(List<ItemStack> components, int tier) {
+        if (tier == GTValues.LV) {
+            addIfPresent(components, botania("mana_powder", 4));
+            return;
+        }
+        addIfPresent(components, tierRune(tier));
+        if (tier == GTValues.HV || tier == GTValues.EV) {
+            addIfPresent(components, SafeItems.byId("thaumcraft", "thaumium_ingot", 2));
+        }
+        if (tier >= GTValues.EV) {
+            addIfPresent(components, ChemicalHelper.get(TagPrefix.plate, tierPlateMaterial(tier), 4));
+        }
+        if (tier >= GTValues.IV) {
+            addIfPresent(components, SafeItems.byId("thaumcraft", "void_ingot", 2));
+        }
+        if (tier >= GTValues.LuV) {
+            addIfPresent(components, botania("gaia_ingot", 1));
+        }
+    }
+
+    /** The SolderingAlloy bath added to the assembler hatches from EV on (empty below EV). */
+    private static FluidStack hatchSolder(int tier) {
+        if (tier < GTValues.EV) {
+            return FluidStack.EMPTY;
+        }
+        return fluid(GTMaterials.SolderingAlloy, tier >= GTValues.IV ? 288 : 144);
+    }
+
+    /** LV Steel, MV Aluminium, HV StainlessSteel, EV Titanium, IV TungstenSteel, LuV NaquadahAlloy, ZPM Tritanium, UV Neutronium. */
+    private static Material tierPlateMaterial(int tier) {
+        return switch (tier) {
+            case GTValues.LV -> GTMaterials.Steel;
+            case GTValues.MV -> GTMaterials.Aluminium;
+            case GTValues.HV -> GTMaterials.StainlessSteel;
+            case GTValues.EV -> GTMaterials.Titanium;
+            case GTValues.IV -> GTMaterials.TungstenSteel;
+            case GTValues.LuV -> GTMaterials.NaquadahAlloy;
+            case GTValues.ZPM -> GTMaterials.Tritanium;
+            default -> GTMaterials.Neutronium;
+        };
+    }
+
+    /** The tier's Botania rune accent (elemental runes from MV on). */
+    private static ItemStack tierRune(int tier) {
+        return switch (tier) {
+            case GTValues.MV -> botania("rune_air", 1);
+            case GTValues.HV -> botania("rune_earth", 1);
+            case GTValues.EV -> botania("rune_water", 1);
+            case GTValues.IV -> botania("rune_fire", 1);
+            case GTValues.LuV -> botania("rune_spring", 1);
+            case GTValues.ZPM -> botania("rune_summer", 1);
+            default -> botania("rune_winter", 1);
+        };
+    }
+
+    /** Appends the optional stacks (a missing item never fails the recipe). */
+    private static void addIfPresent(List<ItemStack> components, ItemStack stack) {
+        if (!stack.isEmpty()) {
+            components.add(stack);
+        }
+    }
+
+    /**
+     * Builds the 8-pedestal component array of the high-tier infusions: the
+     * required core plus as many optional flavour stacks as fit.
+     */
+    private static Ingredient[] pedestals(List<Ingredient> core, ItemStack... optional) {
+        List<Ingredient> components = new ArrayList<>(core);
+        for (ItemStack stack : optional) {
+            if (components.size() >= 8) {
+                break;
+            }
+            if (!stack.isEmpty()) {
+                components.add(ing(stack));
+            }
+        }
+        return components.toArray(new Ingredient[0]);
+    }
+
+    private static ItemStack botania(String path, int count) {
+        return SafeItems.byId("botania", path, count);
+    }
+
+    /** @return the fluid stack, or an empty stack when the material has no fluid in this GTCEu build */
+    private static FluidStack fluid(Material material, int amount) {
+        if (material == null || !material.hasFluid()) {
+            return FluidStack.EMPTY;
+        }
+        return material.getFluid(amount);
+    }
 
     private static MachineDefinition[] manaInputFamily(int amps) {
         return switch (amps) {
