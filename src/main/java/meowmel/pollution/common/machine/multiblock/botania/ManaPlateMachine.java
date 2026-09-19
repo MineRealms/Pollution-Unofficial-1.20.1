@@ -109,7 +109,7 @@ public class ManaPlateMachine extends AbstractManaControlMachine implements IDis
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.mana_plate.tier",
                     getManaHandler().getTier(), getMana(), getMaxMana()));

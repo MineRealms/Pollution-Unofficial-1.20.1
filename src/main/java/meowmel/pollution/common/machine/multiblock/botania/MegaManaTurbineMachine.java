@@ -217,7 +217,7 @@ public class MegaManaTurbineMachine extends ManaMultiblockController implements 
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.mega_mana_turbine.catalyst", catalystLevel));
             textList.add(Component.translatable("pollution.machine.mega_mana_turbine.max_output",

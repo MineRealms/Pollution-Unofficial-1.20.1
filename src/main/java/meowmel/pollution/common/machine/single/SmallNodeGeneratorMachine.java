@@ -3,8 +3,14 @@ package meowmel.pollution.common.machine.single;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import meowmel.pollution.client.gui.MachineGuiWidgets;
 import meowmel.pollution.common.item.PackagedAuraNode;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Small node generator: burns a packaged aura node for EU, tiers LuV..UHV.
@@ -25,9 +31,10 @@ import net.minecraft.world.item.ItemStack;
  *   <li>Upstream used the GT MetaItem {@code PACKAGED_AURA_NODE} with a
  *       metadata value; the port uses the plain {@code packaged_aura_node} item
  *       through the shared {@link PackagedAuraNode} NBT contract.</li>
- *   <li>The ModularUI screen is not ported (consistent with the other ported
- *       single-block machines); the fuel slot is exposed as an input-only item
- *       capability, so it can be loaded with hoppers or pipes.</li>
+ *   <li>The screen is ported (2026-09-19): the fancy UI shows the node
+ *       tier/type and the capacity multiplier and exposes the fuel slot; the
+ *       slot is also an input-only item capability, so it can be loaded with
+ *       hoppers or pipes.</li>
  * </ul>
  */
 public class SmallNodeGeneratorMachine extends PollutionEnergyMachine {
@@ -84,5 +91,26 @@ public class SmallNodeGeneratorMachine extends PollutionEnergyMachine {
                 PackagedAuraNode.essence(node, PackagedAuraNode.ESSENCE_FIRE)
                         * PackagedAuraNode.essence(node, PackagedAuraNode.ESSENCE_ORDER)));
         return multiplier;
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        ItemStack node = inventory.getStackInSlot(0);
+        if (PackagedAuraNode.isNode(node)) {
+            textList.add(Component.literal("Node: " + PackagedAuraNode.tier(node) + " "
+                    + PackagedAuraNode.type(node)));
+            textList.add(Component.literal("Capacity Multiplier: "
+                    + String.format("%.2f", nodeCapacityMultiplier(node) * getTier())));
+        } else {
+            textList.add(Component.literal("Node: none"));
+        }
+    }
+
+    @Override
+    public Widget createUIWidget() {
+        var group = (WidgetGroup) super.createUIWidget();
+        group.addWidget(MachineGuiWidgets.itemSlot(inventory, 0, 116, 78));
+        return group;
     }
 }

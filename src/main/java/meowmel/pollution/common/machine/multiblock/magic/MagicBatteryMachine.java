@@ -4,9 +4,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
@@ -20,8 +21,12 @@ import java.util.List;
  * moved into the output hatches through the machine each tick (up to a fixed
  * transfer rate), so it acts as a buffered relay between networks. The visual
  * ring/bars layer is deferred.</p>
+ *
+ * <p>Structure deviation: upstream additionally accepted the astral-lens and
+ * tarot hatches on the casing (0..1 each); neither ability is registered in the
+ * port, so they are not accepted.</p>
  */
-public class MagicBatteryMachine extends MultiblockControllerMachine {
+public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine {
 
     private static final long TRANSFER_RATE = 1L << 20;
 
@@ -77,5 +82,22 @@ public class MagicBatteryMachine extends MultiblockControllerMachine {
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
         return MagicBatteryPatterns.create(definition);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            long stored = 0L;
+            long capacity = 0L;
+            for (IMultiPart part : getParts()) {
+                if (part.self() instanceof EnergyHatchPartMachine hatch) {
+                    stored += hatch.energyContainer.getEnergyStored();
+                    capacity += hatch.energyContainer.getEnergyCapacity();
+                }
+            }
+            textList.add(Component.literal("Buffered Energy: " + stored + " / " + capacity + " EU"));
+            textList.add(Component.literal("Transfer Rate: " + TRANSFER_RATE + " EU/t"));
+        }
     }
 }

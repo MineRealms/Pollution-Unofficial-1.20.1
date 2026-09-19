@@ -1,14 +1,25 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -21,6 +32,7 @@ import dev.tc4port.thaumcraft.api.essentia.EssentiaContainerApi;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaSource;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransport;
+import meowmel.pollution.client.gui.MachineGuiWidgets;
 import meowmel.pollution.common.lib.GTEssentiaHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,6 +46,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -73,13 +87,16 @@ import java.util.Set;
  *
  * <p>Deviations / not ported:</p>
  * <ul>
- *   <li>No ModularUI screen (port convention for single machines). The upstream
- *       GUI toggles are mapped to tool actions: soft mallet toggles auto-output,
- *       sneak + soft mallet toggles voiding, wrench (non-sneak) sets/clears the
- *       output face, screwdriver on the output face toggles "input from output
- *       side", right-click with a labelled/filled essentia container sets the
- *       aspect filter and shift-right-click clears it. The fancy tooltip shows
- *       the stored aspect, amount, lock, auto-output and voiding state.</li>
+ *   <li>The screen is ported as a fancy GregTech UI (2026-09-19): the main page
+ *       shows the stored aspect, amount/capacity, lock and auto-output/voiding
+ *       state plus the in/out container slots, and the left configurator panel
+ *       carries the auto-output, voiding and aspect-lock toggles. The upstream
+ *       tool actions remain available: soft mallet toggles auto-output, sneak +
+ *       soft mallet toggles voiding, wrench (non-sneak) sets/clears the output
+ *       face, screwdriver on the output face toggles "input from output side",
+ *       right-click with a labelled/filled essentia container sets the aspect
+ *       filter and shift-right-click clears it. The fancy tooltip shows the
+ *       stored aspect, amount, lock, auto-output and voiding state.</li>
  *   <li>Suction constants are upstream's: 32 base / 64 with a filter while the
  *       tank holds less than 250 essentia, 0 above that;
  *       {@code minimumSuction} is 32/64.</li>
@@ -105,7 +122,7 @@ import java.util.Set;
  */
 public class AspectTankMachine extends TieredMachine
         implements EssentiaTransport, EssentiaSource, AspectContainerView,
-        IAutoOutputFluid, IInteractedMachine, IDropSaveMachine {
+        IAutoOutputFluid, IInteractedMachine, IDropSaveMachine, IFancyUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             AspectTankMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -657,7 +674,8 @@ public class AspectTankMachine extends TieredMachine
     }
 
     /**
-     * Upstream GUI aspect picker, mapped to a UI-less interaction: right-click
+     * Upstream GUI aspect picker, additionally available as a direct
+     * interaction (the screen lock button cycles the same filter): right-click
      * with a labelled jar or a filled essentia container sets the lock to that
      * aspect, shift-right-click clears it.
      */
@@ -702,6 +720,103 @@ public class AspectTankMachine extends TieredMachine
     @Override
     public boolean savePickClone() {
         return true;
+    }
+
+    // ////////////////////////////////////
+    // ***** UI *****//
+    // ////////////////////////////////////
+
+    @Override
+    public ModularUI createUI(Player entityPlayer) {
+        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
+    }
+
+    @Override
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 190, 108);
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(new ImageWidget(4, 4, 138, 100, GuiTextures.DISPLAY));
+        group.addWidget(new LabelWidget(8, 8, self().getBlockState().getBlock().getDescriptionId()));
+        group.addWidget(new LabelWidget(8, 20, this::storedAspectLabel).setTextColor(-1));
+        group.addWidget(new LabelWidget(8, 30, this::amountLabel).setTextColor(-1));
+        group.addWidget(new LabelWidget(8, 40, this::lockLabel).setTextColor(-1));
+        group.addWidget(new LabelWidget(8, 50, this::stateLabel).setTextColor(-1));
+        group.addWidget(new ProgressWidget(this::getFillFraction, 8, 64, 130, 12,
+                GuiTextures.PROGRESS_BAR_ARROW));
+        group.addWidget(MachineGuiWidgets.itemSlot(importItems, 0, 8, 82));
+        group.addWidget(MachineGuiWidgets.itemSlot(exportItems, 0, 30, 82));
+        return group;
+    }
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON, GuiTextures.BUTTON_FLUID_OUTPUT,
+                this::isAutoOutputFluids,
+                (clickData, pressed) -> {
+                    if (!isRemote()) {
+                        setAutoOutputFluids(pressed);
+                    }
+                }).setTooltipsSupplier(pressed -> List.of(Component.translatable(
+                        "gtceu.gui.fluid_auto_output.tooltip." + (pressed ? "enabled" : "disabled")))));
+        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                GuiTextures.BUTTON_VOID, GuiTextures.BUTTON_VOID_MULTIBLOCK,
+                this::isVoiding,
+                (clickData, pressed) -> {
+                    if (!isRemote()) {
+                        setVoiding(pressed);
+                    }
+                }).setTooltipsSupplier(pressed -> List.of(
+                        Component.translatable("pollution.machine.aspect_tank.tooltip.voiding"))));
+        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                GuiTextures.BUTTON_LOCK, GuiTextures.LOCK_WHITE,
+                () -> getAspectFilter() != null,
+                (clickData, pressed) -> {
+                    if (!isRemote()) {
+                        cycleAspectFilter();
+                    }
+                }).setTooltipsSupplier(pressed -> {
+                    AspectId filter = getAspectFilter();
+                    if (filter == null) {
+                        return List.of(Component.literal("Aspect Lock: none (click to cycle)"));
+                    }
+                    return List.of(
+                            Component.translatable("pollution.machine.aspect_tank.tooltip.locked",
+                                    AspectApi.tooltipName(filter)),
+                            Component.literal("Click to cycle the locked aspect"));
+                }));
+    }
+
+    private double getFillFraction() {
+        return maxCapacity <= 0 ? 0.0D : (double) amount / (double) maxCapacity;
+    }
+
+    private String storedAspectLabel() {
+        AspectId stored = getStoredAspect();
+        return stored == null ? "Aspect: -" : "Aspect: " + AspectApi.tooltipName(stored).getString();
+    }
+
+    private String amountLabel() {
+        return "Amount: " + amount + " / " + maxCapacity;
+    }
+
+    private String lockLabel() {
+        AspectId filter = getAspectFilter();
+        return filter == null ? "Lock: none" : "Lock: " + AspectApi.tooltipName(filter).getString();
+    }
+
+    private String stateLabel() {
+        return "Auto-Output: " + (autoOutput ? "On" : "Off") + " | Voiding: " + (voiding ? "On" : "Off");
+    }
+
+    /** Cycles the aspect lock through the registered aspects (null clears it). */
+    private void cycleAspectFilter() {
+        List<AspectId> aspects = new ArrayList<>(AspectApi.definitions().keySet());
+        Collections.sort(aspects);
+        AspectId current = getAspectFilter();
+        int index = current == null ? 0 : aspects.indexOf(current) + 1;
+        setAspectFilter(index < 0 || index >= aspects.size() ? null : aspects.get(index));
     }
 
     // ////////////////////////////////////

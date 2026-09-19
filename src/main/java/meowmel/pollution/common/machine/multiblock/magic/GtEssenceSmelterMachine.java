@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -20,12 +19,15 @@ import dev.tc4port.thaumcraft.api.aspect.AspectId;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +35,7 @@ import java.util.Map;
  * jars it converts the dissolved aspects into their mapped infused fluids
  * (144 mB per aspect unit, the upstream {@code POAspectToGtFluidList} rate).
  */
-public class GtEssenceSmelterMachine extends MultiblockControllerMachine {
+public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
 
     private TickableSubscription tickSubscription;
 
@@ -172,6 +174,16 @@ public class GtEssenceSmelterMachine extends MultiblockControllerMachine {
         pending = AspectAmounts.EMPTY;
     }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Progress: " + progress + " / " + duration));
+            textList.add(Component.literal("Working: " + (working ? "Yes" : "No")
+                    + " | Infused Fire: " + infusedCost + " mB/t"));
+        }
+    }
+
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
         return FactoryBlockPattern.start()
                 .aisle(" ABBBBBA", " AACCCAA", " A AAA A", " D     D", "        ", "        ")
@@ -183,11 +195,11 @@ public class GtEssenceSmelterMachine extends MultiblockControllerMachine {
                 .aisle(" ABBBBBA", " AACCCAA", " A AAA A", " D     D", "        ", "        ")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('B', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
-                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(6))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMinGlobalLimited(1).setMaxGlobalLimited(27))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(6).setMaxGlobalLimited(27))
                         .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(2))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .where('E', Predicates.blocks(PollutionMagicBlocks.MAGIC_BATTERY_CASING.get()))
                 .where('A', MagicStructureElements.frame(GTMaterials.StainlessSteel))
                 .where('F', MagicStructureElements.frame(GTMaterials.HSSG))

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 
@@ -47,8 +48,14 @@ final class IndustrialInfusionPatterns {
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where(' ', Predicates.any())
                 .where('B', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(16))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS))
+                        .or(Predicates.abilities(PartAbility.EXPORT_ITEMS))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
+                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
+                        .or(Predicates.abilities(POMultiblockAbility.VIS_HATCH).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(POMultiblockAbility.INFUSED_FLUID_HATCH).setExactLimit(1))
+                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1)))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.TITANIUM_PIPE.get()))
                 .where('E', Predicates.blocks(PollutionMagicBlocks.TITANIUM_GEARBOX.get()))

@@ -22,6 +22,11 @@ import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
  * semantics with {@code magicCasing} on {@code Y} and a single global export
  * fluid hatch limit on {@code X}; the per-layer restriction is approximated
  * with a global cap (TODO if a faithful per-layer predicate is needed).</p>
+ *
+ * <p>Structure deviations: the blood-magic, astral-lens and tarot hatches of
+ * the upstream casing have no registered counterpart in the port; the
+ * {@code C} muffler hatch carries no global limit (upstream declared none
+ * either).</p>
  */
 public class MagicDistilleryMachine extends MagicMultiblockController {
 
@@ -40,13 +45,13 @@ public class MagicDistilleryMachine extends MagicMultiblockController {
                 .aisle("#YSY#", "YAAAY", "YATAY", "YAAAY", "#YYY#")
                 .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('Y', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_COLD.get(),
+                .where('Y', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_COLD.get(), false,
                         GTRecipeTypes.DISTILLATION_RECIPES, GTRecipeTypes.DISTILLERY_RECIPES))
                 .where('X', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_COLD.get())
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
                 .where('Z', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_COLD.get()))
-                // 上游: hatch('C', MUFFLER_HATCH) -> 本移植版: GT 消声仓能力
-                .where('C', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                // 上游: hatch('C', MUFFLER_HATCH)（无全局上限）-> 本移植版: GT 消声仓能力
+                .where('C', Predicates.abilities(PartAbility.MUFFLER))
                 .where('P', Predicates.blocks(PollutionMagicBlocks.TITANIUM_PIPE.get()))
                 .where('A', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_2.get()))
                 .where('T', Predicates.blocks(PollutionMagicBlocks.TITANIUM_GEARBOX.get()))

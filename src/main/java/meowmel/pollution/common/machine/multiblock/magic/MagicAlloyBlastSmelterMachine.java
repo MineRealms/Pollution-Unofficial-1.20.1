@@ -17,6 +17,11 @@ import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 /**
  * Magic alloy blast smelter: the alloy variant of the magic blast furnace,
  * running both the Pollution map and GCYM's alloy blast recipes.
+ *
+ * <p>Structure deviation: upstream's muffler (global 1..1) could sit on the
+ * casing or on the dedicated {@code M} slot; the port keeps it on {@code M}
+ * only (exactly 1). The blood-magic, astral-lens and tarot hatches of the
+ * upstream casing have no registered counterpart in the port.</p>
  */
 public class MagicAlloyBlastSmelterMachine extends MagicMultiblockController {
 
@@ -36,11 +41,11 @@ public class MagicAlloyBlastSmelterMachine extends MagicMultiblockController {
                 .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
                 .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('X', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_HOT.get(),
+                .where('X', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_HOT.get(), false,
                         PORecipeMaps.MAGIC_ALLOY_BLAST_RECIPES, GCYMRecipeTypes.ALLOY_BLAST_RECIPES))
                 .where('C', Predicates.heatingCoils())
                 .where('G', Predicates.blocks(PollutionMagicBlocks.ALLOY_BLAST_CASING.get()))
-                .where('M', Predicates.abilities(PartAbility.MUFFLER))
+                .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
                 .where('A', Predicates.air())
                 .where('#', Predicates.any())
                 .build();

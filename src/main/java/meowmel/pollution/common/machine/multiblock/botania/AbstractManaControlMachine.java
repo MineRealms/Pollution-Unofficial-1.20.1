@@ -2,9 +2,10 @@ package meowmel.pollution.common.machine.multiblock.botania;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import meowmel.pollution.api.capability.IManaHatch;
 import meowmel.pollution.api.capability.ManaHandlerList;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,11 @@ import java.util.List;
  * {@link IManaHatch} after the structure forms and exposes the same
  * {@code consumeMana} contract as the recipe-driven
  * {@code ManaMultiblockController}.</p>
+ *
+ * <p>The screen comes from {@link AbstractDisplayMultiblockMachine}; this base
+ * adds the shared mana storage line to the display.</p>
  */
-public abstract class AbstractManaControlMachine extends MultiblockControllerMachine {
+public abstract class AbstractManaControlMachine extends AbstractDisplayMultiblockMachine {
 
     private ManaHandlerList manaHandler = new ManaHandlerList(List.of());
 
@@ -61,5 +65,14 @@ public abstract class AbstractManaControlMachine extends MultiblockControllerMac
 
     public boolean consumeMana(long amount, boolean simulate) {
         return amount <= 0L || manaHandler.consumeMana(amount, simulate);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.translatable("pollution.machine.mana_plate.tier",
+                    getManaHandler().getTier(), getMana(), getMaxMana()));
+        }
     }
 }

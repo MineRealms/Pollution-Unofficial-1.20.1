@@ -7,6 +7,7 @@ import meowmel.pollution.api.capability.IManaHatch;
 import meowmel.pollution.api.capability.ManaHandlerList;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
 import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,5 +93,18 @@ public abstract class ManaMultiblockController extends MagicMultiblockController
             return false;
         }
         return !recipe.data.contains(MagicRecipeProperties.ASTRAL_CONDITION);
+    }
+
+    // ////////////////////////////////////
+    // ***** UI *****//
+    // ////////////////////////////////////
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.translatable("pollution.machine.mana_plate.tier",
+                    getManaHandler().getTier(), getMana(), getMaxMana()));
+        }
     }
 }

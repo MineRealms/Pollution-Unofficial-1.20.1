@@ -293,7 +293,7 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.mode",
                     Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.mode" + modeIndex)));

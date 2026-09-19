@@ -149,7 +149,7 @@ public class EndoflameArrayMachine extends AbstractManaControlMachine implements
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.endoflame_array.display.flowers", flowers));
             textList.add(Component.translatable("pollution.machine.endoflame_array.display.fuel_items", fuelCount));

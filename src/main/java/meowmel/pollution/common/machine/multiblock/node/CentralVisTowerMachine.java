@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
@@ -16,6 +15,7 @@ import dev.tc4port.thaumcraft.api.node.NodeVis;
 import dev.tc4port.thaumcraft.api.node.NodeStateChangeResult;
 import dev.tc4port.thaumcraft.block.entity.AuraNodeBlockEntity;
 import meowmel.pollution.api.unification.PollutionMaterials;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +40,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * <p>The Starry Mansus "all chunks clean" bonus has no direct equivalent and
  * is not produced (documented deviation).</p>
  */
-public class CentralVisTowerMachine extends MultiblockControllerMachine {
+public class CentralVisTowerMachine extends AbstractDisplayMultiblockMachine {
 
     private static final int NODE_RADIUS = 8;
 

@@ -38,10 +38,10 @@ public class MagicElectricBlastFurnaceMachine extends MagicMultiblockController 
                 .aisle("XXX", "C#C", "C#C", "XMX")
                 .aisle("XSX", "CCC", "CCC", "XXX")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('X', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_HOT.get(),
+                .where('X', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_HOT.get(), false,
                         GTRecipeTypes.BLAST_RECIPES))
                 .where('C', Predicates.heatingCoils())
-                .where('M', Predicates.abilities(PartAbility.MUFFLER))
+                .where('M', Predicates.abilities(PartAbility.MUFFLER).setMaxGlobalLimited(1))
                 .where('#', Predicates.air())
                 .build();
     }

@@ -26,6 +26,10 @@ import java.util.UUID;
  * owner's research through {@code ResearchApi.isComplete}; when the owner is
  * missing or offline the gate is skipped (server-friendly fallback), and an
  * unknown research key never blocks.</p>
+ *
+ * <p>Structure deviation: upstream additionally accepted the blood-magic,
+ * astral-lens and tarot hatches on the void-prism casing (0..1 each); none of
+ * those abilities is registered in the port, so they are not accepted.</p>
  */
 public class IndustrialInfusionMachine extends MagicMultiblockController {
 

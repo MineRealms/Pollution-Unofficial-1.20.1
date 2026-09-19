@@ -184,7 +184,7 @@ public class BotGasCollectorMachine extends AbstractManaControlMachine implement
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
+        super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.bot_gas_collector_beamLevel", beamLevel));
             textList.add(Component.translatable("pollution.machine.bot_gas_collector_essenceConsumptionSpeed",

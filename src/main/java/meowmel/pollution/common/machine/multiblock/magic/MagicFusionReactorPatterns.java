@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 
@@ -28,8 +30,17 @@ final class MagicFusionReactorPatterns {
                 .aisle("           ", "           ", "           ", "     A     ", "     A     ", "   AASAA   ", "     A     ", "     A     ", "           ", "           ", "           ")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where(' ', Predicates.any())
+                // 上游该机外壳不含 MANA_INPUT_HATCH，能源仓也没有数量下限
                 .where('A', MagicStructureElements.frame(GTMaterials.TungstenSteel)
-                        .or(Predicates.autoAbilities(meowmel.pollution.api.recipes.PORecipeMaps.MAGIC_FUSION_REACTOR)))
+                        .or(Predicates.autoAbilities(
+                                new GTRecipeType[]{meowmel.pollution.api.recipes.PORecipeMaps.MAGIC_FUSION_REACTOR},
+                                false, false, true, true, true, true))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                        .or(Predicates.abilities(POMultiblockAbility.VIS_HATCH).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(POMultiblockAbility.INFUSED_FLUID_HATCH).setExactLimit(1))
+                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1)))
                 .where('B', Predicates.heatingCoils())
                 .where('C', Predicates.blocks(PollutionMagicBlocks.VOID_PRISM.get()))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.BAMINATED_GLASS.get()))

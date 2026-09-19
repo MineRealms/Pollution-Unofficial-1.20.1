@@ -1,0 +1,29 @@
+{
+  "mob.basalz.ambient": {
+    "sounds": ["mob/basalz/ambient"]
+  },
+  "mob.basalz.attack": {
+    "sounds": ["mob/basalz/attack"]
+  },
+  "mob.basalz.breathe": {
+    "sounds": ["mob/basalz/breathe0", "mob/basalz/breathe1"]
+  },
+  "mob.blitz.ambient": {
+    "sounds": ["mob/blitz/ambient"]
+  },
+  "mob.blitz.attack": {
+    "sounds": ["mob/blitz/attack"]
+  },
+  "mob.blitz.breathe": {
+    "sounds": ["mob/blitz/breathe0", "mob/blitz/breathe1", "mob/blitz/breathe2"]
+  },
+  "mob.blizz.ambient": {
+    "sounds": ["mob/blizz/ambient"]
+  },
+  "mob.blizz.attack": {
+    "sounds": ["mob/blizz/attack"]
+  },
+  "mob.blizz.breathe": {
+    "sounds": ["mob/blizz/breathe0", "mob/blizz/breathe1", "mob/blizz/breathe2"]
+  }
+}

@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+
+import java.util.List;
 
 /**
  * Flux scrubber: consumes EU to remove Thaumcraft flux near the machine.
@@ -47,5 +50,11 @@ public class FluxScrubberMachine extends PollutionEnergyMachine {
         }
         scrubBuffer -= removed;
         energyContainer.removeEnergy(cost);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        textList.add(Component.literal("Scrub Buffer: " + String.format("%.2f", scrubBuffer)));
     }
 }

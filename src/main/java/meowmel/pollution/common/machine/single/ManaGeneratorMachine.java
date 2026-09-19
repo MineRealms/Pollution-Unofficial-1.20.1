@@ -3,8 +3,11 @@ package meowmel.pollution.common.machine.single;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import meowmel.pollution.api.capability.IManaHatch;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import vazkii.botania.api.mana.ManaReceiver;
+
+import java.util.List;
 
 /**
  * Mana generator: stores Botania mana as GregTech energy and emits it.
@@ -105,5 +108,11 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
     @Override
     public void receiveMana(int mana) {
         receiveMana((long) mana);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        textList.add(Component.literal("Mana: " + getMana() + " / " + getMaxMana()));
     }
 }

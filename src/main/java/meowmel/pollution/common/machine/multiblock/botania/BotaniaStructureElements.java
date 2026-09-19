@@ -3,6 +3,7 @@ package meowmel.pollution.common.machine.multiblock.botania;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -65,15 +66,23 @@ public final class BotaniaStructureElements {
 
     /**
      * Primary casing of a Botania mana multiblock: the casing block itself or
-     * any hatch the supplied recipe types need, plus one mana energy hatch pair
-     * and one mana pool hatch (same layout as upstream
-     * {@code configureManaRecipeCasing}).
+     * any hatch the supplied recipe types need, plus the magic hatches (same
+     * layout and limits as upstream {@code configureManaRecipeCasing}).
+     *
+     * <p>Upstream's {@code abilityGroup(MANA_INPUT_HATCH, 1, 2)} over
+     * {mana input hatch, input energy} becomes one shared predicate so a
+     * structure may run on two mana hatches instead of a mandatory energy
+     * hatch; maintenance and muffler are {@code 1..1} and the mana pool hatch
+     * is {@code 0..1}.</p>
      */
     public static TraceabilityPredicate manaCasing(Block casing, GTRecipeType... recipeTypes) {
         return Predicates.blocks(casing)
-                .or(Predicates.autoAbilities(recipeTypes))
-                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH).setMaxGlobalLimited(2))
-                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1));
+                .or(Predicates.autoAbilities(recipeTypes, false, false, true, true, true, true))
+                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH, PartAbility.INPUT_ENERGY)
+                        .setMinGlobalLimited(1).setMaxGlobalLimited(2))
+                .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))
+                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
     }
 
     /** Tiered beam cores I..V; records the matched tier into the match context. */

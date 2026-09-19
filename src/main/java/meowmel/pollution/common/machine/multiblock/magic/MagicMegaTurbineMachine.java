@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 
@@ -34,13 +35,15 @@ public class MagicMegaTurbineMachine extends MagicMultiblockController {
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get()))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.TUNGSTENSTEEL_GEARBOX.get()))
-                .where('R', Predicates.abilities(PartAbility.ROTOR_HOLDER).setMaxGlobalLimited(3))
-                .where('M', Predicates.abilities(PartAbility.MUFFLER).setMaxGlobalLimited(1))
+                .where('R', Predicates.abilities(PartAbility.ROTOR_HOLDER))
+                .where('M', Predicates.abilities(PartAbility.MUFFLER))
                 .where('A', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(3))
-                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setMaxGlobalLimited(4))
+                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setMaxGlobalLimited(4))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(3))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(POMultiblockAbility.MANA_OUTPUT_HATCH).setMaxGlobalLimited(8))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .build();
     }
 }

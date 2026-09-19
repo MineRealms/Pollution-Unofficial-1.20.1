@@ -2,8 +2,11 @@ package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.List;
 
 /**
  * Magic energy absorber: generates EU while a magic pedestal block sits on top.
@@ -33,6 +36,15 @@ public class MagicEnergyAbsorberMachine extends PollutionEnergyMachine {
         }
         if (level.getBlockState(getPos().above()).is(Blocks.DRAGON_EGG)) {
             energyContainer.addEnergy(GTValues.V[DRAGON_EGG_OUTPUT_TIER]);
+        }
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (getLevel() != null) {
+            textList.add(Component.literal("Dragon Egg Above: "
+                    + (getLevel().getBlockState(getPos().above()).is(Blocks.DRAGON_EGG) ? "Yes" : "No")));
         }
     }
 }

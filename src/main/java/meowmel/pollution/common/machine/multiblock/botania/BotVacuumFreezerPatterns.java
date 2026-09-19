@@ -42,9 +42,10 @@ final class BotVacuumFreezerPatterns {
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('A', MagicStructureElements.frame(GTMaterials.NaquadahAlloy))
                 .where('X', Predicates.blocks(PollutionMagicBlocks.MANA_4.get())
-                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH).setMaxGlobalLimited(2))
+                        // 上游 abilityGroup(MANA_INPUT_HATCH, 1, 2) 覆盖魔力能源仓 + 能源仓
+                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH, PartAbility.INPUT_ENERGY)
+                                .setMinGlobalLimited(1).setMaxGlobalLimited(2))
                         .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(2))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                         .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(13))
                         .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(13))

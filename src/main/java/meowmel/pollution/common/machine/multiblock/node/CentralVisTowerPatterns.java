@@ -41,12 +41,13 @@ final class CentralVisTowerPatterns {
                 .where('G', Predicates.blocks(PollutionMagicBlocks.MANA_1.get()))
                 .where('H', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))
                 .where('J', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
+                // 上游: MANA_INPUT_POOL[1,1] -> 本移植版改用 EU + InfusedAura（见机器 javadoc）
                 .where('K', Predicates.blocks(PollutionMagicBlocks.MANA_BASIC.get())
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
                                 .setMinGlobalLimited(3).setMaxGlobalLimited(8))
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .build();
     }
 

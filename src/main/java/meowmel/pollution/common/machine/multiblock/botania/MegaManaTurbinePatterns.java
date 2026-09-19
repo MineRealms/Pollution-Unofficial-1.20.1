@@ -45,7 +45,7 @@ final class MegaManaTurbinePatterns {
                 .where('F', Predicates.blocks(BotaniaBlocks.dreamwoodGlimmering))
                 .where('G', Predicates.heatingCoils())
                 .where('H', Predicates.blocks(PollutionMagicBlocks.MANA_5.get())
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.MUFFLER).setMaxGlobalLimited(1)))

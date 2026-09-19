@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -18,6 +17,7 @@ import dev.tc4port.thaumcraft.api.essentia.EssentiaSearch;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaSourceRef;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -35,7 +35,7 @@ import java.util.Optional;
  * ({@code EssentiaApi.findSource}/{@code extract}) and the fluid goes into the
  * GregTech export fluid hatch tank above.</p>
  */
-public class InfusedExchangeMachine extends MultiblockControllerMachine {
+public class InfusedExchangeMachine extends AbstractDisplayMultiblockMachine {
 
     private static final int MB_PER_ESSENTIA = 144;
     private static final int SEARCH_RANGE = 3;
@@ -111,7 +111,7 @@ public class InfusedExchangeMachine extends MultiblockControllerMachine {
                 .aisle("S")
                 .aisle("A")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('A', Predicates.abilities(PartAbility.EXPORT_FLUIDS))
+                .where('A', Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1))
                 .build();
     }
 }

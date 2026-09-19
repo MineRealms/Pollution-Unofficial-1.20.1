@@ -12,9 +12,11 @@ import dev.tc4port.thaumcraft.block.entity.AuraNodeBlockEntity;
 import dev.tc4port.thaumcraft.registry.TCBlocks;
 import meowmel.pollution.PollutionConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,5 +111,12 @@ public class VisProviderMachine extends PollutionEnergyMachine {
             return node.nodeState();
         }
         return null;
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        textList.add(Component.literal("Target Node: "
+                + (nodePos == null ? "none" : nodePos.toShortString())));
     }
 }

@@ -33,9 +33,9 @@ final class MagicBatteryPatterns {
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where(' ', Predicates.any())
                 .where('A', Predicates.blocks(PollutionMagicBlocks.MAGIC_BATTERY_CASING.get())
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(16))
-                        .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(16))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(16))
+                        .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(16))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('C', Predicates.heatingCoils())
                 .build();

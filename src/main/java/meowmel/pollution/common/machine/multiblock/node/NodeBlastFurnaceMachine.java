@@ -25,6 +25,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * they map to {@code InfusedLight} (white) and {@code InfusedDark} (black) at
  * the same {@code essence × 10} rate. One node is consumed every 30 seconds
  * while a valid recipe structure is formed.</p>
+ *
+ * <p>Structure deviation: upstream accepted the muffler hatch both on the main
+ * casing ({@code B}) and on its dedicated {@code Y} slot (global limit 1..1);
+ * the port keeps it on {@code Y} only (exactly 1).</p>
  */
 public class NodeBlastFurnaceMachine extends MagicMultiblockController {
 

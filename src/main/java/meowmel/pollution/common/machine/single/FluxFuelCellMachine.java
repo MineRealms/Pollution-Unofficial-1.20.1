@@ -5,8 +5,11 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 
 /**
  * Flux promoted fuel cell: burns nearby Thaumcraft flux for EU.
@@ -65,5 +68,15 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
         }
         fluxBuffer -= removed;
         energyContainer.addEnergy((long) (efficiency * GTValues.V[getTier()]));
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (getLevel() instanceof ServerLevel level) {
+            int flux = TC4RBridge.scrubFlux(level, getPos(), FLUX_SAMPLE, VisAction.SIMULATE);
+            textList.add(Component.literal("Nearby Flux: " + flux));
+        }
+        textList.add(Component.literal("Flux Buffer: " + String.format("%.2f", fluxBuffer)));
     }
 }

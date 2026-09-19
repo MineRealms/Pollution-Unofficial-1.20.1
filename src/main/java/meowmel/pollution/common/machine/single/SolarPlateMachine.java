@@ -2,9 +2,12 @@ package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.List;
 
 /**
  * Solar plate: generates EU from light with six themed kinds and a per-kind
@@ -67,5 +70,15 @@ public class SolarPlateMachine extends PollutionEnergyMachine {
             case KIND_WATER -> level.getBlockState(getPos().below()).is(Blocks.WATER);
             default -> false;
         };
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        textList.add(Component.literal("Kind: MK" + kind));
+        if (getLevel() instanceof ServerLevel level) {
+            textList.add(Component.literal("Producing: " + (isProducing(level) ? "Yes" : "No")
+                    + " | Boosted: " + (hasBoost(level) ? "Yes" : "No")));
+        }
     }
 }

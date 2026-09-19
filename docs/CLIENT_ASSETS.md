@@ -1,0 +1,197 @@
+# Client Asset Port — Sounds, GUI/Entity Textures, OBJ Models
+
+Port of the remaining client-layer assets from the 1.12.2 upstream repository
+(`H:\MinecraftMods\Pollution\src\main\resources\assets`) into this 1.20.1 port.
+Nothing was invented: assets were copied only when an authoritative upstream file
+exists, and only when the port references them.
+
+## Summary
+
+| Area | Upstream | Ported | Notes |
+| --- | --- | --- | --- |
+| Mob sounds (`pollution/sounds/mob/**`) | 14 `.ogg` | **14** (byte-identical) | `sounds.json` did not exist upstream; a new one was written |
+| `sounds.json` events | 0 (no file) | **9 events** | Schema is identical in 1.12.2 and 1.20.1 |
+| Entity textures | 6 root PNGs + 7 slime PNGs | already complete | All port-referenced textures were already present |
+| GUI textures (`pollution/textures/gui`) | directory does not exist | 0 | Port GUIs are procedural (no texture) |
+| GT GUI textures (`gregtech/textures/gui/widget/bm_hpca`) | 9 PNGs | 0 | Not referenced by the port (no HPCA machine) |
+| OBJ/MTL models | 4 `.obj` + 3 `.mtl` | 0 | Not referenced by the port; see §3 |
+| Java `SoundEvent` registrations | 1 custom (`POSoundEvent.MANA_PLUSE`) | 0 | Port code uses vanilla `SoundEvents` only; see §1.3 |
+
+Files changed by this task:
+
+- `src/main/resources/assets/pollution/sounds/mob/basalz/{ambient,attack,breathe0,breathe1}.ogg` (new)
+- `src/main/resources/assets/pollution/sounds/mob/blitz/{ambient,attack,breathe0,breathe1,breathe2}.ogg` (new)
+- `src/main/resources/assets/pollution/sounds/mob/blizz/{ambient,attack,breathe0,breathe1,breathe2}.ogg` (new)
+- `src/main/resources/assets/pollution/sounds.json` (new)
+- `docs/CLIENT_ASSETS.md` (this file)
+
+No Java file was modified. No loader dependency was added.
+
+## 1. Sounds
+
+### 1.1 Copied files (14, all byte-identical to upstream)
+
+```
+sounds/mob/basalz/ambient.ogg     (98,785 B)
+sounds/mob/basalz/attack.ogg      ( 7,702 B)
+sounds/mob/basalz/breathe0.ogg    (48,141 B)
+sounds/mob/basalz/breathe1.ogg    (23,000 B)
+sounds/mob/blitz/ambient.ogg      (101,158 B)
+sounds/mob/blitz/attack.ogg       ( 7,941 B)
+sounds/mob/blitz/breathe0.ogg     (17,123 B)
+sounds/mob/blitz/breathe1.ogg     (36,123 B)
+sounds/mob/blitz/breathe2.ogg     (15,901 B)
+sounds/mob/blizz/ambient.ogg      (267,025 B)
+sounds/mob/blizz/attack.ogg       ( 7,941 B)
+sounds/mob/blizz/breathe0.ogg     (31,744 B)
+sounds/mob/blizz/breathe1.ogg     (48,581 B)
+sounds/mob/blizz/breathe2.ogg     (26,989 B)
+```
+
+Integrity: every destination file was compared to its source with SHA-256
+(`Get-FileHash`) — 0 mismatches, 0 missing.
+
+### 1.2 `sounds.json` (new file, 9 events)
+
+Upstream has **no `sounds.json` anywhere in the repository** (checked the whole
+`H:\MinecraftMods\Pollution` tree, not just `assets/pollution`), and no upstream
+Java code references these `.ogg` files: `EntityElemental`/`EntityBasalz`/
+`EntityBlitz`/`EntityBlizz` all return vanilla blaze sounds
+(`SoundEvents.ENTITY_BLAZE_*`). The 14 files were effectively orphaned assets.
+
+Because there were no upstream event names to preserve, the new
+`sounds.json` defines the conventional event names implied by the folder
+layout. The JSON schema is unchanged between 1.12.2 and 1.20.1:
+
+| Event | Sound files |
+| --- | --- |
+| `mob.basalz.ambient` | `mob/basalz/ambient` |
+| `mob.basalz.attack` | `mob/basalz/attack` |
+| `mob.basalz.breathe` | `mob/basalz/breathe0`, `mob/basalz/breathe1` |
+| `mob.blitz.ambient` | `mob/blitz/ambient` |
+| `mob.blitz.attack` | `mob/blitz/attack` |
+| `mob.blitz.breathe` | `mob/blitz/breathe0`, `mob/blitz/breathe1`, `mob/blitz/breathe2` |
+| `mob.blizz.ambient` | `mob/blizz/ambient` |
+| `mob.blizz.attack` | `mob/blizz/attack` |
+| `mob.blizz.breathe` | `mob/blizz/breathe0`, `mob/blizz/breathe1`, `mob/blizz/breathe2` |
+
+### 1.3 Java `SoundEvent` registration — not required
+
+The port was searched for `SoundEvent`, `playSound` and `SoundEvents.` usages
+(all of `src/main/java/meowmel/pollution`). Every reference resolves to a
+**vanilla** sound:
+
+- `EntityBasalz` / `EntityBlitz` / `EntityBlizz` -> `SoundEvents.BLAZE_AMBIENT`
+- `EntityElemental` -> `SoundEvents.BLAZE_HURT` / `SoundEvents.BLAZE_DEATH`
+- `ElementalBoltAttackGoal` -> `SoundEvents.BLAZE_SHOOT`
+- `PortalBlock` -> `SoundEvents.PORTAL_AMBIENT`
+- `TarotTheFoolItem` -> `SoundEvents.ENDERMAN_TELEPORT`
+- `FleshHeartBlockEntity` / `HeartFruitBlock` -> `SoundEvents.NOTE_BLOCK_BASEDRUM`
+- `AlfheimRedGrapeBlock` -> `SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES`
+
+The port contains no `ModSounds`-style holder and no custom `SoundEvent`
+registry, so there is nothing to register and no Java change was needed (the
+task allowed edits to `client/**` only if registration was required — it was
+not). Wiring the newly staged mob sounds to the elemental entities is a
+possible follow-up, but it requires a custom `SoundEvent` holder plus a
+deferred register, which is out of scope for this asset-only task.
+
+Upstream's only custom sound was `client/POSoundEvent.MANA_PLUSE`, which
+registered Botania's `botania.subtitle.dash` through GT's sound manager; the
+corresponding 1.12 recipe sound (`PORecipeMaps`) has no 1.20.1 equivalent yet,
+and no Botania asset exists in the upstream repo.
+
+## 2. GUI and entity textures
+
+### 2.1 Entity textures — already complete
+
+Every texture referenced by `client/**` exists in the port. The client classes
+resolve:
+
+- `EntityBasalzRenderer` -> `textures/entity/basalz.png` (present)
+- `EntityBlitzRenderer` -> `textures/entity/blitz.png` (present)
+- `EntityBlizzRenderer` -> `textures/entity/blizz.png` (present)
+- `PollutionSlimeRenderer` -> `textures/entity/slime/slime_{aer,ignis,aqua,terra,ordo,perditio}.png` (all 6 present)
+
+The seasonal `*_xmas.png` variants (referenced only in comments / planned
+seasonal swapping) are also present. No entity texture was missing, so none
+were copied in this pass. (The flat `entity_*` / `slime_*` duplicates already in
+the port are unused leftovers and were left untouched.)
+
+### 2.2 GUI textures — nothing to port
+
+- Upstream `assets/pollution/textures/gui/` **does not exist** (`Test-Path`
+  returns `False`); upstream pollution only ships `textures/blocks`,
+  `textures/entity` and `textures/items`.
+- The port's only screen, `MineralExtractorScreen`, is drawn entirely with
+  `GuiGraphics.fill`/`drawString` ("no GUI texture", matching the 1.12
+  `GuiMineralExtractor`) and references no PNG.
+- `MineralExtractorRenderer` is likewise fully procedural.
+- Upstream `assets/gregtech/textures/gui/widget/bm_hpca/` contains 9 PNGs
+  (`active_cooler_component`, `advanced_computation_component`,
+  `bridge_component`, `component_outline`, `computation_component`,
+  `damaged_advanced_computation_component`, `damaged_computation_component`,
+  `empty_component`, `heat_sink_component`). These were **not copied** because
+  the port has no BM HPCA machine at all: there is no HPCA class, and
+  `loaders/recipes/MagicGCYMRecipes.java:99` records the HPCA machine group as
+  deliberately skipped. A search of the entire port source for `bm_hpca`,
+  `HPCA`, `computation_component`, `heat_sink` and `active_cooler` finds no
+  reference. Copying them now would add 9 dead files.
+
+## 3. OBJ / MTL models — not ported (nothing references them)
+
+Upstream inventory under `assets/pollution/models`:
+
+| File | Size | State upstream |
+| --- | --- | --- |
+| `block/constellation_ritual_crystal.obj` | 399 B | `mtllib constellation_ritual_crystal.mtl` |
+| `block/constellation_ritual_crystal.mtl` | 65 B | material `crystal`, `map_Kd #texture0` (placeholder, no texture file) |
+| `block/constellation_tower_core.obj` | 979 B | `mtllib constellation_tower_core.mtl` |
+| `block/constellation_tower_core.mtl` | 65 B | material `crystal`, `map_Kd #texture0` (placeholder) |
+| `obj/sun.obj` | 78,434 B | `mtllib star.mtl` — **file on disk is `sun.mtl`**, upstream name mismatch |
+| `obj/sun.mtl` | 229 B | material `layer`, `map_Kd #texture0` (placeholder) |
+| `magic_circle.obj` | 2,609 B | `mtllib Magic.mtl` — **`Magic.mtl` does not exist upstream** |
+
+The port was searched for `.obj`, `OBJ`, `OBJModel`, `OBJLoader`, `magic_circle`
+and `constellation_ritual`/`constellation_tower` in both `src/main/java` and
+`src/main/resources`. The only hit is `models/item/magic_circle.json`, a plain
+vanilla JSON item model (`layer0: pollution:item/magic_circle`) — it does not
+use the OBJ format. Per the task, OBJ assets are copied only when the port
+references an OBJ model; it does not, so **none were copied**.
+
+`PollutionEntityRenderers` documents why: the 1.12 TESRs that would have used
+them (`TesrMagicCircle`, `TesrConstellationCrystal`,
+`TesrStarstreamObeliskCore`, `TesrStarstreamOperationCore`,
+`TesrStarstreamRelay`) are intentionally unported because their block entities
+do not exist server-side in this port. If those TESRs are ported later:
+
+1. copy the `.obj` + `.mtl` (+ texture, once real ones exist) into
+   `assets/pollution/models/...`;
+2. fix the upstream defects above (`sun.obj` -> `star.mtl` mismatch,
+   `Magic.mtl` missing, `#texture0` placeholders);
+3. a 1.20.1 OBJ loader is required — either Forge's built-in OBJ model loader
+   (`forge:obj` block/item models) or a custom parser in the TESR. **No loader
+   dependency was added by this task.**
+
+## 4. Still missing / deliberately deferred
+
+| Item | Reason |
+| --- | --- |
+| Java `SoundEvent` holder + entity sound wiring (`mob.basalz.*`, `mob.blitz.*`, `mob.blizz.*`) | Port code uses vanilla blaze sounds; wiring needs a new deferred-register holder. Assets are staged and ready. |
+| `bm_hpca` GUI widget textures (9 PNGs) | No HPCA machine exists in the port (skipped by design); no code references them. |
+| OBJ models + MTLs | No port code references them; TESRs/block entities not ported. Would additionally need an OBJ loader dependency. |
+| `ItemMineralExtractorRenderer` item variant | Needs `BlockEntityWithoutLevelRenderer` + `builtin/entity` item model; documented in `MineralExtractorRenderer`. |
+| Seasonal `*_xmas.png` swapping | Textures present; no seasonal logic ported. |
+
+## 5. Verification performed
+
+- `Get-FileHash` SHA-256 comparison of all 14 source/destination `.ogg` files:
+  0 mismatches.
+- Full-repository search upstream for `sounds.json` (none found) and for
+  `basalz|blitz|blizz` in resources (only lang + loot tables).
+- Port-wide grep for `SoundEvent|playSound|SoundEvents.` (vanilla only),
+  `ModSounds|MANA_PLUSE|equipBauble` (no hits), `bm_hpca|HPCA|...` (no hits),
+  `.obj|OBJ|magic_circle|constellation` (no OBJ usage).
+- `Get-ChildItem` inventory of upstream `textures/gui` (absent), upstream
+  `textures/entity` (already mirrored), and upstream `gregtech/textures/gui`
+  (9 PNGs, unreferenced).

@@ -12,6 +12,13 @@ import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 
+/**
+ * Magic autoclave.
+ *
+ * <p>Upstream ran the GT autoclave map plus the Pollution crystal-cultivation
+ * map; the latter is not part of the port, so only {@code AUTOCLAVE_RECIPES}
+ * remains (documented deviation).</p>
+ */
 public class MagicAutoclaveMachine extends MagicMultiblockController {
 
     public MagicAutoclaveMachine(IMachineBlockEntity holder) {

@@ -35,9 +35,10 @@ final class BotCircuitAssemblerPatterns {
                 .where('A', MagicStructureElements.frame(GTMaterials.TungstenSteel))
                 .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.MANA_5.get())
-                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH).setMaxGlobalLimited(2))
+                        // 上游 abilityGroup(MANA_INPUT_HATCH, 1, 2) 覆盖魔力能源仓 + 能源仓
+                        .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH, PartAbility.INPUT_ENERGY)
+                                .setMinGlobalLimited(1).setMaxGlobalLimited(2))
                         .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(44))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                         .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(44))
                         .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(44))

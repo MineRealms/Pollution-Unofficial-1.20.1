@@ -7,9 +7,11 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
+import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 
 /**
  * Magic macerator: the first ported magic multiblock and the template for the
@@ -38,10 +40,11 @@ public class MagicMaceratorMachine extends MagicMultiblockController {
                 .aisle("XXXXX", "XCCCX", "XCCCX", "X#G#X")
                 .aisle("XXIXX", "XXSXX", "XXXXX", "XXXXX")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('X', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_EARTH.get()))
+                .where('X', MagicStructureElements.magicCasing(PollutionMagicBlocks.SPELL_PRISM_EARTH.get(),
+                        GTRecipeTypes.MACERATOR_RECIPES))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_0.get()))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.BAMINATED_GLASS.get()))
-                .where('I', Predicates.abilities(PartAbility.IMPORT_FLUIDS))
+                .where('I', Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
                 .where('#', Predicates.air())
                 .build();
     }

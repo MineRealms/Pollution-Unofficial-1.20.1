@@ -1,10 +1,10 @@
 package meowmel.pollution.common.machine.multiblock.node;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -19,11 +19,14 @@ import meowmel.pollution.compat.tc4r.TC4RBridge;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.item.PackagedAuraNode;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -35,8 +38,12 @@ import java.util.Random;
  * "Ominous" adds industrial pollution instead of polluting the aura, and
  * Concussive/Voracious nodes may burn out when their upkeep fluid is
  * missing.</p>
+ *
+ * <p>Structure: the {@code H} slots require exactly six ULV item import buses,
+ * matching upstream's {@code metaTileEntitiesAsAbility(IMPORT_ITEMS, 6, 6, 6,
+ * ITEM_IMPORT_BUS[ULV])}.</p>
  */
-public class LargeNodeGeneratorMachine extends MultiblockControllerMachine {
+public class LargeNodeGeneratorMachine extends AbstractDisplayMultiblockMachine {
 
     private static final int BASIC_CAPACITY = 2048;
     private static final double BURNOUT_CHANCE = 0.001;
@@ -191,6 +198,14 @@ public class LargeNodeGeneratorMachine extends MultiblockControllerMachine {
         return getCoilLevel() > 0;
     }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Heating Coil Level: " + getCoilLevel()));
+        }
+    }
+
     private <T> T findPart(Class<T> type) {
         for (IMultiPart part : getParts()) {
             if (type.isInstance(part.self())) {
@@ -234,13 +249,16 @@ public class LargeNodeGeneratorMachine extends MultiblockControllerMachine {
                 .where('C', Predicates.blocks(GTBlocks.FUSION_CASING.get())
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(PartAbility.OUTPUT_LASER).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
                 .where('D', Predicates.heatingCoils())
                 .where('E', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('F', Predicates.blocks(PollutionMagicBlocks.BAMINATED_GLASS.get()))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.VOID_PRISM.get()))
-                .where('H', Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
+                // 上游: metaTileEntitiesAsAbility(IMPORT_ITEMS, 6, 6, 6, ITEM_IMPORT_BUS[ULV])
+                // 恰好 6 个 ULV 输入总线；双参重载附带预览数量。
+                .where('H', Predicates.ability(PartAbility.IMPORT_ITEMS, GTValues.ULV)
+                        .setMinGlobalLimited(6, 6).setMaxGlobalLimited(6, 6))
                 .where(' ', Predicates.any())
                 .build();
     }

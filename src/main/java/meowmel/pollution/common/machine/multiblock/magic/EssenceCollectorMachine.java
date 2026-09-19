@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
@@ -13,7 +12,9 @@ import dev.tc4port.thaumcraft.api.node.NodeVis;
 import dev.tc4port.thaumcraft.block.entity.AuraNodeBlockEntity;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.api.unification.PollutionMaterials;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -33,7 +34,7 @@ import java.util.List;
  * the focused crystal mode of upstream has no TC4R crystal equivalent yet and
  * is dropped (documented deviation).</p>
  */
-public class EssenceCollectorMachine extends MultiblockControllerMachine {
+public class EssenceCollectorMachine extends AbstractDisplayMultiblockMachine {
 
     private static final float BASIC_SPEED_PER_TICK = 0.025F;
     private static final int NODE_RADIUS = 8;
@@ -165,6 +166,14 @@ public class EssenceCollectorMachine extends MultiblockControllerMachine {
 
     private boolean hasCoil() {
         return getCoilLevel() > 0;
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Heating Coil Level: " + getCoilLevel()));
+        }
     }
 
     private <T> T findPart(Class<T> type) {

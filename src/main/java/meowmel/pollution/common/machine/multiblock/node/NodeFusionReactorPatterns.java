@@ -52,13 +52,12 @@ final class NodeFusionReactorPatterns {
                 .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_1.get()))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.VOID_PRISM.get())
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(16))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(16)))
                 .where('E', Predicates.blocks(GTBlocks.SUPERCONDUCTING_COIL.get()))
                 .where('F', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(5)))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(5)))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
-                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)))
                 .where('H', Predicates.abilities(PartAbility.IMPORT_ITEMS).setExactLimit(1))
                 .build();
     }

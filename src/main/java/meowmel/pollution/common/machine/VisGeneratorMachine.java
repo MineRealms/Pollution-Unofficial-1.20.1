@@ -2,14 +2,16 @@ package meowmel.pollution.common.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import dev.tc4port.thaumcraft.api.aspect.VisChannel;
 import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.api.pollution.PollutionEngine;
+import meowmel.pollution.common.machine.single.PollutionEnergyMachine;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+
+import java.util.List;
 
 /**
  * Vis generator: drains Thaumcraft 4R vis from the surrounding aura, converts it
@@ -28,11 +30,10 @@ import net.minecraft.server.level.ServerLevel;
  * {@code 32/250} vis per tick while IV generates about {@code 8192/250}. The six
  * vis channels are consumed round-robin.</p>
  */
-public class VisGeneratorMachine extends TieredEnergyMachine {
+public class VisGeneratorMachine extends PollutionEnergyMachine {
 
     private final VisChannel[] channels = VisChannel.values();
 
-    private TickableSubscription tickSubscription;
     private int channelCursor;
     private double visBuffer;
 
@@ -46,23 +47,7 @@ public class VisGeneratorMachine extends TieredEnergyMachine {
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            tickSubscription = subscribeServerTick(this::generate);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (tickSubscription != null) {
-            tickSubscription.unsubscribe();
-            tickSubscription = null;
-        }
-    }
-
-    private void generate() {
+    protected void pollutionTick() {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
@@ -106,5 +91,12 @@ public class VisGeneratorMachine extends TieredEnergyMachine {
             remaining -= result;
         }
         return drained;
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        textList.add(Component.literal("Vis Buffer: " + String.format("%.2f", visBuffer)));
+        textList.add(Component.literal("EU per Vis: " + PollutionConfig.VIS_GENERATOR_EU_PER_VIS.get()));
     }
 }

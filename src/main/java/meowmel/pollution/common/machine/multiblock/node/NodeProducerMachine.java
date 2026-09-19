@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -17,12 +16,15 @@ import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.item.PackagedAuraNode;
 import meowmel.pollution.common.item.PollutionItems;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,7 +34,7 @@ import java.util.Random;
  * <p>Upstream placed the node item variants into a GT MetaItem; the port uses
  * the plain {@code packaged_aura_node} item with the same NBT contract.</p>
  */
-public class NodeProducerMachine extends MultiblockControllerMachine {
+public class NodeProducerMachine extends AbstractDisplayMultiblockMachine {
 
     private final Random random = new Random();
 
@@ -169,6 +171,15 @@ public class NodeProducerMachine extends MultiblockControllerMachine {
         return getCoilLevel() > 0;
     }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Progress: " + timer + " / " + duration));
+            textList.add(Component.literal("EU Tier: " + euTier + " | Infused Cost: " + infusedCost + " mB"));
+        }
+    }
+
     private <T> T findPart(Class<T> type) {
         for (IMultiPart part : getParts()) {
             if (type.isInstance(part.self())) {
@@ -242,11 +253,10 @@ public class NodeProducerMachine extends MultiblockControllerMachine {
                         "                    ", "                    ", "                    ", "                    ")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('X', Predicates.blocks(GTBlocks.FUSION_CASING.get())
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
-                .where('O', Predicates.abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                .where('O', Predicates.abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1))
                 .where('I', Predicates.heatingCoils())
                 .where('A', Predicates.blocks(GTBlocks.FUSION_CASING.get()))
                 .where('B', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))

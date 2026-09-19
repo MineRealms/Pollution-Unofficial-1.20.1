@@ -1,17 +1,28 @@
 package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import meowmel.pollution.api.unification.PollutionMaterials;
+import meowmel.pollution.client.gui.MachineGuiWidgets;
 import meowmel.pollution.common.item.bauble.ItemWaterRing;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import java.util.List;
 
 /**
  * Source charge: fills ported source baubles from matching infused fluids.
@@ -38,12 +49,12 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  *       are missing).</li>
  *   <li>The source store NBT key ({@code source}) and the 120000 point cap are
  *       unchanged, as is the 1 point per 1 mB conversion.</li>
- *   <li>The ModularUI screen is not ported (consistent with the other ported
- *       single-block machines); the item slot and the tank are exposed as
+ *   <li>The screen is ported (2026-09-19): the fancy UI shows the tank status
+ *       and exposes the item slot and tank directly; both are also exposed as
  *       input-only capabilities, so they can be loaded with hoppers or pipes.</li>
  * </ul>
  */
-public class SourceChargeMachine extends MetaMachine {
+public class SourceChargeMachine extends MetaMachine implements IFancyUIMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             SourceChargeMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -116,5 +127,31 @@ public class SourceChargeMachine extends MetaMachine {
             return PollutionMaterials.InfusedWater.getFluid(FLUID_PER_OPERATION);
         }
         return FluidStack.EMPTY;
+    }
+
+    // ////////////////////////////////////
+    // ***** UI *****//
+    // ////////////////////////////////////
+
+    @Override
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 150, 84);
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(new ImageWidget(4, 4, 142, 76, GuiTextures.DISPLAY));
+        group.addWidget(new LabelWidget(8, 8, self().getBlockState().getBlock().getDescriptionId()));
+        group.addWidget(new ComponentPanelWidget(8, 20, this::addDisplayText)
+                .textSupplier(isRemote() ? null : this::addDisplayText)
+                .setMaxWidthLimit(132));
+        group.addWidget(MachineGuiWidgets.itemSlot(inventory, 0, 8, 56));
+        group.addWidget(MachineGuiWidgets.fluidTank(tank, 0, 30, 56, 18, 18));
+        return group;
+    }
+
+    public void addDisplayText(List<Component> textList) {
+        FluidStack stored = tank.getFluidInTank(0);
+        String fluidName = stored.isEmpty() ? "-" : stored.getDisplayName().getString();
+        textList.add(Component.literal("Fluid: " + fluidName + " " + stored.getAmount() + " / "
+                + tank.getTankCapacity(0) + " mB"));
+        textList.add(Component.literal("Consumption: 1 mB -> " + SOURCE_PER_OPERATION + " source per tick"));
     }
 }

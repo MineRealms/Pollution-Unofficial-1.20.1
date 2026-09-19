@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -16,10 +15,14 @@ import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.item.PackagedAuraNode;
+import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import java.util.List;
 
 /**
  * Node washer.
@@ -33,7 +36,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * {@code maxInfusedValue} formula) and scrubbing a little flux around
  * itself.</p>
  */
-public class NodeWasherMachine extends MultiblockControllerMachine {
+public class NodeWasherMachine extends AbstractDisplayMultiblockMachine {
 
     private static final int WATER_PER_WASH = 144;
 
@@ -118,6 +121,14 @@ public class NodeWasherMachine extends MultiblockControllerMachine {
         return getCoilLevel() > 0;
     }
 
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Heating Coil Level: " + getCoilLevel()));
+        }
+    }
+
     private <T> T findPart(Class<T> type) {
         for (IMultiPart part : getParts()) {
             if (type.isInstance(part.self())) {
@@ -135,10 +146,10 @@ public class NodeWasherMachine extends MultiblockControllerMachine {
                 .aisle("XXXXXXX", "XSXDDDX", "XEXDDDX", "##XXXXX")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
                 .where('X', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_HOT.get())
-                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))
-                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
+                        .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setExactLimit(1))
+                        .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
                 .where('A', Predicates.blocks(PollutionMagicBlocks.POLYTETRAFLUOROETHYLENE_PIPE.get()))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.AAMINATED_GLASS.get()))
