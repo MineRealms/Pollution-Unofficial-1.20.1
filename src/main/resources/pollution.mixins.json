@@ -8,8 +8,7 @@
   "plugin": "meowmel.pollution.mixin.PollutionMixinPlugin",
   "mixins": [
     "jei.FluidHelperCompatMixin",
-    "jei.LdlibRecipeSlotTooltipMixin",
-    "jei.RecipeSlotTooltipMixin"
+    "jei.LdlibRecipeSlotTooltipMixin"
   ],
   "injectors": {
     "defaultRequire": 1

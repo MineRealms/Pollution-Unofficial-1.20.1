@@ -16,7 +16,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -63,27 +62,6 @@ public final class PollutionJeiPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "jei_plugin");
-    }
-
-    /**
-     * Debug-only handle consumed by {@code JeiDebugDumper}. It is only ever
-     * populated while JEI is loaded, so it stays null in runs without JEI and
-     * the dumper never touches it in that case.
-     */
-    private static volatile IJeiRuntime runtime;
-
-    @Override
-    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-        runtime = jeiRuntime;
-    }
-
-    @Override
-    public void onRuntimeUnavailable() {
-        runtime = null;
-    }
-
-    public static IJeiRuntime getRuntime() {
-        return runtime;
     }
 
     @Override
