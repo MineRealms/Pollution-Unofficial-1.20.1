@@ -8,12 +8,17 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
+import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 /**
  * Shared LDLib / GregTech widgets for the ported machine screens.
@@ -71,5 +76,26 @@ public final class MachineGuiWidgets {
         SlotWidget widget = new SlotWidget(handler, slot, x, y, true, true);
         widget.setBackground(GuiTextures.SLOT);
         return widget;
+    }
+
+    /**
+     * GT-style status panel: DISPLAY background, a title line, stacked text
+     * lines and a vertical fill bar on the right. Used by the mana / vis
+     * hatches whose buffers are not Forge fluids and therefore cannot use a
+     * {@link TankWidget}.
+     */
+    public static WidgetGroup infoPanel(int width, int height, Supplier<String> title,
+                                        List<Supplier<String>> lines, DoubleSupplier fillFraction) {
+        WidgetGroup group = new WidgetGroup(0, 0, width, height);
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        group.addWidget(new ImageWidget(4, 4, width - 28, height - 8, GuiTextures.DISPLAY));
+        group.addWidget(new LabelWidget(8, 8, title));
+        int lineY = 20;
+        for (Supplier<String> line : lines) {
+            group.addWidget(new LabelWidget(8, lineY, line));
+            lineY += 12;
+        }
+        group.addWidget(fractionBar(fillFraction, width - 22, 4, 14, height - 8));
+        return group;
     }
 }

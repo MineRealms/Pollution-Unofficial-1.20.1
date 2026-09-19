@@ -2,6 +2,7 @@ package meowmel.pollution.common.machine.part.mana;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import meowmel.pollution.api.capability.IManaHatch;
@@ -26,6 +27,7 @@ public class NotifiableManaContainer extends MachineTrait implements IManaHatch 
             NotifiableManaContainer.class);
 
     @Persisted
+    @DescSynced
     protected long manaStored;
 
     protected final long manaCapacity;

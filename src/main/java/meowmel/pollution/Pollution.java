@@ -80,6 +80,8 @@ public final class Pollution {
                     "Drains 0.05 Vis/s from the Thaumcraft 4R vis network");
             provider.add("pollution.machine.vis_hatch.tooltip.buffer",
                     "Stores %s Vis per successful drain");
+            provider.add("pollution.machine.vis_hatch.gui.amount",
+                    "Vis: %s / %s");
             provider.add("pollution.machine.infused_fluid_hatch.tooltip",
                     "Stores infused fluids and supplies them to magic multiblock recipes");
             provider.add("pollution.machine.flux_muffler.tooltip.recovery",
@@ -340,6 +342,8 @@ public final class Pollution {
             provider.add("pollution.machine.endoflame_array.display.output", "Actual mana output: %s Mana/t");
             provider.add("pollution.machine.mana_generator.tooltip", "Generates EU from a nearby Botania mana pool");
             provider.add("pollution.machine.mana_hatch.capacity", "Mana buffer: %s Mana");
+            provider.add("pollution.machine.mana_hatch.gui.amount", "Mana: %s / %s");
+            provider.add("pollution.machine.mana_hatch.gui.rate", "Transfer: %s Mana/t");
             provider.add("pollution.machine.mana_hatch.input_rate",
                     "Supplies the multiblock: up to %s Mana/t (%s, %sA); receives Botania mana bursts");
             provider.add("pollution.machine.mana_hatch.output_rate",

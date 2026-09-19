@@ -3,11 +3,17 @@ package meowmel.pollution.common.machine.part;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import dev.tc4port.thaumcraft.api.aspect.VisChannel;
 import meowmel.pollution.api.capability.IVisHatch;
+import meowmel.pollution.client.gui.MachineGuiWidgets;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+
+import java.util.List;
 
 /**
  * Vis hatch: a buffered vis source for magic multiblocks.
@@ -27,6 +33,7 @@ public class VisHatchMachine extends TieredPartMachine implements IVisHatch {
 
     private final VisChannel[] channels = VisChannel.values();
 
+    @DescSynced
     private int visStored;
 
     private TickableSubscription tickSubscription;
@@ -103,5 +110,21 @@ public class VisHatchMachine extends TieredPartMachine implements IVisHatch {
             markDirty();
         }
         return true;
+    }
+
+    // ////////////////////////////////////
+    // ***** UI *****//
+    // ////////////////////////////////////
+
+    /**
+     * GT-style status panel; vis is not a Forge fluid, so no tank widget.
+     */
+    @Override
+    public Widget createUIWidget() {
+        return MachineGuiWidgets.infoPanel(150, 56,
+                () -> self().getBlockState().getBlock().getDescriptionId(),
+                List.of(() -> Component.translatable("pollution.machine.vis_hatch.gui.amount",
+                        String.format("%,d", getVisStore()), String.format("%,d", getMaxVisStore())).getString()),
+                () -> getMaxVisStore() <= 0 ? 0.0D : (double) getVisStore() / (double) getMaxVisStore());
     }
 }
