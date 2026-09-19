@@ -5,8 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "pollution.refmap.json",
   "priority": 900,
+  "plugin": "meowmel.pollution.mixin.PollutionMixinPlugin",
   "mixins": [
-    "jei.FluidHelperCompatMixin"
+    "jei.FluidHelperCompatMixin",
+    "jei.RecipeSlotTooltipMixin"
   ],
   "injectors": {
     "defaultRequire": 1
