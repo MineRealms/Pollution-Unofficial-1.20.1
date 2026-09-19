@@ -22,6 +22,12 @@ public final class PollutionMaterials {
     public static Material InfusedEntropy;
     public static Material InfusedOrder;
 
+    // 曼苏斯/精灵流体（ElementMaterials 第二批）
+    public static Material WhiteMansus;
+    public static Material BlackMansus;
+    public static Material Elven;
+    public static Material Starrymansus;
+
     // ---- 六种魔法合金 / six aspect alloys ----------------------------------
     // Upstream: api/unification/materials/FirstDegreeMaterials.java
     public static Material Aertitanium;
@@ -38,6 +44,11 @@ public final class PollutionMaterials {
     public static Material MagicalSuperconductiveLiquid;
     public static Material BasicThaumicSuperconductor;
     public static Material AdvancedThaumicSuperconductor;
+
+    // 灵气/精灵链（FirstDegreeMaterials 第三批）
+    public static Material RichAura;
+    public static Material ErichAura;
+    public static Material ElvenElementium;
 
     // 感知/缚束/枢金属（ElementMaterials 第二批）
     public static Material SentientMetal;

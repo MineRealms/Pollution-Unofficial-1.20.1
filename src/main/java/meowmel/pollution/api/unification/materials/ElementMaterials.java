@@ -19,7 +19,8 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_SMALL_GEAR;
 
 /**
- * The six base aspect materials plus the four nexus/sentience metals.
+ * The six base aspect materials, the four mana fluids and the four
+ * nexus/sentience metals.
  *
  * <p>Ported from upstream {@code meowmel.pollution.api.unification.materials.ElementMaterials}.
  * Colors, shapes, icon set and element symbols are unchanged.</p>
@@ -27,7 +28,14 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
  * <p>Upstream-only flag {@code GTQTMaterialFlags.GENERATE_BOULE} has no equivalent in
  * GregTech CEu Modern and is intentionally dropped (see MIGRATION_TRACKER).</p>
  *
- * <p>The second batch ({@code SentientMetal}, {@code BindingMetal},
+ * <p>The second batch ({@code WhiteMansus}, {@code BlackMansus}, {@code Elven},
+ * {@code Starrymansus}) are the mana fluids consumed by the MANA_TO_EU fuels
+ * and by the botania/magic chains. Upstream ids {@code Blackmansus} and
+ * {@code Elven} contain capitals and are lowercased for 1.20.1
+ * ResourceLocations. The custom elements Wma/Bma/El/St are ported in
+ * {@link PollutionElements}.</p>
+ *
+ * <p>The third batch ({@code SentientMetal}, {@code BindingMetal},
  * {@code ExistingNexus}, {@code FadingNexus}) was added to unblock the
  * forge-alchemy stone upgrades, the node-fusion fuels and the magic-GCYM
  * advanced components. Upstream relied on {@code .ingot()} implying a dust
@@ -86,6 +94,38 @@ public final class ElementMaterials {
                 .flags(CRYSTALLIZABLE)
                 .iconSet(MaterialIconSet.SHINY)
                 .element(PollutionElements.Ord)
+                .buildAndRegister();
+
+        // 白曼苏斯 WhiteMansus
+        PollutionMaterials.WhiteMansus = new Material.Builder(id("whitemansus"))
+                .color(0xEFF0FF)
+                .fluid()
+                .iconSet(MaterialIconSet.SHINY)
+                .element(PollutionElements.Wma)
+                .buildAndRegister();
+
+        // 黑曼苏斯 BlackMansus（上游 id "Blackmansus" 含大写，1.20.1 要求全小写）
+        PollutionMaterials.BlackMansus = new Material.Builder(id("blackmansus"))
+                .color(0x606060)
+                .fluid()
+                .iconSet(MaterialIconSet.SHINY)
+                .element(PollutionElements.Bma)
+                .buildAndRegister();
+
+        // 精灵 Elven（上游 id "Elven" 含大写，1.20.1 要求全小写）
+        PollutionMaterials.Elven = new Material.Builder(id("elven"))
+                .color(0xEE30A7)
+                .fluid()
+                .iconSet(MaterialIconSet.SHINY)
+                .element(PollutionElements.El)
+                .buildAndRegister();
+
+        // 星辰曼苏斯 Starrymansus
+        PollutionMaterials.Starrymansus = new Material.Builder(id("starrymansus"))
+                .color(0xFFF6FF)
+                .fluid()
+                .iconSet(MaterialIconSet.BRIGHT)
+                .element(PollutionElements.St)
                 .buildAndRegister();
 
         // 感知金属 SentientMetal

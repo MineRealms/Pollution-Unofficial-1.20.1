@@ -43,7 +43,8 @@ public final class PollutionMaterialEvents {
         meowmel.pollution.api.unification.materials.MaterialPropertyAddition.init();
         PollutionAspectMapping.init();
         TCAspectAddons.init();
-        Pollution.LOGGER.info("Registered Pollution materials: 6 base aspects, 4 nexus metals, 34 compound aspects, "
-                + "6 aspect alloys, 11 ore materials, kqt/superconductor/battery/filth/hachimi intermediates");
+        Pollution.LOGGER.info("Registered Pollution materials: 6 base aspects, 4 mana fluids, 4 nexus metals, "
+                + "34 compound aspects, 6 aspect alloys, 11 ore materials, "
+                + "kqt/superconductor/battery/filth/hachimi intermediates");
     }
 }

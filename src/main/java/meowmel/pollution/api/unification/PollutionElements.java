@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
  *
  * <p>Ported from the 1.12.2 project {@code meowmel.pollution.api.unification.Elements}
  * (symbols, proton/neutron counts and names match the original). The upstream
- * file additionally declared {@code Wma}/{@code Bma}/{@code El}/{@code St}
- * (White/Blackmansus, Elven, Starrymansus); those materials stay substituted by
- * {@code InfusedAura} in the port and their elements are not ported.</p>
+ * file also declared {@code Wma}/{@code Bma}/{@code El}/{@code St}
+ * (White/Blackmansus, Elven, Starrymansus); those were ported together with
+ * their materials, and no symbol collides with {@code GTElements}.</p>
  */
 public final class PollutionElements {
 
@@ -21,8 +21,12 @@ public final class PollutionElements {
     public static final Element Ter = new Element(1, 4, -1, null, "Earth", "Ter", false);
     public static final Element Pe = new Element(1, 5, -1, null, "Entropy", "Pe", false);
     public static final Element Ord = new Element(1, 6, -1, null, "Order", "Ord", false);
-    // 上游: Kqt/Sen/Bin/Exn/Fan（元素序号沿用上游 11/14/15/16/17）
+    // 上游: Wma/Bma/Kqt/El/St/Sen/Bin/Exn/Fan（元素序号沿用上游 9-17）
+    public static final Element Wma = new Element(1, 9, -1, null, "Whitemansus", "Wma", false);
+    public static final Element Bma = new Element(1, 10, -1, null, "Blackmansus", "Bma", false);
     public static final Element Kqt = new Element(1, 11, -1, null, "Keqinggold", "Kqt", false);
+    public static final Element El = new Element(1, 12, -1, null, "Elven", "El", false);
+    public static final Element St = new Element(1, 13, -1, null, "Starrymansus", "St", false);
     public static final Element Sen = new Element(1, 14, -1, null, "Sentience", "Sen", false);
     public static final Element Bin = new Element(1, 15, -1, null, "Binding", "Bin", false);
     public static final Element Exn = new Element(1, 16, -1, null, "ExistingNexus", "Exn", false);

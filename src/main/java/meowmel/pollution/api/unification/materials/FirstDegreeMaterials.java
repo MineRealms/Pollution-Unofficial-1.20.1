@@ -4,12 +4,14 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.unification.PollutionElements;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.DECOMPOSITION_BY_CENTRIFUGING;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_DENSE;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_GEAR;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_LONG_ROD;
@@ -60,6 +62,13 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Tin;
  *   <li>The superconductors carry {@code GENERATE_PLATE} because the battery
  *       chain consumes their plate form.</li>
  * </ul>
+ *
+ * <p>The third batch ports {@code RichAura}, {@code ErichAura} and
+ * {@code ElvenElementium} (colors, components and flags unchanged).
+ * {@code ElvenElementium}'s upstream {@code .ingot()} implied a dust in 1.12,
+ * so {@code .dust()} is requested explicitly here: the upstream
+ * {@code ForgeAlchemyRecipes} consumes the dust form (see the KQGold/CrudeLk99
+ * note above) and {@code DECOMPOSITION_BY_CENTRIFUGING} needs a dust input.</p>
  */
 public final class FirstDegreeMaterials {
 
@@ -181,6 +190,35 @@ public final class FirstDegreeMaterials {
                 .iconSet(MaterialIconSet.BRIGHT)
                 .flags(GENERATE_PLATE)
                 .cableProperties(GTValues.V[8], 8, 0, true)
+                .buildAndRegister();
+
+        // ---- 灵气/精灵链（第三轮移植）---------------------------------------
+
+        // 富灵气 RichAura
+        PollutionMaterials.RichAura = new Material.Builder(id("rich_aura"))
+                .color(0xCD6600)
+                .fluid()
+                .iconSet(MaterialIconSet.SHINY)
+                .buildAndRegister();
+
+        // 浓灵气 ErichAura
+        PollutionMaterials.ErichAura = new Material.Builder(id("erich_aura"))
+                .color(0xCD0000)
+                .fluid()
+                .iconSet(MaterialIconSet.SHINY)
+                .buildAndRegister();
+
+        // 精灵元素 ElvenElementium
+        // 上游 .ingot() 在 1.12 隐含 dust，本移植版显式补上（上游
+        // ForgeAlchemyRecipes 消耗其 dust，且 DECOMPOSITION_BY_CENTRIFUGING 需要 dust 输入）
+        PollutionMaterials.ElvenElementium = new Material.Builder(id("elven_elementium"))
+                .color(0xEE6AA7)
+                .ingot().dust().fluid().ore()
+                .components(GTMaterials.Iron, 4, PollutionMaterials.Elven, 1)
+                .iconSet(MaterialIconSet.SHINY)
+                .flags(GENERATE_DENSE, GENERATE_FRAME, GENERATE_PLATE, GENERATE_ROTOR, GENERATE_ROD,
+                        GENERATE_LONG_ROD, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_ROUND,
+                        DECOMPOSITION_BY_CENTRIFUGING)
                 .buildAndRegister();
     }
 
