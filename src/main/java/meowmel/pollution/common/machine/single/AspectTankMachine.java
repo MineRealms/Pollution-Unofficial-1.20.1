@@ -34,7 +34,7 @@ import dev.tc4port.thaumcraft.api.essentia.EssentiaContainerApi;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaSource;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransport;
-import meowmel.pollution.client.gui.MachineGuiWidgets;
+import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.lib.GTEssentiaHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

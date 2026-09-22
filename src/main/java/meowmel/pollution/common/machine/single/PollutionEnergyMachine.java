@@ -14,7 +14,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import meowmel.pollution.client.gui.MachineGuiWidgets;
+import meowmel.pollution.common.gui.MachineGuiWidgets;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;

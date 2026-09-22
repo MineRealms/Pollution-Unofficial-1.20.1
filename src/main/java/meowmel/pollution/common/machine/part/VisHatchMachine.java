@@ -7,7 +7,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import dev.tc4port.thaumcraft.api.aspect.VisChannel;
 import meowmel.pollution.api.capability.IVisHatch;
-import meowmel.pollution.client.gui.MachineGuiWidgets;
+import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

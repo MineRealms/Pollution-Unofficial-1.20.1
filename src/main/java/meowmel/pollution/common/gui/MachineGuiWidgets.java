@@ -1,4 +1,4 @@
-package meowmel.pollution.client.gui;
+package meowmel.pollution.common.gui;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;

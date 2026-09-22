@@ -34,7 +34,7 @@ import meowmel.pollution.api.capability.ITarotHatch;
 import meowmel.pollution.api.capability.IVisHatch;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
-import meowmel.pollution.client.gui.MachineGuiWidgets;
+import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;

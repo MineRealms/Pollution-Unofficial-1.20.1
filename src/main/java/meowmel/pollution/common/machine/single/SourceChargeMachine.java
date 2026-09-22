@@ -15,7 +15,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import meowmel.pollution.api.unification.PollutionMaterials;
-import meowmel.pollution.client.gui.MachineGuiWidgets;
+import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.item.bauble.ItemWaterRing;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

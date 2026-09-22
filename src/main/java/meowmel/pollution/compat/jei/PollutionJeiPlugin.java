@@ -87,6 +87,21 @@ public final class PollutionJeiPlugin implements IModPlugin {
         addStack(machineCatalysts, machineStack(PollutionMachines.FLUX_SCRUBBER, 4));
         addStack(machineCatalysts, machineStack(PollutionMachines.FLUX_FUEL_CELL, 4));
         machineCatalysts.add(new ItemStack(PollutionMiscBlocks.MINERAL_EXTRACTOR.get()));
+        addStack(machineCatalysts, singleStack(PollutionMachines.NODE_PRODUCER));
+        addStack(machineCatalysts, machineStack(PollutionMachines.SMALL_NODE_GENERATOR, GTValues.LuV));
+        addStack(machineCatalysts, singleStack(PollutionMachines.NODE_WASHER));
+        addStack(machineCatalysts, singleStack(PollutionMachines.NODE_BLAST_FURNACE));
+        addStack(machineCatalysts, singleStack(PollutionMachines.NODE_FUSION_REACTOR_LUV));
+        addStack(machineCatalysts, singleStack(PollutionMachines.CENTRAL_VIS_TOWER));
+        addStack(machineCatalysts, singleStack(PollutionMachines.ESSENCE_COLLECTOR));
+        addStack(machineCatalysts, singleStack(PollutionMachines.SOURCE_CHARGE));
+        addStack(machineCatalysts, machineStack(PollutionMachines.MANA_GENERATOR, GTValues.LV));
+        addStack(machineCatalysts, singleStack(PollutionMachines.MANA_PLATE));
+        addStack(machineCatalysts, singleStack(PollutionMachines.ENDOFLAME_ARRAY));
+        addStack(machineCatalysts, singleStack(PollutionMachines.MEGA_MANA_TURBINE));
+        addStack(machineCatalysts, singleStack(PollutionMachines.MAGIC_LARGE_TURBINE));
+        addStack(machineCatalysts, singleStack(PollutionMachines.MAGIC_MEGA_TURBINE));
+        addStack(machineCatalysts, singleStack(PollutionMachines.MULTI_DAN_DE_LIFE_ON));
         if (!machineCatalysts.isEmpty()) {
             registration.addRecipeCatalysts(PollutionInfoCategory.RECIPE_TYPE,
                     machineCatalysts.toArray(new ItemStack[0]));
@@ -141,6 +156,66 @@ public final class PollutionJeiPlugin implements IModPlugin {
         addInfo(recipes, new ItemStack(PollutionMiscBlocks.MINERAL_EXTRACTOR.get()), List.of(
                 Component.literal("用混沌与魔法源质开采周围矿物"),
                 Component.literal("右键打开界面，可切换实体矿/虚拟产物")));
+
+        addInfo(recipes, singleStack(PollutionMachines.NODE_PRODUCER), List.of(
+                Component.literal("节点制造：每 tick 消耗能源仓电压 EU + 灌注能量流体"),
+                Component.literal("灌注能量 = 144 × 2^(EU等级-4) mB，耗时 = ceil(30/(EU等级-3)) tick"),
+                Component.literal("产出随机封装灵气节点：等级 普通60%/凋零20%/明亮5%/苍白15%"),
+                Component.literal("类型 标准60%/不祥10%/纯净10%/震荡15%/贪婪5%"),
+                Component.literal("要素为高斯分布（上限1000）：火受线圈等级加成、秩序受EU等级加成")));
+
+        addInfo(recipes, machineStack(PollutionMachines.SMALL_NODE_GENERATOR, GTValues.LuV), List.of(
+                Component.literal("以封装灵气节点为燃料发电，槽内无节点即停机"),
+                Component.literal("功率 = 8192 × 节点等级/类型/要素倍率 × 机器等级"),
+                Component.literal("内部缓存 V[等级]×64，1A 输出，LuV..UHV")));
+
+        addInfo(recipes, singleStack(PollutionMachines.NODE_WASHER), List.of(
+                Component.literal("节点清洗：消耗 EU + 灌注之水"),
+                Component.literal("每个工序清除 线圈等级 × 能量等级 × 25 点熵要素"),
+                Component.literal("同时净化自身周围少量咒波")));
+
+        addInfo(recipes, singleStack(PollutionMachines.NODE_BLAST_FURNACE), List.of(
+                Component.literal("以封装节点为源质催化剂运行高炉/炼金配方，按线圈温度工作"),
+                Component.literal("每 30 秒消耗 1 个节点"),
+                Component.literal("节点秩序/熵要素 ×10 转化为灌注光/灌注暗")));
+
+        addInfo(recipes, singleStack(PollutionMachines.NODE_FUSION_REACTOR_LUV), List.of(
+                Component.literal("节点聚变：流体进、流体出（LuV/ZPM/UV 三档）"),
+                Component.literal("支持并行与洁净度判定，具体配方见节点聚变分类")));
+
+        addInfo(recipes, singleStack(PollutionMachines.CENTRAL_VIS_TOWER), List.of(
+                Component.literal("抽取 8 格内节点超出基础值的 vis → 灌注光"),
+                Component.literal("洗掉周围 flux → 灌注暗"),
+                Component.literal("运行消耗 EU + 少量灌注灵气（Botania 维护费替代）")));
+
+        addInfo(recipes, singleStack(PollutionMachines.SOURCE_CHARGE), List.of(
+                Component.literal("每 tick 消耗 1 mB 对应源质流体"),
+                Component.literal("为饰品补充 1 点储量（源质充能机）")));
+
+        addInfo(recipes, machineStack(PollutionMachines.MANA_GENERATOR, GTValues.LV), List.of(
+                Component.literal("接收 Botania 魔力并按 1:1 存为 EU 输出"),
+                Component.literal("容量 = V[等级]×64；火花/脉冲或相邻魔力仓均可充能")));
+
+        addInfo(recipes, singleStack(PollutionMachines.MANA_PLATE), List.of(
+                Component.literal("消耗魔力加速上方 11×11 区域内的 GT 机器"),
+                Component.literal("速度 = 魔力输入池仓等级；每台机器 2^(速度-1) 魔力/tick")));
+
+        addInfo(recipes, singleStack(PollutionMachines.ENDOFLAME_ARRAY), List.of(
+                Component.literal("末影之焰花 + 熔炉燃料 → 魔力（花不消耗）"),
+                Component.literal("产率 1.5 魔力 / 燃烧tick / 朵花，输出到魔力输出池仓")));
+
+        addInfo(recipes, singleStack(PollutionMachines.MEGA_MANA_TURBINE), List.of(
+                Component.literal("烧 7 种魔力流体（100 mB → -8192 EU/t）"),
+                Component.literal("催化剂对提升输出上限：黑白曼苏斯/刻金+超次元秘银/感知+缚束金属"),
+                Component.literal("并行随连续运行从 1 爬到 32768")));
+
+        addInfo(recipes, singleStack(PollutionMachines.MAGIC_LARGE_TURBINE), List.of(
+                Component.literal("烧 MAGIC_TURBINE_FUELS 燃料表：要素流体/化合物/两种推进剂"),
+                Component.literal("结构需 1 转子支架 + 1 魔力输出仓 + 1 维护仓（空支架即可运行）")));
+
+        addInfo(recipes, singleStack(PollutionMachines.MULTI_DAN_DE_LIFE_ON), List.of(
+                Component.literal("31×31 细胞棋盘上运行康威生命游戏"),
+                Component.literal("死亡细胞按年龄入账；模式0输出EU、模式1输出魔力流体")));
 
         return recipes;
     }
