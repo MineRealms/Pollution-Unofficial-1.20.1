@@ -127,11 +127,11 @@ public final class PollutionJeiPlugin implements IModPlugin {
         List<PollutionInfoRecipe> recipes = new ArrayList<>();
 
         addInfo(recipes, machineStack(PollutionMachines.VIS_GENERATOR, 1), List.of(
-                Component.literal("抽取灵气转化�?EU 与工业污�?),
+                Component.literal("抽取灵气转化为 EU 与工业污染"),
                 Component.literal("输出随灵气缓冲量提升")));
 
         addInfo(recipes, machineStack(PollutionMachines.FLUX_SCRUBBER, 4), List.of(
-                Component.literal("消�?EU 清理 16 格内的咒�?),
+                Component.literal("消耗 EU 清理 16 格内的咒波"),
                 Component.literal("降低灵气污染")));
 
         addInfo(recipes, machineStack(PollutionMachines.FLUX_FUEL_CELL, 4), List.of(
@@ -139,8 +139,8 @@ public final class PollutionJeiPlugin implements IModPlugin {
                 Component.literal("咒波超过上限时会爆炸")));
 
         addInfo(recipes, new ItemStack(PollutionMiscBlocks.MINERAL_EXTRACTOR.get()), List.of(
-                Component.literal("用混沌与魔法源质开采周围矿�?),
-                Component.literal("右键打开界面，可切换实体�?虚拟产物")));
+                Component.literal("用混沌与魔法源质开采周围矿物"),
+                Component.literal("右键打开界面，可切换实体矿/虚拟产物")));
 
         return recipes;
     }
