@@ -45,6 +45,18 @@ public final class PollutionGTAddon implements IGTAddon {
         return Pollution.MOD_ID;
     }
 
+    /**
+     * The port registers machines, hatches and recipes up to UHV (and a few
+     * UEV-tier pool hatches). GregTech only registers its high-tier content
+     * (UHV+ components, hulls, muffler hatches, ...) when an addon declares
+     * this, otherwise {@code GTCEuAPI.isHighTier()} stays false and the
+     * UHV-tier recipes resolve to empty components and are skipped.
+     */
+    @Override
+    public boolean requiresHighTier() {
+        return true;
+    }
+
     @Override
     public void registerElements() {
         PollutionElements.init();
