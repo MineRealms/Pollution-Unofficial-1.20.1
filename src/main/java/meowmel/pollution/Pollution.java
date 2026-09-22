@@ -411,6 +411,70 @@ public final class Pollution {
                     "Burns packaged aura nodes to generate EU; the multiplier depends on the node's properties and the machine tier");
             provider.add("pollution.machine.source_charge.tooltip",
                     "Consumes 1 mB/t of the matching aspect fluid to restore 1 charge to the bauble");
+            provider.add("pollution.machine.node_producer.tooltip.1",
+                    "Creates packaged aura nodes from energy essence fluid");
+            provider.add("pollution.machine.node_producer.tooltip.2",
+                    "Per tick it drains the energy hatch's voltage in EU; each node needs 144 × 2^(EU tier - 4) mB of Infused Energy");
+            provider.add("pollution.machine.node_producer.tooltip.3",
+                    "Base creation time is 30 s; every tier above EV shortens it (ceil(30 / (tier - 3)) ticks)");
+            provider.add("pollution.machine.node_producer.tooltip.4",
+                    "Cutting the energy essence supply mid-process aborts the node and wastes the progress");
+            provider.add("pollution.machine.node_producer.tooltip.5",
+                    "Higher coil tiers raise the node's Ignis value, higher EU tiers raise its Ordo value");
+            provider.add("pollution.machine.node_producer_duration", "Creation time per node: %s");
+            provider.add("pollution.machine.node_producer_infusedcost", "Energy essence per tick: %s");
+            provider.add("pollution.machine.node_washer.tooltip.1",
+                    "Washes packaged aura nodes in place");
+            provider.add("pollution.machine.node_washer.tooltip.2",
+                    "Consumes EU and Infused Water to strip one batch of Entropy (coil tier × energy tier × 25)");
+            provider.add("pollution.machine.node_washer.tooltip.3",
+                    "Also scrubs a little flux around the machine");
+            provider.add("pollution.machine.node_washer.tooltip.4",
+                    "Process durations are random; losing power mid-operation wastes the batch");
+            provider.add("pollution.machine.node_blast_furnace.tooltip.1",
+                    "Runs blast furnace and forge alchemy recipes, gated by the coil temperature");
+            provider.add("pollution.machine.node_blast_furnace.tooltip.2",
+                    "Uses packaged aura nodes as an essentia catalyst, consuming one node every 30 seconds");
+            provider.add("pollution.machine.node_blast_furnace.tooltip.3",
+                    "Converts the node's Ordo/Perditio essence into Infused Light/Dark at ×10");
+            provider.add("pollution.machine.node_blast_furnace.tooltip.4",
+                    "Interrupting the node supply pauses the recipes");
+            provider.add("pollution.machine.node_fusion_reactor.tooltip.1",
+                    "Node fusion: fluids in, fluids out (LuV / ZPM / UV)");
+            provider.add("pollution.machine.node_fusion_reactor.tooltip.2",
+                    "Supports parallels and the clean-vis check");
+            provider.add("pollution.machine.node_fusion_reactor.tooltip.3",
+                    "See the Node Fusion recipe category for the recipes");
+            provider.add("pollution.machine.central_vis_tower.tooltip.1",
+                    "Drains the excess vis of nearby nodes into Infused Light");
+            provider.add("pollution.machine.central_vis_tower.tooltip.2",
+                    "Scrubs surrounding flux into Infused Dark");
+            provider.add("pollution.machine.central_vis_tower.tooltip.3",
+                    "Upkeep: EU plus a small amount of Infused Aura (replaces the Botania mana upkeep)");
+            provider.add("pollution.machine.central_vis_tower.tooltip.4",
+                    "Structure needs 3..8 output fluid hatches and 1 input energy hatch");
+            provider.add("pollution.machine.mana_plate.tooltip.1",
+                    "Consumes mana to accelerate GT machines above the 11×11 plate");
+            provider.add("pollution.machine.mana_plate.tooltip.2",
+                    "Speed = mana pool hatch tier; each machine costs 2^(speed-1) mana per tick");
+            provider.add("pollution.machine.endoflame_array.tooltip.1",
+                    "Endoflame flowers + furnace fuels → mana (the flowers are not consumed)");
+            provider.add("pollution.machine.endoflame_array.tooltip.2",
+                    "1.5 mana per burn tick per flower, output into a mana output pool hatch");
+            provider.add("pollution.machine.mega_mana_turbine.tooltip.1",
+                    "Burns the 7 mana fluids (100 mB → -8192 EU/t)");
+            provider.add("pollution.machine.mega_mana_turbine.tooltip.2",
+                    "Catalyst pairs raise the output cap (black/white mansus, engraved gold + hyperdimensional silver, sentient + binding metal)");
+            provider.add("pollution.machine.mega_mana_turbine.tooltip.3",
+                    "Parallels ramp from 1 to 32768 while the machine runs continuously");
+            provider.add("pollution.machine.magic_large_turbine.tooltip.1",
+                    "Burns the MAGIC_TURBINE_FUELS map: aspect fluids, compounds and the two propellants");
+            provider.add("pollution.machine.magic_large_turbine.tooltip.2",
+                    "Structure: 1 rotor holder + 1 mana output hatch + 1 maintenance hatch (an empty rotor holder is enough)");
+            provider.add("pollution.machine.pollution_multi_dan_de_life_on.tooltip.1",
+                    "Runs Conway's Game of Life on the 31×31 cell board above the controller");
+            provider.add("pollution.machine.pollution_multi_dan_de_life_on.tooltip.2",
+                    "Dead cells are banked by age; mode 0 outputs EU, mode 1 outputs mana fluid");
             provider.add("pollution.machine.tarot_hatch.tooltip.1",
                     "Insert one Major Arcana tarot card to authorize the corresponding ritual recipe");
             provider.add("pollution.machine.tarot_hatch.tooltip.2",

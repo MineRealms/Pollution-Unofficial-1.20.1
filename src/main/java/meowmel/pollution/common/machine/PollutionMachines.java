@@ -624,6 +624,12 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(NodeProducerMachine::createPattern)
                 .simpleModel(model("node_producer"))
+                .tooltips(
+                        Component.translatable("pollution.machine.node_producer.tooltip.1"),
+                        Component.translatable("pollution.machine.node_producer.tooltip.2"),
+                        Component.translatable("pollution.machine.node_producer.tooltip.3"),
+                        Component.translatable("pollution.machine.node_producer.tooltip.4"),
+                        Component.translatable("pollution.machine.node_producer.tooltip.5"))
                 .register();
 
         LARGE_NODE_GENERATOR = PollutionGTAddon.REGISTRATE
@@ -640,10 +646,20 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(NodeWasherMachine::createPattern)
                 .simpleModel(model("node_washer"))
+                .tooltips(
+                        Component.translatable("pollution.machine.node_washer.tooltip.1"),
+                        Component.translatable("pollution.machine.node_washer.tooltip.2"),
+                        Component.translatable("pollution.machine.node_washer.tooltip.3"),
+                        Component.translatable("pollution.machine.node_washer.tooltip.4"))
                 .register();
 
         NODE_BLAST_FURNACE = magicMultiblock("node_blast_furnace", "Node Blast Furnace",
                 NodeBlastFurnaceMachine::new, NodeBlastFurnaceMachine::createPattern,
+                new Component[] {
+                        Component.translatable("pollution.machine.node_blast_furnace.tooltip.1"),
+                        Component.translatable("pollution.machine.node_blast_furnace.tooltip.2"),
+                        Component.translatable("pollution.machine.node_blast_furnace.tooltip.3"),
+                        Component.translatable("pollution.machine.node_blast_furnace.tooltip.4") },
                 GTRecipeTypes.BLAST_RECIPES, PORecipeMaps.FORGE_ALCHEMY_RECIPES);
 
         NODE_FUSION_REACTOR_LUV = fusionReactor("luv_node_fusion_reactor", "LuV Node Fusion Reactor", 6);
@@ -656,6 +672,11 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(CentralVisTowerMachine::createPattern)
                 .simpleModel(model("central_vis_tower"))
+                .tooltips(
+                        Component.translatable("pollution.machine.central_vis_tower.tooltip.1"),
+                        Component.translatable("pollution.machine.central_vis_tower.tooltip.2"),
+                        Component.translatable("pollution.machine.central_vis_tower.tooltip.3"),
+                        Component.translatable("pollution.machine.central_vis_tower.tooltip.4"))
                 .register();
 
         GT_ESSENCE_SMELTER = PollutionGTAddon.REGISTRATE
@@ -697,6 +718,9 @@ public final class PollutionMachines {
 
         MAGIC_LARGE_TURBINE = magicMultiblock("magic_large_turbine", "Magic Large Turbine",
                 MagicLargeTurbineMachine::new, MagicLargeTurbineMachine::createPattern,
+                new Component[] {
+                        Component.translatable("pollution.machine.magic_large_turbine.tooltip.1"),
+                        Component.translatable("pollution.machine.magic_large_turbine.tooltip.2") },
                 PORecipeMaps.MAGIC_TURBINE_FUELS);
 
         MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
@@ -709,6 +733,9 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(ManaPlateMachine::createPattern)
                 .simpleModel(model("mana_plate"))
+                .tooltips(
+                        Component.translatable("pollution.machine.mana_plate.tooltip.1"),
+                        Component.translatable("pollution.machine.mana_plate.tooltip.2"))
                 .register();
 
         MANA_PETAL_APOTHECARY = magicMultiblock("mana_petal_apothecary", "Mana Petal Apothecary",
@@ -749,6 +776,9 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .pattern(EndoflameArrayMachine::createPattern)
                 .simpleModel(model("endoflame_array"))
+                .tooltips(
+                        Component.translatable("pollution.machine.endoflame_array.tooltip.1"),
+                        Component.translatable("pollution.machine.endoflame_array.tooltip.2"))
                 .register();
 
         MANA_INFUSION_REACTOR = magicMultiblock("mana_infusion_reactor", "Mana Infusion Reactor",
@@ -763,6 +793,10 @@ public final class PollutionMachines {
                 .recipeTypes(BotaniaRecipeMaps.MANA_TO_EU)
                 .pattern(MegaManaTurbineMachine::createPattern)
                 .simpleModel(model("mega_mana_turbine"))
+                .tooltips(
+                        Component.translatable("pollution.machine.mega_mana_turbine.tooltip.1"),
+                        Component.translatable("pollution.machine.mega_mana_turbine.tooltip.2"),
+                        Component.translatable("pollution.machine.mega_mana_turbine.tooltip.3"))
                 .register();
 
         MULTI_DAN_DE_LIFE_ON = PollutionGTAddon.REGISTRATE
@@ -773,6 +807,9 @@ public final class PollutionMachines {
                 .pattern(MultiDanDeLifeOnMachine::createPattern)
                 .renderMultiblockXEIPreview(false)
                 .simpleModel(model("pollution_multi_dan_de_life_on"))
+                .tooltips(
+                        Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.1"),
+                        Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.2"))
                 .register();
     }
 
@@ -864,6 +901,10 @@ public final class PollutionMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(GTRecipeTypes.FUSION_RECIPES, PORecipeMaps.NODE_MAGIC_FUSION_RECIPES)
+                .tooltips(
+                        Component.translatable("pollution.machine.node_fusion_reactor.tooltip.1"),
+                        Component.translatable("pollution.machine.node_fusion_reactor.tooltip.2"),
+                        Component.translatable("pollution.machine.node_fusion_reactor.tooltip.3"))
                 .pattern(NodeFusionReactorMachine::createPattern)
                 .simpleModel(model(name))
                 .register();
@@ -874,11 +915,20 @@ public final class PollutionMachines {
             Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> factory,
             Function<MultiblockMachineDefinition, BlockPattern> pattern,
             GTRecipeType... recipeTypes) {
+        return magicMultiblock(name, displayName, factory, pattern, new Component[0], recipeTypes);
+    }
+
+    private static MultiblockMachineDefinition magicMultiblock(
+            String name, String displayName,
+            Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> factory,
+            Function<MultiblockMachineDefinition, BlockPattern> pattern,
+            Component[] tooltips, GTRecipeType... recipeTypes) {
         return PollutionGTAddon.REGISTRATE
                 .multiblock(name, factory)
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(recipeTypes)
+                .tooltips(tooltips)
                 .pattern(pattern)
                 .simpleModel(model(name))
                 .register();

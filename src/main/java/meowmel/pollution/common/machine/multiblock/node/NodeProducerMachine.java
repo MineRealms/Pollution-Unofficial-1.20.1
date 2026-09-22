@@ -175,8 +175,10 @@ public class NodeProducerMachine extends AbstractDisplayMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Progress: " + timer + " / " + duration));
-            textList.add(Component.literal("EU Tier: " + euTier + " | Infused Cost: " + infusedCost + " mB"));
+            textList.add(Component.translatable("pollution.machine.node_producer_duration",
+                    timer + " / " + duration + " t"));
+            textList.add(Component.translatable("pollution.machine.node_producer_infusedcost",
+                    infusedCost + " mB"));
         }
     }
 
