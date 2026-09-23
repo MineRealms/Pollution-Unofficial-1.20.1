@@ -465,7 +465,7 @@ public final class PollutionMachines {
                 .langValue("LV Tarot Hatch")
                 .rotationState(RotationState.ALL)
                 .abilities(POMultiblockAbility.TAROT_HATCH)
-                .simpleModel(model("tarot_hatch_lv"))
+                .simpleModel(model("tarot_hatch"))
                 .tooltips(
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.1"),
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.2"),
