@@ -1,5 +1,8 @@
 package meowmel.pollution.common.block.plant.flesh;
 
+import meowmel.pollution.common.block.PollutionMiscBlocks;
+import meowmel.pollution.common.block.PollutionPlantBlocks;
+import meowmel.pollution.common.block.tile.FleshHeartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -18,13 +21,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Port of the 1.12 {@code BlockFleshSapling}: stage 0-1 sapling that is meant
- * to grow into a flesh tree.
- *
- * <p>GROWTH STUB: the upstream tree builder places {@code FLESH_BLOCK} and a
- * {@code FLESH_HEART} tile entity, neither of which is ported yet. Random ticks
- * and bonemeal therefore only advance stage 0 -&gt; 1; the stage 1 -&gt; tree
- * step is a no-op until the flesh block / heart core batch lands.</p>
+ * Port of the 1.12 {@code BlockFleshSapling}: stage 0-1 sapling that grows into
+ * the initial level-1 flesh tree (flesh trunk, heart core block entity, leaf
+ * canopy), exactly like upstream {@code BlockFleshSapling#growTree}. The
+ * higher-level cthulhu-style shapes (tentacles, eyes, ventricles) are driven by
+ * the heart core's own growth once it collects LP.
  */
 public class FleshSaplingBlock extends Block implements BonemealableBlock {
 
@@ -55,9 +56,47 @@ public class FleshSaplingBlock extends Block implements BonemealableBlock {
         }
     }
 
-    private void growTree(ServerLevel level, BlockPos pos, RandomSource random) {
-        // Growth stub: the upstream flesh tree needs FLESH_BLOCK and FLESH_HEART
-        // (not ported yet). Nothing is placed for now.
+    /**
+     * Grows the initial level-1 flesh tree (upstream {@code BlockFleshSapling#growTree}):
+     * a 3-block flesh trunk with the heart core at height 2, a 3x3 leaf ring around
+     * the trunk top and a leaf cross above it.
+     */
+    private void growTree(ServerLevel level, BlockPos saplingPos, RandomSource random) {
+        for (int y = 1; y <= 4; y++) {
+            if (!level.isEmptyBlock(saplingPos.above(y))) {
+                return;
+            }
+        }
+        level.removeBlock(saplingPos, false);
+
+        BlockState flesh = PollutionMiscBlocks.FLESH_BLOCK.get().defaultBlockState();
+        BlockState leaves = PollutionPlantBlocks.FLESH_LEAVES.get().defaultBlockState();
+
+        level.setBlock(saplingPos, flesh, 3);
+        level.setBlock(saplingPos.above(1), flesh, 3);
+        BlockPos heartPos = saplingPos.above(2);
+        level.setBlock(heartPos, PollutionMiscBlocks.FLESH_HEART.get().defaultBlockState(), 3);
+        BlockPos topTrunk = saplingPos.above(3);
+        level.setBlock(topTrunk, flesh, 3);
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx != 0 || dz != 0) {
+                    level.setBlock(topTrunk.offset(dx, 0, dz), leaves, 3);
+                }
+            }
+        }
+        BlockPos top = saplingPos.above(4);
+        level.setBlock(top, leaves, 3);
+        level.setBlock(top.north(), leaves, 3);
+        level.setBlock(top.south(), leaves, 3);
+        level.setBlock(top.east(), leaves, 3);
+        level.setBlock(top.west(), leaves, 3);
+
+        if (level.getBlockEntity(heartPos) instanceof FleshHeartBlockEntity heart) {
+            heart.setHeartLevel(1);
+            heart.setOrigin(saplingPos);
+        }
     }
 
     @Override

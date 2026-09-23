@@ -7,6 +7,7 @@ import meowmel.pollution.common.item.astral.ConstellationDataItem;
 import meowmel.pollution.common.item.astral.CrystalQualityItem;
 import meowmel.pollution.common.item.bauble.GogglesItem;
 import meowmel.pollution.common.item.bauble.ItemWaterRing;
+import meowmel.pollution.common.item.bauble.WingItem;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -276,12 +277,26 @@ public final class PollutionItems {
     public static final ItemEntry<Item> LIVING_MAGIC_BIOFILM = register("living_magic_biofilm");
     public static final ItemEntry<Item> DEPLETED_MAGIC_CORE = register("depleted_magic_core");
 
-    // TODO(port): starstream linker, magic sweep and wings depend on unported
-    // systems (starstream network / creative flight). Registered as plain stubs.
-    public static final ItemEntry<Item> STARSTREAM_LINKER = register("starstream_linker");
+    /** Starstream linker: mode toggle + tooltips ported; binding deferred with the starstream network. */
+    public static final ItemEntry<StarstreamLinkerItem> STARSTREAM_LINKER = register(
+            "starstream_linker",
+            properties -> new StarstreamLinkerItem(properties.stacksTo(1)),
+            "Starstream Linker");
+
+    /** Magic sweep: creative flight + damage immunity while carried (see {@link MagicSweepEvents}). */
     public static final ItemEntry<Item> MAGIC_SWEEP = register("magic_sweep");
-    public static final ItemEntry<Item> WING_NANO = register("wing_nano");
-    public static final ItemEntry<Item> WING_QUANTUM = register("wing_quantum");
+
+    /** Nano wings: Curios back slot, electric flight + Speed II buff, 2x fall damage reduction. */
+    public static final ItemEntry<WingItem> WING_NANO = register(
+            "wing_nano",
+            properties -> new WingItem(properties.stacksTo(1), 6_400_000L, GTValues.HV, 30, false, 2.0F),
+            "Nano Wings");
+
+    /** Quantum wings: as nano with haste/jump buffs and 4x fall reduction (upstream {@code MetaArmor}). */
+    public static final ItemEntry<WingItem> WING_QUANTUM = register(
+            "wing_quantum",
+            properties -> new WingItem(properties.stacksTo(1), 25_600_000L, GTValues.IV, 120, true, 4.0F),
+            "Quantum Wings");
 
     // Utilities.
     public static final ItemEntry<Item> PESTICIDE_EMPTY = register("pesticide.empty");

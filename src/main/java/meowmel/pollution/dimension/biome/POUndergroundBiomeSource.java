@@ -25,10 +25,9 @@ import java.util.stream.Stream;
  * {@code QuartPos.toBlock(...)} to preserve the original 4000-block biome
  * scale.</p>
  *
- * <p>TODO: the current {@code data/pollution/dimension/underground.json} still
- * uses {@code minecraft:fixed}; point its {@code biome_source.type} at
- * {@code pollution:underground} (with a {@code seed} field) to enable the
- * 8-biome distribution. That file is owned by the dimension batch.</p>
+ * <p>{@code data/pollution/dimension/underground.json} points its
+ * {@code biome_source.type} at {@code pollution:underground} (with a
+ * {@code seed} field), enabling the 8-biome distribution.</p>
  */
 public class POUndergroundBiomeSource extends BiomeSource {
 

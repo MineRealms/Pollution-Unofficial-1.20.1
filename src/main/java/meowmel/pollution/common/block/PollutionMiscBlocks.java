@@ -8,6 +8,7 @@ import meowmel.pollution.common.block.tile.MineralExtractorBlock;
 import meowmel.pollution.common.block.tile.MineralExtractorBlockEntity;
 import meowmel.pollution.common.block.tile.PortalBlock;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
@@ -66,6 +67,18 @@ public final class PollutionMiscBlocks {
             .simpleItem()
             .register();
 
+    /** Upstream {@code BlockFlesh}: soft meat block, trunk/body material of the flesh tree. */
+    public static final BlockEntry<Block> FLESH_BLOCK = PollutionGTAddon.REGISTRATE
+            .block("flesh_block", Block::new)
+            .blockstate((context, provider) -> {
+            })
+            .properties(properties -> properties
+                    .mapColor(MapColor.COLOR_RED)
+                    .strength(1.5F, 2.0F)
+                    .sound(SoundType.SLIME_BLOCK))
+            .simpleItem()
+            .register();
+
     public static final BlockEntry<MineralExtractorBlock> MINERAL_EXTRACTOR = PollutionGTAddon.REGISTRATE
             .block("mineral_extractor", MineralExtractorBlock::new)
             .blockstate((context, provider) -> {
@@ -96,7 +109,7 @@ public final class PollutionMiscBlocks {
                             .build(null));
 
     /** Registration names, used for the language keys. */
-    public static final List<String> ALL_NAMES = List.of("portal", "flesh_heart", "mineral_extractor");
+    public static final List<String> ALL_NAMES = List.of("portal", "flesh_heart", "flesh_block", "mineral_extractor");
 
     /** "flesh_heart" -&gt; "Flesh Heart". */
     public static String displayName(String name) {

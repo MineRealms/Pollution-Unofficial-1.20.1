@@ -146,6 +146,14 @@ public final class Pollution {
             provider.add("pollution.filter.tier", "Filter tier: %s");
             provider.add("pollution.filter.expected", "Expected work: %s");
             provider.add("pollution.filter.remaining", "Until breakage: %s");
+            provider.add("pollution.flux_scrubber.filter", "Filter durability: %s/%s");
+            provider.add("pollution.flux_scrubber.filter_none", "No filter installed");
+            provider.add("pollution.armor.wings.flight", "Flight: creative-style flying while charged");
+            provider.add("pollution.armor.wings.nano_buffs",
+                    "Sprinter I: speed boost while active");
+            provider.add("pollution.armor.wings.quantum_buffs",
+                    "Sprinter II: jump and speed boost; Haste: mining speed boost while active");
+            provider.add("pollution.armor.wings.fall", "Fall damage reduction: %sx");
             provider.add("pollution.astral_data.unattuned", "No constellation data");
             provider.add("pollution.astral_data.constellation", "Constellation: %s");
             provider.add("pollution.astral_data.function", "Celestial bias: %s");

@@ -12,6 +12,9 @@ public final class PollutionConfig {
     public static final ForgeConfigSpec.DoubleValue FLUX_SCRUBBER_MULTIPLIER;
     public static final ForgeConfigSpec.DoubleValue POLLUTION_DECAY_PER_TICK;
     public static final ForgeConfigSpec.DoubleValue EFFECT_THRESHOLD;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_TERRAIN_CONVERSION;
+    public static final ForgeConfigSpec.DoubleValue TERRAIN_CONVERSION_THRESHOLD;
+    public static final ForgeConfigSpec.IntValue TERRAIN_CONVERSION_BUDGET_PER_TICK;
     public static final ForgeConfigSpec.IntValue VIS_GENERATOR_EU_PER_VIS;
     public static final ForgeConfigSpec.DoubleValue VIS_GENERATOR_POLLUTION_MULTIPLIER;
     public static final ForgeConfigSpec.DoubleValue VIS_PROVIDER_MULTIPLIER;
@@ -39,6 +42,16 @@ public final class PollutionConfig {
         EFFECT_THRESHOLD = builder
                 .comment("Chunk pollution value at which players start receiving harmful effects.")
                 .defineInRange("effectThreshold", 10.0D, 0.0D, 1_000_000.0D);
+        ENABLE_TERRAIN_CONVERSION = builder
+                .comment("Heavy pollution slowly kills the environment: grass turns to sand,",
+                        "and water turns to lava at twice the conversion threshold.")
+                .define("enableTerrainConversion", true);
+        TERRAIN_CONVERSION_THRESHOLD = builder
+                .comment("Chunk pollution value at which terrain conversion starts.")
+                .defineInRange("terrainConversionThreshold", 25.0D, 0.0D, 1_000_000.0D);
+        TERRAIN_CONVERSION_BUDGET_PER_TICK = builder
+                .comment("Maximum blocks converted per dimension per tick (performance budget).")
+                .defineInRange("terrainConversionBudgetPerTick", 4, 0, 64);
         builder.pop();
 
         builder.comment("Vis generator and aura machines").push("aura");

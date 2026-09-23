@@ -2,10 +2,10 @@
   "type": "pollution:underground",
   "generator": {
     "type": "minecraft:noise",
-    "settings": "minecraft:caves",
+    "settings": "pollution:underground",
     "biome_source": {
-      "type": "minecraft:fixed",
-      "biome": "pollution:underground"
+      "type": "pollution:underground",
+      "seed": 0
     }
   }
 }

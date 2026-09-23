@@ -13,38 +13,35 @@ package meowmel.pollution.dimension.worldgen;
  *
  * <h2>TODO: chunk generators</h2>
  * <ul>
- *   <li>TODO: {@code ChunkGeneratorUndergroundWorld} - 1.12 {@code IChunkGenerator}
- *       with a hand-written noise height field, kimberlite water floor, gravel
- *       lake beds and {@code IUndergroundBiome} surface dispatch. On 1.20.1 the
- *       terrain is produced by {@code noise_settings} datapack JSON (the
- *       underground dimension already uses {@code minecraft:caves}); the
- *       kimberlite/gravel surface rules must be authored as a
- *       {@code surface_rule} in that file. Not portable as Java without
- *       reimplementing {@code ChunkGenerator}.</li>
+ *   <li>DONE: {@code ChunkGeneratorUndergroundWorld} - replaced by datapack
+ *       JSON on 1.20.1: {@code dimension/underground.json} now uses the
+ *       registered {@code pollution:underground} biome source plus a
+ *       {@code pollution:underground} noise settings whose biome-conditional
+ *       {@code surface_rule}s reproduce the {@code IUndergroundBiome} surface
+ *       dispatch. The kimberlite water floor and gravel lake beds are not
+ *       reproduced (no kimberlite block in GTCEu Modern).</li>
  *   <li>TODO: {@code ChunkGeneratorAlfheim} - custom WorldEngine terrain
  *       interpolation, livingrock restoration and per-biome layers; same
  *       {@code noise_settings} story as above.</li>
  *   <li>TODO: {@code ChunkGeneratorBlood} - flesh/plasma terrain from
- *       {@code TerrainGenerator}. The blood dimension now has a target
- *       datapack ({@code data/pollution/dimension/blood.json} +
- *       {@code noise_settings/blood.json}): overworld noise router with
- *       {@code thaumcraft:tainted_flesh} as the default block, since the
- *       upstream {@code FLESH_BLOCK} and {@code BloodPlasma} fluid are not
- *       ported. The flesh mounds still wait for this generator.</li>
+ *       {@code TerrainGenerator}. The blood dimension datapack
+ *       ({@code data/pollution/dimension/blood.json} +
+ *       {@code noise_settings/blood.json}) now uses the ported
+ *       {@code pollution:flesh_block} as the default block; the upstream
+ *       {@code BloodPlasma} fluid is still not ported (water stands in).
+ *       The flesh mounds still wait for this generator.</li>
  *   <li>TODO: {@code TerrainGenerator} - Perlin height source used only by the
  *       blood chunk generator; skipped together with it.</li>
  * </ul>
  *
  * <h2>TODO: biome surface blocks</h2>
  * <ul>
- *   <li>TODO: 1.12 biome top/filler blocks ({@code POBiomeUndergroundStyle}:
+ *   <li>DONE: 1.12 biome top/filler blocks ({@code POBiomeUndergroundStyle}:
  *       mycelium/dirt, grass/dirt, sand/sandstone, netherrack/netherrack) are
- *       not expressible in a 1.20.1 biome JSON. They belong to the dimension's
- *       {@code noise_settings} as biome-conditional {@code surface_rule}s.
- *       {@code data/pollution/dimension/underground.json} currently points at
- *       {@code minecraft:caves}, so a {@code pollution:underground} noise
- *       settings file must be authored and wired by the dimension batch
- *       before the style biomes can show their surfaces.</li>
+ *       authored as biome-conditional {@code surface_rule}s in
+ *       {@code noise_settings/underground.json} (dry cave floors only, via a
+ *       {@code not water_above_threshold} guard, matching the upstream
+ *       buildSurface scan that skipped submerged stone).</li>
  *   <li>DONE: Alfheim biome layers - {@code noise_settings/alfheim.json}
  *       reproduces the upstream WorldEngine layers: grass over dirt for the
  *       field/plateau/forest biomes, elven sand for beach/sandbank and

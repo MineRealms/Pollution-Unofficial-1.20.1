@@ -2,6 +2,7 @@ package meowmel.pollution.api.pollution;
 
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -117,5 +118,16 @@ public final class PollutionData extends SavedData {
 
     public int pollutedChunkCount() {
         return chunkPollution.size();
+    }
+
+    /** Packed ChunkPos longs of every chunk polluted at or above the threshold. */
+    public LongArrayList collectChunksAbove(double threshold) {
+        LongArrayList result = new LongArrayList();
+        for (Long2DoubleMap.Entry entry : chunkPollution.long2DoubleEntrySet()) {
+            if (entry.getDoubleValue() >= threshold) {
+                result.add(entry.getLongKey());
+            }
+        }
+        return result;
     }
 }
