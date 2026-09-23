@@ -159,7 +159,7 @@ public final class PollutionJeiPlugin implements IModPlugin {
 
         addInfo(recipes, singleStack(PollutionMachines.NODE_PRODUCER), List.of(
                 Component.literal("节点制造：每 tick 消耗能源仓电压 EU + 灌注能量流体"),
-                Component.literal("灌注能量 = 144 × 2^(EU等级-4) mB，耗时 = ceil(30/(EU等级-3)) tick"),
+                Component.literal("灌注能量 = 144 × 2^(EU等级-4) mB，耗时 = ceil(30/(EU等级-3)) 秒"),
                 Component.literal("产出随机封装灵气节点：等级 普通60%/凋零20%/明亮5%/苍白15%"),
                 Component.literal("类型 标准60%/不祥10%/纯净10%/震荡15%/贪婪5%"),
                 Component.literal("要素为高斯分布（上限1000）：火受线圈等级加成、秩序受EU等级加成")));

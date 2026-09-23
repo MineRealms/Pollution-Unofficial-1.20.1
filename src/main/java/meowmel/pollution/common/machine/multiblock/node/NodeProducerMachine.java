@@ -176,7 +176,7 @@ public class NodeProducerMachine extends AbstractDisplayMultiblockMachine {
         super.addDisplayText(textList);
         if (isFormed()) {
             textList.add(Component.translatable("pollution.machine.node_producer_duration",
-                    timer + " / " + duration + " t"));
+                    timer + " / " + duration + " s"));
             textList.add(Component.translatable("pollution.machine.node_producer_infusedcost",
                     infusedCost + " mB"));
         }

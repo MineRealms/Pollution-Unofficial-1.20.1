@@ -1010,7 +1010,7 @@
   "pollution.tarot.the_fool.tooltip": "潜行右键传送回世界出生点",
   "pollution.machine.node_producer.tooltip.1": "以能量要素流体制造封装灵气节点",
   "pollution.machine.node_producer.tooltip.2": "每 tick 消耗能源仓电压的 EU；每个节点需要 144 × 2^(EU等级-4) mB 的灌注能量",
-  "pollution.machine.node_producer.tooltip.3": "基础制造时间 30 秒，EV 以上每升一级缩短（ceil(30/(等级-3)) tick）",
+  "pollution.machine.node_producer.tooltip.3": "基础制造时间 30 秒，EV 以上每升一级缩短（ceil(30/(等级-3)) 秒）",
   "pollution.machine.node_producer.tooltip.4": "过程中断供灌注能量会中止制造并浪费进度",
   "pollution.machine.node_producer.tooltip.5": "线圈等级越高节点的火要素越高，EU 等级越高秩序要素越高",
   "pollution.machine.node_producer_duration": "每节点制造时间：%s",

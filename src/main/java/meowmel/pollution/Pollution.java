@@ -416,7 +416,7 @@ public final class Pollution {
             provider.add("pollution.machine.node_producer.tooltip.2",
                     "Per tick it drains the energy hatch's voltage in EU; each node needs 144 × 2^(EU tier - 4) mB of Infused Energy");
             provider.add("pollution.machine.node_producer.tooltip.3",
-                    "Base creation time is 30 s; every tier above EV shortens it (ceil(30 / (tier - 3)) ticks)");
+                    "Base creation time is 30 s; every tier above EV shortens it (ceil(30 / (tier - 3)) seconds)");
             provider.add("pollution.machine.node_producer.tooltip.4",
                     "Cutting the energy essence supply mid-process aborts the node and wastes the progress");
             provider.add("pollution.machine.node_producer.tooltip.5",
