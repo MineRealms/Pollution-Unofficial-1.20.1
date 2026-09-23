@@ -137,12 +137,19 @@ public final class FirstDegreeMaterials {
 
         // ---- 魔力/超导链（第二轮移植）---------------------------------------
 
-        // 不纯魔力 Impuremana
-        PollutionMaterials.Impuremana = new Material.Builder(id("impuremana"))
-                .color(0x008B8B)
-                .fluid()
-                .iconSet(MaterialIconSet.DULL)
-                .buildAndRegister();
+    // 不纯魔力 Impuremana
+    PollutionMaterials.Impuremana = new Material.Builder(id("impuremana"))
+            .color(0x008B8B)
+            .fluid()
+            .iconSet(MaterialIconSet.DULL)
+            .buildAndRegister();
+
+    // 纯魔力 Mana（启命花园模式 1 输出；上游 pollution:mana 流体）
+    PollutionMaterials.Mana = new Material.Builder(id("mana"))
+            .color(0x4FC3F7)
+            .fluid()
+            .iconSet(MaterialIconSet.DULL)
+            .buildAndRegister();
 
         // 刻金 KQGold（上游 toolStats/rotorStats 因现代 API 差异跳过；
         // 上游 id "Keqinggold" 含大写，1.20.1 ResourceLocation 要求全小写）

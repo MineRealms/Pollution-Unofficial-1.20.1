@@ -30,9 +30,14 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import meowmel.pollution.api.amplification.MagicJeiHintResolver;
 import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
 import meowmel.pollution.api.amplification.MagicProcessTag;
+import meowmel.pollution.api.capability.IAstralHatch;
+import meowmel.pollution.api.capability.IBloodMagicHatch;
+import meowmel.pollution.api.capability.IManaHatch;
 import meowmel.pollution.api.capability.ITarotHatch;
 import meowmel.pollution.api.capability.IVisHatch;
+import meowmel.pollution.api.capability.ManaHandlerList;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
+import meowmel.pollution.api.recipes.properties.AstralCondition;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
 import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
@@ -43,6 +48,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,12 +65,18 @@ import java.util.Set;
  * collection is done by GregTech itself, while the magic resources are read
  * directly from the parts collected here.</p>
  *
- * <p>Scope (2026-09-20): Thaumcraft-facing resources (vis, infused fluids) and
- * the tarot hatch are functional. Mana / life essence / astral stay reserved
- * until their systems are ported; recipes that ask for them fail the
- * requirement check exactly like upstream did when the hatch was missing. The
- * tarot hatch is discovered here and handed to the amplification engine, but
- * its bonuses still require a calibrated astral wafer (upstream gating).</p>
+ * <p>Scope (2026-09-23): every recipe resource is wired. Thaumcraft vis and
+ * infused fluids, Botania mana (aggregated from all {@link IManaHatch} parts
+ * through a {@link ManaHandlerList}), Blood Magic life essence
+ * ({@link IBloodMagicHatch}) and the tarot hatch are discovered on structure
+ * formation, and the recipe gate checks them exactly like upstream
+ * {@code checkMagicRequirements}. The astral lens hatch
+ * ({@link IAstralHatch}) is validated against the recipe's
+ * {@link AstralCondition}. Life essence and astral have no hatch machine in the
+ * port yet, so the lookup simply finds none and the recipe fails with the
+ * generic hatch failure message instead of crashing. The tarot hatch is handed
+ * to the amplification engine, but its bonuses still require a calibrated
+ * astral wafer (upstream gating).</p>
  *
  * <p>UI (2026-09-19): the controller implements {@link IFancyUIMachine} and
  * {@link IDisplayUIMachine} following GregTech's
@@ -79,7 +91,12 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
     protected IVisHatch visHatch;
     protected InfusedFluidHatchMachine infusedFluidHatch;
     protected ITarotHatch tarotHatch;
+    protected IBloodMagicHatch bloodMagicHatch;
+    protected IAstralHatch astralLensHatch;
     protected ICoilType coilType;
+
+    /** Aggregated Botania mana storage of the formed structure. */
+    private ManaHandlerList manaHandler = new ManaHandlerList(List.of());
 
     /** Runtime cache of the energy hatches of the formed structure. */
     private EnergyContainerList energyContainer;
@@ -101,6 +118,9 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         visHatch = null;
         infusedFluidHatch = null;
         tarotHatch = null;
+        bloodMagicHatch = null;
+        astralLensHatch = null;
+        List<IManaHatch> manaHatches = new ArrayList<>();
         for (IMultiPart part : getParts()) {
             if (visHatch == null && part.self() instanceof IVisHatch hatch) {
                 visHatch = hatch;
@@ -111,7 +131,17 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
             if (tarotHatch == null && part.self() instanceof ITarotHatch hatch) {
                 tarotHatch = hatch;
             }
+            if (bloodMagicHatch == null && part.self() instanceof IBloodMagicHatch hatch) {
+                bloodMagicHatch = hatch;
+            }
+            if (astralLensHatch == null && part.self() instanceof IAstralHatch hatch) {
+                astralLensHatch = hatch;
+            }
+            if (part.self() instanceof IManaHatch hatch) {
+                manaHatches.add(hatch);
+            }
         }
+        manaHandler = new ManaHandlerList(manaHatches);
         Object matchedCoil = getMultiblockState().getMatchContext().get("CoilType");
         coilType = matchedCoil instanceof ICoilType coil ? coil : null;
         energyContainer = createEnergyContainer();
@@ -123,6 +153,9 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         visHatch = null;
         infusedFluidHatch = null;
         tarotHatch = null;
+        bloodMagicHatch = null;
+        astralLensHatch = null;
+        manaHandler = new ManaHandlerList(List.of());
         coilType = null;
         energyContainer = null;
         if (recipeLogic instanceof MagicRecipeLogic magicLogic) {
@@ -206,17 +239,56 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
     }
 
     // ////////////////////////////////////
-    // ***** Reserved systems *****//
+    // ***** Mana / life essence / astral *****//
     // ////////////////////////////////////
 
-    /** Botania mana hatch is not ported yet. */
+    /**
+     * Drains the mana hatches discovered on the formed structure (Botania).
+     * Upstream cached a single {@code manaPoolHatch}; the port keeps the
+     * already-existing {@link ManaHandlerList} aggregation used by the Botania
+     * controllers, so every installed mana hatch pools into one buffer.
+     */
     public boolean consumeMana(long amount, boolean simulate) {
-        return amount <= 0;
+        return amount <= 0L || manaHandler.consumeMana(amount, simulate);
     }
 
-    /** Blood Magic life essence hatch is not ported yet. */
+    /** Aggregated mana storage of the formed structure; empty without a hatch. */
+    public ManaHandlerList getManaHandler() {
+        return manaHandler;
+    }
+
+    public long getMana() {
+        return manaHandler.getMana();
+    }
+
+    public long getMaxMana() {
+        return manaHandler.getMaxMana();
+    }
+
+    /**
+     * Blood Magic provider of the formed structure, or {@code null} when the
+     * port has no life essence hatch installed (lookup fails gracefully).
+     */
+    @Nullable
+    public IBloodMagicHatch getBloodMagicHatch() {
+        return bloodMagicHatch;
+    }
+
+    /**
+     * Astral lens provider of the formed structure, or {@code null} when no
+     * calibrated lens hatch is installed (lookup fails gracefully).
+     */
+    @Nullable
+    public IAstralHatch getAstralLensHatch() {
+        return astralLensHatch;
+    }
+
+    /** Drains life essence; returns false cleanly when no provider is installed. */
     public boolean consumeLifeEssence(int amount, boolean simulate) {
-        return amount <= 0;
+        if (amount <= 0) {
+            return true;
+        }
+        return bloodMagicHatch != null && bloodMagicHatch.consumeLifeEssence(amount, simulate);
     }
 
     /**
@@ -230,26 +302,45 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
      * additionally require their authorizing major arcana.</p>
      */
     public boolean checkMagicRequirements(GTRecipe recipe) {
-        if (MagicRecipeProperties.getManaPerTick(recipe) > 0) {
-            return false;
+        return getMagicRequirementFailure(recipe) == null;
+    }
+
+    /**
+     * Reason the recipe cannot start or continue, or {@code null} when every
+     * requirement is satisfied. The messages reuse the existing
+     * {@code pollution.magic.failure.*} lang keys: a missing mana or life
+     * essence provider reports its resource key, while every missing hatch or
+     * unsatisfied astral/tarot gate reports the generic hatch key. The astral
+     * branch is the port of upstream's
+     * {@code astralLensHatch.matches(condition)} check, and returns the hatch
+     * message instead of crashing when no lens exists.
+     */
+    @Nullable
+    public Component getMagicRequirementFailure(GTRecipe recipe) {
+        if (MagicRecipeProperties.getManaPerTick(recipe) > 0L && manaHandler.isEmpty()) {
+            return Component.translatable("pollution.magic.failure.mana");
         }
-        if (MagicRecipeProperties.getLifeEssencePerTick(recipe) > 0) {
-            return false;
+        if (MagicRecipeProperties.getLifeEssencePerTick(recipe) > 0 && bloodMagicHatch == null) {
+            return Component.translatable("pollution.magic.failure.life_essence");
         }
         if (MagicRecipeProperties.hasVisCost(recipe) && visHatch == null) {
-            return false;
+            return Component.translatable("pollution.magic.failure.hatches");
         }
         if (MagicRecipeProperties.getInfusedFluidPerTick(recipe) > 0 && infusedFluidHatch == null) {
-            return false;
+            return Component.translatable("pollution.magic.failure.hatches");
+        }
+        AstralCondition condition = MagicRecipeProperties.getAstralCondition(recipe);
+        if (condition.isConfigured() && (astralLensHatch == null || !astralLensHatch.matches(condition))) {
+            return Component.translatable("pollution.magic.failure.hatches");
         }
         String tarot = MagicRecipeProperties.getTarot(recipe);
         if (!tarot.isEmpty() && !hasTarot(tarot)) {
-            return false;
+            return Component.translatable("pollution.magic.failure.hatches");
         }
         if (!checkTarotProcessGate(recipe)) {
-            return false;
+            return Component.translatable("pollution.magic.failure.hatches");
         }
-        return !recipe.data.contains(MagicRecipeProperties.ASTRAL_CONDITION);
+        return null;
     }
 
     /** Upstream tag gates: certain process domains require their authorizing card. */
@@ -292,10 +383,13 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         return tarotHatch;
     }
 
-    /** Keeps the non-consumable card stable for one running recipe. */
+    /** Keeps the non-consumable card / lens stable for one running recipe. */
     public void setMagicFocusLocked(boolean locked) {
         if (tarotHatch != null) {
             tarotHatch.setFocusLocked(locked);
+        }
+        if (astralLensHatch != null) {
+            astralLensHatch.setFocusLocked(locked);
         }
     }
 
@@ -397,6 +491,18 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
                 String fluidName = stored.isEmpty() ? "-" : stored.getDisplayName().getString();
                 textList.add(Component.literal("Infused Fluid: " + fluidName + " " + stored.getAmount() + " / "
                         + infusedFluidHatch.tank.getTankCapacity(0)));
+            }
+            if (!manaHandler.isEmpty()) {
+                textList.add(Component.translatable("pollution.machine.mana_plate.tier",
+                        manaHandler.getTier(), getMana(), getMaxMana()));
+            }
+            if (bloodMagicHatch != null) {
+                textList.add(Component.literal("Life Essence: " + bloodMagicHatch.getLifeEssence()
+                        + " / " + bloodMagicHatch.getLifeEssenceCapacity()));
+            }
+            if (astralLensHatch != null) {
+                String constellation = astralLensHatch.getFocusedConstellation();
+                textList.add(Component.literal("Astral Focus: " + (constellation.isEmpty() ? "-" : constellation)));
             }
             if (hasCoil()) {
                 textList.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",

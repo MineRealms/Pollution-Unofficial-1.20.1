@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import meowmel.pollution.api.amplification.AstralAmplifierSnapshot;
-import meowmel.pollution.api.amplification.AstralHatchView;
 import meowmel.pollution.api.amplification.MagicAmplificationEngine;
 import meowmel.pollution.api.amplification.MagicAmplificationResult;
 import meowmel.pollution.api.amplification.MagicOutputProcessor;
@@ -82,11 +81,13 @@ import java.util.Map;
  *       definitions register neither a parallel hatch nor a modifier, so
  *       {@link MagicAmplificationResult#getExtraParallel()} cannot be added
  *       without touching off-limits registration code.</li>
- *   <li><b>Astral hatch</b>: no calibrated lens hatch exists in the port yet
- *       (Phase 6). {@link #EMPTY_ASTRAL_HATCH} makes the engine return
- *       {@link MagicAmplificationResult#NONE}; the real hatch will replace the
- *       stub and feed the same call. The tarot hatch is ported and is read
- *       from the formed controller ({@code controller#getTarotHatch()}), but
+ *   <li><b>Astral hatch</b>: the astral lens hatch
+ *       ({@code MagicMultiblockController#getAstralLensHatch()}) is read from
+ *       the formed structure. No lens machine exists in the port yet, so the
+ *       lookup is {@code null} and the engine sees an uncalibrated lens; the
+ *       recipe gate also fails for astral-gated recipes, matching upstream
+ *       when its hatch was missing. The tarot hatch is ported and is read from
+ *       the formed controller ({@code controller#getTarotHatch()}), but
  *       upstream gating means its bonuses only apply together with an astral
  *       data wafer.</li>
  *   <li><b>Furnace temperature bonus</b> and the <b>star afterglow</b>
@@ -94,54 +95,6 @@ import java.util.Map;
  * </ul>
  */
 public class MagicRecipeLogic extends RecipeLogic {
-
-    /**
-     * Phase 6 stub: no calibrated astral lens hatch exists in the port yet, so
-     * the amplification engine always sees an uncalibrated lens. Replace with
-     * the formed hatch view when the astral system lands.
-     */
-    private static final AstralHatchView EMPTY_ASTRAL_HATCH = new AstralHatchView() {
-
-        @Override
-        public int getTier() {
-            return 0;
-        }
-
-        @Override
-        public boolean hasConstellationDataWafer() {
-            return false;
-        }
-
-        @Override
-        public int getOpticalCrystalQuality() {
-            return 0;
-        }
-
-        @Override
-        public double getOpticalCrystalStrengthBonus() {
-            return 0.0D;
-        }
-
-        @Override
-        public String getFocusedConstellation() {
-            return "";
-        }
-
-        @Override
-        public boolean isSkyVisible() {
-            return false;
-        }
-
-        @Override
-        public boolean isNight() {
-            return false;
-        }
-
-        @Override
-        public boolean isFocusedConstellationActive() {
-            return false;
-        }
-    };
 
     private final MagicMultiblockController controller;
 
@@ -297,8 +250,9 @@ public class MagicRecipeLogic extends RecipeLogic {
         if (!result.isSuccess()) {
             return result;
         }
-        if (!controller.checkMagicRequirements(recipe)) {
-            return ActionResult.fail(Component.translatable("pollution.magic.failure.hatches"), null, null);
+        Component requirementFailure = controller.getMagicRequirementFailure(recipe);
+        if (requirementFailure != null) {
+            return ActionResult.fail(requirementFailure, null, null);
         }
         int vis = MagicRecipeProperties.getVisPerCraft(recipe);
         if (vis > 0 && !controller.consumeVis(vis, true)) {
@@ -322,7 +276,11 @@ public class MagicRecipeLogic extends RecipeLogic {
      * Draws the magic resources and, when the EU reduction is active, performs
      * the energy IO against a copy of the recipe whose EU tick input is scaled
      * down. The magic draws mirror the upstream parallel scaling and
-     * {@code magicCostReduction} discount.
+     * {@code magicCostReduction} discount. Like upstream
+     * {@code updateRecipeProgress}, the non-consumable authorizations (astral
+     * sky, tarot focus) are re-validated every tick, and mana / life essence
+     * are simulated before being drawn so a failed draw never partially drains
+     * a provider.
      */
     @Override
     public ActionResult handleTickRecipe(GTRecipe recipe) {
@@ -339,6 +297,10 @@ public class MagicRecipeLogic extends RecipeLogic {
         if (!result.isSuccess()) {
             return result;
         }
+        Component requirementFailure = controller.getMagicRequirementFailure(recipe);
+        if (requirementFailure != null) {
+            return ActionResult.fail(requirementFailure, null, null);
+        }
 
         int parallel = Math.max(1, recipe.getTotalRuns());
 
@@ -352,15 +314,21 @@ public class MagicRecipeLogic extends RecipeLogic {
         }
 
         long mana = discount(scaleByParallel(MagicRecipeProperties.getManaPerTick(recipe), parallel));
-        if (mana > 0 && !controller.consumeMana(mana, false)) {
-            return ActionResult.fail(Component.translatable("pollution.magic.failure.mana"), null, null);
+        if (mana > 0) {
+            if (!controller.consumeMana(mana, true)) {
+                return ActionResult.fail(Component.translatable("pollution.magic.failure.mana"), null, null);
+            }
+            controller.consumeMana(mana, false);
         }
 
         int lifeEssence = discount(
                 scaleByParallel(MagicRecipeProperties.getLifeEssencePerTick(recipe), parallel));
-        if (lifeEssence > 0 && !controller.consumeLifeEssence(lifeEssence, false)) {
-            return ActionResult.fail(
-                    Component.translatable("pollution.magic.failure.life_essence"), null, null);
+        if (lifeEssence > 0) {
+            if (!controller.consumeLifeEssence(lifeEssence, true)) {
+                return ActionResult.fail(
+                        Component.translatable("pollution.magic.failure.life_essence"), null, null);
+            }
+            controller.consumeLifeEssence(lifeEssence, false);
         }
 
         int vis = discount(scaleByParallel(MagicRecipeProperties.getVisPerCraft(recipe), parallel));
@@ -400,7 +368,9 @@ public class MagicRecipeLogic extends RecipeLogic {
     // ////////////////////////////////////
 
     private MagicAmplificationResult calculateAmplification(GTRecipe recipe) {
-        AstralAmplifierSnapshot snapshot = AstralAmplifierSnapshot.from(EMPTY_ASTRAL_HATCH);
+        // from(null) yields the empty snapshot: no astral hatch is installed in
+        // the port yet, so the engine keeps returning its uncalibrated result.
+        AstralAmplifierSnapshot snapshot = AstralAmplifierSnapshot.from(controller.getAstralLensHatch());
         int stacks = recipe.id != null && recipe.id.equals(lastCompletedRecipeId) ? chariotStacks : 0;
         boolean singleParallel = recipe.getTotalRuns() <= 1;
         return MagicAmplificationEngine.calculate(processTagsFor(recipe), recipe.duration, snapshot,

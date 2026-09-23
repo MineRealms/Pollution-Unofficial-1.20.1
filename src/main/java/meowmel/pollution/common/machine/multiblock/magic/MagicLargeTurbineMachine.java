@@ -8,15 +8,20 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
-import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 
 /**
  * Magic large turbine: burns the magic turbine fuel map.
  *
  * <p>Upstream reused GregTech's large-turbine base with a custom
- * {@code MagicTurbineType}. The port runs the {@code MAGIC_TURBINE_FUELS} map
- * on a magic shell; the rotor durability mechanics of the GT base are not
- * reimplemented (documented deviation), and the upstream tier-filtered rotor
+ * {@code MagicTurbineType}: the turbine required a rotor in a tiered rotor
+ * holder, which was spun up and damaged while the turbine ran. The port runs
+ * the {@code MAGIC_TURBINE_FUELS} map on a magic shell and reuses the modern
+ * GT rotor holder part through {@link AbstractMagicTurbineMachine}: a real
+ * rotor is required before a craft may start, the rotor holder's own
+ * {@code onWorking} damages the rotor once per second of operation (deleting
+ * the rotor stack when it breaks), and a craft is interrupted when the rotor
+ * disappears mid-run. Upstream's generation/parallel scaling by rotor speed,
+ * power and efficiency is still not ported. The upstream tier-filtered rotor
  * holder accepts any GT rotor holder in the port. Upstream's {@code R} slot
  * takes one rotor holder plus one mana output hatch; the mana output hatch is
  * the turbine's upstream EU output interface (the turbine pushes generated EU
@@ -26,7 +31,7 @@ import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
  * tarot hatch is accepted on the casing and read by the amplification engine;
  * the astral-lens hatch has no registered counterpart in the port yet.</p>
  */
-public class MagicLargeTurbineMachine extends MagicMultiblockController {
+public class MagicLargeTurbineMachine extends AbstractMagicTurbineMachine {
 
     public MagicLargeTurbineMachine(IMachineBlockEntity holder) {
         super(holder);

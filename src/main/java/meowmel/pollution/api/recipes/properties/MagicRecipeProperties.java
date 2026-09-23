@@ -2,6 +2,8 @@ package meowmel.pollution.api.recipes.properties;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 /**
  * Recipe metadata understood by the magic multiblock logic layer.
@@ -12,11 +14,12 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
  * upstream keys verbatim as data entries and exposes typed helpers for builders
  * and logic.</p>
  *
- * <p>Scope note (2026-09-18): only the Thaumcraft-facing keys (vis, infused
- * fluids, research) are wired for builder use so far. Keys of deferred systems
- * (Botania mana, Blood Magic life essence, Astral, Tarot) are reserved with the
- * upstream names so ported recipes stay compatible once those systems land.
- * JEI display of these lines is a separate TODO (modern GT recipe info API).</p>
+ * <p>Scope note (2026-09-23): the resource keys (vis, infused fluid, Botania
+ * mana, Blood Magic life essence, Astral condition) are all wired for builder
+ * use and read by {@code MagicMultiblockController} / {@code MagicRecipeLogic}.
+ * The astral condition is stored as a {@link CompoundTag} produced by
+ * {@link AstralCondition#toNbt()} under {@link #ASTRAL_CONDITION}. JEI display
+ * of these lines lives in {@code MagicRecipeDataInfos}.</p>
  */
 public final class MagicRecipeProperties {
 
@@ -39,14 +42,27 @@ public final class MagicRecipeProperties {
         return builder.addData(INFUSED_FLUID_PER_TICK, Math.max(0, amount));
     }
 
-    /** Mana drained every tick while the recipe runs (reserved, Botania). */
+    /** Mana drained every tick while the recipe runs (Botania mana hatches). */
     public static GTRecipeBuilder manaPerTick(GTRecipeBuilder builder, long amount) {
         return builder.addData(MANA_PER_TICK, Math.max(0L, amount));
     }
 
-    /** Life essence drained every tick while the recipe runs (reserved, Blood Magic). */
+    /** Life essence drained every tick while the recipe runs (Blood Magic hatch). */
     public static GTRecipeBuilder lifeEssencePerTick(GTRecipeBuilder builder, int amount) {
         return builder.addData(LIFE_ESSENCE_PER_TICK, Math.max(0, amount));
+    }
+
+    /**
+     * Astral sky gate: the controller requires a formed astral lens hatch whose
+     * live state matches the condition. Unconfigured conditions are not stored,
+     * so the JEI gate line keeps reflecting real requirements only.
+     */
+    public static GTRecipeBuilder astralCondition(GTRecipeBuilder builder, AstralCondition condition) {
+        AstralCondition normalized = condition == null ? AstralCondition.NONE : condition;
+        if (normalized.isConfigured()) {
+            builder.addData(ASTRAL_CONDITION, normalized.toNbt());
+        }
+        return builder;
     }
 
     /** Vis paid once per craft, on top of any per-tick draws. */
@@ -128,6 +144,12 @@ public final class MagicRecipeProperties {
 
     public static String getThaumcraftResearch(GTRecipe recipe) {
         return recipe.data.getString(THAUMCRAFT_RESEARCH);
+    }
+
+    /** Parsed astral gate; {@link AstralCondition#NONE} when absent or malformed. */
+    public static AstralCondition getAstralCondition(GTRecipe recipe) {
+        Tag tag = recipe.data.get(ASTRAL_CONDITION);
+        return tag instanceof CompoundTag compound ? AstralCondition.fromNbt(compound) : AstralCondition.NONE;
     }
 
     public static String getTarot(GTRecipe recipe) {

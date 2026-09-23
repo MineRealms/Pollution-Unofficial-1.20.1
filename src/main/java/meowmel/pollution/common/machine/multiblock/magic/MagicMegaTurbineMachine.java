@@ -8,14 +8,17 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
-import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 
 /**
  * Magic mega turbine: the nine-layer magic turbine variant. Same fuel map and
- * deviations as the large turbine; the GTQT reinforced rotor holder maps to the
- * standard rotor holder.
+ * rotor-holder mechanics as the large turbine (see
+ * {@link AbstractMagicTurbineMachine}: a real rotor is required to run, it is
+ * damaged once per second of operation and a broken rotor interrupts the
+ * craft). The GTQT reinforced rotor holder maps to the standard rotor holder;
+ * rotor speed/power/efficiency scaling of the upstream mega turbine is not
+ * ported.
  */
-public class MagicMegaTurbineMachine extends MagicMultiblockController {
+public class MagicMegaTurbineMachine extends AbstractMagicTurbineMachine {
 
     public MagicMegaTurbineMachine(IMachineBlockEntity holder) {
         super(holder);

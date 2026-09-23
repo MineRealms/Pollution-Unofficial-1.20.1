@@ -32,6 +32,11 @@ import java.util.List;
  * them to this part at all (it only implemented Pollution's own
  * {@code IManaHatch}); the raw {@code IManaHatch.receiveMana} path used by
  * internal transfers stays unthrottled.</p>
+ *
+ * <p>The per-tick transfer lives in {@link #tickManaTransfer()}, which
+ * {@link WirelessManaPoolHatchMachine} overrides to also exchange with the
+ * wireless mana network; capacities, pool types and transfer rates are
+ * unchanged.</p>
  */
 public class ManaPoolHatchMachine extends TieredPartMachine implements IManaHatch, ManaReceiver {
 
@@ -63,7 +68,7 @@ public class ManaPoolHatchMachine extends TieredPartMachine implements IManaHatc
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            transferSubscription = subscribeServerTick(this::pushManaToNeighbours);
+            transferSubscription = subscribeServerTick(this::tickManaTransfer);
         }
     }
 
@@ -76,7 +81,12 @@ public class ManaPoolHatchMachine extends TieredPartMachine implements IManaHatc
         }
     }
 
-    private void pushManaToNeighbours() {
+    /**
+     * Server-side per-tick transfer hook; the default pushes stored mana to
+     * adjacent receivers for output hatches. Wireless parts override this to
+     * also exchange with the {@link WirelessManaNetwork}.
+     */
+    protected void tickManaTransfer() {
         if (!isExport) return;
         Level level = getLevel();
         if (level == null) return;

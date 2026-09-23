@@ -53,10 +53,11 @@ final class CentralVisTowerPatterns {
 
 
     private static com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate frameGroup() {
-        return MagicStructureElements.frame(GTMaterials.HSSG)
-                .or(MagicStructureElements.frame(GTMaterials.NaquadahAlloy))
-                .or(MagicStructureElements.frame(GTMaterials.TungstenSteel))
-                .or(MagicStructureElements.frame(GTMaterials.StainlessSteel));
+        // Levels 1..4 mirror the upstream containment frame tiers (FRAME_II..V);
+        // the machine reads the level for the Starry Mansus coverage bonus.
+        return MagicStructureElements.tieredFrames(CentralVisTowerMachine.FRAME_LEVEL_KEY,
+                GTMaterials.StainlessSteel, GTMaterials.TungstenSteel,
+                GTMaterials.HSSG, GTMaterials.NaquadahAlloy);
     }
 
     private CentralVisTowerPatterns() {}

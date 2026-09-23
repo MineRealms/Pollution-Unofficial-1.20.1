@@ -33,6 +33,10 @@ import java.util.List;
  * {@link ManaReceiver} and is exposed through the {@code MANA_RECEIVER}
  * capability (see {@link ManaHatchCapabilityEvents}) so mana bursts and sparks
  * can charge the input hatch.</p>
+ *
+ * <p>The per-tick transfer lives in {@link #tickManaTransfer()}, which
+ * {@link WirelessManaHatchMachine} overrides to also exchange with the
+ * wireless mana network; capacities and transfer rates are unchanged.</p>
  */
 public class ManaHatchMachine extends TieredPartMachine implements IManaHatch, ManaReceiver {
 
@@ -70,7 +74,7 @@ public class ManaHatchMachine extends TieredPartMachine implements IManaHatch, M
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            transferSubscription = subscribeServerTick(this::pushManaToNeighbours);
+            transferSubscription = subscribeServerTick(this::tickManaTransfer);
         }
     }
 
@@ -83,7 +87,12 @@ public class ManaHatchMachine extends TieredPartMachine implements IManaHatch, M
         }
     }
 
-    private void pushManaToNeighbours() {
+    /**
+     * Server-side per-tick transfer hook; the default pushes stored mana to
+     * adjacent receivers. Wireless parts override this to also exchange with
+     * the {@link WirelessManaNetwork}.
+     */
+    protected void tickManaTransfer() {
         if (!isExportHatch) return;
         Level level = getLevel();
         if (level == null) return;

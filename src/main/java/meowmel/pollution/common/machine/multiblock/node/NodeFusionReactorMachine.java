@@ -1,12 +1,18 @@
 package meowmel.pollution.common.machine.multiblock.node;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -23,10 +29,16 @@ import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.item.PackagedAuraNode;
 import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 import meowmel.pollution.common.machine.multiblock.MagicRecipeLogic;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Node fusion reactor (LuV/ZPM/UV): runs fusion and node-fusion recipes with
@@ -36,13 +48,24 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  * {@code InfusedLight}/{@code InfusedDark}/{@code InfusedAura}. The TC6
  * ambient-aura cleanliness check becomes an industrial-pollution check
  * ({@code PollutionEngine.get <= 4.2}). Node effect tables (parallel, energy,
- * progress, mansus counts) keep the upstream fall-through switch semantics.
- * Fusion start-cost handling of modern GT is not reimplemented; recipes still
- * run off the energy hatches (documented limitation).</p>
+ * progress, mansus counts) keep the upstream fall-through switch semantics.</p>
+ *
+ * <p>Fusion startup cost: upstream kept an internal energy buffer fed from the
+ * input energy hatches ({@code energyHatches × 2^(tier-6) × 10M EU}) plus a
+ * persisted {@code heat} counter. A recipe could only start when
+ * {@code euToStart <= buffer capacity}, and the missing
+ * {@code euToStart - heat} EU was drained from the buffer first (upstream's
+ * {@code heat = heatDiff} store bug is fixed to the modern
+ * {@code heat += heatDiff}). The port mirrors that: the recipe logic charges
+ * the startup EU before the recipe starts and blocks otherwise; heat and the
+ * buffer charge are saved to NBT.</p>
  */
 public class NodeFusionReactorMachine extends MagicMultiblockController implements ICleanVis {
 
+    private static final long INTERNAL_ENERGY_PER_HATCH = 10_000_000L;
+
     private final int tier;
+    private final NotifiableEnergyContainer internalEnergyContainer;
 
     private TickableSubscription tickSubscription;
     private int overallParallelAmount = 1;
@@ -50,9 +73,18 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
     private int overallWhiteAmount;
     private int overallStarryAmount;
 
+    /** Persisted fusion startup heat (EU) accumulated from the recipes. */
+    private long heat;
+    /** Persisted internal buffer charge, kept across structure re-forms. */
+    private long storedInternalEnergy;
+    @Nullable
+    private EnergyContainerList inputEnergyContainers;
+
     public NodeFusionReactorMachine(IMachineBlockEntity holder, int tier) {
         super(holder);
         this.tier = tier;
+        this.internalEnergyContainer = new NotifiableEnergyContainer(this, 0L, 0L, 0L, 0L, 0L);
+        this.internalEnergyContainer.setCapabilityValidator(side -> side == null);
     }
 
     public int getTier() {
@@ -99,6 +131,55 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
         return !(getLevel() instanceof ServerLevel level) || PollutionEngine.get(level, getPos()) <= 4.2;
     }
 
+    // ////////////////////////////////////
+    // ***** Fusion startup buffer *****//
+    // ////////////////////////////////////
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        List<IEnergyContainer> containers = new ArrayList<>();
+        for (IRecipeHandler<?> handler : getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP)) {
+            if (handler instanceof IEnergyContainer container && container != internalEnergyContainer) {
+                containers.add(container);
+            }
+        }
+        inputEnergyContainers = new EnergyContainerList(containers);
+        internalEnergyContainer.resetBasicInfo(calculateEnergyStorageFactor(containers.size()),
+                0L, 0L, 0L, 0L);
+        internalEnergyContainer.setEnergyStored(
+                Math.min(storedInternalEnergy, internalEnergyContainer.getEnergyCapacity()));
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        storedInternalEnergy = internalEnergyContainer.getEnergyStored();
+        internalEnergyContainer.resetBasicInfo(0L, 0L, 0L, 0L, 0L);
+        internalEnergyContainer.setEnergyStored(0L);
+        inputEnergyContainers = null;
+        super.onStructureInvalid();
+    }
+
+    /** Upstream: {@code energyHatches × 2^(tier-6) × 10M EU} internal capacity. */
+    private long calculateEnergyStorageFactor(int energyInputAmount) {
+        return energyInputAmount * (long) Math.pow(2.0, tier - 6) * INTERNAL_ENERGY_PER_HATCH;
+    }
+
+    /**
+     * Moves energy from the input hatches into the internal startup buffer, so
+     * the reactor can accumulate the fusion {@code eu_to_start} cost over time.
+     */
+    private void chargeInternalEnergyBuffer() {
+        if (inputEnergyContainers == null) {
+            return;
+        }
+        long space = internalEnergyContainer.getEnergyCapacity() - internalEnergyContainer.getEnergyStored();
+        if (space <= 0L) {
+            return;
+        }
+        internalEnergyContainer.addEnergy(inputEnergyContainers.removeEnergy(space));
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -117,7 +198,11 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
     }
 
     private void tickReactor() {
-        if (!(getLevel() instanceof ServerLevel) || !isFormed()) {
+        if (!(getLevel() instanceof ServerLevel)) {
+            return;
+        }
+        chargeInternalEnergyBuffer();
+        if (!isFormed()) {
             return;
         }
         if (getOffsetTimer() % 20 != 0) {
@@ -226,6 +311,38 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
         return NodeFusionReactorPatterns.create(definition);
     }
 
+    // ////////////////////////////////////
+    // ***** Persistence / UI *****//
+    // ////////////////////////////////////
+
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        if (isFormed()) {
+            storedInternalEnergy = internalEnergyContainer.getEnergyStored();
+        }
+        tag.putLong("NodeFusionHeat", heat);
+        tag.putLong("NodeFusionStoredEnergy", storedInternalEnergy);
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        heat = tag.getLong("NodeFusionHeat");
+        storedInternalEnergy = tag.getLong("NodeFusionStoredEnergy");
+        internalEnergyContainer.setEnergyStored(storedInternalEnergy);
+    }
+
+    @Override
+    public void addDisplayText(List<Component> textList) {
+        super.addDisplayText(textList);
+        if (isFormed()) {
+            textList.add(Component.literal("Fusion Heat: " + heat + " EU"));
+            textList.add(Component.literal("Fusion Startup Buffer: " + internalEnergyContainer.getEnergyStored()
+                    + " / " + internalEnergyContainer.getEnergyCapacity() + " EU"));
+        }
+    }
+
     protected class NodeFusionReactorRecipeLogic extends MagicRecipeLogic {
 
         private boolean blockedByCleanVis;
@@ -244,7 +361,39 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
                     && !NodeFusionReactorMachine.this.isCleanVis()) {
                 return ActionResult.FAIL_NO_REASON;
             }
+            if (!chargeFusionStartup(recipe)) {
+                return ActionResult.FAIL_NO_REASON;
+            }
             return ActionResult.SUCCESS;
+        }
+
+        /**
+         * Upstream fusion startup cost: a recipe may only start when its
+         * {@code eu_to_start} fits the internal buffer capacity; the missing
+         * {@code eu_to_start - heat} EU is then drained from the buffer and
+         * added to the heat counter, blocking the start otherwise.
+         */
+        private boolean chargeFusionStartup(GTRecipe recipe) {
+            if (!recipe.data.contains("eu_to_start")) {
+                return true;
+            }
+            long euToStart = recipe.data.getLong("eu_to_start");
+            if (euToStart <= 0L) {
+                return true;
+            }
+            if (euToStart > internalEnergyContainer.getEnergyCapacity()) {
+                return false;
+            }
+            long heatDiff = euToStart - heat;
+            if (heatDiff <= 0L) {
+                return true;
+            }
+            if (internalEnergyContainer.getEnergyStored() < heatDiff) {
+                return false;
+            }
+            internalEnergyContainer.removeEnergy(heatDiff);
+            heat += heatDiff;
+            return true;
         }
 
         @Override

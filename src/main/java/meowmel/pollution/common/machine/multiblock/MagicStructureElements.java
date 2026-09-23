@@ -7,8 +7,11 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import net.minecraft.world.level.block.Block;
+
+import java.util.Arrays;
 
 /**
  * Shared structure predicates of the magic multiblocks.
@@ -96,6 +99,37 @@ public final class MagicStructureElements {
      */
     public static TraceabilityPredicate frame(Material material) {
         return Predicates.blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, material).get());
+    }
+
+    /**
+     * Tiered frame casing: accepts the given GT frame materials and records the
+     * matched level (1..N, in declaration order) into the match context under
+     * {@code contextKey}. Controllers read the level back with
+     * {@code getMultiblockState().getMatchContext().get(contextKey)}.
+     *
+     * <p>Upstream matched GTQT tiered frame casings through
+     * {@code POTieredCasingGroups.frames()} and read the tier from the formed
+     * structure; the port has no tiered-casing registry, so the substituted GT
+     * frame materials carry the levels.</p>
+     */
+    public static TraceabilityPredicate tieredFrames(String contextKey, Material... materials) {
+        return Predicates.custom(state -> {
+            Block block = state.getBlockState().getBlock();
+            for (int level = 0; level < materials.length; level++) {
+                if (frameBlock(materials[level]) == block) {
+                    state.getMatchContext().set(contextKey, level + 1);
+                    return true;
+                }
+            }
+            return false;
+        }, () -> Arrays.stream(materials)
+                .map(MagicStructureElements::frameBlock)
+                .map(BlockInfo::fromBlock)
+                .toArray(BlockInfo[]::new));
+    }
+
+    private static Block frameBlock(Material material) {
+        return GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, material).get();
     }
 
     private MagicStructureElements() {}

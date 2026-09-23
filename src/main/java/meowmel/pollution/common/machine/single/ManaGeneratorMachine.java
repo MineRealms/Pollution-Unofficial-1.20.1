@@ -1,5 +1,6 @@
 package meowmel.pollution.common.machine.single;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import meowmel.pollution.api.capability.IManaHatch;
 import net.minecraft.core.BlockPos;
@@ -23,8 +24,12 @@ import java.util.List;
  *   <li>GregTech CEu Modern has no {@code SimpleGeneratorMetaTileEntity}; the
  *       machine extends the port's {@link PollutionEnergyMachine} with
  *       {@code isEnergyEmitter() = true}, which keeps the upstream
- *       {@code V[tier] * 64} buffer and emitter behaviour. The recipe map is
- *       not referenced because upstream registered no recipes for it.</li>
+ *       {@code V[tier] * 64} buffer and emitter behaviour. The port now
+ *       registers the tiered {@code mana_gen_recipes} entries
+ *       ({@code BotaniaRecipes#manaGenRecipes}); the machine reads its own
+ *       tier's entry rate ({@code V[tier]}) and caps its mana intake to that
+ *       rate per tick, which is the same 1 mana = 1 EU conversion upstream
+ *       applied unconditionally.</li>
  *   <li>1.12 Botania detected receivers with {@code instanceof IManaReceiver};
  *       the port implements Botania's {@link ManaReceiver} and is exposed
  *       through the {@code MANA_RECEIVER} capability by
@@ -33,6 +38,8 @@ import java.util.List;
  * </ul>
  */
 public class ManaGeneratorMachine extends PollutionEnergyMachine implements IManaHatch, ManaReceiver {
+
+    private long manaIntakeThisTick;
 
     public ManaGeneratorMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
@@ -46,7 +53,9 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
     @Override
     protected void pollutionTick() {
         // Mana is stored directly in the energy container; emission is handled
-        // by the container's side output condition.
+        // by the container's side output condition. Reset the per-tick intake
+        // budget granted by the mana_gen_recipes entry of this tier.
+        manaIntakeThisTick = 0L;
     }
 
     // ////////////////////////////////////
@@ -70,9 +79,18 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
 
     @Override
     public void receiveMana(long mana) {
-        if (mana > 0L && !isFull()) {
-            energyContainer.addEnergy(mana);
+        if (mana <= 0L || isFull()) {
+            return;
         }
+        // Per-tick intake rate from the tier's mana_gen_recipes entry (V[tier]).
+        long rate = GTValues.V[Math.min(getTier(), GTValues.V.length - 1)];
+        long remaining = Math.max(0L, rate - manaIntakeThisTick);
+        if (remaining <= 0L) {
+            return;
+        }
+        long accepted = Math.min(mana, remaining);
+        energyContainer.addEnergy(accepted);
+        manaIntakeThisTick += accepted;
     }
 
     /** A generator refuses to give mana back, exactly like upstream. */

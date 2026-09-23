@@ -90,6 +90,25 @@ public final class BotaniaRecipes {
         rune(provider);
         flowers(provider);
         manahatch(provider);
+        manaGenRecipes(provider);
+    }
+
+    /**
+     * Upstream {@code mana_gen_recipes}: the mana generator's tiered
+     * conversion specs. The map has no item/fluid slots (EU out only) — each
+     * recipe carries the per-tick EU rate the machine of that tier converts
+     * mana at (1 mana = 1 EU, so the EUt equals the accepted mana per tick).
+     * {@code ManaGeneratorMachine} reads the rate from this map.
+     */
+    private static void manaGenRecipes(Consumer<FinishedRecipe> provider) {
+        int[] tiers = { GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV };
+        for (int tier : tiers) {
+            GTRecipeBuilder.of(id("mana_gen/" + GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT)),
+                    BotaniaRecipeMaps.MANA_GEN_RECIPES)
+                    .duration(1)
+                    .EUt(-GTValues.V[tier])
+                    .save(provider);
+        }
     }
 
     // ////////////////////////////////////

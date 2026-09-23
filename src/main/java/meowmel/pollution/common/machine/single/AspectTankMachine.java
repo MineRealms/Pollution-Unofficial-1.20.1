@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
+import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
@@ -21,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -36,8 +39,10 @@ import dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode;
 import dev.tc4port.thaumcraft.api.essentia.EssentiaTransport;
 import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.lib.GTEssentiaHandler;
+import meowmel.pollution.common.machine.PollutionMachines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -87,7 +92,13 @@ import java.util.Set;
  * <p>Container items in the input slot are handled through
  * {@link EssentiaContainerApi} (jars and phials): a filled container is drained
  * into the tank and the emptied stack is moved to the output slot, an empty
- * container is filled from the tank and moved to the output slot.</p>
+ * container is filled from the tank and moved to the output slot. The upstream
+ * "tank in tank" interaction is ported as well: an aspect tank machine item in
+ * the input slot is drained into the block tank when it carries stored aspect,
+ * or filled from the block tank up to its own tier capacity when empty. The
+ * item state uses the machine's own {@code @DropSaved} persisted keys
+ * ({@code aspectTag} / {@code amount}), so breaking and replacing a tank keeps
+ * its contents.</p>
  *
  * <p>Deviations / not ported:</p>
  * <ul>
@@ -123,12 +134,18 @@ import java.util.Set;
  *       {@code takeFromContainer(aspect, i)} was all-or-nothing at exactly
  *       {@code i}. {@code addEssentia} returns the inserted amount (the
  *       complement of upstream's returned remainder).</li>
- *   <li>"Tank in tank" item stacking (upstream {@code writeItemStackData} into
- *       another tank item) is not ported: the item round-trip itself works
- *       through {@link IDropSaveMachine} (breaking the block stores aspect,
- *       filter and voiding into the dropped stack, placement restores them),
- *       but filling an aspect-tank item from an aspect tank is left as a TODO
- *       because GTCEu machine items have no generic block-entity-data API.</li>
+ *   <li>"Tank in tank" item stacking is ported: the upstream
+ *       {@code writeItemStackData} / {@code initFromItemStackData} round-trip
+ *       maps onto GregTech's {@link IDropSaveMachine} plus {@code @DropSaved}
+ *       on the aspect / amount / filter / voiding fields, and the upstream
+ *       {@code checkItemIsMTE} container branches of
+ *       {@code fillInternalTankFromAspectContainer} /
+ *       {@code takeFromContainer(ItemStack, boolean)} are implemented as
+ *       {@link #drainAspectTankItem(ItemStack)} and
+ *       {@link #fillAspectTankItem(ItemStack, AspectId)}. Upstream limited the
+ *       item to its own tier capacity and returned a fresh base stack; the port
+ *       writes the item in place and preserves its remaining NBT (filter,
+ *       voiding), so a carried filter survives the tank-to-tank transfer.</li>
  *   <li>{@code setSuction} does not exist in TC4R; tubes compute suction from
  *       the source's own values, so upstream's no-op setter is dropped.</li>
  *   <li>The 1.12 radius FX packet is replaced by TC4R's own essentia FX, and
@@ -178,22 +195,37 @@ public class AspectTankMachine extends TieredMachine
     private final NotifiableItemStackHandler importItems;
     private final NotifiableItemStackHandler exportItems;
 
+    /**
+     * Persisted aspect state. {@code @DropSaved} is what makes the item
+     * round-trip work: {@code IDropSaveMachine.saveToItem} writes exactly these
+     * keys into the dropped stack and {@code loadFromItem} restores them on
+     * placement. The constants below mirror those keys for the "tank in tank"
+     * container interaction.
+     */
+    private static final String ITEM_TAG_ASPECT = "aspectTag";
+    private static final String ITEM_TAG_AMOUNT = "amount";
+    private static final String ITEM_TAG_FILTER = "filterTag";
+
     @Persisted
     @DescSynced
     @RequireRerender
+    @DropSaved
     private String aspectTag = "";
 
     @Persisted
     @DescSynced
+    @DropSaved
     private int amount;
 
     @Persisted
     @DescSynced
     @RequireRerender
+    @DropSaved
     private String filterTag = "";
 
     @Persisted
     @DescSynced
+    @DropSaved
     private boolean voiding;
 
     @Persisted
@@ -311,14 +343,25 @@ public class AspectTankMachine extends TieredMachine
      * Upstream {@code fillInternalTankFromAspectContainer}: drains the first
      * aspect of a filled jar/phial in the input slot into the tank. Like
      * upstream, the whole content must fit and the emptied container must fit
-     * into the output slot, otherwise nothing happens.
+     * into the output slot, otherwise nothing happens. A stacked input is
+     * processed one item at a time, as upstream's {@code extractItem(i, 1)} did.
+     *
+     * <p>The port additionally accepts a filled aspect tank item (upstream's
+     * "tank in tank" jar-in-jar branch), which carries its stored aspect
+     * through the machine's drop-saved item data instead of the TC4R container
+     * API.</p>
      */
     private void fillTankFromContainer(Level level) {
         ItemStack input = importItems.getStackInSlot(0);
         if (input.isEmpty()) {
             return;
         }
-        AspectAmounts contents = EssentiaContainerApi.contents(input);
+        if (isAspectTankItem(input)) {
+            drainAspectTankItem(input);
+            return;
+        }
+        ItemStack container = input.copyWithCount(1);
+        AspectAmounts contents = EssentiaContainerApi.contents(container);
         if (contents.amounts().isEmpty()) {
             return;
         }
@@ -329,10 +372,10 @@ public class AspectTankMachine extends TieredMachine
         if (itemAmount <= 0 || !doesContainerAccept(aspect)) {
             return;
         }
-        if (!canStoreAll(aspect, itemAmount) || !canInsertIntoExport(input)) {
+        if (!canStoreAll(aspect, itemAmount) || !canInsertIntoExport(container)) {
             return;
         }
-        ItemStack emptied = input.copy();
+        ItemStack emptied = container.copy();
         int simulated = EssentiaContainerApi.extract(level, emptied, aspect, itemAmount,
                 EssentiaTransferMode.SIMULATE);
         if (simulated < itemAmount) {
@@ -340,7 +383,29 @@ public class AspectTankMachine extends TieredMachine
         }
         EssentiaContainerApi.extract(level, emptied, aspect, itemAmount, EssentiaTransferMode.EXECUTE);
         storeInternal(aspect, itemAmount);
-        importItems.setStackInSlot(0, ItemStack.EMPTY);
+        extractInputItem(input);
+        insertIntoExport(emptied);
+    }
+
+    /**
+     * Upstream {@code fillInternalTankFromAspectContainer} MTE branch: drains
+     * the aspect stored in an aspect tank item into the block tank. All of the
+     * item's content must fit and the emptied item must fit into the output
+     * slot, otherwise the interaction is skipped.
+     */
+    private void drainAspectTankItem(ItemStack input) {
+        AspectId aspect = readItemAspect(input);
+        int itemAmount = readItemAmount(input);
+        if (aspect == null || itemAmount <= 0 || !doesContainerAccept(aspect) || !canStoreAll(aspect, itemAmount)) {
+            return;
+        }
+        ItemStack emptied = input.copyWithCount(1);
+        clearItemState(emptied);
+        if (!canInsertIntoExport(emptied)) {
+            return;
+        }
+        storeInternal(aspect, itemAmount);
+        extractInputItem(input);
         insertIntoExport(emptied);
     }
 
@@ -349,6 +414,10 @@ public class AspectTankMachine extends TieredMachine
      * jar/phial in the input slot from the tank. Upstream used the fixed jar
      * (250) / phial (10) sizes; the port uses the container's own capacity from
      * {@link EssentiaContainerApi} (TC4R phials hold 8).
+     *
+     * <p>An empty aspect tank item is filled up to its own tier capacity
+     * (upstream's "tank in tank" branch), so a bigger tank item can carry more
+     * than a jar.</p>
      */
     private void fillContainerFromTank(Level level) {
         if (amount <= 0) {
@@ -362,15 +431,20 @@ public class AspectTankMachine extends TieredMachine
         if (input.isEmpty()) {
             return;
         }
-        int capacity = EssentiaContainerApi.capacity(input);
-        if (capacity <= 0 || !EssentiaContainerApi.contents(input).amounts().isEmpty()) {
+        if (isAspectTankItem(input)) {
+            fillAspectTankItem(input, stored);
             return;
         }
-        if (!canInsertIntoExport(input)) {
+        ItemStack container = input.copyWithCount(1);
+        int capacity = EssentiaContainerApi.capacity(container);
+        if (capacity <= 0 || !EssentiaContainerApi.contents(container).amounts().isEmpty()) {
+            return;
+        }
+        if (!canInsertIntoExport(container)) {
             return;
         }
         int want = Math.min(amount, capacity);
-        ItemStack filled = input.copy();
+        ItemStack filled = container.copy();
         int inserted = EssentiaContainerApi.insert(level, filled, stored, want, EssentiaTransferMode.SIMULATE);
         if (inserted <= 0) {
             return;
@@ -381,9 +455,54 @@ public class AspectTankMachine extends TieredMachine
             amount = 0;
             aspectTag = "";
         }
-        importItems.setStackInSlot(0, ItemStack.EMPTY);
+        extractInputItem(input);
         insertIntoExport(filled);
         markDirty();
+    }
+
+    /**
+     * Upstream {@code takeFromContainer(ItemStack, boolean)} MTE branch: fills
+     * an aspect tank item from the block tank. The item is written with the
+     * same managed persistent keys the machine itself uses on drop, so placing
+     * the filled item restores its contents into the next tank block.
+     */
+    private void fillAspectTankItem(ItemStack input, AspectId stored) {
+        int itemCapacity = aspectTankItemCapacity(input);
+        if (itemCapacity <= 0 || readItemAmount(input) > 0) {
+            return;
+        }
+        AspectId itemFilter = readItemFilter(input);
+        if (itemFilter != null && !itemFilter.equals(stored)) {
+            return;
+        }
+        ItemStack filled = input.copyWithCount(1);
+        if (!canInsertIntoExport(filled)) {
+            return;
+        }
+        int inserted = Math.min(amount, itemCapacity);
+        if (inserted <= 0) {
+            return;
+        }
+        writeItemState(filled, stored, inserted);
+        amount -= inserted;
+        if (amount <= 0) {
+            amount = 0;
+            aspectTag = "";
+        }
+        extractInputItem(input);
+        insertIntoExport(filled);
+        markDirty();
+    }
+
+    /** Consumes exactly one item from the input slot, leaving any stack remainder. */
+    private void extractInputItem(ItemStack input) {
+        if (input.getCount() <= 1) {
+            importItems.setStackInSlot(0, ItemStack.EMPTY);
+        } else {
+            ItemStack remainder = input.copy();
+            remainder.shrink(1);
+            importItems.setStackInSlot(0, remainder);
+        }
     }
 
     private boolean canInsertIntoExport(ItemStack stack) {
@@ -392,6 +511,86 @@ public class AspectTankMachine extends TieredMachine
 
     private void insertIntoExport(ItemStack stack) {
         exportItems.insertItemInternal(0, stack, false);
+    }
+
+    // ////////////////////////////////////
+    // ***** aspect tank item ("tank in tank") *****//
+    // ////////////////////////////////////
+
+    /** True for the machine item of any registered aspect tank tier. */
+    private static boolean isAspectTankItem(ItemStack stack) {
+        if (!(stack.getItem() instanceof MetaMachineItem machineItem)) {
+            return false;
+        }
+        MachineDefinition definition = machineItem.getDefinition();
+        MachineDefinition[] tanks = PollutionMachines.ASPECT_TANK;
+        if (definition == null || tanks == null) {
+            return false;
+        }
+        for (MachineDefinition tank : tanks) {
+            if (tank == definition) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Storage capacity of the aspect tank item, taken from its definition tier. */
+    private static int aspectTankItemCapacity(ItemStack stack) {
+        if (!isAspectTankItem(stack) || !(stack.getItem() instanceof MetaMachineItem machineItem)) {
+            return 0;
+        }
+        MachineDefinition definition = machineItem.getDefinition();
+        MachineDefinition[] tanks = PollutionMachines.ASPECT_TANK;
+        if (definition == null || tanks == null) {
+            return 0;
+        }
+        int tier = definition.getTier();
+        return tier >= 1 && tier < tanks.length ? capacityForTier(tier) : 0;
+    }
+
+    @Nullable
+    private static AspectId readItemAspect(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag == null ? null : parseAspect(tag.getString(ITEM_TAG_ASPECT));
+    }
+
+    /** Item filter ("lock"), mirroring the block tank's own filter semantics. */
+    @Nullable
+    private static AspectId readItemFilter(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag == null ? null : parseAspect(tag.getString(ITEM_TAG_FILTER));
+    }
+
+    private static int readItemAmount(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            return 0;
+        }
+        int capacity = aspectTankItemCapacity(stack);
+        int stored = tag.getInt(ITEM_TAG_AMOUNT);
+        if (stored <= 0) {
+            return 0;
+        }
+        return capacity > 0 ? Math.min(stored, capacity) : stored;
+    }
+
+    private static void writeItemState(ItemStack stack, AspectId aspect, int itemAmount) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(ITEM_TAG_ASPECT, aspect.serialized());
+        tag.putInt(ITEM_TAG_AMOUNT, itemAmount);
+    }
+
+    private static void clearItemState(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null) {
+            return;
+        }
+        tag.remove(ITEM_TAG_ASPECT);
+        tag.remove(ITEM_TAG_AMOUNT);
+        if (tag.isEmpty()) {
+            stack.setTag(null);
+        }
     }
 
     // ////////////////////////////////////

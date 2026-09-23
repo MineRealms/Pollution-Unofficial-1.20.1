@@ -374,9 +374,15 @@ public final class Pollution {
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode0", "Energy output");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.mode1", "Fluid output");
             provider.add("pollution.machine.wireless_mana_hatch.tooltip",
-                    "Wireless mana hatch: the wireless network is not ported yet; currently behaves like a normal mana hatch");
+                    "Wireless mana hatch: output hatches deposit mana into the per-dimension energy-mana network; input hatches draw from it");
             provider.add("pollution.machine.wireless_mana_pool_hatch.tooltip",
-                    "Wireless mana pool hatch: the wireless network is not ported yet; currently behaves like a normal mana pool hatch");
+                    "Wireless mana pool hatch: output hatches deposit pure mana into the per-dimension pool network; input hatches draw from it");
+            provider.add("pollution.machine.mana_plate.throttle_modify", "Speed throttle: ");
+            provider.add("pollution.machine.magic_turbine.no_rotor_holder", "Missing rotor holder");
+            provider.add("pollution.machine.magic_turbine.no_rotor",
+                    "No rotor in the holder - insert a rotor to run");
+            provider.add("material.pollution.mana", "Mana");
+            provider.add("fluid.pollution.mana", "Liquid Mana");
             provider.add("pollution.magic.failure.catalyst", "Missing required magic catalyst");
             provider.add("pollution.modeChanged.message", "Machine mode switched");
             provider.add("pollution.item.vis_checker.tooltip",
@@ -470,7 +476,7 @@ public final class Pollution {
             provider.add("pollution.machine.magic_large_turbine.tooltip.1",
                     "Burns the MAGIC_TURBINE_FUELS map: aspect fluids, compounds and the two propellants");
             provider.add("pollution.machine.magic_large_turbine.tooltip.2",
-                    "Structure: 1 rotor holder + 1 mana output hatch + 1 maintenance hatch (an empty rotor holder is enough)");
+                    "Structure: 1 rotor holder (a rotor is required and wears out while running) + 1 mana output hatch + 1 maintenance hatch");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.tooltip.1",
                     "Runs Conway's Game of Life on the 31×31 cell board above the controller");
             provider.add("pollution.machine.pollution_multi_dan_de_life_on.tooltip.2",

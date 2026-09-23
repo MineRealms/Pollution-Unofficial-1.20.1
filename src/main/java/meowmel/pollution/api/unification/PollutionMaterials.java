@@ -39,6 +39,8 @@ public final class PollutionMaterials {
 
     // 魔力/超导链（FirstDegreeMaterials 第二批）
     public static Material Impuremana;
+    /** Pure Botania mana as a fluid (Life Activation Garden mode 1 output). */
+    public static Material Mana;
     public static Material KQGold;
     public static Material CrudeLk99;
     public static Material MagicalSuperconductiveLiquid;
