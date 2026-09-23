@@ -863,37 +863,38 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 
 ---
 
-## 6. 未实现 / 偏差 / 疑似缺口清单
+## 6. 未实现 / 偏差 / 已知缺口清单（2026-09-23 更新）
 
-以下内容按源码明确标注为未实现、偏差，或经阅读发现“代码路径不可达”，使用时请特别注意。
+下列清单已按当前代码复核：✅ = 已补齐，⚠️ = 仍有偏差/限制。
 
 **结构与可达性**
-1. **Node Blast Furnace 结构缺少物品/流体仓**：`B` 只允许输入能源仓/激光仓/维护仓，而机器代码需要 `ItemBusPartMachine` 与 `FluidHatchPartMachine`；二者为 null 时直接返回。节点→Light/Dark 功能不可达，普通配方也缺物品/流体接口（`NodeBlastFurnaceMachine.java:65-69`、`NodeBlastFurnacePatterns.java:33-46`）。
-2. **Central Vis Tower 无法输入 Infused Aura**：结构 `K` 只允许输出流体仓，代码却要求输入 4 mB Infused Aura 维护费；正常玩法下很可能永远无法启动（`CentralVisTowerMachine.java:85-89`、`CentralVisTowerPatterns.java:44-48`）。
-3. **Node Producer 扣料/产出节奏不一致**：每 tick 扣 EU+流体，但每 `duration` 秒才产出一个节点（`NodeProducerMachine.java:90-109`）。
-4. **Node Fusion Reactor 的节点并行未生效**：`overallParallelAmount` 赋值后无人读取（`NodeFusionReactorMachine.java:38, 144`）。
-5. **Node Fusion Reactor 的洁净度检查未接线**：实现了 `ICleanVis.isCleanVis()`（污染 ≤ 4.2），但没有任何调用方（`ICleanVis.java:4-8`）。
-6. **Node Fusion Reactor 聚变启动成本未实现**：类注释明确说明（`NodeFusionReactorMachine.java:28-31`）。
+1. ✅ **Node Blast Furnace**：`B` 现已接受输入物品仓与输入流体仓（`NodeBlastFurnacePatterns`），节点→Light/Dark 可达。
+2. ✅ **Central Vis Tower**：`K` 已接受输入流体仓（4 mB Infused Aura 维护费可支付），并已输出星魔素（`CentralVisTowerMachine:159`）。
+3. ✅ **Node Producer 扣料/产出节奏**：每 tick 扣 EU+流体，计时器按秒推进（`getOffsetTimer() % 20`），耗时 = `ceil(30/(EU等级-3))` **秒**。
+4. ✅ **Node Fusion Reactor 并行**：`overallParallelAmount` 已在并行计算中生效。
+5. ✅ **Node Fusion Reactor 洁净度检查**：`isCleanVis()` 已在配方逻辑中接线（两处）。
+6. ✅ **Node Fusion Reactor 聚变启动成本**：已有内部启动缓冲 + `chargeFusionStartup(recipe)` 门槛。
 
 **功能缺失 / 简化**
-7. **Central Vis Tower 不产 Starry Mansus**（类注释 `CentralVisTowerMachine.java:39-40`）。
-8. **Essence Collector 的聚焦水晶模式未实现**（类注释 `EssenceCollectorMachine.java:32-34`）。
-9. **Infused Exchange 每 10 tick 只处理一个原始方面**，且遇到未映射方面直接 return（`InfusedExchangeMachine.java:77-97`）。
-10. **Aspect Tank 无 GUI**（工具交互替代）、“罐中罐”物品填充为 TODO（类注释 `AspectTankMachine.java:74-104`）。
-11. **无线魔力仓 = 普通魔力仓**：`WirelessManager` 未移植（类注释 `WirelessManaHatchMachine.java:12-16`）。
-12. **Mana Plate 节流阀未移植**：成型后固定最大档（类注释 `ManaPlateMachine.java:32-35`）。
-13. **魔法涡轮无转子耐久消耗**（类注释 `MagicLargeTurbineMachine.java:16-18`）。
-14. **Life Activation Garden 模式 1（魔力流体）依赖未移植的 `pollution:mana` 流体**：流体缺失时能量缓存只存不发（`MultiDanDeLifeOnMachine.java:142-147`）。
-15. **Mana Generator 不引用 `mana_gen_recipes`**：该配方表存在但没有配方，转换逻辑是 1 mana = 1 EU（`ManaGeneratorMachine.java:20-24`、`BotaniaRecipeMaps.java:53-56`）。
-16. **Magic Multiblock 的 Mana / Life Essence / Astral 资源**：`MagicMultiblockController` 保留为未实现系统；要求这些资源的配方会失败（`MagicMultiblockController.java:30-34, 160-191`、`MagicRecipeLogic.java:79-93`）。**Tarot 已移植**（`TarotHatchMachine` + `ITarotHatch` 发现 + 配方授权检查）；增幅数值仍受星辉晶圆门槛限制（见 `docs/HATCH_SEMANTICS.md` §4）。
-17. **Mega Mana Turbine 催化剂材料**：代码运行时按 `pollution:black_mansus` 等 id 解析；若注册表缺失则催化剂等级为 0（`MegaManaTurbineMachine.java:44-54, 209-216`）。
+7. ⚠️ **Central Vis Tower**：星魔素已产出；上游的其余次要产物映射仍按移植版简化。
+8. ✅ **Essence Collector 聚焦水晶模式**：已实现（输入总线放 `thaumcraft:crystal_essence`，读取其原始要素作过滤，状态持久化并显示）。
+9. ⚠️ **Infused Exchange 每 10 tick 只处理一个原始方面**，遇到未映射方面直接 return（保持上游限制）。
+10. ✅ **Aspect Tank**：已有 GUI（信息面板 + 输入/输出槽），"罐中罐"（源质缸物品）填入/取出已实现。
+11. ✅ **无线魔力仓**：已实现按维度持久化的无线网络（`WirelessManaNetwork`，SavedData；输出仓存入 / 输入仓提取；能源魔力与纯魔力两套独立缓存）。
+12. ✅ **Mana Plate 节流阀**：已实现（UI 中 `[-] [+]` 调节 1..速度上限，持久化，默认最大档）。
+13. ⚠️ **魔法涡轮转子耐久**：转子必须存在且运行中消耗耐久（复用 GT `IRotorHolderMachine`），损坏后中止并清空进度；**转速/输出倍率仍不随转子功率缩放**（上游的生成缩放未移植）。
+14. ✅ **Life Activation Garden 模式 1**：`pollution:mana` 流体已注册，模式 1 正常输出。
+15. ✅ **Mana Generator `mana_gen_recipes`**：已按档注册 5 条配方（EU 输出，速率 `V[tier]`），机器按该速率限制每 tick 魔力输入（仍为 1 mana = 1 EU）。
+16. ⚠️ **Magic Multiblock 的 Mana / Life Essence / Astral 资源**：框架已实现（`ManaHandlerList` 聚合魔力、`IBloodMagicHatch`/`IAstralHatch` 检查、失败信息用 `pollution.magic.failure.*`）；生命源质与星辉**仍无对应仓室机器**（上游对应血魔法仓/星辉透镜仓，未移植）。塔罗已完整移植（仓 + 22 张牌 + 授权检查 + 增幅逻辑；数值增幅仍受星辉晶圆门槛限制）。
+17. ⚠️ **Mega Mana Turbine 催化剂材料**：运行时按 `pollution:black_mansus` 等 id 解析；注册表缺失时催化剂等级为 0（当前材料齐备）。
+18. ⚠️ **无线网络限制**：网络为**全局按维度**（上游同样是 `Map<维度, Long>`，无队伍/频率区分）；无网络总量 GUI（上游亦无）。
 
 **已修复/有意偏差（相对上游）**
-18. **Vis Generator 真实抽取 vis**（上游只污染灵气不抽 vis，`VisGeneratorMachine.java:14-29`）。
-19. **Vis Provider 改为给节点充能**（上游给 TC6 环境灵气充能，`VisProviderMachine.java:20-29`）。
-20. **Small Node Generator 只在节点在槽内时发电**（上游移除节点后仍按旧倍率发电，`SmallNodeGeneratorMachine.java:19-31`）。
-21. **Life Activation Garden 年龄指数修正为 `1.0/3.0`**（上游整数除法恒为 1，`MultiDanDeLifeOnMachine.java:53-55`）。
-22. **结构框架材料替换**：GTQT 的 HyperdimensionalSilver/KQGold/Mansussteel/Thaumium → NaquadahAlloy/TungstenSteel/HSSG/StainlessSteel（`MagicStructureElements.java:36-48`）。
+19. **Vis Generator 真实抽取 vis**（上游只污染灵气不抽 vis）。
+20. **Vis Provider 改为给节点充能**（上游给 TC6 环境灵气充能）。
+21. **Small Node Generator 只在节点在槽内时发电**（上游移除节点后仍按旧倍率发电）。
+22. **Life Activation Garden 年龄指数修正为 `1.0/3.0`**（上游整数除法恒为 1）。
+23. **结构框架材料替换**：GTQT 的 HyperdimensionalSilver/KQGold/Mansussteel/Thaumium → NaquadahAlloy/TungstenSteel/HSSG/StainlessSteel。
 
 ---
 
