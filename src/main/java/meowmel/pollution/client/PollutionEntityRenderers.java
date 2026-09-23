@@ -5,9 +5,12 @@ import meowmel.pollution.client.entity.EntityBasalzRenderer;
 import meowmel.pollution.client.entity.EntityBlitzRenderer;
 import meowmel.pollution.client.entity.EntityBlizzRenderer;
 import meowmel.pollution.client.entity.PollutionSlimeRenderer;
+import meowmel.pollution.client.renderer.AspectTankRenderer;
 import meowmel.pollution.client.renderer.MineralExtractorRenderer;
 import meowmel.pollution.common.block.PollutionMiscBlocks;
 import meowmel.pollution.common.entity.PollutionEntities;
+import meowmel.pollution.common.machine.PollutionMachines;
+import com.gregtechceu.gtceu.api.GTValues;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -27,9 +30,11 @@ import net.minecraftforge.fml.common.Mod;
  * so this is a port addition (a dedicated bolt model can replace it later).</p>
  *
  * <p>Block-entity renderers: the mineral extractor keeps its upstream
- * procedural visual through {@link MineralExtractorRenderer}. The remaining
- * 1.12 TESRs are intentionally not ported yet because their block entities do
- * not exist server-side in this port:
+ * procedural visual through {@link MineralExtractorRenderer}; the aspect tanks
+ * render their in-world fluid level, aspect icon and amount through
+ * {@link AspectTankRenderer} (port of the 1.12 {@code AspectStorageRenderer}).
+ * The remaining 1.12 TESRs are intentionally not ported yet because their block
+ * entities do not exist server-side in this port:
  * {@code TesrMagicCircle} (TileEntityMagicCircle),
  * {@code TesrConstellationCrystal} (constellation crystal),
  * {@code TesrStarstreamObeliskCore}, {@code TesrStarstreamOperationCore} and
@@ -68,5 +73,22 @@ public final class PollutionEntityRenderers {
 
         event.registerBlockEntityRenderer(PollutionMiscBlocks.MINERAL_EXTRACTOR_BLOCK_ENTITY.get(),
                 MineralExtractorRenderer::new);
+
+        // Aspect tank in-world fluid level + icon + amount (port of AspectStorageRenderer).
+        for (int tier = GTValues.LV; tier <= GTValues.UHV; tier++) {
+            if (PollutionMachines.ASPECT_TANK[tier] != null) {
+                registerAspectTank(event, tier);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void registerAspectTank(EntityRenderersEvent.RegisterRenderers event, int tier) {
+        net.minecraft.world.level.block.entity.BlockEntityType<
+                meowmel.pollution.common.machine.single.AspectTankBlockEntity> type =
+                (net.minecraft.world.level.block.entity.BlockEntityType<
+                        meowmel.pollution.common.machine.single.AspectTankBlockEntity>) (net.minecraft.world.level.block.entity.BlockEntityType<?>)
+                        PollutionMachines.ASPECT_TANK[tier].getBlockEntityType();
+        event.registerBlockEntityRenderer(type, AspectTankRenderer::new);
     }
 }
