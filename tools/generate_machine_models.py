@@ -191,6 +191,28 @@ DEFAULT_OVERLAY = "gtceu:block/generators/boiler/lava/overlay_front"
 # restored from 1.12 SimpleOverlayRenderer textures (no emissive pass upstream).
 TRANSPARENT_OVERLAY = "gtceu:block/void"
 
+# Upstream Pollution machines whose getFrontOverlay() returns GregTech's
+# HPCA_OVERLAY (47 upstream classes; 40 exist in the port). Their front face
+# keeps that GT overlay, exactly like 1.12, while the other faces carry the
+# restored Pollution base texture.
+HPCA_FRONT = "gtceu:block/multiblock/hpca/overlay_front"
+HPCA_FRONT_EMISSIVE = "gtceu:block/multiblock/hpca/overlay_front_emissive"
+HPCA_FRONT_MACHINES = {
+    "magic_macerator", "magic_bender", "magic_centrifuge", "magic_wiremill",
+    "magic_autoclave", "magic_electrolyzer", "magic_extruder", "magic_mixer",
+    "magic_sifter", "magic_solidifier", "magic_brewery", "magic_cutter",
+    "magic_green_house", "magic_electric_blast_furnace", "magic_alloy_blast",
+    "magic_chemical_bath", "magic_chemical_reactor", "magic_distillery",
+    "magic_assembler", "magic_fusion_reactor",
+    "infused_exchange", "essence_smelter", "gt_essence_smelter",
+    "essence_collector", "node_producer", "large_node_generator",
+    "node_washer", "node_blast_furnace", "central_vis_tower",
+    "industrial_infusion", "industrial_pure_daisy", "small_chemical_plant",
+    "mana_infusion_reactor", "mana_petal_apothecary", "mana_rune_altar",
+    "bot_distillery", "bot_vacuum_freezer", "bot_circuit_assembler",
+    "bot_gas_collector", "pollution_multi_dan_de_life_on",
+}
+
 
 def pollution(path: str) -> str:
     """Qualify a texture path with the Pollution namespace."""
@@ -359,18 +381,21 @@ def machine_model(key: str, casing_tier: str) -> dict:
     top = MACHINE_TOP_OVERLAYS.get(key, overlay)
     bottom = MACHINE_BOTTOM_OVERLAYS.get(key, overlay)
     emissive = TRANSPARENT_OVERLAY if mapped else DEFAULT_OVERLAY
+    hpca_front = key in HPCA_FRONT_MACHINES
+    front = HPCA_FRONT if hpca_front else overlay
+    front_emissive = HPCA_FRONT_EMISSIVE if hpca_front else emissive
     return {
         "parent": "gtceu:block/machine/template/generator_machine",
         "textures": {
             "bottom": f"{casing}/bottom",
             "top": f"{casing}/top",
             "side": f"{casing}/side",
-            "overlay_front": overlay,
+            "overlay_front": front,
             "overlay_back": overlay,
             "overlay_top": top,
             "overlay_bottom": bottom,
             "overlay_side": overlay,
-            "overlay_front_emissive": emissive,
+            "overlay_front_emissive": front_emissive,
             "overlay_back_emissive": emissive,
             "overlay_top_emissive": emissive,
             "overlay_bottom_emissive": emissive,
