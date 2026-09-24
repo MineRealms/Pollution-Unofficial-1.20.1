@@ -45,6 +45,7 @@ public final class MagicRecipeDataInfos {
             recipeType.addDataInfo(MagicRecipeDataInfos::resourceCostLine);
             recipeType.addDataInfo(MagicRecipeDataInfos::gateLine);
             recipeType.addDataInfo(MagicRecipeDataInfos::processTagLine);
+            recipeType.addDataInfo(MagicRecipeDataInfos::guideLine);
         }
     }
 
@@ -120,6 +121,12 @@ public final class MagicRecipeDataInfos {
             return "";
         }
         return text("pollution.jei.recipe.process_tags", MagicProcessTag.describeMask(mask));
+    }
+
+    /** Optional static handbook metadata, used by any future real GT recipe map. */
+    private static String guideLine(CompoundTag data) {
+        List<String> lines = MagicRecipeProperties.getGuideLines(data);
+        return lines.isEmpty() ? "" : String.join(" | ", lines);
     }
 
     private static String text(String key, Object... args) {

@@ -43,7 +43,9 @@ import java.util.function.Consumer;
  *       chunk anchor / operation core: the {@code CONSTELLATION_CRYSTAL},
  *       {@code STARSTREAM_RELAY}, {@code STARSTREAM_INTERDIMENSIONAL_RELAY},
  *       {@code STARSTREAM_CHUNK_ANCHOR}, {@code STARSTREAM_OPERATION_CORE}
- *       blocks and the {@code STARSTREAM_NEXUS_OBELISK} machine are unported.
+ *       blocks are registered by the standalone Starstream network; the Astral
+ *       constellation tower producer and the full obelisk multiblock remain
+ *       outside this port's dependency scope.
  *       // 跳过: 星辉网络方块/机器未移植</li>
  *   <li>Liquid starlight inputs are Astral Sorcery content; the two recipes
  *       that remain (anchor, linker) substitute InfusedAura plus

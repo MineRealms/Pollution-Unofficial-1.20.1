@@ -1,6 +1,13 @@
 package meowmel.pollution.common.warp;
 
 import dev.tc4port.thaumcraft.api.player.PlayerWarpView;
+import meowmel.pollution.PollutionConfig;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Warp-driven events of the Pollution port.
@@ -21,6 +28,7 @@ public final class PollutionWarpEvents {
     private record Entry(String id, int weight, WarpEvent event) {}
 
     private static final java.util.List<Entry> EVENTS = new java.util.ArrayList<>();
+    private static final Map<UUID, Integer> COUNTDOWN_BOMBS = new HashMap<>();
     private static boolean initialized;
 
     public static void init() {
@@ -64,23 +72,29 @@ public final class PollutionWarpEvents {
                 level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.RED_MUSHROOM.defaultBlockState());
             }
         });
-        add("fake_explosion", 3, player -> {
-            var level = player.serverLevel();
-            level.explode(null, player.getX(), player.getY(), player.getZ(), 0.1F,
-                    net.minecraft.world.level.Level.ExplosionInteraction.NONE);
-        });
-        add("rain", 3, player -> {
-            var level = player.serverLevel();
-            level.setWeatherParameters(0, 600, true, false);
-        });
+        add("fake_explosion", 3, WarpNetwork::fakeExplosion);
+        add("fake_rain", 3, player -> WarpNetwork.rain(player, 1, 100 + player.getRandom().nextInt(60)));
+        add("rain", 3, player -> WarpNetwork.rain(player, 2, 120 + player.getRandom().nextInt(80)));
         add("junk", 4, player -> player.getInventory().placeItemBackInInventory(
                 new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ROTTEN_FLESH,
                         player.getRandom().nextInt(3) + 1)));
         add("blink", 3, player -> {
             var level = player.serverLevel();
-            double dx = (player.getRandom().nextDouble() - 0.5) * 16;
-            double dz = (player.getRandom().nextDouble() - 0.5) * 16;
-            player.teleportTo(player.getX() + dx, player.getY(), player.getZ() + dz);
+            double oldX = player.getX(), oldY = player.getY(), oldZ = player.getZ();
+            for (int attempt = 0; attempt < 16; attempt++) {
+                double x = oldX + (player.getRandom().nextDouble() - 0.5) * 24;
+                double z = oldZ + (player.getRandom().nextDouble() - 0.5) * 24;
+                var pos = net.minecraft.core.BlockPos.containing(x, oldY, z);
+                if (!level.hasChunkAt(pos) || !level.getWorldBorder().isWithinBounds(pos)) continue;
+                if (player.randomTeleport(x, oldY, z, true)) {
+                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.PORTAL,
+                            oldX, oldY + 1, oldZ, 32, 0.4, 0.7, 0.4, 0.1);
+                    level.sendParticles(net.minecraft.core.particles.ParticleTypes.PORTAL,
+                            player.getX(), player.getY() + 1, player.getZ(), 32, 0.4, 0.7, 0.4, 0.1);
+                    player.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
+                    break;
+                }
+            }
         });
         add("swamp", 3, player -> {
             var level = player.serverLevel();
@@ -90,9 +104,10 @@ public final class PollutionWarpEvents {
             }
         });
         add("countdown_bomb", 1, player -> {
-            var level = player.serverLevel();
-            level.explode(null, player.getX(), player.getY(), player.getZ(), 1.5F,
-                    net.minecraft.world.level.Level.ExplosionInteraction.NONE);
+            if (!PollutionConfig.ENABLE_COUNTDOWN_BOMB.get()) return;
+            COUNTDOWN_BOMBS.put(player.getUUID(), PollutionConfig.COUNTDOWN_BOMB_TICKS.get());
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "chat.pollution.warp.countdownbomb.tick", PollutionConfig.COUNTDOWN_BOMB_TICKS.get() / 20), true);
         });
         add("wither_rose", 3, player -> {
             var level = player.serverLevel();
@@ -144,6 +159,7 @@ public final class PollutionWarpEvents {
      * @return true when an event fired
      */
     public static boolean tick(net.minecraft.server.level.ServerPlayer player) {
+        if (!PollutionConfig.ENABLE_WARP_EVENTS.get() || !player.isAlive() || player.isSpectator()) return false;
         if (EVENTS.isEmpty()) {
             return false;
         }
@@ -155,9 +171,11 @@ public final class PollutionWarpEvents {
         if (player.getRandom().nextDouble() >= chance) {
             return false;
         }
-        int totalWeight = EVENTS.stream().mapToInt(Entry::weight).sum();
+        int totalWeight = EVENTS.stream().filter(entry -> enabled(entry.id())).mapToInt(Entry::weight).sum();
+        if (totalWeight == 0) return false;
         int roll = player.getRandom().nextInt(totalWeight);
         for (Entry entry : EVENTS) {
+            if (!enabled(entry.id())) continue;
             roll -= entry.weight();
             if (roll < 0) {
                 entry.event().trigger(player);
@@ -165,6 +183,59 @@ public final class PollutionWarpEvents {
             }
         }
         return false;
+    }
+
+    /** Advances delayed warp events. Called every server tick by {@link WarpEventHandler}. */
+    public static void tickCountdowns(MinecraftServer server) {
+        if (!PollutionConfig.ENABLE_WARP_EVENTS.get() || !PollutionConfig.ENABLE_COUNTDOWN_BOMB.get()) {
+            COUNTDOWN_BOMBS.clear();
+            return;
+        }
+        if (COUNTDOWN_BOMBS.isEmpty()) return;
+        var iterator = COUNTDOWN_BOMBS.entrySet().iterator();
+        while (iterator.hasNext()) {
+            var entry = iterator.next();
+            ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+            if (player == null || !player.isAlive() || player.isSpectator()) {
+                iterator.remove();
+                continue;
+            }
+            int left = entry.getValue() - 1;
+            if (left > 0) {
+                entry.setValue(left);
+                if (left % 20 == 0) {
+                    player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                            "chat.pollution.warp.countdownbomb.tick", left / 20), true);
+                }
+                continue;
+            }
+            player.displayClientMessage(net.minecraft.network.chat.Component.translatable(
+                    "chat.pollution.warp.countdownbomb.end"), true);
+            WarpNetwork.fakeExplosion(player);
+            iterator.remove();
+        }
+    }
+
+    public static boolean enabled(String id) {
+        var toggle = PollutionConfig.WARP_EVENTS.get(id);
+        return (toggle == null || toggle.get())
+                && (!"countdown_bomb".equals(id) || PollutionConfig.ENABLE_COUNTDOWN_BOMB.get());
+    }
+
+    /** Explicit diagnostic trigger; normal scheduling still checks the player's warp. */
+    public static boolean trigger(String id, ServerPlayer player) {
+        if (!PollutionConfig.ENABLE_WARP_EVENTS.get() || !enabled(id) || !player.isAlive()) return false;
+        for (Entry entry : EVENTS) {
+            if (entry.id().equals(id)) {
+                entry.event().trigger(player);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void clearPendingEvents() {
+        COUNTDOWN_BOMBS.clear();
     }
 
     private static int totalWarp(net.minecraft.server.level.ServerPlayer player) {

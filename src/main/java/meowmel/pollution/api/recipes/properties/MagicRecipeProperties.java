@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Recipe metadata understood by the magic multiblock logic layer.
  *
@@ -32,6 +35,9 @@ public final class MagicRecipeProperties {
     public static final String TAROT = "pollution.magic.tarot";
     public static final String PROCESS_TAG_MASK = "pollution.magic.process_tag_mask";
     public static final String CONSUMABLE_CATALYST_INPUTS = "pollution.magic.consumable_catalyst_inputs";
+    /** Prefix used by the four non-executable handbook pages in the upstream port. */
+    public static final String JEI_GUIDE_LINE_PREFIX = "pollution.magic.jei_guide_line_";
+    public static final int JEI_GUIDE_LINE_COUNT = 32;
 
     // ////////////////////////////////////
     // ***** Builder helpers *****//
@@ -82,6 +88,42 @@ public final class MagicRecipeProperties {
     /** Tarot card id (reserved). */
     public static GTRecipeBuilder tarot(GTRecipeBuilder builder, String tarotId) {
         return builder.addData(TAROT, tarotId == null ? "" : tarotId.trim());
+    }
+
+    /**
+     * Stores a static JEI handbook page on a recipe without making the recipe
+     * executable. Empty lines are omitted and the page is capped at 31 lines
+     * after its title, matching the old property array.
+     */
+    public static GTRecipeBuilder guidePage(GTRecipeBuilder builder, String title, String... lines) {
+        builder.addData(guideKey(0), title == null ? "" : title);
+        if (lines == null) {
+            return builder;
+        }
+        int index = 1;
+        for (String line : lines) {
+            if (line == null || line.trim().isEmpty() || index >= JEI_GUIDE_LINE_COUNT) {
+                continue;
+            }
+            builder.addData(guideKey(index++), line);
+        }
+        return builder;
+    }
+
+    /** Returns title + populated lines, preserving their property order. */
+    public static List<String> getGuideLines(CompoundTag data) {
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < JEI_GUIDE_LINE_COUNT; i++) {
+            String value = data.getString(guideKey(i));
+            if (!value.isEmpty()) {
+                lines.add(value);
+            }
+        }
+        return lines;
+    }
+
+    private static String guideKey(int index) {
+        return JEI_GUIDE_LINE_PREFIX + String.format("%02d", index + 1);
     }
 
     /**

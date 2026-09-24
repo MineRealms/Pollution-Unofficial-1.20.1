@@ -9,6 +9,7 @@ import meowmel.pollution.common.PollutionCreativeTabs;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.block.PollutionMiscBlocks;
 import meowmel.pollution.common.block.PollutionPlantBlocks;
+import meowmel.pollution.common.starstream.StarstreamBlocks;
 import meowmel.pollution.common.command.PollutionCommand;
 import meowmel.pollution.common.machine.PollutionMachineEvents;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
@@ -35,6 +36,7 @@ public final class Pollution {
         // Casing blocks (magic multiblocks) are plain registrate blocks and can
         // be created here, on the Pollution bus, like the machine definitions.
         PollutionMagicBlocks.init();
+        StarstreamBlocks.init(context.getModEventBus());
         PollutionPlantBlocks.init();
         PollutionMiscBlocks.init(context);
         meowmel.pollution.common.item.PollutionItems.init();
@@ -62,6 +64,8 @@ public final class Pollution {
             provider.add("pollution.command.set", "Chunk pollution set to %s");
             provider.add("pollution.command.scrub", "Scrubbed %s pollution");
             provider.add("pollution.effect.warning", "The polluted air is making you sick");
+            provider.add("chat.pollution.warp.countdownbomb.tick", "Warp bomb detonates in %s s");
+            provider.add("chat.pollution.warp.countdownbomb.end", "The warp bomb releases a harmless blast");
             provider.add("pollution.machine.vis_generator.tooltip",
                     "Drains Thaumcraft vis to generate EU and industrial pollution");
             provider.add("pollution.machine.vis_provider.tooltip",
@@ -389,8 +393,6 @@ public final class Pollution {
             provider.add("pollution.machine.magic_turbine.no_rotor_holder", "Missing rotor holder");
             provider.add("pollution.machine.magic_turbine.no_rotor",
                     "No rotor in the holder - insert a rotor to run");
-            provider.add("material.pollution.mana", "Mana");
-            provider.add("fluid.pollution.mana", "Liquid Mana");
             provider.add("pollution.magic.failure.catalyst", "Missing required magic catalyst");
             provider.add("pollution.modeChanged.message", "Machine mode switched");
             provider.add("pollution.item.vis_checker.tooltip",
@@ -406,7 +408,12 @@ public final class Pollution {
             provider.add("pollution.item.starstream_linker.tooltip.network",
                     "Network mode: configure relays, wireless terminals and cross-dimensional gateways");
             provider.add("pollution.item.starstream_linker.unported",
-                    "The starstream network is not ported yet; linking is unavailable");
+                    "The upstream constellation tower producer is excluded; the standalone network is available");
+            provider.add("block.pollution.starstream_operation_core", "Starstream Operation Core");
+            provider.add("block.pollution.starstream_relay", "Starstream Relay");
+            provider.add("block.pollution.starstream_interdimensional_relay", "Starstream Interdimensional Relay");
+            provider.add("block.pollution.starstream_chunk_anchor", "Starstream Chunk Anchor");
+            provider.add("block.pollution.starstream_nexus_core", "Starstream Nexus Core");
             provider.add("pollution.machine.aspect_tank.tooltip",
                     "Single-block aspect storage: the front face is the aspect port; wrench sets the output face, soft mallet toggles auto-output, sneak + soft mallet toggles voiding");
             provider.add("pollution.machine.aspect_tank.help",
@@ -517,9 +524,61 @@ public final class Pollution {
             provider.add("pollution.jei.recipe.gate.astral", "Astral condition");
             provider.add("pollution.jei.recipe.gate.catalyst", "Catalyst protection input %s");
             provider.add("pollution.jei.recipe.process_tags", "Process tags: %s");
+            // Static handbook pages from the 1.12 MagicGuideRecipes. They are
+            // JEI explanations; the Astral-dependent lines state the port scope.
+            String[][] guideText = {
+                    {"seed", "Rock crystal seed", "Grow the seed in a crystal growth environment.",
+                            "Growth speed and quality depend on the crystal medium.",
+                            "The seed page is informational in this port.",
+                            "Astral Sorcery growth machines are excluded from the dependency set.",
+                            "Use the matching Astral integration when it is installed.",
+                            "See the item tooltip for the stored crystal data."},
+                    {"embryo", "Celestial crystal embryo", "The embryo is a celestial crystal growth input.",
+                            "Its growth and quality rules belong to Astral Sorcery.",
+                            "This page preserves the upstream handbook reference.",
+                            "No Astral machine is registered by Pollution Unofficial 1.20.1.",
+                            "The item remains available for compatible integrations.",
+                            "Use the matching Astral integration when it is installed.",
+                            "This page does not create a replacement survival recipe."},
+                    {"wafer", "Constellation data wafer", "A wafer stores one constellation id and celestial function.",
+                            "The pollution amplification diagnostic can inspect its NBT.",
+                            "Matching recipes may read the wafer as a gate.",
+                            "Constellation tower production belongs to Astral Sorcery.",
+                            "The standalone Starstream network accepts energy through its API.",
+                            "No automatic EU-to-constellation conversion is provided.",
+                            "The remaining lines describe the upstream constellation channels.",
+                            "Aevitas: life and growth.", "Evorsio: processing and change.",
+                            "Armara: stability and preservation.", "Discidia: energy and force.",
+                            "Vicio: corruption and entropy.", "Mineralis: mineral resonance.",
+                            "Fornax: heat and combustion.", "Horologium: time and cycles.",
+                            "Lucerna: light and illumination.", "Octans: navigation and geometry.",
+                            "Bootes: harvest and collection.", "Pelotrio: motion and exchange.",
+                            "Gelu: cold and crystallization.", "Ulteria: distance and travel."},
+                    {"tarot", "Major Arcana tarot", "Tarot cards authorize selected magic processes.",
+                            "A tarot hatch holds the authorization card without consuming it.",
+                            "Recipe data may expose the required tarot id in JEI.",
+                            "The Fool: unstable experimental processing.", "The Magician: controlled transformation.",
+                            "The High Priestess: research and knowledge.", "The Empress: biological growth.",
+                            "The Emperor: structure and control.", "The Hierophant: ritual guidance.",
+                            "The Lovers: paired materials.", "The Chariot: motion and transport.",
+                            "Strength: high power.", "The Hermit: isolation and purification.",
+                            "Wheel of Fortune: chance outputs.", "Justice: balancing inputs.",
+                            "The Hanged Man: conversion and sacrifice.", "Death: decomposition.",
+                            "Temperance: fluid blending.", "The Devil: dangerous catalysts.",
+                            "The Tower: destructive high energy.", "The Star: celestial resonance.",
+                            "The Moon: night alchemy.", "The Sun: daylight processes.",
+                            "Judgement: renewal and restoration.", "The World: multi-system synthesis.",
+                            "Tarot effects are data gates and do not alter card ownership."}
+            };
+            for (String[] page : guideText) {
+                for (int index = 1; index < page.length; index++) {
+                    provider.add("pollution.magic.guide." + page[0] + "." + index, page[index]);
+                }
+            }
         });
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();
+        meowmel.pollution.common.warp.WarpNetwork.init();
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);

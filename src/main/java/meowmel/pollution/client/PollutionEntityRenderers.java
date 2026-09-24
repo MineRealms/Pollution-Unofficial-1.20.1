@@ -35,13 +35,11 @@ import net.minecraftforge.fml.common.Mod;
  * {@link AspectTankRenderer} (port of the 1.12 {@code AspectStorageRenderer}).
  * The remaining 1.12 TESRs are intentionally not ported yet because their block
  * entities do not exist server-side in this port:
- * {@code TesrMagicCircle} (TileEntityMagicCircle),
- * {@code TesrConstellationCrystal} (constellation crystal),
- * {@code TesrStarstreamObeliskCore}, {@code TesrStarstreamOperationCore} and
- * {@code TesrStarstreamRelay} (starstream core/relay block entities), plus the
- * {@code ItemMineralExtractorRenderer} item variant which needs a
- * {@code BlockEntityWithoutLevelRenderer}. TODO(client): port each of these
- * together with its block entity.</p>
+ * {@code TesrMagicCircle} (TileEntityMagicCircle) and
+ * {@code TesrConstellationCrystal} (constellation crystal) remain excluded with
+ * their Astral dependencies. Starstream endpoints are functional model blocks;
+ * their optional animated TESRs are not required for transport semantics.
+ * The mineral extractor item uses its own Forge client item extension.</p>
  */
 @Mod.EventBusSubscriber(modid = Pollution.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class PollutionEntityRenderers {

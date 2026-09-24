@@ -12,11 +12,9 @@ import java.util.List;
  * {@code meowmel.pollution.common.items.behaviors.StarstreamLinkerBehavior}.
  *
  * <p>Upstream attached this behaviour to the {@code starstream_linker} meta
- * item (id 571). <b>The dedicated linker item class is not ported:</b> the
- * starstream network (constellation tower, relay, obelisk core, wireless
- * terminals and the pending-link NBT protocol) is deferred together with its
- * recipe maps, so {@code PollutionItems.STARSTREAM_LINKER} stays a plain stub
- * and this behaviour is intentionally not attached to any registration yet.</p>
+ * item (id 571). The modern linker delegates network selection and endpoint
+ * binding to the registered Starstream blocks while retaining the original
+ * mode and NBT names.</p>
  *
  * <p>What is ported here is the network-independent half, ready for the future
  * item class to delegate to:</p>
@@ -28,11 +26,9 @@ import java.util.List;
  *   <li>the mode / usage tooltip lines.</li>
  * </ul>
  *
- * <p>Still deferred with the starstream system: selecting towers, relays,
- * obelisk cores and wireless terminals, the dimension/range validation and the
- * {@code StarstreamNetworkConstants} limits. Those need the unported tiles and
- * {@code api.capability} interfaces, so they cannot compile before the system
- * lands.</p>
+ * <p>Astral constellation tower producers remain an optional integration: the
+ * network accepts their channel energy through its public API, but does not
+ * invent a survival source when Astral is absent.</p>
  */
 public final class StarstreamLinkerBehavior {
 
@@ -64,7 +60,10 @@ public final class StarstreamLinkerBehavior {
      */
     public static String toggleMode(ItemStack stack) {
         String next = isNetworkMode(stack) ? MODE_INPUT : MODE_NETWORK;
-        stack.getOrCreateTag().putString(TAG_MODE, next);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(TAG_MODE, next);
+        tag.remove("StarstreamSelectedNetwork");
+        tag.remove("StarstreamSelectedSource");
         return next;
     }
 
@@ -76,8 +75,7 @@ public final class StarstreamLinkerBehavior {
     }
 
     /**
-     * Tooltip lines of the upstream behaviour. The last line states that the
-     * starstream network is not ported yet; remove it once the tiles land.
+     * Tooltip lines of the upstream behaviour.
      */
     public static void appendTooltip(ItemStack stack, List<Component> tooltip) {
         boolean network = isNetworkMode(stack);
@@ -89,7 +87,5 @@ public final class StarstreamLinkerBehavior {
                         ? "pollution.item.starstream_linker.tooltip.network"
                         : "pollution.item.starstream_linker.tooltip.input")
                 .withStyle(ChatFormatting.DARK_AQUA));
-        tooltip.add(Component.translatable("pollution.item.starstream_linker.unported")
-                .withStyle(ChatFormatting.RED));
     }
 }

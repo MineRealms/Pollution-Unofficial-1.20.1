@@ -161,10 +161,13 @@ dependencies {
 
     // Thaumcraft 4R addon ports (local-repo/): forbidden magic, tainted magic,
     // thaumic energistics, thaumic tinkerer
-    for (addon in ['forbidden-magic', 'tainted-magic', 'thaumic-energistics', 'thaumic-tinkerer']) {
+    for (addon in ['forbidden-magic', 'tainted-magic', 'thaumic-tinkerer']) {
         compileOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
         runtimeOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
     }
+    // 20719 does not ship Thaumic Energistics; use the last local build explicitly.
+    compileOnly(fg.deobf("dev.tc4port:thaumic-energistics:${thaumic_energistics_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("dev.tc4port:thaumic-energistics:${thaumic_energistics_version}")) { transitive = false }
 
     // Curios / TerraBlender: runtime dependencies of Thaumcraft 4R
     compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")) { transitive = false }

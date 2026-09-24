@@ -3,6 +3,7 @@ package meowmel.pollution.loaders.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -120,6 +121,29 @@ public final class MagicGCYMRecipes {
         advancedComponents(provider);
         arcaneCasings(provider);
         enchantedSoil(provider);
+        smallMagicTurbines(provider);
+    }
+
+    /** Upstream turbine_1..3 arcane recipes, using the port's assembler convention. */
+    private static void smallMagicTurbines(Consumer<FinishedRecipe> provider) {
+        Material[] cables = {GTMaterials.Tin, GTMaterials.Copper, GTMaterials.Gold};
+        for (int tier = GTValues.LV; tier <= GTValues.HV; tier++) {
+            String tierName = GTValues.VN[tier].toLowerCase(java.util.Locale.ROOT);
+            ItemStack piston = SafeItems.gt(tierName + "_electric_piston", 2);
+            ItemStack motor = SafeItems.gt(tierName + "_electric_motor", 2);
+            if (piston.isEmpty() || motor.isEmpty()) continue;
+            GTRecipeBuilder.of(id("magic_turbine_" + tierName), GTRecipeTypes.ASSEMBLER_RECIPES)
+                    .inputItems(GTMachines.HULL[tier])
+                    .inputItems(piston)
+                    .inputItems(motor)
+                    .inputItems(TagPrefix.gear, GTMaterials.HSSG, 2)
+                    .inputItems(tier == GTValues.LV ? CustomTags.LV_CIRCUITS
+                            : tier == GTValues.MV ? CustomTags.MV_CIRCUITS : CustomTags.HV_CIRCUITS)
+                    .inputItems(TagPrefix.cableGtSingle, cables[tier - GTValues.LV])
+                    .inputFluids(PollutionMaterials.InfusedFire.getFluid(50 * tier))
+                    .outputItems(PollutionMachines.MAGIC_TURBINE[tier])
+                    .duration(200).EUt(GTValues.VA[tier]).save(provider);
+        }
     }
 
     // ////////////////////////////////////
@@ -457,7 +481,7 @@ public final class MagicGCYMRecipes {
                         .inputItems(ChemicalHelper.get(TagPrefix.gear, GTMaterials.TungstenSteel, 4))
                         .inputFluids(turbineFuel)
                         .inputFluids(lubricant)
-                        .outputItems(PollutionMachines.MAGIC_LARGE_TURBINE)
+                        .outputItems(PollutionMachines.LARGE_MANA_TURBINE)
                         .duration(1000)
                         .EUt(30720)
                         .save(provider);
@@ -468,7 +492,7 @@ public final class MagicGCYMRecipes {
                 Pollution.LOGGER.warn("Skipping magic_gcym/mega_mana_turbine: a required GT item is missing");
             } else {
                 GTRecipeBuilder.of(id("mega_mana_turbine"), GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
-                        .inputItems(PollutionMachines.MAGIC_LARGE_TURBINE, 64)
+                        .inputItems(PollutionMachines.LARGE_MANA_TURBINE, 64)
                         .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 64))
                         .circuitMeta(4)
                         .inputItems(pumpLuv)

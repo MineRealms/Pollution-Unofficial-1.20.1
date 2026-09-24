@@ -7,10 +7,13 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -39,6 +42,7 @@ import meowmel.pollution.common.machine.multiblock.magic.MagicBreweryMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicFusionReactorMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicLargeTurbineMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicMegaTurbineMachine;
+import meowmel.pollution.common.machine.multiblock.magic.LargeManaTurbineMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicCentrifugeMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalBathMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicChemicalReactorMachine;
@@ -144,6 +148,8 @@ public final class PollutionMachines {
     public static MachineDefinition[] FLUX_FUEL_CELL;
     /** Single-block mana generators (upstream {@code mana_gen_lv}..{@code mana_gen_iv}). */
     public static MachineDefinition[] MANA_GENERATOR;
+    /** Upstream {@code magic_turbine.lv}..{@code .hv} simple generators. */
+    public static MachineDefinition[] MAGIC_TURBINE;
     /**
      * Single-block micro node generators (upstream
      * {@code pollution_small_node_generator.luv}..{@code .uhv}), LuV..UHV.
@@ -222,6 +228,8 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MAGIC_FUSION_REACTOR;
     public static MultiblockMachineDefinition MAGIC_BATTERY;
     public static MultiblockMachineDefinition MAGIC_LARGE_TURBINE;
+    /** Upstream LuV large mana turbine ({@code pollution_large_mana_turbine}). */
+    public static MultiblockMachineDefinition LARGE_MANA_TURBINE;
     public static MultiblockMachineDefinition MAGIC_MEGA_TURBINE;
     public static MultiblockMachineDefinition MANA_PLATE;
     public static MultiblockMachineDefinition MANA_PETAL_APOTHECARY;
@@ -346,6 +354,36 @@ public final class PollutionMachines {
                                 Component.translatable("pollution.machine.mana_generator.tooltip"))
                         .register(),
                 MANA_GENERATOR_TIERS);
+
+        // Upstream registered three simple LV/MV/HV generators which burn the
+        // same MAGIC_TURBINE_FUELS map as the large/mega turbines.  Modern
+        // GTCEu has no SimpleGeneratorMetaTileEntity, so use the equivalent
+        // SimpleGeneratorMachine and wire the normal generator recipe modifier
+        // and fuel tank UI explicitly.
+        MAGIC_TURBINE = GTMachineUtils.registerTieredMachines(
+                PollutionGTAddon.REGISTRATE,
+                "magic_turbine",
+                (holder, tier) -> new SimpleGeneratorMachine(holder, tier,
+                        GTMachineUtils.genericGeneratorTankSizeFunction),
+                (tier, builder) -> builder
+                        .langValue("%s Magic Turbine".formatted(GTValues.VNF[tier]))
+                        .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(
+                                ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "magic_turbine"),
+                                PORecipeMaps.MAGIC_TURBINE_FUELS))
+                        .rotationState(RotationState.ALL)
+                        .recipeType(PORecipeMaps.MAGIC_TURBINE_FUELS)
+                        .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
+                        .addOutputLimit(ItemRecipeCapability.CAP, 0)
+                        .addOutputLimit(FluidRecipeCapability.CAP, 0)
+                        .simpleModel(model("magic_turbine_" + tierName(tier)))
+                        .tooltips(
+                                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                                        GTValues.V[tier], GTValues.VNF[tier]),
+                                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
+                                        GTValues.V[tier] * 64),
+                                Component.translatable("pollution.machine.magic_turbine.tooltip"))
+                        .register(),
+                1, 2, 3);
 
         SMALL_NODE_GENERATOR = GTMachineUtils.registerTieredMachines(
                 PollutionGTAddon.REGISTRATE,
@@ -722,6 +760,24 @@ public final class PollutionMachines {
                         Component.translatable("pollution.machine.magic_large_turbine.tooltip.1"),
                         Component.translatable("pollution.machine.magic_large_turbine.tooltip.2") },
                 PORecipeMaps.MAGIC_TURBINE_FUELS);
+
+        // Upstream's LuV mana turbine reuses the large-turbine structure with
+        // MANA_TO_EU fuels and the mana-plate casing.  The modern
+        // MagicLargeTurbineMachine pattern already accepts the same rotor,
+        // fluid, maintenance and mana output abilities, so only the machine
+        // definition/recipe map/tier differ from the magic fuel variant.
+        LARGE_MANA_TURBINE = PollutionGTAddon.REGISTRATE
+                .multiblock("large_mana_turbine", LargeManaTurbineMachine::new)
+                .tier(GTValues.LuV)
+                .langValue("Large Mana Power Converter")
+                .rotationState(RotationState.ALL)
+                .recipeTypes(BotaniaRecipeMaps.MANA_TO_EU)
+                .pattern(LargeManaTurbineMachine::createPattern)
+                .simpleModel(model("large_mana_turbine"))
+                .tooltips(
+                        Component.translatable("pollution.machine.large_mana_turbine.tooltip.1"),
+                        Component.translatable("pollution.machine.large_mana_turbine.tooltip.2"))
+                .register();
 
         MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
                 MagicMegaTurbineMachine::new, MagicMegaTurbineMachine::createPattern,

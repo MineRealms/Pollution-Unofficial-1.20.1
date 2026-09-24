@@ -7,6 +7,7 @@ import meowmel.pollution.common.block.tile.FleshHeartBlockEntity;
 import meowmel.pollution.common.block.tile.MineralExtractorBlock;
 import meowmel.pollution.common.block.tile.MineralExtractorBlockEntity;
 import meowmel.pollution.common.block.tile.PortalBlock;
+import meowmel.pollution.common.item.MineralExtractorBlockItem;
 import meowmel.pollution.compat.gtceu.PollutionGTAddon;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -89,7 +90,11 @@ public final class PollutionMiscBlocks {
                     .sound(SoundType.METAL)
                     .lightLevel(state -> 10)
                     .requiresCorrectToolForDrops())
-            .simpleItem()
+            .item(MineralExtractorBlockItem::new)
+            .model((context, provider) -> {
+                // Keep the hand-authored builtin/entity model and its transforms.
+            })
+            .build()
             .register();
 
     // ////////////////////////////////////

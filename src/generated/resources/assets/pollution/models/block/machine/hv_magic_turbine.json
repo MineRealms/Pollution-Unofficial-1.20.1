@@ -1,0 +1,19 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "pollution:hv_magic_turbine",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": "pollution:block/machine/magic_turbine_hv"
+    },
+    "recipe_logic_status=suspend": {
+      "model": "pollution:block/machine/magic_turbine_hv"
+    },
+    "recipe_logic_status=waiting": {
+      "model": "pollution:block/machine/magic_turbine_hv"
+    },
+    "recipe_logic_status=working": {
+      "model": "pollution:block/machine/magic_turbine_hv"
+    }
+  }
+}

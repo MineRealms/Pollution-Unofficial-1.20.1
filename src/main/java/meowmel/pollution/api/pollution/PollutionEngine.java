@@ -114,6 +114,9 @@ public final class PollutionEngine {
 
     /** Samples one random surface column in the chunk; returns true if a block was converted. */
     private static boolean convertOne(ServerLevel level, ChunkPos chunkPos, RandomSource random) {
+        if (PollutionData.get(level).get(chunkPos) < PollutionConfig.TERRAIN_CONVERSION_THRESHOLD.get()) {
+            return false;
+        }
         if (level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z) == null) {
             return false;
         }
@@ -141,6 +144,13 @@ public final class PollutionEngine {
             return true;
         }
         return false;
+    }
+
+    /** Clears static scheduler state when a server instance ends (including integrated worlds). */
+    public static void resetCaches() {
+        decayTimer = 0;
+        conversionRefreshTimer = 0;
+        CONVERSION_CANDIDATES.clear();
     }
 
     /**

@@ -1,6 +1,8 @@
 package meowmel.pollution;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class PollutionConfig {
 
@@ -13,6 +15,11 @@ public final class PollutionConfig {
     public static final ForgeConfigSpec.DoubleValue POLLUTION_DECAY_PER_TICK;
     public static final ForgeConfigSpec.DoubleValue EFFECT_THRESHOLD;
     public static final ForgeConfigSpec.BooleanValue ENABLE_TERRAIN_CONVERSION;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_WARP_EVENTS;
+    public static final ForgeConfigSpec.BooleanValue ENABLE_COUNTDOWN_BOMB;
+    public static final ForgeConfigSpec.IntValue WARP_EVENT_INTERVAL_TICKS;
+    public static final ForgeConfigSpec.IntValue COUNTDOWN_BOMB_TICKS;
+    public static final Map<String, ForgeConfigSpec.BooleanValue> WARP_EVENTS;
     public static final ForgeConfigSpec.DoubleValue TERRAIN_CONVERSION_THRESHOLD;
     public static final ForgeConfigSpec.IntValue TERRAIN_CONVERSION_BUDGET_PER_TICK;
     public static final ForgeConfigSpec.IntValue VIS_GENERATOR_EU_PER_VIS;
@@ -52,6 +59,30 @@ public final class PollutionConfig {
         TERRAIN_CONVERSION_BUDGET_PER_TICK = builder
                 .comment("Maximum blocks converted per dimension per tick (performance budget).")
                 .defineInRange("terrainConversionBudgetPerTick", 4, 0, 64);
+        builder.pop();
+
+        builder.comment("Thaumcraft warp events").push("warp");
+        ENABLE_WARP_EVENTS = builder
+                .comment("Enable Pollution warp events driven by the player's TC4R warp.")
+                .define("enableWarpEvents", true);
+        ENABLE_COUNTDOWN_BOMB = builder
+                .comment("Allow the countdown bomb warp event to schedule a delayed explosion.")
+                .define("enableCountdownBomb", true);
+        WARP_EVENT_INTERVAL_TICKS = builder
+                .comment("Ticks between warp event rolls for each player.")
+                .defineInRange("warpEventIntervalTicks", 200, 20, 12000);
+        COUNTDOWN_BOMB_TICKS = builder
+                .comment("Fuse length of the countdown bomb warp event.")
+                .defineInRange("countdownBombTicks", 200, 20, 1200);
+        builder.push("events");
+        Map<String, ForgeConfigSpec.BooleanValue> events = new LinkedHashMap<>();
+        for (String id : new String[]{"blind", "nausea", "poison", "wither", "weakness", "jump", "wind",
+                "blood", "lightning", "obsidian", "mushrooms", "fake_explosion", "fake_rain", "rain",
+                "junk", "blink", "swamp", "countdown_bomb", "wither_rose", "fall", "inventory_scramble", "zombie_siege"}) {
+            events.put(id, builder.define(id, true));
+        }
+        WARP_EVENTS = Map.copyOf(events);
+        builder.pop();
         builder.pop();
 
         builder.comment("Vis generator and aura machines").push("aura");

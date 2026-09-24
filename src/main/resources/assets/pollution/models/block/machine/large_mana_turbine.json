@@ -1,0 +1,18 @@
+{
+  "parent": "gtceu:block/machine/template/generator_machine",
+  "textures": {
+    "bottom": "gtceu:block/casings/voltage/luv/bottom",
+    "top": "gtceu:block/casings/voltage/luv/top",
+    "side": "gtceu:block/casings/voltage/luv/side",
+    "overlay_front": "pollution:block/magicblock/mana_3",
+    "overlay_back": "pollution:block/magicblock/mana_3",
+    "overlay_top": "pollution:block/magicblock/mana_3",
+    "overlay_bottom": "pollution:block/magicblock/mana_3",
+    "overlay_side": "pollution:block/magicblock/mana_3",
+    "overlay_front_emissive": "gtceu:block/void",
+    "overlay_back_emissive": "gtceu:block/void",
+    "overlay_top_emissive": "gtceu:block/void",
+    "overlay_bottom_emissive": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void"
+  }
+}

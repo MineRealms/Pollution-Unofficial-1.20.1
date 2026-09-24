@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Magic large turbine: burns the magic turbine fuel map.
@@ -38,13 +39,23 @@ public class MagicLargeTurbineMachine extends AbstractMagicTurbineMachine {
     }
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
+        return createPattern(definition, PollutionMagicBlocks.SPELL_PRISM.get());
+    }
+
+    /**
+     * Builds the shared large-turbine pattern with a caller-selected casing.
+     * The upstream mana variant uses the MANA_3 plate in every casing slot,
+     * while the aspect-fuel variant uses SPELL_PRISM; keeping that difference
+     * here avoids duplicating the rotor/ability constraints.
+     */
+    protected static BlockPattern createPattern(MultiblockMachineDefinition definition, Block casing) {
         return FactoryBlockPattern.start()
                 .aisle("CCCC", "CHHC", "CCCC")
                 .aisle("CHHC", "RGGR", "CHHC")
                 .aisle("CCCC", "CSHC", "CCCC")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('C', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM.get()))
-                .where('H', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM.get())
+                .where('C', Predicates.blocks(casing))
+                .where('H', Predicates.blocks(casing)
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(2))

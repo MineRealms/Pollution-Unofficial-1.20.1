@@ -25,10 +25,8 @@ import java.awt.Color;
  * (each triangle is emitted as a quad with a duplicated vertex, which is the
  * same shape the fixed-function pipeline produced).</p>
  *
- * <p>The legacy {@code ItemMineralExtractorRenderer} item variant is not
- * ported here: it needs a {@code BlockEntityWithoutLevelRenderer} plus a
- * {@code builtin/entity} item model, and the port's item model is a plain
- * block parent.</p>
+ * <p>{@link ItemMineralExtractorRenderer} shares this geometry for inventory,
+ * held and dropped items, as the upstream item renderer shared its TESR.</p>
  */
 public class MineralExtractorRenderer implements BlockEntityRenderer<MineralExtractorBlockEntity> {
 
@@ -45,6 +43,12 @@ public class MineralExtractorRenderer implements BlockEntityRenderer<MineralExtr
         double time = extractor.getLevel() != null
                 ? extractor.getLevel().getGameTime() + partialTick
                 : System.currentTimeMillis() / 50.0D;
+
+        renderGeometry(poseStack, bufferSource, time);
+    }
+
+    /** Renders the extractor in block-local coordinates without a live block entity. */
+    public static void renderGeometry(PoseStack poseStack, MultiBufferSource bufferSource, double time) {
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);

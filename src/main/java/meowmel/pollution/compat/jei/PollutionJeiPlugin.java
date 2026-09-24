@@ -42,12 +42,11 @@ import java.util.List;
  *       {@link MagicRecipeDataInfos}.</li>
  *   <li>vis / mana hatch information - upstream only shipped item tooltips, the
  *       port adds {@link MagicHatchInfoCategory} on top of them.</li>
- *   <li>starstream and astral recipe categories - <b>not ported</b>: the
- *       starstream network (tower / relay / obelisk tiles, wireless terminals)
- *       and the astral celestial machines with their recipe maps
+ *   <li>starstream and astral recipe categories: the standalone Starstream
+ *       network is ported as API/block entities, but its Astral constellation
+ *       tower producer and the Astral celestial recipe maps
  *       ({@code celestial_observation}, {@code industrial_starlight_infuser},
- *       ...) are deferred in {@code PORecipeMaps}, so there is no recipe map to
- *       attach a category to. The ported astral data items and the
+ *       ...) remain outside this dependency scope. The ported data items and
  *       constellation effects are surfaced through
  *       {@link MagicAmplificationInfoCategory} instead.</li>
  * </ul>
@@ -77,6 +76,7 @@ public final class PollutionJeiPlugin implements IModPlugin {
         registration.addRecipes(PollutionInfoCategory.RECIPE_TYPE, machineInfoRecipes());
         registration.addRecipes(MagicAmplificationInfoCategory.RECIPE_TYPE, magicAmplificationRecipes());
         registration.addRecipes(MagicHatchInfoCategory.RECIPE_TYPE, magicHatchRecipes());
+        MagicGuideJeiInfo.register(registration);
         MagicRecipeDataInfos.install();
     }
 
