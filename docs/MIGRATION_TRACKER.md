@@ -5,7 +5,12 @@
 - 上游项目：`H:\MinecraftMods\Pollution`（Minecraft 1.12.2，GTCEu/GTQT 附属，Thaumcraft 6 时代设计）
 - 目标项目：`H:\MinecraftMods\Pollution-Unofficial-1.20.1`
 - 目标分支策略：单分支 `main`，阶段完成后提交
-- 最近更新：2026-09-18（Phase 4 基本完成、Phase 5 起步；GTCEu 锁定 7.5.3 服务器版本）
+- 最近更新：2026-09-24（提交 `9ecc306`：20719 依赖切换、轮机/星流/Warp/战利品/JEI/客户端缺口补齐；GTCEu 锁定 7.5.3）
+
+> 注意：本文件后面的阶段记录保留了执行过程中的历史快照，不能覆盖当前构建状态。
+> 当前依赖以 `gradle.properties` 和 `PORTING_TARGET.md` 为准：Thaumcraft 核心及
+> Forbidden Magic/Tainted Magic/Thaumic Tinkerer 使用 0.1.0-20719，Thaumic
+> Energistics 因 20719 包未提供而保留 0.1.0-20711，JEI 使用 15.56.0.205。
 
 ## 1. 版本矩阵（锁定，不允许浮动）
 
@@ -15,18 +20,19 @@
 | Forge | 47.4.23 | `https://maven.minecraftforge.net/` |
 | Gradle wrapper | 8.8 | `gradle/wrapper/gradle-wrapper.properties` |
 | Java | 17（Temurin 17.0.18.8） | `gradle.properties` → `org.gradle.java.home` |
-| Thaumcraft 4R | `dev.tc4port:thaumcraft-forge:0.1.0-20711` | 本地 Maven `local-repo/` |
+| Thaumcraft 4R | `dev.tc4port:thaumcraft-forge:0.1.0-20719` | 本地 Maven `local-repo/` |
 | GregTech CEu Modern | `com.gregtechceu.gtceu:gtceu-1.20.1:7.5.3` | `https://maven.gtceu.com` |
 | LDLib | `com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.40.b` | `https://maven.firstdark.dev/snapshots` |
 | Registrate | `com.tterrag.registrate:Registrate:MC1.20-1.3.11` | `https://maven.tterrag.com/` |
-| JEI | `mezz.jei:jei-1.20.1-forge:15.59.0.212` | `https://maven.blamejared.com/` |
+| JEI | `mezz.jei:jei-1.20.1-forge:15.56.0.205` | `https://maven.blamejared.com/` |
 | KubeJS | `dev.latvian.mods:kubejs-forge:2001.6.5-build.26` | `https://maven.latvian.dev/releases` |
 | Rhino | `2001.2.3-build.10` | 同上 |
 | Architectury | `9.2.14` | `https://maven.architectury.dev/` |
 | Curios | `5.14.1+1.20.1` | `https://maven.theillusivec4.top/` |
 | TerraBlender | `1.20.1-3.0.1.10` | Forge Maven |
 
-JEI 下限说明：TC4R 插件引用 `ISubtypeInterpreter`（JEI ≥ 15.59），因此 15.59.0.212 为硬性下限。
+JEI 说明：当前 TC4R 20719 API 与本项目使用的 15.56.0.205 已完成强制编译验证；如后续
+TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 shim。
 
 ## 2. 阶段总览
 

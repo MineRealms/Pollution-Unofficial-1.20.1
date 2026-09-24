@@ -11,25 +11,11 @@
 
 这些目录中的 JAR、sources JAR 和 API JAR 属于用户提供的第三方二进制，均被 `.gitignore` 排除。
 
-Thaumic Energistics 没有随 20719 包提供，因此仍使用
-`dev/tc4port/thaumic-energistics/0.1.0-20711/`，版本在 `gradle.properties` 中单独声明。
+Thaumic Energistics 没有随 20719 包提供。其 20711 JAR 仅保留为编译参考，
+不会作为运行时依赖加载，因为它调用了 20719 已移除的对象源质 API。
 
 来源：`D:\Downloads\1.20.1-forge-20719-dev.zip`（源码/API）和
 `D:\Downloads\1.20.1-forge-20719.zip`（运行 JAR）。Gradle 依赖通过
 `0.1.0-20719` Maven 坐标解析，不依赖 ZIP 文件名。
 
-```
-来源（任选其一）：
-  D:\Downloads\1.20.1-forge-20711.zip 内解压得到的
-    thaumcraft-forge-4.2.3.5-1.20.1-port.0.1.0-20711.jar
-  H:\MinecraftMods\FM-port-deps\full\thaumcraft-forge-4.2.3.5-1.20.1-port.0.1.0-20711.jar
-
-目标：
-  local-repo/dev/tc4port/thaumcraft-forge/0.1.0-20711/thaumcraft-forge-0.1.0-20711.jar
-```
-
-源码包（只读参考，不参与构建）：
-
-- `H:\MinecraftMods\FM-port-deps\tc\thaumcraft-forge-4.2.3.5-1.20.1-port.0.1.0-20711-sources.jar`
-- 已解压副本：`H:\MinecraftMods\FM-port-deps\tc-src`
 源码包（只读参考，不参与构建）放在对应 20719 artifact 目录；Gradle 直接使用同目录的运行 JAR。

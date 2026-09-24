@@ -409,6 +409,18 @@ public final class Pollution {
                     "Network mode: configure relays, wireless terminals and cross-dimensional gateways");
             provider.add("pollution.item.starstream_linker.unported",
                     "The upstream constellation tower producer is excluded; the standalone network is available");
+            provider.add("pollution.starstream_linker.selected", "Starstream network selected");
+            provider.add("pollution.starstream_linker.bound", "Operation core linked to the Starstream network");
+            provider.add("pollution.starstream_linker.source_selected", "Relay source selected");
+            provider.add("pollution.starstream_linker.linked", "Starstream relay linked");
+            provider.add("pollution.starstream_terminal.status.unbound", "Unbound");
+            provider.add("pollution.starstream_terminal.status.discovering", "Discovering provider");
+            provider.add("pollution.starstream_terminal.status.online", "Online");
+            provider.add("pollution.starstream_terminal.status.provider_unavailable", "Provider unavailable");
+            provider.add("pollution.starstream_terminal.status.waiting_for_energy",
+                    "Waiting for constellation energy");
+            provider.add("pollution.starstream_terminal.status.invalid_request", "Invalid energy request");
+            provider.add("pollution.starstream_terminal.status.wrong_side", "Server only");
             provider.add("block.pollution.starstream_operation_core", "Starstream Operation Core");
             provider.add("block.pollution.starstream_relay", "Starstream Relay");
             provider.add("block.pollution.starstream_interdimensional_relay", "Starstream Interdimensional Relay");

@@ -1,11 +1,12 @@
 package meowmel.pollution.dimension.worldgen;
 
 /**
- * TODO ledger for 1.12 worldgen sources that have no direct 1.20.1 equivalent.
+ * TODO ledger for 1.12 worldgen sources whose 1.20.1 implementation is still
+ * approximate or has no direct equivalent.
  *
- * <p>Everything listed here was deliberately skipped while porting
+ * <p>This ledger records the remaining differences after porting
  * {@code meowmel.pollution.dimension.worldgen} (31 upstream files). The parts
- * that do map to modern data-driven worldgen live in
+ * that map to modern data-driven worldgen live in
  * {@code data/pollution/worldgen/configured_feature/} and
  * {@code data/pollution/worldgen/placed_feature/}; the pure-noise helper was
  * ported to {@link WorldEngineNoise} and the biome providers to
@@ -146,9 +147,13 @@ package meowmel.pollution.dimension.worldgen;
  *       pollution:demiplane} biomes, and {@code pollution:alfheim} /
  *       {@code pollution:blood} noise settings are authored. Remaining
  *       follow-up: point the underground file at the already registered
- *       {@code pollution:underground} biome source and author a
- *       {@code pollution:underground} noise settings with the style-biome
- *       surface rules.</li>
+ *       {@code pollution:underground} biome source and the
+ *       {@code pollution:underground} noise settings are already authored in
+ *       {@code data/pollution/dimension/underground.json} and
+ *       {@code data/pollution/worldgen/noise_settings/underground.json}; the
+ *       style-biome surface rules are wired there. Remaining differences are
+ *       the missing 1.12 orb/named-dimension helpers and material deposits
+ *       called out in {@link PollutionOreVeins}.</li>
  * </ul>
  */
 public final class POWorldgenTodos {

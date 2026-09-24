@@ -99,27 +99,27 @@ side="BOTH"
 [[dependencies.${mod_id}]]
     modId="forbidden_magic"
     mandatory=false
-    versionRange="[0.1.0-20711,)"
+    versionRange="[${tc_addons_version},)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="tainted_magic"
     mandatory=false
-    versionRange="[0.1.0-20711,)"
+    versionRange="[${tc_addons_version},)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="thaumicenergistics"
     mandatory=false
-    versionRange="[0.1.0-20711,)"
+    versionRange="[${thaumic_energistics_version},)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="thaumictinkerer"
     mandatory=false
-    versionRange="[0.1.0-20711,)"
+    versionRange="[${tc_addons_version},)"
     ordering="AFTER"
     side="BOTH"

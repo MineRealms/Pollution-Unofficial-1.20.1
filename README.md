@@ -7,9 +7,9 @@ Pollution 的非官方 Forge 1.20.1 移植版。
 
 - Minecraft 1.20.1 / Forge 47.4.23
 - GregTech CEu Modern 7.5.3（`com.gregtechceu.gtceu:gtceu-1.20.1`）
-- Thaumcraft 4R 0.1.0-20711（`dev.tc4port:thaumcraft-forge`，本地 Maven）
-- JEI 15.59.0.212（保留配方查看功能）
-- KubeJS 2001.6.5-build.26（保留配方自定义能力）
+- Thaumcraft 4R 0.1.0-20719（`dev.tc4port:thaumcraft-forge`，本地 Maven）
+- JEI 15.56.0.205（保留配方查看功能）
+- KubeJS 2001.6.5-build.16（保留配方自定义能力）
 
 ## 目标
 
@@ -17,7 +17,7 @@ Pollution 的非官方 Forge 1.20.1 移植版。
 - 污染效果：负面效果、环境转化、机器效率惩罚
 - TC4R 贯通：灵气抽取（`VisNetworkApi`）、咒波清洗（`FluxApi`）、扭曲联动
 - GTCEu 机器与多方块：灵气发电机、空气过滤机、魔导系列
-- 其他附属联动（植物魔法 / 血魔法 / AE2 / 星辉魔法等）标记为 TODO，见 `docs/MIGRATION_TRACKER.md`
+- 植物魔法与 AE2 联动已保留；血魔法和 Astral Sorcery 按范围排除，星流网络保留独立 API，见 `docs/PORTING_TARGET.md`
 
 ## 构建
 
