@@ -169,12 +169,12 @@ dependencies {
 
     // Thaumcraft 4R addon ports (local-repo/): forbidden magic, tainted magic,
     // thaumic tinkerer. Thaumic Energistics is compile-only below because its
-    // 20711 runtime calls an object-aspect helper removed by the 20719 API.
+    // 20711 runtime calls an object-aspect helper removed by the 20719+ APIs.
     for (addon in ['forbidden-magic', 'tainted-magic', 'thaumic-tinkerer']) {
         compileOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
         runtimeOnly(fg.deobf("dev.tc4port:${addon}:${tc_addons_version}")) { transitive = false }
     }
-    // 20719 does not ship Thaumic Energistics; retain its API for source
+    // 20721 does not ship Thaumic Energistics; retain its API for source
     // compatibility, but do not load the incompatible 20711 runtime jar.
     compileOnly(fg.deobf("dev.tc4port:thaumic-energistics:${thaumic_energistics_version}")) { transitive = false }
 

@@ -19,8 +19,9 @@
 
 - [`MIGRATION_TRACKER.md`](MIGRATION_TRACKER.md)：版本矩阵、API 适配、阶段记录和历史变更日志。
   文件后半部分保留过程快照，当前状态以本索引列出的规范文档为准。
-- [`TC4R_20719_API_AUDIT.md`](TC4R_20719_API_AUDIT.md)：Thaumcraft 4R 20719 API 适配和
+- [`TC4R_20721_API_AUDIT.md`](TC4R_20721_API_AUDIT.md)：Thaumcraft 4R 20719 → 20721 API 适配和
   compile-only 依赖边界。
+- [`DEV_MODS_BUNDLE_20721.md`](DEV_MODS_BUNDLE_20721.md)：Sunlit Valley DEV 的 22 个 JAR 依赖包来源、替换规则和验证记录。
 - [`HATCH_AUDIT.md`](HATCH_AUDIT.md)、[`HATCH_SEMANTICS.md`](HATCH_SEMANTICS.md)：仓室
   结构、IO 方向、容量、传输和 tooltip 语义。
 - [`MACHINE_RECIPE_PLAN.md`](MACHINE_RECIPE_PLAN.md)、[`MACHINE_OVERLAYS.md`](MACHINE_OVERLAYS.md)：

@@ -9,8 +9,8 @@
 
 > 注意：本文件后面的阶段记录保留了执行过程中的历史快照，不能覆盖当前构建状态。
 > 当前依赖以 `gradle.properties` 和 `PORTING_TARGET.md` 为准：Thaumcraft 核心及
-> Forbidden Magic/Tainted Magic/Thaumic Tinkerer 使用 0.1.0-20719，Thaumic
-> Energistics 因 20719 包未提供而仅保留 0.1.0-20711 编译参考，JEI 使用 15.56.0.205。
+> Thaumcraft 4R 与 Forbidden Magic/Tainted Magic/Thaumic Tinkerer 使用 0.1.0-20721；
+> Thaumic Energistics 因 20721 包未提供而仅保留 0.1.0-20711 编译参考，JEI 使用 15.56.0.205。
 
 ## 当前状态（2026-09-25）
 
@@ -28,7 +28,7 @@
 | Forge | 47.4.23 | `https://maven.minecraftforge.net/` |
 | Gradle wrapper | 8.8 | `gradle/wrapper/gradle-wrapper.properties` |
 | Java | 17（Temurin 17.0.18.8） | `gradle.properties` → `org.gradle.java.home` |
-| Thaumcraft 4R | `dev.tc4port:thaumcraft-forge:0.1.0-20719` | 本地 Maven `local-repo/` |
+| Thaumcraft 4R | `dev.tc4port:thaumcraft-forge:0.1.0-20721` | 本地 Maven `local-repo/` |
 | GregTech CEu Modern | `com.gregtechceu.gtceu:gtceu-1.20.1:7.5.3` | `https://maven.gtceu.com` |
 | LDLib | `com.lowdragmc.ldlib:ldlib-forge-1.20.1:1.0.40.b` | `https://maven.firstdark.dev/snapshots` |
 | Registrate | `com.tterrag.registrate:Registrate:MC1.20-1.3.11` | `https://maven.tterrag.com/` |
@@ -39,14 +39,14 @@
 | Curios | `5.14.1+1.20.1` | `https://maven.theillusivec4.top/` |
 | TerraBlender | `1.20.1-3.0.1.10` | Forge Maven |
 
-JEI 说明：当前 TC4R 20719 API 与本项目使用的 15.56.0.205 已完成强制编译验证；如后续
+JEI 说明：当前 TC4R 20721 API 与本项目使用的 15.56.0.205 已完成强制编译验证；如后续
 TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 shim。
 
 ## 2. 阶段总览
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| Phase 0 | 工程、依赖与 Git | Gradle 8.8 / Java 17 / GTCEu 7.5.3 / TC4R 20719 |
+| Phase 0 | 工程、依赖与 Git | Gradle 8.8 / Java 17 / GTCEu 7.5.3 / TC4R 20721 |
 | Phase 1 | 污染数据、配置、效果、环境转化、HUD | 已实现；新增网络及分级刷新回归 |
 | Phase 2 | GT 排污、消声仓与机器爆炸归因 | 通用 GT 方法钩子与专用消声仓已实现 |
 | Phase 3 | TC4R 灵气、咒波、源质及扭曲 | 已实现；保留 TC4R API 适配 |
