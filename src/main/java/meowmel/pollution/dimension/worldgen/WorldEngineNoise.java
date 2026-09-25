@@ -19,6 +19,14 @@ public final class WorldEngineNoise {
     private WorldEngineNoise() {
     }
 
+    /** Mix all 64 world-seed bits without the old floating-point sixth-power saturation. */
+    public static long mixWorldSeed(long seed) {
+        long mixed = seed + 0x9E3779B97F4A7C15L;
+        mixed = (mixed ^ (mixed >>> 30)) * 0xBF58476D1CE4E5B9L;
+        mixed = (mixed ^ (mixed >>> 27)) * 0x94D049BB133111EBL;
+        return mixed ^ (mixed >>> 31);
+    }
+
     public static double perlinNoise2D(long seed, double x, double z,
                                        double persistence, int octaves) {
         return perlinNoise2D(seed, x, z, profile(persistence, octaves));

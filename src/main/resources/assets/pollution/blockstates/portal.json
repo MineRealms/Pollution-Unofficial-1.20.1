@@ -1,10 +1,17 @@
 {
-  "variants": {
-    "one_way=false": {
-      "model": "pollution:block/portal"
+  "multipart": [
+    {
+      "apply": {
+        "model": "pollution:block/portal"
+      }
     },
-    "one_way=true": {
-      "model": "pollution:block/portal"
+    {
+      "when": {
+        "one_way": "true"
+      },
+      "apply": {
+        "model": "pollution:block/portal_barrier"
+      }
     }
-  }
+  ]
 }

@@ -5,25 +5,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 /**
- * GregTech recipe types of the Pollution port.
- *
- * <p>Upstream ({@code RecipeMapBuilder}) defined 20+ maps. The port keeps the
- * upstream names verbatim so recipe data can be transplanted 1:1, and only
- * carries the Thaumcraft-facing subset so far. The magic processing machines
- * (MagicMacerator, MagicMixer, ...) reuse GregTech's own recipe types and do not
- * need an entry here; these are the custom maps.</p>
- *
- * <p>Deferred with their systems: Botania ({@code dan_de_life_on},
- * {@code mana_to_eu}, {@code mana_gen_recipes}, {@code mana_infusion_recipes},
- * {@code mana_rune_altar_recipes}, {@code mana_petal_recipes},
- * {@code pure_daisy_recipes}), Astral ({@code magic_meteors_recipes},
- * {@code industrial_starlight_infuser_recipes}, {@code industrial_lightwell_recipes},
- * {@code celestial_observation}, {@code celestial_calibration},
- * {@code crystal_cultivation}, {@code celestial_crystal_growth}) and the
- * static JEI guide maps.</p>
- *
- * <p>UI details of the upstream maps (slot overlays, progress bars, sounds,
- * MagicPropertyRecipeUI) are pending the modern recipe-UI pass.</p>
+ * Thaumcraft-facing custom GT recipe types. BotaniaRecipeMaps owns Botania types;
+ * ordinary magic processors reuse GT types. Magic recipe properties and the source
+ * information pages are exposed through the Pollution JEI plugin. Astral types remain
+ * outside the requested dependency scope.
  */
 public final class PORecipeMaps {
 

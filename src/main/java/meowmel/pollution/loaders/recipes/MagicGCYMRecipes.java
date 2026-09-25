@@ -491,20 +491,23 @@ public final class MagicGCYMRecipes {
             if (pumpLuv.isEmpty() || generatorLuv.isEmpty()) {
                 Pollution.LOGGER.warn("Skipping magic_gcym/mega_mana_turbine: a required GT item is missing");
             } else {
-                GTRecipeBuilder.of(id("mega_mana_turbine"), GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
+                for (var output : new com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition[] {
+                        PollutionMachines.MEGA_MANA_ROTOR_TURBINE, PollutionMachines.MEGA_MANA_TURBINE}) {
+                GTRecipeBuilder.of(id(output.getId().getPath()), GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
                         .inputItems(PollutionMachines.LARGE_MANA_TURBINE, 64)
                         .inputItems(ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.NaquadahAlloy, 64))
-                        .circuitMeta(4)
+                        .circuitMeta(output == PollutionMachines.MEGA_MANA_ROTOR_TURBINE ? 4 : 5)
                         .inputItems(pumpLuv)
                         .inputItems(generatorLuv)
                         .inputItems(ChemicalHelper.get(TagPrefix.plateDense, GTMaterials.TungstenSteel, 32))
                         .inputItems(ChemicalHelper.get(TagPrefix.cableGtHex, GTMaterials.TungstenSteel, 16))
                         .inputFluids(fluid(PollutionMaterials.InfusedAura, 64000))
                         .inputFluids(fluid(GTMaterials.Lubricant, 64000))
-                        .outputItems(PollutionMachines.MEGA_MANA_TURBINE)
+                        .outputItems(output)
                         .duration(1600)
                         .EUt(GTValues.VA[GTValues.ZPM])
                         .save(provider);
+                }
             }
         } else {
             Pollution.LOGGER.warn("Skipping the magic_gcym mana turbine group: a required fluid is missing");

@@ -30,7 +30,7 @@ import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 final class {name} {{
 
     static BlockPattern create(MultiblockMachineDefinition definition) {{
-        return FactoryBlockPattern.start()
+        return FactoryBlockPattern.start({directions})
 {aisles}
 {predicates}
                 .build();
@@ -120,8 +120,8 @@ MACHINES = {
                         .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(16))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(16))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setMaxGlobalLimited(1)))
-                .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
-                .where('C', Predicates.heatingCoils())""",
+                .where('B', MagicStructureElements.batteryCores())
+                .where('C', MagicStructureElements.batteryCoils())""",
     ),
     "MetaTileEntityIndustrialInfusion.java": (
         "IndustrialInfusionPatterns",
@@ -199,7 +199,7 @@ def main() -> int:
         if not aisles:
             print(f"!! no aisles found for {source_name}")
             continue
-        content = HEADER.format(name=class_name, aisles="\n".join(aisles), predicates=predicates)
+        content = HEADER.format(directions="com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.RIGHT, com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.UP, com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.FRONT" if class_name == "MagicBatteryPatterns" else "", name=class_name, aisles="\n".join(aisles), predicates=predicates)
         if "frameGroup" in predicates:
             content = content.replace(f"    private {class_name}() {{}}",
                                       FRAME_GROUP + f"\n    private {class_name}() {{}}")

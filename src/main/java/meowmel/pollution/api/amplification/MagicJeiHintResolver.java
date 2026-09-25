@@ -9,8 +9,9 @@ import java.util.List;
  * Values deliberately describe applicability rather than a final percentage:
  * the latter depends on the installed wafer, hatch tier, live sky and active card.
  *
- * <p>The resolver is pure text and therefore fully portable; the modern GT/JEI
- * recipe-page hookup that renders these lines is still a TODO in the port.</p>
+ * <p>The resolver is pure text and therefore fully portable; the modern JEI
+ * recipe-page hookup is installed by {@code PollutionJeiPlugin} and
+ * {@code MagicRecipeDataInfos}.</p>
  */
 public final class MagicJeiHintResolver {
 

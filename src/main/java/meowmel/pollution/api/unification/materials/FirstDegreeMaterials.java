@@ -41,34 +41,10 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.Thorium;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Tin;
 
 /**
- * The six aspect alloys used by the magic multiblock parts, plus the magic
- * superconductor chain.
- *
- * <p>Ported from upstream {@code meowmel.pollution.api.unification.materials.FirstDegreeMaterials}
- * (colors, component ratios and blast temperature are unchanged). Upstream depended on
- * GTQT-only materials for later entries of the same class; those stay TODO until the
- * magic lines they belong to are ported.</p>
- *
- * <p>The second batch ports {@code Impuremana}, {@code KQGold},
- * {@code CrudeLk99}, {@code MagicalSuperconductiveLiquid} and the two
- * thaumic superconductors. Adaptations to GTCEu 7.5.3:</p>
- * <ul>
- *   <li>{@code KQGold}'s tool/rotor stats are dropped (the modern
- *       {@code ToolProperty.Builder} values cannot be transplanted 1:1, see
- *       {@link OreMaterials}); cable and fluid-pipe properties are kept.</li>
- *   <li>Upstream {@code .ingot()} implied a dust form in 1.12; GTCEu Modern
- *       does not, so {@code KQGold} and {@code CrudeLk99} request
- *       {@code .dust()} explicitly (the upstream recipes consume the dust).</li>
- *   <li>The superconductors carry {@code GENERATE_PLATE} because the battery
- *       chain consumes their plate form.</li>
- * </ul>
- *
- * <p>The third batch ports {@code RichAura}, {@code ErichAura} and
- * {@code ElvenElementium} (colors, components and flags unchanged).
- * {@code ElvenElementium}'s upstream {@code .ingot()} implied a dust in 1.12,
- * so {@code .dust()} is requested explicitly here: the upstream
- * {@code ForgeAlchemyRecipes} consumes the dust form (see the KQGold/CrudeLk99
- * note above) and {@code DECOMPOSITION_BY_CENTRIFUGING} needs a dust input.</p>
+ * Aspect alloys, pure/impure mana, elemental metals and thaumic superconductors.
+ * <p>Component ratios and blast temperatures follow upstream. KQGold's tools, cables,
+ * pipes and rotor properties use the modern GT APIs; legacy rotor speed 12 and damage 3
+ * become efficiency 155% and power 130%. Required plate and dust forms are explicit.</p>
  */
 public final class FirstDegreeMaterials {
 
@@ -157,6 +133,8 @@ public final class FirstDegreeMaterials {
                 .color(0xFCF770)
                 .fluid().ingot().dust().plasma()
                 .iconSet(MaterialIconSet.SHINY)
+                .toolStats(com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty.Builder.of(8, 10, 14400, 8).enchantability(10).build())
+                .rotorStats(130, 155, 3, 2400)
                 .fluidPipeProperties(6000, 400, true)
                 .cableProperties(GTValues.V[6], 16, 2)
                 .element(PollutionElements.Kqt)

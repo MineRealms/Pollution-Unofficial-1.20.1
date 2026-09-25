@@ -32,6 +32,9 @@ public final class StarstreamBlocks {
     public static final RegistryObject<BlockEntityType<StarstreamBlockEntity>> BLOCK_ENTITY = BLOCK_ENTITIES.register(
             "starstream_network", () -> BlockEntityType.Builder.of(StarstreamBlockEntity::new,
                     OPERATION_CORE.get(), RELAY.get(), INTERDIMENSIONAL_RELAY.get(), CHUNK_ANCHOR.get(), NEXUS_CORE.get()).build(null));
-    public static void init(IEventBus bus) { BLOCKS.register(bus); ITEMS.register(bus); BLOCK_ENTITIES.register(bus); }
+    public static void init(IEventBus bus) {
+        BLOCKS.register(bus); ITEMS.register(bus); BLOCK_ENTITIES.register(bus);
+        bus.addListener(StarstreamChunkTickets::setup);
+    }
     private StarstreamBlocks() {}
 }

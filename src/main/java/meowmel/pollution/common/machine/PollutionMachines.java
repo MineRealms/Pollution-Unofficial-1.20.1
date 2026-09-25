@@ -242,6 +242,7 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition ENDOFLAME_ARRAY;
     public static MultiblockMachineDefinition MANA_INFUSION_REACTOR;
     public static MultiblockMachineDefinition MEGA_MANA_TURBINE;
+    public static MultiblockMachineDefinition MEGA_MANA_ROTOR_TURBINE;
     public static MultiblockMachineDefinition MULTI_DAN_DE_LIFE_ON;
 
     /**
@@ -754,12 +755,20 @@ public final class PollutionMachines {
                 .simpleModel(model("magic_battery"))
                 .register();
 
-        MAGIC_LARGE_TURBINE = magicMultiblock("magic_large_turbine", "Magic Large Turbine",
-                MagicLargeTurbineMachine::new, MagicLargeTurbineMachine::createPattern,
-                new Component[] {
+        MAGIC_LARGE_TURBINE = PollutionGTAddon.REGISTRATE
+                .multiblock("magic_large_turbine", MagicLargeTurbineMachine::new)
+                .tier(GTValues.EV).langValue("Magic Large Turbine")
+                .rotationState(RotationState.ALL)
+                .recipeType(PORecipeMaps.MAGIC_TURBINE_FUELS)
+                .generator(true)
+                .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
+                .alwaysTryModifyRecipe(true)
+                .pattern(MagicLargeTurbineMachine::createPattern)
+                .simpleModel(model("magic_large_turbine"))
+                .tooltips(
                         Component.translatable("pollution.machine.magic_large_turbine.tooltip.1"),
-                        Component.translatable("pollution.machine.magic_large_turbine.tooltip.2") },
-                PORecipeMaps.MAGIC_TURBINE_FUELS);
+                        Component.translatable("pollution.machine.magic_large_turbine.tooltip.2"))
+                .register();
 
         // Upstream's LuV mana turbine reuses the large-turbine structure with
         // MANA_TO_EU fuels and the mana-plate casing.  The modern
@@ -772,6 +781,9 @@ public final class PollutionMachines {
                 .langValue("Large Mana Power Converter")
                 .rotationState(RotationState.ALL)
                 .recipeTypes(BotaniaRecipeMaps.MANA_TO_EU)
+                .generator(true)
+                .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
+                .alwaysTryModifyRecipe(true)
                 .pattern(LargeManaTurbineMachine::createPattern)
                 .simpleModel(model("large_mana_turbine"))
                 .tooltips(
@@ -779,9 +791,17 @@ public final class PollutionMachines {
                         Component.translatable("pollution.machine.large_mana_turbine.tooltip.2"))
                 .register();
 
-        MAGIC_MEGA_TURBINE = magicMultiblock("magic_mega_turbine", "Magic Mega Turbine",
-                MagicMegaTurbineMachine::new, MagicMegaTurbineMachine::createPattern,
-                PORecipeMaps.MAGIC_TURBINE_FUELS);
+        MAGIC_MEGA_TURBINE = PollutionGTAddon.REGISTRATE
+                .multiblock("magic_mega_turbine", MagicMegaTurbineMachine::new)
+                .tier(GTValues.IV).langValue("Magic Mega Turbine")
+                .rotationState(RotationState.ALL)
+                .recipeType(PORecipeMaps.MAGIC_TURBINE_FUELS)
+                .generator(true)
+                .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
+                .alwaysTryModifyRecipe(true)
+                .pattern(MagicMegaTurbineMachine::createPattern)
+                .simpleModel(model("magic_mega_turbine"))
+                .register();
 
         MANA_PLATE = PollutionGTAddon.REGISTRATE
                 .multiblock("mana_plate", ManaPlateMachine::new)
@@ -840,6 +860,19 @@ public final class PollutionMachines {
         MANA_INFUSION_REACTOR = magicMultiblock("mana_infusion_reactor", "Mana Infusion Reactor",
                 ManaInfusionReactorMachine::new, ManaInfusionReactorMachine::createPattern,
                 BotaniaRecipeMaps.MANA_INFUSION_RECIPES);
+
+        MEGA_MANA_ROTOR_TURBINE = PollutionGTAddon.REGISTRATE
+                .multiblock("mega_mana_rotor_turbine",
+                        meowmel.pollution.common.machine.multiblock.magic.MegaManaRotorTurbineMachine::new)
+                .tier(GTValues.ZPM).langValue("Mega Mana Turbine")
+                .rotationState(RotationState.ALL)
+                .recipeType(BotaniaRecipeMaps.MANA_TO_EU)
+                .generator(true)
+                .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
+                .alwaysTryModifyRecipe(true)
+                .pattern(meowmel.pollution.common.machine.multiblock.magic.MegaManaRotorTurbineMachine::createPattern)
+                .simpleModel(model("mega_mana_turbine"))
+                .register();
 
         MEGA_MANA_TURBINE = PollutionGTAddon.REGISTRATE
                 .multiblock("mega_mana_turbine", MegaManaTurbineMachine::new)
@@ -957,6 +990,9 @@ public final class PollutionMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(GTRecipeTypes.FUSION_RECIPES, PORecipeMaps.NODE_MAGIC_FUSION_RECIPES)
+                .recipeModifiers(meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
+                        meowmel.pollution.common.machine.multiblock.MagicMultiblockController::parallelModifier)
+                .alwaysTryModifyRecipe(true)
                 .tooltips(
                         Component.translatable("pollution.machine.node_fusion_reactor.tooltip.1"),
                         Component.translatable("pollution.machine.node_fusion_reactor.tooltip.2"),
@@ -984,8 +1020,16 @@ public final class PollutionMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(recipeTypes)
+                .recipeModifiers(meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
+                        meowmel.pollution.common.machine.multiblock.MagicMultiblockController::parallelModifier)
+                .alwaysTryModifyRecipe(true)
                 .tooltips(tooltips)
                 .pattern(pattern)
+                .shapeInfos(definition -> switch (name) {
+                    case "magic_distillery" -> MagicDistilleryMachine.createShapes(definition);
+                    case "bot_distillery" -> meowmel.pollution.common.machine.multiblock.botania.BotDistilleryPatterns.createShapes(definition);
+                    default -> java.util.List.of();
+                })
                 .simpleModel(model(name))
                 .register();
     }

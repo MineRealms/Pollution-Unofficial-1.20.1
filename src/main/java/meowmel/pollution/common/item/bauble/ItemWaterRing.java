@@ -26,10 +26,7 @@ import java.util.List;
  * ring occupied the first Baubles slot; Curios has no fixed first-ring slot,
  * so that cross-mod guard is intentionally dropped.</p>
  *
- * <p>TODO(port): upstream refilled the source store through
- * {@code SourceMaterialItem} integrations (Botania cosmetics/phantom ink).
- * Only the storage contract is ported for now; recipes or machines can charge
- * the ring through {@link #addSource(int, boolean, ItemStack)}.</p>
+ * <p>The source charger refills this store from infused water.</p>
  */
 public class ItemWaterRing extends Item implements ICurioItem {
 
@@ -50,16 +47,11 @@ public class ItemWaterRing extends Item implements ICurioItem {
 
     @Override
     public void curioTick(SlotContext context, ItemStack stack) {
-        if (!(context.entity() instanceof Player player)) {
+        if (!(context.entity() instanceof Player player) || player.level().isClientSide) {
             return;
         }
         if (!player.isInWater() || !consumeSource(consumeSource, false, stack)) {
             removeNightVision(player);
-            return;
-        }
-        consumeSource(consumeSource, true, stack);
-
-        if (player.level().isClientSide) {
             return;
         }
 
@@ -93,23 +85,11 @@ public class ItemWaterRing extends Item implements ICurioItem {
     }
 
     private static void applyNightVision(Player player) {
-        CompoundTag data = player.getPersistentData();
-        if (data.getBoolean(TAG_NIGHT_VISION) && player.hasEffect(MobEffects.NIGHT_VISION)) {
-            return;
-        }
-        data.putBoolean(TAG_NIGHT_VISION, true);
-        player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,
-                NIGHT_VISION_DURATION, 0, true, false));
+        AccessoryEffects.refresh(player, "water_ring", MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION);
     }
 
     private static void removeNightVision(Player player) {
-        CompoundTag data = player.getPersistentData();
-        if (data.getBoolean(TAG_NIGHT_VISION)) {
-            data.remove(TAG_NIGHT_VISION);
-            if (!player.level().isClientSide) {
-                player.removeEffect(MobEffects.NIGHT_VISION);
-            }
-        }
+        AccessoryEffects.remove(player, "water_ring", MobEffects.NIGHT_VISION);
     }
 
     public int getMaxSourceStore() {
@@ -117,7 +97,7 @@ public class ItemWaterRing extends Item implements ICurioItem {
     }
 
     public int getSourceStore(ItemStack stack) {
-        return stack.getOrCreateTag().getInt(TAG_SOURCE);
+        return stack.hasTag() ? Math.max(0, Math.min(maxSource, stack.getTag().getInt(TAG_SOURCE))) : 0;
     }
 
     public void setSourceStore(int source, ItemStack stack) {
@@ -129,7 +109,7 @@ public class ItemWaterRing extends Item implements ICurioItem {
             return false;
         }
         int stored = getSourceStore(stack);
-        if (stored + amount > maxSource) {
+        if (amount > maxSource - stored) {
             return false;
         }
         if (!simulate) {

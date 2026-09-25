@@ -23,7 +23,8 @@
   "features": [
     [],
     [
-      "pollution:magma_cave/lava_pool"
+      "pollution:magma_cave/lava_pool",
+      "pollution:cave/tar_pool"
     ],
     [],
     [],

@@ -11,35 +11,22 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**
- * Ore materials of the Pollution port.
- *
- * <p>Port of upstream {@code meowmel.pollution.api.unification.materials.OreMaterials}
- * (14 materials). Ported: 11 materials whose base components all exist in
- * GTCEu 7.5.3. Adaptations and skips, all verified against the 7.5.3 binary:</p>
- * <ul>
- *   <li>{@code Syrmorite}, {@code Octine}, {@code Valonite} are already
- *       registered by {@link SubstrateMaterials} with the port's simplified
- *       shapes (dust/gem, used by the substrate chemistry recipes); their
- *       upstream ingot/ore/tool definitions are not re-registered. Only
- *       {@code .fluid()} was added to those three so the forge-alchemy
- *       transmutations can output them.</li>
- *   <li>{@code setTooltips(...)} has no GTCEu 7.5.3 equivalent (confirmed
- *       against the binary), the upstream tooltip strings are dropped.</li>
- *   <li>{@code MaterialToolProperty} / {@code rotorStats(float,float,int)} are
- *       1.12 GTCE signatures; 7.5.3 uses {@code ToolProperty.Builder} and
- *       {@code rotorStats(int,int,float,int)}. The upstream values cannot be
- *       transplanted 1:1 and would need rebalancing, so tool/rotor stats are
- *       skipped.</li>
- *   <li>{@code GENERATE_DOUBLE_PLATE} does not exist in 7.5.3 and is
- *       dropped.</li>
- *   <li>{@code Materials.Chrome} was renamed to {@code Chromium} in GTCEu.</li>
- * </ul>
+ * Pollution ores, including the GTQT cryolite required by the underground vein.
+ * <p>Syrmorite, Octine and Valonite are registered once in SubstrateMaterials with ore,
+ * tool and supported component forms. Tool statistics use ToolProperty.Builder;
+ * legacy rotor speed/damage are converted to the modern efficiency/power percentages.</p>
+ * <p>Modern GT has no double-plate flag, and gem-only materials cannot request shapes
+ * that require an ingot property. Those unsupported shapes are omitted.</p>
  */
 public final class OreMaterials {
 
     private OreMaterials() {}
 
     public static void register() {
+        PollutionMaterials.Cryolite = new Material.Builder(id("cryolite"))
+                .dust().ore().color(0xD9E4DC)
+                .components(Sodium, 3, Aluminium, 1, Fluorine, 6)
+                .buildAndRegister();
         // 痂壳晶 Scabyst
         PollutionMaterials.Scabyst = new Material.Builder(id("scabyst"))
                 .color(0x53C58D)
@@ -48,8 +35,9 @@ public final class OreMaterials {
                         PollutionMaterials.InfusedFire, 5,
                         PollutionMaterials.InfusedEarth, 5,
                         PollutionMaterials.InfusedOrder, 10)
+                .toolStats(com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty.Builder.of(4, 4, 288, 4).enchantability(10).build())
                 .iconSet(MaterialIconSet.GEM_HORIZONTAL)
-                .flags(GENERATE_PLATE, GENERATE_GEAR, GENERATE_ROD,
+                .flags(GENERATE_PLATE, GENERATE_GEAR, GENERATE_ROD, GENERATE_LONG_ROD,
                         DECOMPOSITION_BY_CENTRIFUGING, GENERATE_BOLT_SCREW,
                         GENERATE_FRAME, GENERATE_DENSE)
                 .formula("((SiO2)4Fe)(IgTerOrd2)5)4", true)

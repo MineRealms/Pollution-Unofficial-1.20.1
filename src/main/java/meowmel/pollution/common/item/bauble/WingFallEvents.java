@@ -29,12 +29,14 @@ public class WingFallEvents {
 
     /** Highest fall damage reduction among worn wings; 1.0 when none is worn. */
     public static float wornFallDamageReduction(Player player) {
+        float armorReduction = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST)
+                .getItem() instanceof WingItem wing ? wing.getFallDamageReduction() : 1.0F;
         if (!ModList.get().isLoaded("curios")) {
-            return 1.0F;
+            return armorReduction;
         }
         return CuriosApi.getCuriosInventory(player)
                 .map(handler -> {
-                    float reduction = 1.0F;
+                    float reduction = armorReduction;
                     for (var stacksHandler : handler.getCurios().values()) {
                         var stacks = stacksHandler.getStacks();
                         for (int i = 0; i < stacks.getSlots(); i++) {
@@ -45,6 +47,6 @@ public class WingFallEvents {
                     }
                     return reduction;
                 })
-                .orElse(1.0F);
+                .orElse(armorReduction);
     }
 }

@@ -19,13 +19,10 @@ import java.util.stream.Stream;
  * the narrowest matching window wins and {@code alfheim_field} is the fallback,
  * exactly as upstream.</p>
  *
- * <p>TODO: {@code data/pollution/dimension/alfheim.json} currently uses
- * {@code minecraft:fixed} + {@code minecraft:plains} as a placeholder (owned by
- * the dimension batch). Point its {@code biome_source} at
- * {@code "type": "pollution:alfheim", "seed": <long>} to enable the 12-biome
- * map.</p>
+ * <p>The dimension stem enables world-seed binding. Legacy serialized sources keep
+ * their stored seed unless use_world_seed is explicitly enabled.</p>
  */
-public class POAlfheimBiomeSource extends BiomeSource {
+public class POAlfheimBiomeSource extends BiomeSource implements WorldSeededBiomeSource {
 
     private static final double PERSISTENCE = 1.2D;
     private static final int OCTAVES = 6;
@@ -36,7 +33,8 @@ public class POAlfheimBiomeSource extends BiomeSource {
 
     public static final Codec<POAlfheimBiomeSource> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Codec.LONG.fieldOf("seed").forGetter(source -> source.seed),
+                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(source -> source.seed),
+                    Codec.BOOL.optionalFieldOf("use_world_seed", false).forGetter(source -> source.useWorldSeed),
                     RegistryOps.retrieveElement(POBiomes.ALFHEIM_FIELD),
                     RegistryOps.retrieveElement(POBiomes.ALFHEIM_GIANT_FLOWER_FIELD),
                     RegistryOps.retrieveElement(POBiomes.ALFHEIM_BEACH),
@@ -52,11 +50,12 @@ public class POAlfheimBiomeSource extends BiomeSource {
             ).apply(instance, POAlfheimBiomeSource::new));
 
     private final long seed;
-    private final long noiseSeed;
+    private volatile long noiseSeed;
+    private final boolean useWorldSeed;
     private final Holder<Biome> field;
     private final Profile[] profiles;
 
-    private POAlfheimBiomeSource(long seed,
+    private POAlfheimBiomeSource(long seed, boolean useWorldSeed,
                                  Holder<Biome> field,
                                  Holder<Biome> giantFlowerField,
                                  Holder<Biome> beach,
@@ -70,6 +69,7 @@ public class POAlfheimBiomeSource extends BiomeSource {
                                  Holder<Biome> islandForest,
                                  Holder<Biome> pitForest) {
         this.seed = seed;
+        this.useWorldSeed = useWorldSeed;
         this.noiseSeed = (long) Math.pow((double) (seed * 84L), 6.0D);
         this.field = field;
         // Registration order from WorldProviderAlfheim.genSettings.
@@ -90,6 +90,11 @@ public class POAlfheimBiomeSource extends BiomeSource {
     }
 
     @Override
+    public void bindWorldSeed(long worldSeed) {
+        if (useWorldSeed) noiseSeed = WorldEngineNoise.mixWorldSeed(worldSeed ^ seed);
+    }
+
+    @Override
     protected Codec<? extends BiomeSource> codec() {
         return CODEC;
     }
@@ -101,9 +106,10 @@ public class POAlfheimBiomeSource extends BiomeSource {
 
     @Override
     public Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler) {
-        int blockX = QuartPos.toBlock(quartX);
-        int blockZ = QuartPos.toBlock(quartZ);
+        return biomeAtBlock(QuartPos.toBlock(quartX), QuartPos.toBlock(quartZ));
+    }
 
+    public Holder<Biome> biomeAtBlock(int blockX, int blockZ) {
         double mapValue = WorldEngineNoise.perlinNoise2D(
                 noiseSeed, (double) blockX / SCALE_X, (double) blockZ / SCALE_X, BIOME_NOISE) * SCALE_Y;
 

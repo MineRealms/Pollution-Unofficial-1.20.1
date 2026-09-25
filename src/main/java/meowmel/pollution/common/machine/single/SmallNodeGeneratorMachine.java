@@ -37,10 +37,16 @@ import java.util.List;
  *       hoppers or pipes.</li>
  * </ul>
  */
-public class SmallNodeGeneratorMachine extends PollutionEnergyMachine {
+public class SmallNodeGeneratorMachine extends PollutionEnergyMachine implements com.gregtechceu.gtceu.api.machine.feature.IMachineLife {
+
+    private static final com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder FIELDS =
+            new com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder(SmallNodeGeneratorMachine.class, MANAGED_FIELD_HOLDER);
+    @Override public com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder getFieldHolder() { return FIELDS; }
+    @Override public void onMachineRemoved() { clearInventory(inventory.storage); }
 
     private static final float BASIC_CAPACITY = 8192.0F;
 
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableItemStackHandler inventory;
 
     public SmallNodeGeneratorMachine(IMachineBlockEntity info, int tier) {

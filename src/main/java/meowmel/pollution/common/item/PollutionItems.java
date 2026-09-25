@@ -28,9 +28,10 @@ import java.util.Map;
  * entries: goggles, tarots, the water ring, the heart fruit, the rechargeable
  * batteries, filters, the packaged aura node and the astral data carriers.</p>
  *
- * <p>Behaviours that depend on unported systems (Blood Magic LP, Astral
- * Sorcery, the starstream network, jetpack wings, the magic sweep flight) are
- * registered as documented plain stubs with TODOs on their sections.</p>
+ * <p>The remaining plain registry entries are limited to behaviours owned by
+ * the explicitly excluded Blood Magic and Astral Sorcery systems. Starstream
+ * networking and the wing/jetpack behaviour are implemented by their own
+ * ported handlers.</p>
  */
 public final class PollutionItems {
 

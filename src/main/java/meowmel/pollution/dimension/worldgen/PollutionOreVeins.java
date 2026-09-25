@@ -34,69 +34,13 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import java.util.Set;
 
 /**
- * 1.20.1 / GTCEu Modern 7.5.3 port of the 1.12 {@code PollutionOreVeins}.
- *
- * <p>1.12 registered veins through {@code OreDepositBuilder} +
- * {@code WorldGenRegistry.addVeinDefinitions}. GTCEu Modern exposes
- * {@link GTOreDefinition} with {@link com.gregtechceu.gtceu.api.data.worldgen.generator.veins.ClassicVeinGenerator}
- * (the modern name for {@code layeredGeneration}/{@code layeredFill}) and
- * registers veins from the {@code GTCEuAPI.RegisterEvent} fired by
- * {@code GTOreLoader} (the datapack loader that clears and rebuilds
- * {@code GTRegistries.ORE_VEINS} on every server start/reload). This class
- * subscribes to that event from {@link #init(FMLJavaModLoadingContext)}.</p>
- *
- * <h2>Dimension layers</h2>
- * <p>Modern GTCEu only ships overworld/nether/end layers, and
- * {@code OreGenerator} only considers layers present in
- * {@code WorldGeneratorUtils.WORLD_GEN_LAYERS}. Three custom layers are
- * therefore registered for the port's datapack dimensions
- * {@code pollution:underground} and {@code pollution:alfheim}.</p>
- *
- * <h2>Host block adaptation</h2>
- * <p>Upstream restricted the Alfheim veins to Botania {@code livingrock}
- * ({@code generationPredicate(state.getBlock() == ModBlocks.livingrock)}).
- * The port's {@code noise_settings/alfheim.json} still uses
- * {@code minecraft:stone} as the default block (upstream replaced the base
- * terrain with livingrock in code), so the Alfheim layer accepts both stone and
- * livingrock. The generators target the explicit {@code gtceu:<material>_ore}
- * state instead of GTCEu's {@code .mat(material)} shorthand, because the
- * shorthand only resolves ores for blocks that already map to an ore prefix
- * (stone) and would place nothing inside livingrock.</p>
- *
- * <h2>Ported veins</h2>
- * <p>All veins whose materials exist in this port: 6 underground veins
- * (flame coal, galena, nickel, pyrargyrite, scabyst, zinc), 2 Alfheim veins
- * (dragonstone, pixie quartz) and the 6 thaumastic aspect veins shared by both
- * dimensions. Bedrock fluid deposits are ported as
- * {@link BedrockFluidDefinition}s (lava/water/mana).</p>
- *
- * <h2>Skipped upstream entries</h2>
- * <ul>
- *   <li>{@code cryolite_vein} - {@code GTQTMaterials.Cryolite} is not ported
- *       and GTCEu 7.5.3 has no {@code GTMaterials.Cryolite}.</li>
- *   <li>{@code octine_vein}, {@code syrmorite_vein}, {@code valonite_vein} -
- *       the materials exist ({@code SubstrateMaterials}) but the port registers
- *       them as dust/gem shapes without the upstream ORE property, so there is
- *       no {@code gtceu:<material>_ore} block to place. Registering the veins
- *       would be a no-op, so they are skipped until the ore shapes land.</li>
- *   <li>{@code elementium_vein} - {@code ElvenElementium} is not ported.</li>
- *   <li>{@code pure_tar_deposit} - the {@code PureTar} material/fluid is not
- *       ported.</li>
- *   <li>{@code registerStoneSpheres} / {@code registerGTQTStoneSpheres} - the
- *       1.12 sphere generation API and the GTQT stone variant blocks have no
- *       GTCEu 7.5.3 equivalent in this port; vanilla/GT stone spheres are not
- *       part of the requested vein port.</li>
- *   <li>{@code registerOrbs} - {@code OrbItems} dimension display mapping and
- *       {@code WorldGenRegistry.addNamedDimension} do not exist in 7.5.3 (the
- *       XEI vein pages derive names from the registry id).</li>
- * </ul>
- *
- * <h2>Substitution table</h2>
- * <p>Of the requested substitutions only {@code GTQT Mana -> InfusedAura}
- * applies here (the Alfheim mana bedrock deposit). {@code FLESH_BLOCK},
- * {@code HyperdimensionalSilver}, {@code KQGold}, {@code Mansussteel} and
- * {@code Thaumium} are not referenced by the upstream vein file, so no
- * substitution was needed for them.</p>
+ * Source ore veins and bedrock fluids registered through GTCEu Modern's reload events.
+ * <p>Ten underground veins, three Alfheim veins, six shared aspect veins and four fluid
+ * deposits retain their upstream materials, weights, heights and yields. Underground
+ * host rocks use the stone-ore tag; Alfheim also accepts Botania livingrock. Explicit
+ * ore states support host blocks without a GT ore-prefix mapping.</p>
+ * <p>Stone sphere palettes are registered separately by StoneSphereFeature. Modern XEI
+ * pages use dimension registry ids instead of the removed 1.12 orb naming API.</p>
  */
 public final class PollutionOreVeins {
 
@@ -177,8 +121,18 @@ public final class PollutionOreVeins {
         registerVein("zinc_vein", UNDERGROUND_LAYER, 20, 0.25f, 120, 240, 12, 16,
                 PollutionMaterials.PlutoZinc, GTMaterials.Sulfur, GTMaterials.Sulfur,
                 PollutionMaterials.PlutoZinc, PollutionMaterials.PlutoZinc);
-        // Skipped: cryolite_vein (GTQT Cryolite not ported)
-        // Skipped: octine_vein / syrmorite_vein / valonite_vein (no ore blocks in this port)
+        registerVein("cryolite_vein", UNDERGROUND_LAYER, 40, 0.50f, 80, 160, 8, 20,
+                PollutionMaterials.Cryolite, PollutionMaterials.Cryolite, PollutionMaterials.Cryolite,
+                PollutionMaterials.Cryolite, GTMaterials.Bauxite);
+        registerVein("octine_vein", UNDERGROUND_LAYER, 60, 0.40f, 40, 120, 12, 16,
+                PollutionMaterials.Octine, PollutionMaterials.Octine, PollutionMaterials.Octine,
+                PollutionMaterials.Octine, PollutionMaterials.MeltGold);
+        registerVein("syrmorite_vein", UNDERGROUND_LAYER, 60, 0.40f, 40, 120, 12, 16,
+                PollutionMaterials.Syrmorite, PollutionMaterials.Syrmorite, PollutionMaterials.Syrmorite,
+                PollutionMaterials.Syrmorite, PollutionMaterials.MeltGold);
+        registerVein("valonite_vein", UNDERGROUND_LAYER, 20, 0.25f, 40, 160, 14, 18,
+                PollutionMaterials.Valonite, PollutionMaterials.DumbTin, PollutionMaterials.DumbTin,
+                PollutionMaterials.Valonite, PollutionMaterials.Valonite);
 
         // ---- Alfheim: Botania livingrock-hosted veins (upstream `registerAlfheimVein`) ----
         // pollution.vein.dragonstone
@@ -189,7 +143,9 @@ public final class PollutionOreVeins {
         registerVein("pixie_quartz_vein", ALFHEIM_LAYER, 18, 0.25f, 30, 100, 18, 26,
                 PollutionMaterials.ElvenQuartz, PollutionMaterials.PixieDust, PollutionMaterials.ElvenQuartz,
                 PollutionMaterials.ElvenQuartz, PollutionMaterials.PixieDust);
-        // Skipped: elementium_vein (ElvenElementium not ported)
+        registerVein("elementium_vein", ALFHEIM_LAYER, 8, 0.15f, 8, 40, 16, 24,
+                PollutionMaterials.ElvenElementium, PollutionMaterials.ElvenElementium, PollutionMaterials.ElvenElementium,
+                PollutionMaterials.ElvenElementium, PollutionMaterials.ElvenElementium);
 
         // ---- Thaumastic aspect veins (underground + alfheim) ----
         // pollution.veins.ore.thaumastic.air
@@ -264,10 +220,11 @@ public final class PollutionOreVeins {
         // pollution.veins.fluid.water
         registerFluidDeposit("water_deposit", 20, 50, 100, 1, 100, 60,
                 GTMaterials.Water.getFluid(), UNDERGROUND_DIMENSION, ALFHEIM_DIMENSION);
-        // pollution.veins.fluid.mana - upstream used GTQT Mana, substituted with InfusedAura
+        // pollution.veins.fluid.mana - pure mana, also produced by the Life Activation Garden.
         registerFluidDeposit("mana_deposit", 10, 5, 25, 1, 100, 40,
-                PollutionMaterials.InfusedAura.getFluid(), ALFHEIM_DIMENSION);
-        // Skipped: pure_tar_deposit (PureTar not ported)
+                PollutionMaterials.Mana.getFluid(), ALFHEIM_DIMENSION);
+        registerFluidDeposit("pure_tar_deposit", 20, 100, 200, 1, 100, 20,
+                PollutionMaterials.PureTar.getFluid(), UNDERGROUND_DIMENSION);
     }
 
     @SafeVarargs
@@ -332,7 +289,7 @@ public final class PollutionOreVeins {
 
         @Override
         public boolean test(BlockState state, RandomSource random) {
-            return state.is(Blocks.STONE) || state.is(BotaniaBlocks.livingrock);
+            return state.is(BlockTags.STONE_ORE_REPLACEABLES) || state.is(BotaniaBlocks.livingrock);
         }
 
         @Override

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -216,7 +217,7 @@ public class LargeNodeGeneratorMachine extends AbstractDisplayMultiblockMachine 
     }
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
-        return FactoryBlockPattern.start()
+        return FactoryBlockPattern.start(FRONT, UP, RIGHT)
                 .aisle(" A ", " B ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ")
                 .aisle("ABA", "BBB", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ")
                 .aisle("ABA", "BBB", "HAC", "   ", "   ", "   ", "   ", "   ", "   ", "   ", "   ")

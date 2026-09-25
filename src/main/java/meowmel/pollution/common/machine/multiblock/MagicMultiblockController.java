@@ -1,6 +1,14 @@
 package meowmel.pollution.common.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.ICoilType;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -86,7 +94,7 @@ import java.util.Set;
  * screen, and the formed parts are exposed as fancy side tabs.</p>
  */
 public abstract class MagicMultiblockController extends WorkableMultiblockMachine
-        implements IFancyUIMachine, IDisplayUIMachine {
+        implements IFancyUIMachine, IDisplayUIMachine, IOverclockMachine, ITieredMachine {
 
     protected IVisHatch visHatch;
     protected InfusedFluidHatchMachine infusedFluidHatch;
@@ -178,7 +186,69 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
      * custom blocks; the port uses the standard coil temperature instead.
      */
     public int getCurrentTemperature() {
-        return coilType == null ? 0 : coilType.getCoilTemperature();
+        return coilType == null ? 0 : coilType.getCoilTemperature()
+                + 100 * Math.max(0, getOverclockTier() - GTValues.MV);
+    }
+
+    @Override
+    public long getOverclockVoltage() {
+        EnergyContainerList energy = getEnergyContainer();
+        long voltage = energy.getInputVoltage();
+        return energy.getInputAmperage() == 1
+                ? GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)] : voltage;
+    }
+
+    @Override
+    public int getOverclockTier() {
+        return GTUtil.getTierByVoltage(getOverclockVoltage());
+    }
+
+    @Override
+    public int getMaxOverclockTier() { return getOverclockTier(); }
+
+    @Override
+    public int getTier() { return getOverclockTier(); }
+
+    @Override
+    public int getMinOverclockTier() { return getOverclockTier(); }
+
+    @Override
+    public void setOverclockTier(int tier) { }
+
+    @Override
+    public long getMaxVoltage() {
+        EnergyContainerList energy = getEnergyContainer();
+        long voltage = energy.getHighestInputVoltage();
+        return energy.getNumHighestInputContainers() > 1
+                ? GTValues.V[Math.min(GTValues.MAX, GTUtil.getTierByVoltage(voltage) + 1)] : voltage;
+    }
+
+    @Override
+    public long getDisplayRecipeVoltage() {
+        return getEnergyContainer().getHighestInputVoltage();
+    }
+
+    /** Standard GT electrical overclocking, including blast-furnace coil discounts. */
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
+        if (!(machine instanceof MagicMultiblockController controller)
+                || recipe.getInputEUt().isEmpty()) return ModifierFunction.IDENTITY;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > controller.getMaxOverclockTier()) {
+            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+        }
+        if (recipe.data.contains("ebf_temp")) {
+            int required = recipe.data.getInt("ebf_temp");
+            int temperature = controller.getCurrentTemperature();
+            if (!controller.hasCoil() || required > temperature) {
+                return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
+            }
+            OverclockingLogic logic = (params, voltage) ->
+                    OverclockingLogic.heatingCoilOC(params, voltage, required, temperature);
+            return logic.getModifier(machine, recipe, controller.getOverclockVoltage()).compose(
+                    ModifierFunction.builder().eutMultiplier(
+                            OverclockingLogic.getCoilEUtDiscount(required, temperature)).build());
+        }
+        return OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(
+                machine, recipe, controller.getOverclockVoltage());
     }
 
     // ////////////////////////////////////
@@ -533,5 +603,18 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
         for (IMultiPart part : getParts()) {
             part.attachFancyTooltipsToController(this, tooltipsPanel);
         }
+    }
+    public static ModifierFunction parallelModifier(MetaMachine machine, GTRecipe recipe) {
+        if (!(machine instanceof LayeredMagicTowerMachine tower)) {
+            return com.gregtechceu.gtceu.common.data.GTRecipeModifiers.PARALLEL_HATCH.getModifier(machine, recipe);
+        }
+        int maximum = tower.getParallelHatch().map(hatch -> hatch.getCurrentParallel()).orElse(1);
+        maximum = tower.outputParallelLimit(recipe, maximum);
+        if (maximum <= 0) return ModifierFunction.NULL;
+        int parallels = com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic.getParallelAmount(machine, recipe, maximum);
+        if (parallels <= 0) return ModifierFunction.NULL;
+        return ModifierFunction.builder().modifyAllContents(
+                com.gregtechceu.gtceu.api.recipe.content.ContentModifier.multiplier(parallels))
+                .eutMultiplier(parallels).parallels(parallels).build();
     }
 }

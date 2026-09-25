@@ -19,12 +19,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
-    // The dev-time `--mixin.config` injection is intentionally NOT used: on the
-    // client launch target Mixin cannot read the config resource that early and
-    // aborts with "resource 'pollution.mixins.json' was invalid or could not be
-    // read". The config is declared in META-INF/mods.toml via [[mixins]] instead,
-    // which works for both dev and production runs.
-    // config "${mod_id}.mixins.json"
+    config "${mod_id}.mixins.json"
 }
 
 version = mod_version
@@ -61,7 +56,12 @@ minecraft {
         }
 
         client {
+            workingDirectory project.file('run-client')
             property 'forge.enabledGameTestNamespaces', mod_id
+            if (project.hasProperty('clientSmokeTest')) {
+                property 'pollution.clientSmokeTest', 'true'
+                args '--quickPlayMultiplayer', '127.0.0.1:25599', '--username', 'PollutionTester', '--width', '960', '--height', '540'
+            }
         }
 
         server {
@@ -69,9 +69,16 @@ minecraft {
             args '--nogui'
         }
 
+        gameTestServer {
+            workingDirectory project.file('run-gametest')
+            property 'forge.enabledGameTestNamespaces', mod_id
+            property 'forge.logging.console.level', 'info'
+        }
+
         data {
             workingDirectory project.file('run-data')
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            property 'forge.logging.console.level', 'info'
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'gtceu'
         }
     }
 }
@@ -148,6 +155,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly 'org.jetbrains:annotations:26.0.2'
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // All mod dependencies are resolved without their transitive graphs:
@@ -191,12 +199,8 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")) { transitive = false }
     // forge impl is compileOnly too: FluidHelperCompatMixin targets a class inside it
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
-    // JEI is intentionally NOT a dev runtime dependency: in dev our mixin config
-    // cannot be registered before JEI's construction (dev classloader timing), so
-    // GTCEu's jei.FluidHelperMixin would fail against JEI >= 15.40. In production
-    // the shim is registered from the jar manifest at launch and the conflict is
-    // handled (verified in the target modpack). Dev runs therefore load no JEI.
-    // runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
+    // Exercise the supported JEI runtime and compatibility mixins in development.
+    runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")) { transitive = false }
 
     // Botania
     compileOnly(fg.deobf("vazkii.botania:Botania:${botania_version}")) { transitive = false }
@@ -226,7 +230,11 @@ dependencies {
     // KubeJS: recipe removal / addition scripting
     compileOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
     compileOnly(fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")) { transitive = false }
-    runtimeOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
+    // KubeJS ConsoleJS retains a non-daemon logging executor after datagen ends.
+    // Static resources need no scripts; normal game runs still include KubeJS.
+    if (!gradle.startParameter.taskNames.any { it.tokenize(':').last() == 'runData' }) {
+        runtimeOnly(fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")) { transitive = false }
+    }
     runtimeOnly(fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")) { transitive = false }
     runtimeOnly(fg.deobf("dev.architectury:architectury-forge:${architectury_version}")) { transitive = false }
 }
@@ -250,6 +258,9 @@ tasks.named('processResources', ProcessResources).configure {
 }
 
 tasks.named('jar', Jar).configure {
+    exclude 'meowmel/pollution/gametest/**'
+    exclude 'meowmel/pollution/compat/jei/ClientSmokeJeiHook.class'
+    exclude 'data/pollution/structures/platform.nbt', 'data/pollution/structures/machine_lab.nbt'
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,

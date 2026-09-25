@@ -12,20 +12,32 @@ import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 import net.minecraft.world.level.block.Blocks;
 import vazkii.botania.common.block.BotaniaBlocks;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
 /**
  * Generated from the 1.12.2 aisles of {@code MetaTileEntityBotDistillery.java} by the one-off
  * batch-1 generator. Predicate characters are mapped to the modern blocks and
  * to {@link BotaniaStructureElements}; see the machine class for deviations.
  */
-final class BotDistilleryPatterns {
+public final class BotDistilleryPatterns {
 
     static BlockPattern create(MultiblockMachineDefinition definition) {
-        return FactoryBlockPattern.start()
+        return create(definition, false);
+    }
+
+    public static java.util.List<com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo> createShapes(
+            MultiblockMachineDefinition definition) {
+        return java.util.stream.IntStream.rangeClosed(1, 12).mapToObj(layers ->
+                new com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo(
+                        create(definition, true).getPreview(new int[] {1, 1, 1, layers, 1, 1}))).toList();
+    }
+
+    private static BlockPattern create(MultiblockMachineDefinition definition, boolean preview) {
+        return FactoryBlockPattern.start(RIGHT, FRONT, UP)
                 .aisle("___XXX___", "___XXX___", "__XXXXX__", "XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX", "__XXXXX__", "___XXX___", "___XXX___")
                 .aisle("_________", "___XSX___", "__XXXXX__", "_XXXXXXX_", "_XXXZXXX_", "_XXXXXXX_", "__XXXXX__", "___XXX___", "_________")
                 .aisle("_________", "____X____", "___XXX___", "__XXXXX__", "_XXXZXXX_", "__XXXXX__", "___XXX___", "____X____", "_________")
-                .aisle("_________", "_________", "___M_M___", "__Y___Y__", "____Z____", "__Y___Y__", "___Y_Y___", "_________", "_________")
+                .aisle("_________", "_________", preview ? "___O_M___" : "___M_M___", "__Y___Y__", "____Z____", "__Y___Y__", "___Y_Y___", "_________", "_________")
                 .setRepeatable(1, 12)
                 .aisle("_________", "_________", "___Y_Y___", "__Y___Y__", "____Z____", "__Y___Y__", "___Y_Y___", "_________", "_________")
                 .aisle("_________", "_________", "_________", "_________", "____Z____", "_________", "_________", "_________", "_________")
@@ -41,8 +53,10 @@ final class BotDistilleryPatterns {
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
                         .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1)))
                 .where('M', Predicates.blocks(PollutionMagicBlocks.TERRA_WATERTIGHT_CASING.get())
-                        .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
+                        .or(preview ? Predicates.blocks(PollutionMagicBlocks.TERRA_WATERTIGHT_CASING.get())
+                                : Predicates.abilities(PartAbility.EXPORT_FLUIDS)
                                 .setMinLayerLimited(1).setMaxLayerLimited(1)))
+                .where('O', Predicates.abilities(PartAbility.EXPORT_FLUIDS))
                 .where('Y', Predicates.blocks(PollutionMagicBlocks.CAMINATED_GLASS.get()))
                 .where('Z', Predicates.blocks(GTBlocks.CASING_TEMPERED_GLASS.get()))
                 .where('_', Predicates.any())

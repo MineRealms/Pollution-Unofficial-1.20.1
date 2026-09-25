@@ -54,7 +54,8 @@ import java.util.List;
  *       input-only capabilities, so they can be loaded with hoppers or pipes.</li>
  * </ul>
  */
-public class SourceChargeMachine extends MetaMachine implements IFancyUIMachine {
+public class SourceChargeMachine extends MetaMachine implements IFancyUIMachine, com.gregtechceu.gtceu.api.machine.feature.IMachineLife {
+    @Override public void onMachineRemoved() { clearInventory(inventory.storage); }
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             SourceChargeMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -64,7 +65,9 @@ public class SourceChargeMachine extends MetaMachine implements IFancyUIMachine 
     private static final int SOURCE_PER_OPERATION = 1;
     private static final int FLUID_PER_OPERATION = 1;
 
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableItemStackHandler inventory;
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableFluidTank tank;
 
     private TickableSubscription tickSubscription;

@@ -27,8 +27,14 @@ import java.util.List;
  * The rate formula {@code 2^(tier-1) * fluxScrubberMultiplier} matches
  * upstream; the filter tier only affects durability, not the rate.</p>
  */
-public class FluxScrubberMachine extends PollutionEnergyMachine {
+public class FluxScrubberMachine extends PollutionEnergyMachine implements com.gregtechceu.gtceu.api.machine.feature.IMachineLife {
 
+    private static final com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder FIELDS =
+            new com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder(FluxScrubberMachine.class, MANAGED_FIELD_HOLDER);
+    @Override public com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder getFieldHolder() { return FIELDS; }
+    @Override public void onMachineRemoved() { clearInventory(filterInventory.storage); }
+
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableItemStackHandler filterInventory;
 
     private double scrubBuffer;

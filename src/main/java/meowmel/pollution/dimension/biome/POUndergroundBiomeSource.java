@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * {@code biome_source.type} at {@code pollution:underground} (with a
  * {@code seed} field), enabling the 8-biome distribution.</p>
  */
-public class POUndergroundBiomeSource extends BiomeSource {
+public class POUndergroundBiomeSource extends BiomeSource implements WorldSeededBiomeSource {
 
     /** Upstream GenLayerUndergroundBiomes constants. */
     private static final double SCALE = 4000.0D;
@@ -41,7 +41,8 @@ public class POUndergroundBiomeSource extends BiomeSource {
 
     public static final Codec<POUndergroundBiomeSource> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Codec.LONG.fieldOf("seed").forGetter(source -> source.seed),
+                    Codec.LONG.optionalFieldOf("seed", 0L).forGetter(source -> source.seed),
+                    Codec.BOOL.optionalFieldOf("use_world_seed", false).forGetter(source -> source.useWorldSeed),
                     RegistryOps.retrieveElement(POBiomes.MAGMA_CAVE),
                     RegistryOps.retrieveElement(POBiomes.DESERT_CAVE),
                     RegistryOps.retrieveElement(POBiomes.PRIMORDIAL_CAVE),
@@ -53,7 +54,8 @@ public class POUndergroundBiomeSource extends BiomeSource {
             ).apply(instance, POUndergroundBiomeSource::new));
 
     private final long seed;
-    private final long noiseSeed;
+    private volatile long noiseSeed;
+    private final boolean useWorldSeed;
     private final Holder<Biome> magmaCave;
     private final Holder<Biome> desertCave;
     private final Holder<Biome> primordialCave;
@@ -63,7 +65,7 @@ public class POUndergroundBiomeSource extends BiomeSource {
     private final Holder<Biome> stalactiteCluster;
     private final Holder<Biome> deepCave;
 
-    private POUndergroundBiomeSource(long seed,
+    private POUndergroundBiomeSource(long seed, boolean useWorldSeed,
                                      Holder<Biome> magmaCave,
                                      Holder<Biome> desertCave,
                                      Holder<Biome> primordialCave,
@@ -73,6 +75,7 @@ public class POUndergroundBiomeSource extends BiomeSource {
                                      Holder<Biome> stalactiteCluster,
                                      Holder<Biome> deepCave) {
         this.seed = seed;
+        this.useWorldSeed = useWorldSeed;
         this.noiseSeed = (long) Math.pow((double) (seed * 84L), 6.0D);
         this.magmaCave = magmaCave;
         this.desertCave = desertCave;
@@ -82,6 +85,11 @@ public class POUndergroundBiomeSource extends BiomeSource {
         this.lushCave = lushCave;
         this.stalactiteCluster = stalactiteCluster;
         this.deepCave = deepCave;
+    }
+
+    @Override
+    public void bindWorldSeed(long worldSeed) {
+        if (useWorldSeed) noiseSeed = WorldEngineNoise.mixWorldSeed(worldSeed ^ seed);
     }
 
     @Override

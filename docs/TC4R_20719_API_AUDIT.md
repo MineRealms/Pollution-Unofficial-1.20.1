@@ -41,7 +41,8 @@ Pollution 现有 flux 机器通过 `TC4RBridge` 调用 `FluxApi.consumeNearby`�
 直接写 Flux 方块，因此没有已知的 20719 编译级迁移缺口。今后新增 Flux 生成
 应使用 `FluxApi.place`/`add`，以保留 20719 的放置事件语义。
 
-仍未等价的内容包括：Astral 星座塔作为星流产能端（按移植范围排除）、地下桥
-完整的 1.12 多 piece 布局与战利品房、Alfheim/Blood 的 WorldEngine 自定义地形、
-部分自定义树/花/藤和 PureTar/缺少现代材料的矿脉。现有 datapack、程序化桥和
-feature 近似实现可用，但不能宣称覆盖全部上游行为。
+仍未等价的内容包括：Astral 星座塔作为星流产能端（按移植范围排除）、Blood
+Magic 专属内容（按移植范围排除），以及地下桥完整的 1.12 多 piece 布局与战利品
+房。Alfheim 的程序化树/花/藤、PureTar、矿脉和现代 feature 已经实现并纳入当前
+验收；现有 datapack、程序化桥和 feature 提供行为等价，但不能声称完全复刻 1.12
+的 WorldEngine 区块种子结果。

@@ -7,6 +7,10 @@ import java.util.Map;
 public final class PollutionConfig {
 
     public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.ConfigValue<String> PORTAL_ORIGIN_DIMENSION;
+    public static final ForgeConfigSpec.BooleanValue ALLOW_PORTALS_IN_OTHER_DIMENSIONS;
+    public static final ForgeConfigSpec.BooleanValue RETURN_PORTAL_USABLE;
+    public static final ForgeConfigSpec.BooleanValue CHECK_PORTAL_DESTINATION;
 
     public static final ForgeConfigSpec.BooleanValue ENABLE_POLLUTION;
     public static final ForgeConfigSpec.BooleanValue ENABLE_EXPLOSION_POLLUTION;
@@ -29,6 +33,15 @@ public final class PollutionConfig {
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        builder.comment("Underground portal ritual").push("world");
+        PORTAL_ORIGIN_DIMENSION = builder.define("portalOriginDimension", "minecraft:overworld",
+                value -> value instanceof String id && net.minecraft.resources.ResourceLocation.tryParse(id) != null);
+        ALLOW_PORTALS_IN_OTHER_DIMENSIONS = builder.define("allowPortalsInOtherDimensions", false);
+        RETURN_PORTAL_USABLE = builder.comment("If false, arrival portals need another diamond to enable return travel.")
+                .define("shouldReturnPortalBeUsable", true);
+        CHECK_PORTAL_DESTINATION = builder.comment("Reject rituals outside the destination world border; checks every 100 instead of 20 ticks.")
+                .define("checkPortalDestination", false);
+        builder.pop();
 
         builder.comment("Industrial pollution system").push("pollution");
         ENABLE_POLLUTION = builder
@@ -41,7 +54,7 @@ public final class PollutionConfig {
                 .comment("Multiplier applied to multiblock muffler hatch pollution output.")
                 .defineInRange("mufflerPollutionMultiplier", 1.0D, 0.0D, 1000.0D);
         FLUX_SCRUBBER_MULTIPLIER = builder
-                .comment("Fraction of the chunk pollution that is scrubbed per TC4R flux consumed.")
+                .comment("TC4R flux scrubbed per operation, scaled by the scrubber machine tier.")
                 .defineInRange("fluxScrubberMultiplier", 0.002D, 0.0D, 1.0D);
         POLLUTION_DECAY_PER_TICK = builder
                 .comment("Natural pollution decay per tick and per polluted chunk.")

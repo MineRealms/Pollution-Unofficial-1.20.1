@@ -30,8 +30,9 @@ public class StarstreamBlock extends BaseEntityBlock {
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
-    @Override public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (level.getBlockEntity(pos) instanceof StarstreamBlockEntity node) node.onBroken();
-        super.playerWillDestroy(level, pos, state, player);
+    @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState replacement, boolean moving) {
+        if (!state.is(replacement.getBlock()) && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof StarstreamBlockEntity node) node.onBroken();
+        super.onRemove(state, level, pos, replacement, moving);
     }
 }

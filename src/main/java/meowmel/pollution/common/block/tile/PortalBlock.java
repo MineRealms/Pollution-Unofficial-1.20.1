@@ -48,15 +48,10 @@ import java.util.Map;
  * portal formation ritual, and {@code entityInside} teleporting when the
  * target dimension exists.</p>
  *
- * <p>Deviations from upstream: the destination is the resource key
- * {@code pollution:underground} instead of the numeric dimension id 41, and
- * the return trip always goes to the overworld instead of the configurable
- * {@code originDimension} (a later config batch can add that). The
- * {@code POTeleporter} safe-arrival check is omitted until the progression
- * systems land. The formation catalyst event ({@code EventLoader} diamond
- * check) is not ported yet, so {@link #tryToCreatePortal} is currently
- * uncalled. The 1.12 translucency render layer is not set because the
- * placeholder cube model is opaque.</p>
+ * <p>The dropped-diamond ritual is connected through PortalFormationEvents. Origin,
+ * return-gate activation and destination-border checks use the world config.
+ * Numeric dimension ids are replaced by registry keys. Stone borders accepted
+ * by formation also remain valid during neighbor updates.</p>
  */
 public class PortalBlock extends Block {
 
@@ -127,7 +122,7 @@ public class PortalBlock extends Block {
         }
         boolean returning = entity.level().dimension().equals(PollutionDimensions.UNDERGROUND);
         ResourceKey<Level> destinationKey = returning
-                ? Level.OVERWORLD
+                ? PollutionTeleporter.originDimension()
                 : PollutionDimensions.UNDERGROUND;
         ServerLevel target = server.getLevel(destinationKey);
         if (target == null) {
@@ -165,6 +160,7 @@ public class PortalBlock extends Block {
      * @param catalyst the catalyst stack, one item is consumed on success
      */
     public boolean tryToCreatePortal(Level level, BlockPos pos, ItemStack catalyst, @Nullable Player player) {
+        if (level.isClientSide || catalyst.isEmpty()) return false;
         BlockState state = level.getBlockState(pos);
         if (!canFormPortal(state) || !isSturdyBelow(level, pos)) {
             return false;
@@ -178,11 +174,14 @@ public class PortalBlock extends Block {
             return false;
         }
 
-        // Upstream checked POTeleporter#isSafeAround and messaged the player
-        // when the arrival was unsafe; that progression hook is not ported
-        // yet. The level check only guards against a server that does not have
-        // the dimension loaded.
-        if (getTargetLevel(level) == null) {
+        // The source progression predicate is always true; only the border constrains arrival.
+        ServerLevel target = getTargetLevel(level);
+        if (target == null) {
+            return false;
+        }
+        if (meowmel.pollution.PollutionConfig.CHECK_PORTAL_DESTINATION.get()
+                && !PollutionTeleporter.isSafeAround(target, pos)) {
+            if (player != null) player.displayClientMessage(net.minecraft.network.chat.Component.translatable("pollution.portal.unsafe"), true);
             return false;
         }
 
@@ -278,7 +277,7 @@ public class PortalBlock extends Block {
                 break;
             }
             BlockState neighboringState = level.getBlockState(pos.relative(facing));
-            good = isGrassOrDirt(neighboringState) || neighboringState == state;
+            good = isGrassOrDirt(neighboringState) || neighboringState.is(Blocks.STONE) || neighboringState == state;
         }
         if (!good) {
             level.levelEvent(2001, pos, Block.getId(state));

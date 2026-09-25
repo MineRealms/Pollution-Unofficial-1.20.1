@@ -1,0 +1,8 @@
+{
+  "feature": "pollution:alfheim_plateau",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

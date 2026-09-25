@@ -1,6 +1,11 @@
 package meowmel.pollution.common.block.tile;
 
 import meowmel.pollution.common.block.PollutionMiscBlocks;
+import meowmel.pollution.common.menu.MineralExtractorMenu;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.Containers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -21,11 +26,7 @@ import javax.annotation.Nullable;
  * Port of the 1.12 {@code BlockMineralExtractor}: hosts the
  * {@link MineralExtractorBlockEntity} that scans and mines ore.
  *
- * <p>Deviations from upstream: the 1.12 {@code Container}/{@code GuiHandler}
- * screen is not ported (client batch), so right-click toggles the extractor
- * and sneak-right-click cycles its mode as a stopgap. The upstream block was
- * invisible and drawn by a TESR; the port uses a placeholder cube model until
- * the renderer batch lands.</p>
+ * <p>Right-click opens the synchronized menu; sneak-right-click cycles modes.</p>
  */
 public class MineralExtractorBlock extends Block implements EntityBlock {
 
@@ -63,18 +64,26 @@ public class MineralExtractorBlock extends Block implements EntityBlock {
             return InteractionResult.CONSUME;
         }
 
-        // TODO(client batch): replace with the ported Container/GUI; this
-        // toggle keeps the server logic usable in the meantime.
         if (player.isShiftKeyDown()) {
             extractor.setMode(extractor.getMode() + 1);
             player.displayClientMessage(Component.translatable("pollution.mineral_extractor.mode",
                     extractor.getMode()), true);
-        } else {
-            extractor.setEnabled(!extractor.isEnabled());
-            player.displayClientMessage(Component.translatable(extractor.isEnabled()
-                    ? "pollution.mineral_extractor.enabled"
-                    : "pollution.mineral_extractor.disabled"), true);
+        } else if (player instanceof ServerPlayer serverPlayer) {
+            NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+                    (id, inventory, menuPlayer) -> new MineralExtractorMenu(id, inventory, extractor),
+                    getName()), pos);
         }
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof MineralExtractorBlockEntity extractor) {
+            var inventory = extractor.getOutputInventory();
+            for (int slot = 0; slot < inventory.getSlots(); slot++) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), inventory.getStackInSlot(slot));
+            }
+        }
+        super.onRemove(state, level, pos, newState, moving);
     }
 }

@@ -51,13 +51,36 @@ public final class PollutionTeleporter implements ITeleporter {
         return INSTANCE;
     }
 
+    public static net.minecraft.resources.ResourceKey<Level> originDimension() {
+        return net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION,
+                net.minecraft.resources.ResourceLocation.parse(meowmel.pollution.PollutionConfig.PORTAL_ORIGIN_DIMENSION.get()));
+    }
+
+    /** Upstream progression checks are no-ops; its actual safety rule is the world border. */
+    public static boolean isSafeAround(ServerLevel level, BlockPos pos) {
+        if (!level.getWorldBorder().isWithinBounds(pos)) return false;
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            if (!level.getWorldBorder().isWithinBounds(pos.relative(direction, 16))) return false;
+        }
+        return true;
+    }
+
     @Override
     public PortalInfo getPortalInfo(Entity entity, ServerLevel destination,
                                     Function<ServerLevel, PortalInfo> defaultPortalInfo) {
         BlockPos origin = entity.blockPosition();
+        if (!isSafeAround(destination, origin)) {
+            var border = destination.getWorldBorder();
+            // Keep the full 4x4 arrival platform inside even unusually small world borders.
+            int x = (int) Mth.clamp(origin.getX(), border.getMinX() + Math.min(18, border.getSize() / 3),
+                    border.getMaxX() - Math.min(18, border.getSize() / 3));
+            int z = (int) Mth.clamp(origin.getZ(), border.getMinZ() + Math.min(18, border.getSize() / 3),
+                    border.getMaxZ() - Math.min(18, border.getSize() / 3));
+            origin = new BlockPos(x, origin.getY(), z);
+        }
         BlockPos portalPos = findExistingPortal(destination, origin);
         if (portalPos == null) {
-            double yFactor = destination.dimension().equals(Level.OVERWORLD) ? 2.0D : 0.5D;
+            double yFactor = destination.dimension().equals(originDimension()) ? 2.0D : 0.5D;
             portalPos = createPortal(destination, origin, yFactor);
         }
         return new PortalInfo(Vec3.atBottomCenterOf(portalPos), Vec3.ZERO,
@@ -194,7 +217,8 @@ public final class PollutionTeleporter implements ITeleporter {
         level.setBlock(pos.south().below(), dirt, Block.UPDATE_CLIENTS);
         level.setBlock(pos.east().south().below(), dirt, Block.UPDATE_CLIENTS);
 
-        BlockState portal = PollutionMiscBlocks.PORTAL.get().defaultBlockState();
+        BlockState portal = PollutionMiscBlocks.PORTAL.get().defaultBlockState()
+                .setValue(meowmel.pollution.common.block.tile.PortalBlock.ONE_WAY, !meowmel.pollution.PollutionConfig.RETURN_PORTAL_USABLE.get());
         level.setBlock(pos, portal, Block.UPDATE_CLIENTS);
         level.setBlock(pos.east(), portal, Block.UPDATE_CLIENTS);
         level.setBlock(pos.south(), portal, Block.UPDATE_CLIENTS);

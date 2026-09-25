@@ -59,8 +59,8 @@
 ### 0.3 工业污染（Industrial Pollution）
 
 - 污染按 **区块** 存储为稀疏 `SavedData`（`PollutionData.java:16-24`），只有被污染过的区块会保留数据。
-- 每 200 tick 全局结算一次：先给玩家上负面效果，再对所有污染区块执行 `decay = pollutionDecayPerTick * 200`（`PollutionEngine.java:38-54`）。
-- 超过阈值 `effectThreshold`（默认 10.0）时，每 200 tick 给玩家 **反胃（Confusion）+ 饥饿（Hunger）各 100 tick（5 秒）**，并在首次进入时发一条警告（`PollutionEngine.java:60-83`）。
+- 地形转换每 tick 按预算随机采样；污染自然衰减每 200 tick 结算一次，`decay = pollutionDecayPerTick * 200`。
+- 超过阈值 `effectThreshold`（默认 10.0）时，每 40 tick 刷新玩家的 **反胃（Confusion）+ 饥饿（Hunger）各 100 tick（5 秒）**，持续暴露时不会出现效果空窗；污染达到阈值的 2/3/4 倍时追加虚弱、挖掘疲劳、失明，强度按污染倍数递增并封顶；首次进入污染区块会显示警告。
 - 机器爆炸会加污染：由 Forge 爆炸事件归因到 `pollution` 命名空间的机器，再调用 `addExplosionPollution`，污染量 = 爆炸威力 × `mufflerPollutionMultiplier`（`MachinePollutionEvents.java:29-43`、`MachinePollution.java:38-44`）。
 
 ---
@@ -849,7 +849,7 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 | `enablePollution` | `true` | 布尔 | 污染系统总开关；关闭后 `PollutionEngine.add` 不生效、玩家不受效果（`PollutionEngine.java:24, 61`） |
 | `enableExplosionPollution` | `true` | 布尔 | 机器爆炸是否加污染（`MachinePollution.java:39`） |
 | `mufflerPollutionMultiplier` | `1.0` | 0 ~ 1000 | 消音仓每次操作污染与爆炸污染的倍率（`MachinePollution.java:42, 55`；`MagicRecipeLogic.java:257-268`） |
-| `fluxScrubberMultiplier` | `0.002` | 0 ~ 1 | Flux 洗消机每 EU 操作洗掉的 flux 系数：`2^(tier-1) × 系数`（`FluxScrubberMachine.java:39`） |
+| `fluxScrubberMultiplier` | `0.002` | 0 ~ 1 | Flux 洗消机的 TC4R 咒波清理系数：每次累积 `2^(tier-1) × 系数` 个 quanta；不直接清除区块工业污染 |
 | `pollutionDecayPerTick` | `0.001` | 0 ~ 10 | 每 tick 自然衰减；实际每 200 tick 结算 `×200`（`PollutionEngine.java:47`） |
 | `effectThreshold` | `10.0` | 0 ~ 1,000,000 | 超过该值的区块给玩家反胃+饥饿（`PollutionEngine.java:64-72`） |
 | `visGeneratorEuPerVis` | `250` | 1 ~ 1,000,000 | 每 vis 产出的 EU（`VisGeneratorMachine.java:70`） |
@@ -859,7 +859,7 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 
 **注意**
 - 污染衰减是“每 200 tick 对所有已污染区块统一减 `pollutionDecayPerTick × 200`”，不是每 tick 单独减（`PollutionEngine.java:13, 38-54`）。
-- `effectThreshold` 的效果每 200 tick 重新施加一次，每次 100 tick（`PollutionEngine.java:69-72`）。
+- `effectThreshold` 的效果每 40 tick 重新施加一次，每次持续 100 tick；2 倍、3 倍、4 倍阈值分别开启虚弱、挖掘疲劳、失明梯度，离开污染区块后不再刷新，效果自然消退。
 
 ---
 
@@ -925,6 +925,7 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 | Essence Collector | `essence_collector` |
 | Infused Exchange | `infused_exchange` |
 | Magic Large/Mega Turbine | `magic_large_turbine` / `magic_mega_turbine` |
+| Large Mana Power Converter / Mega Mana Rotor Turbine | `large_mana_turbine` / `mega_mana_rotor_turbine` |
 | Mega Mana Turbine | `mega_mana_turbine` |
 | Life Activation Garden | `pollution_multi_dan_de_life_on` |
 
@@ -948,7 +949,21 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 | Endoflame Array | 7×6×7 | TERRA_4 + 钨钢框架 | 输入物品仓 1~27、魔力输出池仓 ≤1、维护仓 ≤1 |
 | Mega Mana Turbine | 7×7×14 | 聚变玻璃/外壳 + 彩虹桥 + 微光梦木 + 加热线圈 | 输入流体仓 ≤4、输出流体仓 ≤4、输出能源仓 ≤1、输出激光仓 ≤1、消音仓 ≤1、维护仓 ≤1 |
 | Life Activation Garden | 63×10×63 | 活石砖 + 聚变玻璃/外壳 MK3 + 龙石 + 微光梦木 | 输入能源仓 ≥1、输入流体仓 ≥1、输入物品仓 ≤1、输出流体仓 ≤1、输出能源仓 ≤1、输出激光仓 ≤1、维护仓 ≤1 |
-| Magic Large Turbine | 4×3×3 | 咒法棱镜 + 钨钢齿轮箱 | 输入流体仓 ≤2、输出流体仓 ≤1、输出能源仓 ≤2、转子支架 ≤2、维护仓 ≤1 |
-| Magic Mega Turbine | 7×7×9 | 虚空咒法棱镜 + 钨钢齿轮箱 | 输入流体仓 ≤3、输出流体仓 ≤1、输出能源仓 ≤3、转子支架 ≤3、消音仓 ≤1、维护仓 ≤1 |
+| Magic Large Turbine（EV） | 4×3×3 | 热咒法棱镜 + 不锈钢齿轮箱 | EV 或更高转子支架 ×1、魔力输出仓 ×1、流体输入/输出各 ≤4、输出能源仓 ≤2、维护仓 ×1 |
+| Large Mana Power Converter（LuV） | 4×3×3 | MANA_3 + 钨钢管道 | LuV 或更高转子支架 ×1、魔力输出仓 ×1、流体输入/输出各 ≤4、维护仓 ×1，无消声仓 |
+| Magic Mega Turbine（IV） | 7×7×9 | 热咒法棱镜 + 不锈钢齿轮箱 | IV 或更高转子支架 ×12、流体输入/输出各 1～4、维护仓 ×1 |
+| Mega Mana Rotor Turbine（ZPM） | 7×7×9 | MANA_3 + 钨钢管道 | ZPM 或更高转子支架 ×12；区别于既有 `mega_mana_turbine` 原型机 |
 
 来源：各 `*Patterns.java` 与机器类中的 `createPattern`。
+
+## 2026-09-25 操作补充
+
+- **地下传送门**：挖出有实体底的 2×2 水池；岸边用石头，或泥土/草方块并在岸上放花草、藤蔓或树叶。把钻石丢入水中，在附近等待最多一秒；成功消耗一颗，闪电后形成水平传送面。默认允许主世界与地下世界激活。`world` 配置可改变原维度、其他维度许可、返回门和目的地边界检查。
+- **两种蒸馏塔**：每层放置一个流体输出仓，支持 1～12 层；配方第一种流体进入最低层，依次向上。塔过矮、某层塞入不兼容流体或装满时停止输出，清空该层后继续，产物不会转入其他层。
+- **魔法浸洗池**：结构内 5×5 池必须全是水源才能加工。输入水不足一桶不补水；每五 tick 最多补一格，每格消耗 1000 mB。
+- **魔法电池**：容量由核心和线圈共同决定，一级组合为 250,000 EU。可从全部输入仓储能，再向全部输出仓供电；界面可暂停传输，拆结构不会把已存电量截断到更小容量。
+- **轮机**：按 JEI 结构使用符合等级的支架并装齐转子，产能受转子功率、速度和效率影响；缺一只就停止。巨型轮机可在停机时切换高功率，目标输出与对应燃料需求提高到三倍。
+- **源质流体仓**：新增桶/流体容器输入和输出槽；输出槽塞满时不会消耗输入容器或流体。
+- **矿物提取器**：右键打开界面，模式与电源按钮会与服务端同步；潜行右键仍可快捷切换。拆除会返还实际存储物品，预览矿物不会作为额外掉落。
+- **护目镜与翅膀**：可放入头盔/胸甲槽，也保留 Curios 用法。翅膀使用 GT 喷气背包和悬停按键，消耗电力；不再授予永久创造飞行。护目镜脱下时不会删除药水或其他来源的夜视。
+- **污染与世界**：超过玩家影响阈值后，右上角显示当前区块污染倍率。新地下/Alfheim 区块使用恢复后的地形及装饰；旧区块保持原样，交界处可能出现地形接缝。Alfheim 的魔力矿床产出纯魔力。

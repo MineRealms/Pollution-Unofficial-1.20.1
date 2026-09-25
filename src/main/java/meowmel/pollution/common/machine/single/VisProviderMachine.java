@@ -48,10 +48,10 @@ public class VisProviderMachine extends PollutionEnergyMachine {
             return;
         }
         long cost = GTValues.V[getTier()];
-        if (energyContainer.getEnergyStored() < cost) {
+        if (energyContainer.getEnergyStored() < cost || PollutionConfig.VIS_PROVIDER_MULTIPLIER.get() <= 0.0D) {
             return;
         }
-        if (nodePos == null || --scanTimer <= 0) {
+        if (--scanTimer <= 0) {
             nodePos = findNode(level);
             scanTimer = SCAN_INTERVAL;
         }
@@ -61,6 +61,7 @@ public class VisProviderMachine extends PollutionEnergyMachine {
         AuraNodeState state = readState(level, nodePos);
         if (state == null) {
             nodePos = null;
+            scanTimer = 0;
             return;
         }
 
@@ -77,6 +78,8 @@ public class VisProviderMachine extends PollutionEnergyMachine {
             }
         }
         if (target == null || targetRoom <= 0) {
+            nodePos = null;
+            scanTimer = 0;
             return;
         }
 
@@ -93,21 +96,28 @@ public class VisProviderMachine extends PollutionEnergyMachine {
 
     private BlockPos findNode(ServerLevel level) {
         BlockPos origin = getPos();
+        BlockPos nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
         for (BlockPos pos : BlockPos.betweenClosed(
                 origin.offset(-SCAN_RADIUS, -SCAN_RADIUS, -SCAN_RADIUS),
                 origin.offset(SCAN_RADIUS, SCAN_RADIUS, SCAN_RADIUS))) {
             if (!level.hasChunkAt(pos)) {
                 continue;
             }
-            if (level.getBlockState(pos).is(TCBlocks.AURA_NODE.get())) {
-                return pos.immutable();
+            if (level.getBlockState(pos).is(TCBlocks.AURA_NODE.get()) && origin.distSqr(pos) < nearestDistance) {
+                AuraNodeState state = readState(level, pos);
+                if (state != null && state.baseVis().amounts().entrySet().stream()
+                        .anyMatch(entry -> entry.getValue() > state.currentVis().amount(entry.getKey()))) {
+                    nearest = pos.immutable();
+                    nearestDistance = origin.distSqr(pos);
+                }
             }
         }
-        return null;
+        return nearest;
     }
 
     private static AuraNodeState readState(ServerLevel level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof AuraNodeBlockEntity node) {
+        if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof AuraNodeBlockEntity node) {
             return node.nodeState();
         }
         return null;

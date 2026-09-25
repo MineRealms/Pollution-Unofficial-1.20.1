@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.mojang.logging.LogUtils;
 import com.tterrag.registrate.providers.ProviderType;
 import meowmel.pollution.api.pollution.PollutionEngine;
+import meowmel.pollution.common.network.PollutionNetwork;
 import meowmel.pollution.common.PollutionCreativeTabs;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.block.PollutionMiscBlocks;
@@ -38,6 +39,7 @@ public final class Pollution {
         PollutionMagicBlocks.init();
         StarstreamBlocks.init(context.getModEventBus());
         PollutionPlantBlocks.init();
+        meowmel.pollution.common.block.PollutionStoneBlocks.init();
         PollutionMiscBlocks.init(context);
         meowmel.pollution.common.item.PollutionItems.init();
         meowmel.pollution.common.entity.PollutionEntities.init(context);
@@ -64,6 +66,25 @@ public final class Pollution {
             provider.add("pollution.command.set", "Chunk pollution set to %s");
             provider.add("pollution.command.scrub", "Scrubbed %s pollution");
             provider.add("pollution.effect.warning", "The polluted air is making you sick");
+            provider.add("pollution.extractor.essentia", "Essentia chambers");
+            provider.add("pollution.extractor.entropy", "Entropy");
+            provider.add("pollution.extractor.magic", "Magic");
+            provider.add("pollution.extractor.change_mode", "Change mode");
+            provider.add("pollution.extractor.mode", "Mode: %s");
+            provider.add("pollution.extractor.mode_hint", "Cycle ore mining, grass and stone production");
+            provider.add("pollution.extractor.running", "Running");
+            provider.add("pollution.extractor.stopped", "Stopped");
+            provider.add("pollution.extractor.power_hint", "Toggle operation");
+            provider.add("pollution.extractor.mode.0", "Mine ores");
+            provider.add("pollution.extractor.mode.1", "Produce grass");
+            provider.add("pollution.extractor.mode.2", "Produce stone");
+            provider.add("pollution.extractor.searching", "Searching...");
+            provider.add("pollution.machine.battery.energy", "Stored: %s / %s EU");
+            provider.add("pollution.machine.battery.tiers", "Core tier: %s | Coil tier: %s");
+            provider.add("pollution.machine.battery.transfer", "Input: %s | Output: %s | Limit: %s EU/t");
+            provider.add("pollution.machine.battery.enabled", "Energy transfer enabled: %s");
+            provider.add("pollution.hud.exposure", "Pollution %s×");
+            provider.add("pollution.portal.unsafe", "The destination lies outside the world's safe border.");
             provider.add("chat.pollution.warp.countdownbomb.tick", "Warp bomb detonates in %s s");
             provider.add("chat.pollution.warp.countdownbomb.end", "The warp bomb releases a harmless blast");
             provider.add("pollution.machine.vis_generator.tooltip",
@@ -71,7 +92,8 @@ public final class Pollution {
             provider.add("pollution.machine.vis_provider.tooltip",
                     "Consumes EU to recharge the nearest Thaumcraft aura node");
             provider.add("pollution.machine.magic_energy_absorber.tooltip",
-                    "Generates EU while a dragon egg is placed on top");
+                    "Generates EU from a dragon egg or Mana Pylon (HV), Gaia Pylon (EV), or Gaia Head (IV) on top");
+            provider.add("pollution.machine.magic_energy_absorber.pedestal", "%s: %s EU/t");
             provider.add("pollution.machine.flux_scrubber.tooltip",
                     "Consumes EU to scrub Thaumcraft flux in a 16 block radius");
             provider.add("pollution.machine.flux_fuel_cell.tooltip",
@@ -91,7 +113,7 @@ public final class Pollution {
             provider.add("pollution.machine.flux_muffler.tooltip.recovery",
                     "Item recovery chance: %s%%");
             provider.add("pollution.machine.flux_muffler.tooltip",
-                    "Magically filtered muffler: recovers machine byproducts; industrial pollution is vented here");
+                    "Magically filtered muffler: recovers machine byproducts without emitting industrial pollution");
             provider.add("pollution.magic.failure.hatches",
                     "Missing required magic hatch");
             provider.add("pollution.magic.failure.vis",
@@ -152,7 +174,8 @@ public final class Pollution {
             provider.add("pollution.filter.remaining", "Until breakage: %s");
             provider.add("pollution.flux_scrubber.filter", "Filter durability: %s/%s");
             provider.add("pollution.flux_scrubber.filter_none", "No filter installed");
-            provider.add("pollution.armor.wings.flight", "Flight: creative-style flying while charged");
+            provider.add("pollution.armor.wings.flight", "Electric flight: use GregTech's jetpack and hover controls");
+            provider.add("pollution.machine.turbine.high_power", "High power: %s (3x output and fuel; change while idle)");
             provider.add("pollution.armor.wings.nano_buffs",
                     "Sprinter I: speed boost while active");
             provider.add("pollution.armor.wings.quantum_buffs",
@@ -591,10 +614,12 @@ public final class Pollution {
 
         meowmel.pollution.common.warp.PollutionWarpEvents.init();
         meowmel.pollution.common.warp.WarpNetwork.init();
+        PollutionNetwork.init();
 
         MinecraftForge.EVENT_BUS.addListener(Pollution::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(PollutionEngine::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(meowmel.pollution.common.warp.WarpEventHandler::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(meowmel.pollution.common.warp.WarpEventHandler::onServerStopping);
 
         LOGGER.info("Pollution Unofficial booting: GregTech CEu Modern x Thaumcraft 4R integration");
     }

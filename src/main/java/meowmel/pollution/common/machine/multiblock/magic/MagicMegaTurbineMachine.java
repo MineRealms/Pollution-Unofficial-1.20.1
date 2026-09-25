@@ -10,21 +10,52 @@ import meowmel.pollution.api.metatileentity.POMultiblockAbility;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 
 /**
- * Magic mega turbine: the nine-layer magic turbine variant. Same fuel map and
- * rotor-holder mechanics as the large turbine (see
- * {@link AbstractMagicTurbineMachine}: a real rotor is required to run, it is
- * damaged once per second of operation and a broken rotor interrupts the
- * craft). The GTQT reinforced rotor holder maps to the standard rotor holder;
- * rotor speed/power/efficiency scaling of the upstream mega turbine is not
- * ported.
+ * IV magic mega turbine: twelve rotor holders and sixteen times the large turbine output.
+ * <p>High power triples the target output and matching fuel demand, can be changed only
+ * while idle, and persists with the controller. GT handles speed, efficiency and wear.</p>
  */
 public class MagicMegaTurbineMachine extends AbstractMagicTurbineMachine {
+    private static final com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder FIELD_HOLDER =
+            new com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder(MagicMegaTurbineMachine.class, MANAGED_FIELD_HOLDER);
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
+    @com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced
+    private boolean highPower;
+
+    @Override public com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder getFieldHolder() { return FIELD_HOLDER; }
+    public boolean isHighPower() { return highPower; }
+    public void setHighPower(boolean enabled) {
+        if (getRecipeLogic().isActive()) return;
+        highPower = enabled;
+        getRecipeLogic().markLastRecipeDirty();
+        markDirty();
+    }
+    @Override public long getOverclockVoltage() { return super.getOverclockVoltage() * (highPower ? 3 : 1); }
+    @Override public void attachConfigurators(com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel panel) {
+        super.attachConfigurators(panel);
+        panel.attachConfigurators(new com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton.Toggle(
+                com.gregtechceu.gtceu.api.gui.GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
+                com.gregtechceu.gtceu.api.gui.GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
+                this::isHighPower, (click, enabled) -> setHighPower(enabled))
+                .setTooltipsSupplier(enabled -> java.util.List.of(net.minecraft.network.chat.Component.translatable(
+                        "pollution.machine.turbine.high_power", enabled))));
+    }
 
     public MagicMegaTurbineMachine(IMachineBlockEntity holder) {
-        super(holder);
+        this(holder, com.gregtechceu.gtceu.api.GTValues.IV);
+    }
+
+    protected MagicMegaTurbineMachine(IMachineBlockEntity holder, int tier) {
+        super(holder, tier, 12, 16);
     }
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
+        return createPattern(definition, PollutionMagicBlocks.SPELL_PRISM_HOT.get(),
+                PollutionMagicBlocks.STAINLESS_STEEL_GEARBOX.get());
+    }
+
+    protected static BlockPattern createPattern(MultiblockMachineDefinition definition,
+                                                net.minecraft.world.level.block.Block casing,
+                                                net.minecraft.world.level.block.Block gearbox) {
         return FactoryBlockPattern.start()
                 .aisle("CCCCCCC", "CCCCCCC", "CCMMMCC", "CCMMMCC", "CCMMMCC", "CCCCCCC", "CCCCCCC")
                 .aisle("CCCCCCC", "RGGGGGR", "CCCCCCC", "CCCCCCC", "CCCCCCC", "RGGGGGR", "CCCCCCC")
@@ -36,11 +67,11 @@ public class MagicMegaTurbineMachine extends AbstractMagicTurbineMachine {
                 .aisle("CCCCCCC", "RGGGGGR", "CCCCCCC", "CCCCCCC", "CCCCCCC", "RGGGGGR", "CCCCCCC")
                 .aisle("CCCCCCC", "CAAAAAC", "CAAAAAC", "CAASAAC", "CAAAAAC", "CAAAAAC", "CCCCCCC")
                 .where('S', Predicates.controller(Predicates.blocks(definition.get())))
-                .where('C', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get()))
-                .where('G', Predicates.blocks(PollutionMagicBlocks.TUNGSTENSTEEL_GEARBOX.get()))
-                .where('R', Predicates.abilities(PartAbility.ROTOR_HOLDER))
+                .where('C', Predicates.blocks(casing))
+                .where('G', Predicates.blocks(gearbox))
+                .where('R', rotorsAtLeast(definition.getTier()))
                 .where('M', Predicates.abilities(PartAbility.MUFFLER))
-                .where('A', Predicates.blocks(PollutionMagicBlocks.SPELL_PRISM_VOID.get())
+                .where('A', Predicates.blocks(casing)
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1))

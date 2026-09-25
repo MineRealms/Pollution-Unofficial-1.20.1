@@ -38,6 +38,43 @@ import java.util.Arrays;
  */
 public final class MagicStructureElements {
 
+    /** All blocks on a channel must use one tier, just like upstream tiered casings. */
+    public static TraceabilityPredicate tieredBlocks(String key, Block... blocks) {
+        return Predicates.custom(state -> {
+            for (int index = 0; index < blocks.length; index++) {
+                if (state.getBlockState().is(blocks[index])) {
+                    int tier = index + 1;
+                    Object previous = state.getMatchContext().get(key);
+                    if (previous != null && !previous.equals(tier)) return false;
+                    state.getMatchContext().set(key, tier);
+                    return true;
+                }
+            }
+            return false;
+        }, () -> Arrays.stream(blocks).map(BlockInfo::fromBlock).toArray(BlockInfo[]::new));
+    }
+
+    public static TraceabilityPredicate batteryCores() {
+        return tieredBlocks("BatteryCoreTier",
+                meowmel.pollution.common.block.PollutionMagicBlocks.FILTER_1.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.FILTER_2.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.FILTER_3.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.FILTER_4.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.FILTER_5.get());
+    }
+
+    public static TraceabilityPredicate batteryCoils() {
+        return tieredBlocks("BatteryCoilTier",
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_CUPRONICKEL.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_KANTHAL.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_NICHROME.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_RTM_ALLOY.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_HSSG.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_NAQUADAH.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_TRINIUM.get(),
+                meowmel.pollution.common.block.PollutionMagicBlocks.WIRE_COIL_TRITANIUM.get());
+    }
+
     /**
      * Primary casing of a magic multiblock: accepts the casing block itself or
      * any hatch the supplied recipe types need (plus the magic hatches).
@@ -72,11 +109,18 @@ public final class MagicStructureElements {
     /** Variant of {@link #magicHatches(GTRecipeType...)} without a muffler hatch. */
     public static TraceabilityPredicate magicHatches(boolean includeMuffler,
                                                      GTRecipeType... recipeTypes) {
+        return magicHatches(includeMuffler, true, recipeTypes);
+    }
+
+    /** Towers route fluid outputs through their layer-specific positions. */
+    public static TraceabilityPredicate magicHatches(boolean includeMuffler, boolean includeFluidOutputs,
+                                                     GTRecipeType... recipeTypes) {
         TraceabilityPredicate predicate = Predicates
-                .autoAbilities(recipeTypes, false, false, true, true, true, true)
+                .autoAbilities(recipeTypes, false, false, true, true, true, includeFluidOutputs)
                 .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_HATCH, PartAbility.INPUT_ENERGY)
                         .setMinGlobalLimited(1).setMaxGlobalLimited(2))
                 .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                .or(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
                 .or(Predicates.abilities(POMultiblockAbility.VIS_HATCH).setMaxGlobalLimited(1))
                 .or(Predicates.abilities(POMultiblockAbility.INFUSED_FLUID_HATCH).setExactLimit(1))
                 .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))

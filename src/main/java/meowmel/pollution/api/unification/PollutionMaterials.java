@@ -103,8 +103,9 @@ public final class PollutionMaterials {
     // ---- 矿物材料 / ore materials -------------------------------------------
     // Upstream: api/unification/materials/OreMaterials.java
     // Syrmorite / Octine / Valonite already exist in SubstrateMaterials; their
-    // full upstream ore definitions are not ported (see OreMaterials javadoc).
+    // ore/tool/rotor forms are registered in SubstrateMaterials.
     public static Material Scabyst;
+    public static Material Cryolite;
     public static Material FlameCoal;
     public static Material DumbTin;
     public static Material MeltGold;

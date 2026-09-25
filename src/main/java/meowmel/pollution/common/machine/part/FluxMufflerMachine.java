@@ -49,6 +49,16 @@ public class FluxMufflerMachine extends TieredPartMachine implements IMufflerMac
     }
 
     @Override
+    public float getHazardStrengthPerOperation() {
+        return 0.0F;
+    }
+
+    @Override
+    public void spreadEnvironmentalHazard() {
+        // The upstream magic muffler emits neither industrial pollution nor hazards.
+    }
+
+    @Override
     public void recoverItemsTable(ItemStack... recoveryItems) {
         int rolls = Math.min(recoveryItems.length, inventory.getSlots());
         for (int slot = 0; slot < rolls; slot++) {

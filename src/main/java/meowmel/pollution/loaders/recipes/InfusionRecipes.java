@@ -1291,6 +1291,9 @@ public final class InfusionRecipes {
         if (tier == GTValues.HV) return PollutionItems.MAGIC_CIRCUIT_HV.asStack();
         if (tier == GTValues.EV) return PollutionItems.MAGIC_CIRCUIT_EV.asStack();
         if (tier == GTValues.IV) return PollutionItems.MAGIC_CIRCUIT_IV.asStack();
+        if (tier == GTValues.LuV) return SafeItems.gt("quantum_processor_computer", 1);
+        if (tier == GTValues.ZPM) return SafeItems.gt("quantum_processor_mainframe", 1);
+        if (tier == GTValues.UV) return SafeItems.gt("crystal_processor_mainframe", 1);
         return ItemStack.EMPTY;
     }
 

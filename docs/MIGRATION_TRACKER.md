@@ -4,13 +4,21 @@
 
 - 上游项目：`H:\MinecraftMods\Pollution`（Minecraft 1.12.2，GTCEu/GTQT 附属，Thaumcraft 6 时代设计）
 - 目标项目：`H:\MinecraftMods\Pollution-Unofficial-1.20.1`
-- 目标分支策略：单分支 `main`，阶段完成后提交
-- 最近更新：2026-09-24（提交 `9b40c66`：20719 API 审计、依赖边界、资源生成与服务器烟测收尾；GTCEu 锁定 7.5.3）
+- 当前分支：`master`
+- 最近更新：2026-09-25，完成非血魔法、非 Astral 的行为补全；本轮改动与验证见 `PORT_COMPLETION_CHECKLIST.md`
 
 > 注意：本文件后面的阶段记录保留了执行过程中的历史快照，不能覆盖当前构建状态。
 > 当前依赖以 `gradle.properties` 和 `PORTING_TARGET.md` 为准：Thaumcraft 核心及
 > Forbidden Magic/Tainted Magic/Thaumic Tinkerer 使用 0.1.0-20719，Thaumic
 > Energistics 因 20719 包未提供而仅保留 0.1.0-20711 编译参考，JEI 使用 15.56.0.205。
+
+## 当前状态（2026-09-25）
+
+当前实现、范围边界和验收结果以 `README.md`、`PORTING_TARGET.md`、
+`PORT_COMPLETION_CHECKLIST.md` 和 `SMOKE_TEST_REPORT.md` 为准。下方阶段清单、
+版本实验和变更日志保留为历史过程记录；其中的旧 TODO 或实验版本不表示当前
+构建仍缺少对应功能。Blood Magic 与 Astral Sorcery（包括 Astral 方尖碑和原生
+星辉产能端）继续排除在本次移植范围外，独立的 Starstream 系统继续保留。
 
 ## 1. 版本矩阵（锁定，不允许浮动）
 
@@ -38,14 +46,14 @@ TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 s
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| Phase 0 | 目标工程骨架、Gradle 8.8、依赖锁定、Git 初始化 | 已完成（构建通过，已提交） |
-| Phase 1 | 污染核心：区块污染数据、命令、配置、负效应框架 | 进行中（数据/命令/配置已落地） |
-| Phase 2 | GTCEu 集成：addon 注册、机器排污、消声仓等级、爆炸归因 | 进行中（addon 注册与机器排污基础已落地；消声仓/爆炸归因未开始） |
-| Phase 3 | TC4R 集成：灵气抽取/再生、咒波清洗、扭曲联动 | 进行中（灵气抽取、咒波清洗、要素映射已落地；扭曲联动未开始） |
-| Phase 4 | 基础机器：灵气发电机、灵气再生机、空气过滤机（单方块） | 基本完成（9 族中 6 族落地，3 族延期见 5.10） |
-| Phase 5 | 多方块与材料：魔导系列、魔法合金、催化剂、源质系统 | 进行中（材料已落地；多方块部件起步：VIS_HATCH） |
-| Phase 6 | 其他联动（全部 TODO，见第 6 节） | 未开始 |
-| Phase 7 | 资产、模型、平衡、数据生成、发布 | 未开始 |
+| Phase 0 | 工程、依赖与 Git | Gradle 8.8 / Java 17 / GTCEu 7.5.3 / TC4R 20719 |
+| Phase 1 | 污染数据、配置、效果、环境转化、HUD | 已实现；新增网络及分级刷新回归 |
+| Phase 2 | GT 排污、消声仓与机器爆炸归因 | 通用 GT 方法钩子与专用消声仓已实现 |
+| Phase 3 | TC4R 灵气、咒波、源质及扭曲 | 已实现；保留 TC4R API 适配 |
+| Phase 4 | 单方块、饰品与装备 | 已实现；吸收器、导能限速、护目镜/翅膀行为恢复 |
+| Phase 5 | 多方块、材料与世界生成 | 已实现；结构和实际资源流转见本轮测试 |
+| Phase 6 | Botania、AE2、JEI、星流 | 已接入；血魔法/Astral 提供端与专属机器排除 |
+| Phase 7 | 资产、生成与验收 | 以最新验收清单记录为准；发布未授权执行 |
 
 ## 3. Phase 0 清单
 
@@ -74,9 +82,10 @@ TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 s
 - [x] `PollutionEngine`：读/加/清洗 API 与低频衰减 tick
 - [x] `PollutionConfig`：开关、倍率、阈值
 - [x] `/pollution get|add|set|scrub` 调试命令
-- [ ] 玩家负效应（虚弱/挖掘疲劳/反胃/失明，按梯度）
-- [ ] 环境污染转化（草→沙、水→岩浆，带预算限流）
-- [ ] 客户端同步（仅邻近区块，阈值触发）
+- [x] 玩家基础负效应：超过阈值时每 40 tick 刷新反胃/饥饿（持续 100 tick，无效果空窗）
+- [x] 玩家分级负效应：2/3/4 倍阈值追加虚弱/挖掘疲劳/失明，强度按倍数递增并封顶
+- [x] 环境污染转化（草→沙、水→岩浆，按维度和 tick 预算限流）
+- [x] 客户端污染显示/同步（服务端权威网络状态、邻近区块阈值刷新；客户端烟测已验证）
 - [ ] 服务器 TPS 预算与性能基准（见第 8 节）
 
 ## 5. 依赖 API 基线（已核实）
@@ -183,7 +192,7 @@ TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 s
 - 调试入口：`/pollution aspects`
 - 运行期证据：`Mapped 36 aspect materials to Thaumcraft 4R aspects (6 vis channels)`（runServer 日志）
 
-### 5.5 JEI 兼容性矩阵与决定（2026-09-18，全部实测）
+### 5.5 JEI 兼容性矩阵与历史实验（2026-09-18）
 
 **事实（逐个下载 JEI 版本用 javap 验证，非推测）：**
 
@@ -195,6 +204,7 @@ TC4R 再次提高 `ISubtypeInterpreter` 要求，应同步升级 JEI 与兼容 s
 | 15.40.0.176 | 无 | List ❌ |
 | 15.48.0.177 | 无 | List ❌ |
 | 15.55.0.201 | 有 | List ❌ |
+| 15.56.0.205（当前锁定） | 有 | List ❌ |
 | 15.59.0.212（最新） | 有 | List ❌ |
 
 结论：**1.20.1 上不存在同时满足 GTCEu 与 TC4R 的 JEI 版本**。
@@ -206,11 +216,11 @@ GTCEu（7.5.3 与 8.0.0 的 mixin 签名相同）与 JEI ≥15.40 会以
 
 1. GTCEu 固定 **7.5.3**（目标服务器实际运行版本；一度升级到 8.0.0 做验证，2026-09-18 已回退。
    JEI 冲突与 GT 版本无关：7.5.3 与 8.0.0 的 `jei.FluidHelperMixin` 同签名。两代 API 差异与适配见 5.11 节）
-2. JEI 固定 **15.59.0.212**（满足 TC4R `ISubtypeInterpreter`，满足用户要求）
+2. 当前锁定 **15.56.0.205**（满足 TC4R `ISubtypeInterpreter`，并已完成当前项目的编译、数据生成和运行验证）；15.59.0.212 仅保留为历史实验记录。
 3. 本工程提供兼容 shim：`pollution.mixins.json`（`priority: 900`，早于 GT 的默认 1000）
    + `mixin/jei/FluidHelperCompatMixin`，向 JEI 的 `FluidHelper` 补回空的
    `getTooltip(ITooltipBuilder, FluidStack, TooltipFlag)` 方法，使 GT 的注入有目标、不再崩溃
-   - 功能影响：JEI 15.59 内部走 `List` 重载，GT 额外的流体 tooltip 行不会显示；GT 的 JEI 分类/配方正常
+   - 功能影响：当前 15.56 内部走 `List` 重载，GT 额外的流体 tooltip 行不会显示；GT 的 JEI 分类/配方正常
 4. mixin 基础设施：MixinGradle 0.7-SNAPSHOT + `annotationProcessor org.spongepowered:mixin:0.8.5:processor`；
    JEI forge 实现 jar 加入 `compileOnly`（AP 需要目标类在编译期可见）
 5. 运行验证：`runData` 全流程通过（此前 100% 崩溃点消失）
@@ -912,19 +922,19 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 **结论**：TC 核心（神秘时代）已基本完整；剩余集中在 **Astral Sorcery / Blood Magic 联动（含其机器/配方/维度内容）**、
 **物品行为层**、**客户端表现层**、**世界生成结构**、**TC 附属模组侧联动**。
 
-## 6. 其他附属扩展联动（全部 MARK TODO）
+## 6. 其他附属扩展联动与范围边界
 
 | 联动 | 上游 1.12.2 依赖 | 1.20.1 目标 | 状态 |
 |---|---|---|---|
-| 植物魔法 | Botania | Botania 1.20.1-456-FORGE | TODO（Phase 6） |
-| 血魔法 | Blood Magic | Blood Magic 1.20.1 | TODO（Phase 6） |
-| 星辉魔法 | Astral Sorcery | Astral Sorcery 1.20.1 | TODO（Phase 6，上游已停更风险） |
+| 植物魔法 | Botania | Botania 1.20.1-456-FORGE | 已接入；Alfheim/花、魔力机器和客户端天空已验证 |
+| 血魔法 | Blood Magic | Blood Magic 1.20.1 | 用户明确排除 |
+| 星辉魔法 | Astral Sorcery | Astral Sorcery 1.20.1 | 用户明确排除；保留独立 Starstream，不实现 Astral 方尖碑 |
 | 额外植物学 | ExtraBotany | 无已知 1.20.1 版 | TODO（可能降级为可选自实现） |
-| AE2 联动 | AE2 | AE2 15.0.18 | TODO（Phase 6） |
-| 神秘能源 | Thaumic Energistics | TC4R 附属 `thaumic-energistics` 本地包 | TODO（Phase 6，参考 FM-port-deps） |
-| 禁忌魔法 | Forbidden Magic | TC4R 附属 `forbidden-magic` 本地包 | TODO（Phase 6，参考 FM-port-deps） |
-| 污秽魔法 | Tainted Magic | TC4R 附属 `tainted-magic` 本地包 | TODO（Phase 6，参考 FM-port-deps） |
-| 神秘工匠 | Thaumic Tinkerer | TC4R 附属 `thaumic-tinkerer` 本地包 | TODO（Phase 6，参考 FM-port-deps） |
+| AE2 联动 | AE2 | AE2 15.0.18 | 已接入；配方和相关仓口在服务端烟测中验证 |
+| 神秘能源 | Thaumic Energistics | TC4R 附属 `thaumic-energistics` 本地包 | 已按 20711 compile-only 约束接入 |
+| 禁忌魔法 | Forbidden Magic | TC4R 附属 `forbidden-magic` 本地包 | 已接入并通过启动/配方注册 |
+| 污秽魔法 | Tainted Magic | TC4R 附属 `tainted-magic` 本地包 | 已接入并通过启动/配方注册 |
+| 神秘工匠 | Thaumic Tinkerer | TC4R 附属 `thaumic-tinkerer` 本地包 | 已接入并通过启动/配方注册 |
 | 商店系统 | FTB Library/Quests/Money | FTB 1.20.1 对应版本 | TODO（大概率废弃，转 KubeJS） |
 | 信息显示 | TOP | Jade / TOP 1.20.1 | TODO（Phase 7 可选） |
 | 连接纹理 | CTM | 现代 CTM / 普通模型 | TODO（Phase 7） |
@@ -933,12 +943,12 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 
 ## 7. 强制保留的能力
 
-- [x] JEI 依赖声明（`15.59.0.212`）
-- [ ] JEI 插件骨架（`@JeiPlugin`）
-- [ ] JEI 配方分类：机器排污信息、注魔对照
-- [x] KubeJS 依赖声明（`2001.6.5-build.26`）
-- [ ] KubeJS 插件骨架（`kubejs.plugins.txt` 注册）
-- [ ] KubeJS 脚本事件：配方增删、污染事件暴露
+- [x] JEI 依赖声明（`15.56.0.205`）
+- [x] JEI 插件骨架（`@JeiPlugin`）
+- [x] JEI 配方分类：机器排污信息、注魔对照
+- [x] KubeJS 依赖声明（`2001.6.5-build.16`）
+- [x] KubeJS 插件骨架（`kubejs.plugins.txt` 注册）
+- [x] KubeJS 脚本事件：配方增删、污染事件暴露
 
 ## 8. 性能红线（迁移时必须遵守）
 
@@ -1037,7 +1047,7 @@ MagicGCYM 剩余可移植子集 → 增幅系统（amplification，魔导多块�
 
 ### 2026-09-18 — JEI 冲突定位与兼容层 + datagen 通过
 - 发现并实测 JEI 15.40+ 与 GTCEu（7.5.3/8.0.0）硬冲突（FluidHelper 描述符不匹配）
-- GTCEu 一度升级 8.0.0（后于本日回退至 7.5.3，见 5.11 节）；JEI 保持 15.59.0.212；新增 mixin 兼容 shim（priority 900）
+- GTCEu 一度升级 8.0.0（后于本日回退至 7.5.3，见 5.11 节）；最终锁定 JEI 15.56.0.205；新增 mixin 兼容 shim（priority 900）
 - 新增 mixin 构建基础设施（MixinGradle 0.7-SNAPSHOT + mixin AP 0.8.5）
 - `gradlew build` 通过；jar 内含 `pollution.mixins.json`、`pollution.refmap.json`、`MixinConfigs` 清单
 - `runData` 通过并生成 46 个材料语言键 + 手工键（见 5.5 节）

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates the GameTest structure template (a flat 3x3 stone platform)."""
+"""Generate reproducible GameTest templates for small checks and actual machines."""
 
 from __future__ import annotations
 
@@ -33,20 +33,16 @@ def write_payload(tag_type: int, value) -> bytes:
         return payload + b"\x00"
     if tag_type == TAG_LIST:
         element_type, items = value
-        payload = bytes([element_type]) + struct.pack(">i", len(items))
-        for item in items:
-            payload += write_payload(element_type, item)
-        return payload
+        return bytes([element_type]) + struct.pack(">i", len(items)) + b"".join(
+            write_payload(element_type, item) for item in items)
     raise ValueError(f"unsupported tag {tag_type}")
 
 
-def main() -> int:
-    size = (3, 3, 3)
-    blocks = [{"pos": (x, 0, z), "state": 0} for x in range(3) for z in range(3)]
+def write_template(output, size, palette, blocks):
     root = {
         "DataVersion": (TAG_INT, 3465),
         "size": (TAG_LIST, (TAG_INT, list(size))),
-        "palette": (TAG_LIST, (TAG_COMPOUND, [{"Name": (TAG_STRING, "minecraft:stone")}])),
+        "palette": (TAG_LIST, (TAG_COMPOUND, [{"Name": (TAG_STRING, name)} for name in palette])),
         "blocks": (TAG_LIST, (TAG_COMPOUND, [
             {"pos": (TAG_LIST, (TAG_INT, list(block["pos"]))), "state": (TAG_INT, block["state"])}
             for block in blocks
@@ -54,10 +50,18 @@ def main() -> int:
         "entities": (TAG_LIST, (TAG_COMPOUND, [])),
     }
     payload = bytes([TAG_COMPOUND]) + write_string("") + write_payload(TAG_COMPOUND, root)
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(OUTPUT, "wb") as handle:
-        handle.write(payload)
-    print(f"wrote {OUTPUT}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists() and gzip.decompress(output.read_bytes()) == payload:
+        return
+    output.write_bytes(gzip.compress(payload, mtime=0))
+    print(f"wrote {output}")
+
+
+def main() -> int:
+    write_template(OUTPUT, (3, 3, 3), ["minecraft:stone"],
+                   [{"pos": (x, 0, z), "state": 0} for x in range(3) for z in range(3)])
+    write_template(OUTPUT.with_name("machine_lab.nbt"), (32, 32, 32), ["minecraft:air"],
+                   [{"pos": (x, y, z), "state": 0} for x in range(32) for y in range(32) for z in range(32)])
     return 0
 
 

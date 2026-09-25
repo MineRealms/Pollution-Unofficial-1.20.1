@@ -1,89 +1,113 @@
 package meowmel.pollution.common.machine.multiblock.magic;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Magic battery: a multiblock energy buffer.
- *
- * <p>Upstream was a fancy display-only battery with bloom rings and progress
- * bars. The port keeps the functional core: energy from the input hatches is
- * moved into the output hatches through the machine each tick (up to a fixed
- * transfer rate), so it acts as a buffered relay between networks. The visual
- * ring/bars layer is deferred.</p>
- *
- * <p>Structure deviation: upstream additionally accepted the astral-lens and
- * tarot hatches on the casing (0..1 each); neither ability is registered in the
- * port, so they are not accepted.</p>
- */
-public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine {
+/** Persistent energy bank with the upstream core/coil capacity and transfer formulas. */
+public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implements IControllable {
+    private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MagicBatteryMachine.class, AbstractDisplayMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    private static final long TRANSFER_RATE = 1L << 20;
-
+    @Persisted @DescSynced private long storedEnergy;
+    @Persisted @DescSynced private boolean workingEnabled = true;
+    @DescSynced private int coreTier;
+    @DescSynced private int coilTier;
+    @DescSynced private long inputPerTick;
+    @DescSynced private long outputPerTick;
+    private EnergyContainerList inputs = new EnergyContainerList(List.of());
+    private EnergyContainerList outputs = new EnergyContainerList(List.of());
     private TickableSubscription tickSubscription;
 
-    public MagicBatteryMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public MagicBatteryMachine(IMachineBlockEntity holder) { super(holder); }
+    @Override public ManagedFieldHolder getFieldHolder() { return MANAGED_FIELD_HOLDER; }
+    @Override public boolean isWorkingEnabled() { return workingEnabled; }
+    @Override public void setWorkingEnabled(boolean enabled) { workingEnabled = enabled; markDirty(); }
+    public long getStoredEnergy() { return storedEnergy; }
+    public long getCapacity() { return Math.max(storedEnergy, 250000L * coreTier * coilTier); }
+    public long getTransferRate() { return coreTier == 0 ? 0 : GTValues.VA[Math.min(GTValues.MAX, coreTier * 2)]; }
+
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        coreTier = (Integer) getMultiblockState().getMatchContext().get("BatteryCoreTier");
+        coilTier = (Integer) getMultiblockState().getMatchContext().get("BatteryCoilTier");
+        List<IEnergyContainer> inputHatches = new ArrayList<>();
+        List<IEnergyContainer> outputHatches = new ArrayList<>();
+        for (var part : getParts()) {
+            if (part.self() instanceof EnergyHatchPartMachine hatch) {
+                if (PartAbility.INPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) inputHatches.add(hatch.energyContainer);
+                if (PartAbility.OUTPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) outputHatches.add(hatch.energyContainer);
+            }
+        }
+        inputs = new EnergyContainerList(inputHatches);
+        outputs = new EnergyContainerList(outputHatches);
+        if (tickSubscription == null) tickSubscription = subscribeServerTick(this::tickBattery);
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            tickSubscription = subscribeServerTick(this::tickBattery);
-        }
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        stopTicking();
+        inputs = new EnergyContainerList(List.of());
+        outputs = new EnergyContainerList(List.of());
+        inputPerTick = outputPerTick = 0;
     }
 
     @Override
     public void onUnload() {
+        stopTicking();
         super.onUnload();
-        if (tickSubscription != null) {
-            tickSubscription.unsubscribe();
-            tickSubscription = null;
-        }
+    }
+
+    private void stopTicking() {
+        if (tickSubscription != null) tickSubscription.unsubscribe();
+        tickSubscription = null;
     }
 
     private void tickBattery() {
-        if (!(getLevel() instanceof ServerLevel) || !isFormed()) {
-            return;
+        inputPerTick = outputPerTick = 0;
+        if (!isFormed() || !workingEnabled) return;
+        long intake = Math.min(getTransferRate(), Math.min(inputs.getEnergyStored(), getCapacity() - storedEnergy));
+        if (intake > 0) {
+            inputPerTick = -inputs.changeEnergy(-intake);
+            storedEnergy += inputPerTick;
         }
-        EnergyHatchPartMachine input = null;
-        EnergyHatchPartMachine output = null;
-        for (IMultiPart part : getParts()) {
-            if (part.self() instanceof EnergyHatchPartMachine hatch) {
-                if (input == null && PartAbility.INPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) {
-                    input = hatch;
-                } else if (output == null
-                        && PartAbility.OUTPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) {
-                    output = hatch;
-                }
-            }
+        long output = Math.min(getTransferRate(), Math.min(storedEnergy,
+                outputs.getEnergyCapacity() - outputs.getEnergyStored()));
+        if (output > 0) {
+            outputPerTick = outputs.changeEnergy(output);
+            storedEnergy -= outputPerTick;
         }
-        if (input == null || output == null) {
-            return;
-        }
-        var source = input.energyContainer;
-        var target = output.energyContainer;
-        long available = Math.max(0, source.getEnergyStored());
-        long free = Math.max(0, target.getEnergyCapacity() - target.getEnergyStored());
-        long moved = Math.min(Math.min(available, free), TRANSFER_RATE);
-        if (moved <= 0) {
-            return;
-        }
-        long removed = -source.changeEnergy(-moved);
-        if (removed > 0) {
-            target.changeEnergy(removed);
-        }
+        if (inputPerTick != 0 || outputPerTick != 0) markDirty();
+    }
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel panel) {
+        super.attachConfigurators(panel);
+        panel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+                GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
+                GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
+                this::isWorkingEnabled, (click, enabled) -> setWorkingEnabled(enabled))
+                .setTooltipsSupplier(enabled -> List.of(Component.translatable("pollution.machine.battery.enabled", enabled))));
     }
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
@@ -93,17 +117,8 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine {
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
-        if (isFormed()) {
-            long stored = 0L;
-            long capacity = 0L;
-            for (IMultiPart part : getParts()) {
-                if (part.self() instanceof EnergyHatchPartMachine hatch) {
-                    stored += hatch.energyContainer.getEnergyStored();
-                    capacity += hatch.energyContainer.getEnergyCapacity();
-                }
-            }
-            textList.add(Component.literal("Buffered Energy: " + stored + " / " + capacity + " EU"));
-            textList.add(Component.literal("Transfer Rate: " + TRANSFER_RATE + " EU/t"));
-        }
+        textList.add(Component.translatable("pollution.machine.battery.energy", storedEnergy, getCapacity()));
+        textList.add(Component.translatable("pollution.machine.battery.tiers", coreTier, coilTier));
+        textList.add(Component.translatable("pollution.machine.battery.transfer", inputPerTick, outputPerTick, getTransferRate()));
     }
 }

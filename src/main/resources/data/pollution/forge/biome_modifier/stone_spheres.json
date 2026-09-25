@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#pollution:stone_sphere_biomes",
+  "features": "pollution:stone_spheres",
+  "step": "local_modifications"
+}

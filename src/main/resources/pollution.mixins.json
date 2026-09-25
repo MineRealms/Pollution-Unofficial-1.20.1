@@ -7,9 +7,12 @@
   "priority": 900,
   "plugin": "meowmel.pollution.mixin.PollutionMixinPlugin",
   "mixins": [
+    "gregtech.WorkableMultiblockPollutionMixin",
+    "gregtech.ExplosionPollutionMixin",
     "jei.FluidHelperCompatMixin",
     "jei.LdlibRecipeSlotTooltipMixin"
   ],
+  "client": ["client.AlfheimSkyMixin"],
   "injectors": {
     "defaultRequire": 1
   }

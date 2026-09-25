@@ -157,7 +157,8 @@ import java.util.Set;
  */
 public class AspectTankMachine extends TieredMachine
         implements EssentiaTransport, EssentiaSource, AspectContainerView,
-        IAutoOutputFluid, IInteractedMachine, IDropSaveMachine, IFancyUIMachine {
+        IAutoOutputFluid, IInteractedMachine, IDropSaveMachine, IFancyUIMachine, com.gregtechceu.gtceu.api.machine.feature.IMachineLife {
+    @Override public void onMachineRemoved() { clearInventory(importItems.storage); clearInventory(exportItems.storage); }
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             AspectTankMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
@@ -192,7 +193,9 @@ public class AspectTankMachine extends TieredMachine
 
     private final int maxCapacity;
 
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableItemStackHandler importItems;
+    @com.lowdragmc.lowdraglib.syncdata.annotation.Persisted
     private final NotifiableItemStackHandler exportItems;
 
     /**

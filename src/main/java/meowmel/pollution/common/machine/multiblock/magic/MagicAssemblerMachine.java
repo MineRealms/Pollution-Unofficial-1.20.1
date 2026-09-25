@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -34,7 +35,7 @@ public class MagicAssemblerMachine extends MagicMultiblockController {
     }
 
     public static BlockPattern createPattern(MultiblockMachineDefinition definition) {
-        return FactoryBlockPattern.start()
+        return FactoryBlockPattern.start(FRONT, UP, RIGHT)
                 .aisle(" ABABA ", "  CDC  ", "  CDC  ", "  EDE  ", "  EDE  ", "  AAA  ")
                 .aisle("AAAAAAA", " D   D ", " D   D ", " D   D ", " DBBBD ", " AAAAA ")
                 .aisle("AAABAAA", "C F F C", "C F F C", "E F F E", "EDB BDE", "AAAAAAA")

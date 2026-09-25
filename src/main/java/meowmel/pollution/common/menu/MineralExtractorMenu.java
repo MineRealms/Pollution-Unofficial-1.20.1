@@ -173,7 +173,7 @@ public class MineralExtractorMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (extractor == null) {
+        if (extractor == null || !stillValid(player)) {
             return false;
         }
         switch (id) {
@@ -197,6 +197,7 @@ public class MineralExtractorMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
+        if (index < 0 || index >= slots.size() || !stillValid(player)) return ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
         if (slot == null || !slot.hasItem()) {
             return ItemStack.EMPTY;

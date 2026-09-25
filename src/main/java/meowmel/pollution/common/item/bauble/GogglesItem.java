@@ -2,8 +2,14 @@ package meowmel.pollution.common.item.bauble;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.component.ElectricStats;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
+import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
+import meowmel.pollution.Pollution;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 import dev.tc4port.thaumcraft.api.aspect.VisChannel;
 import dev.tc4port.thaumcraft.api.item.AuraRevealingGear;
@@ -23,30 +29,8 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import javax.annotation.Nullable;
 import java.util.List;
 
-/**
- * Nano / quantum goggles: Curios port of upstream {@code GogglesNano} and
- * {@code GogglesQuantum}.
- *
- * <p>Upstream wore the goggles in the helmet slot through GregTech's
- * {@code ArmorComponentItem}. That GT class is annotated with
- * {@code @NotNullByDefault} from a JetBrains annotations version that is not on
- * this port's compile classpath (and build files are frozen for this pass), so
- * the port wears them in Curios' {@code head} slot instead — which the
- * Thaumcraft 4R port's {@code EquippedItems.armorAndAccessories} already
- * scans. Behaviours kept:</p>
- * <ul>
- *   <li>consumes power to feed the wearer ({@code needsFood()} / {@code eat});</li>
- *   <li>night vision toggle via GTCEu's armour mode switch key, granting water
- *       breathing while active and discharging per tick;</li>
- *   <li>quantum variant: solar recharge in daylight while night vision is off;</li>
- *   <li>{@link AuraRevealingGear}, {@link GogglesOverlayGear} and a flat
- *       {@link VisDiscountGear} discount of 5, as upstream.</li>
- * </ul>
- *
- * <p>TODO(port): restore the helmet-slot armour form once GT's armour component
- * compiles on this classpath.</p>
- */
-public class GogglesItem extends ComponentItem
+/** Powered helmet and Curios head accessory exposing the Thaumcraft goggles APIs. */
+public class GogglesItem extends ArmorComponentItem
         implements ICurioItem, AuraRevealingGear, GogglesOverlayGear, VisDiscountGear {
 
     public static final String TAG_NIGHT_VISION = "Nightvision";
@@ -60,18 +44,30 @@ public class GogglesItem extends ComponentItem
     private final boolean solarRecharge;
 
     public GogglesItem(Properties properties, long maxCharge, int tier, int energyPerUse, boolean solarRecharge) {
-        super(properties);
+        super(GTArmorMaterials.GOGGLES, ArmorItem.Type.HELMET, properties);
         this.energyPerUse = energyPerUse;
         this.tier = tier;
         this.solarRecharge = solarRecharge;
-        attachComponents(ElectricStats.createRechargeableBattery(maxCharge, tier));
+        setArmorLogic(new ArmorLogicSuite(energyPerUse, maxCharge, tier, ArmorItem.Type.HELMET) {
+            @Override
+            public void onArmorTick(Level level, Player player, ItemStack stack) {
+                tickGoggles(player, stack);
+            }
+
+            @Override
+            public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+                return ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "textures/armor/" + (solarRecharge ? "quantum_goggles" : "nano_goggles") + ".png");
+            }
+        });
     }
 
     @Override
     public void curioTick(SlotContext context, ItemStack stack) {
-        if (!(context.entity() instanceof Player player) || player.level().isClientSide) {
-            return;
-        }
+        if (context.entity() instanceof Player player) tickGoggles(player, stack);
+    }
+
+    private void tickGoggles(Player player, ItemStack stack) {
+        if (player.level().isClientSide) return;
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         if (item == null) {
             return;
@@ -86,8 +82,6 @@ public class GogglesItem extends ComponentItem
 
         var tag = stack.getOrCreateTag();
         byte toggleTimer = tag.contains(TAG_TOGGLE_TIMER) ? tag.getByte(TAG_TOGGLE_TIMER) : 0;
-        int nightVisionTimer = tag.contains(TAG_NIGHT_VISION_TIMER)
-                ? tag.getInt(TAG_NIGHT_VISION_TIMER) : NIGHT_VISION_DURATION;
         boolean nightVision = tag.getBoolean(TAG_NIGHT_VISION);
 
         if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
@@ -107,14 +101,12 @@ public class GogglesItem extends ComponentItem
 
         if (nightVision && item.getCharge() >= energyPerUse) {
             player.removeEffect(MobEffects.BLINDNESS);
-            if (nightVisionTimer <= NIGHT_VISION_DURATION - 160) {
-                nightVisionTimer = NIGHT_VISION_DURATION;
-                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION,
-                        NIGHT_VISION_DURATION, 0, true, false));
-                player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING,
-                        NIGHT_VISION_DURATION, 0, true, false));
-            }
+            AccessoryEffects.refresh(player, "goggles", MobEffects.NIGHT_VISION, NIGHT_VISION_DURATION);
+            AccessoryEffects.refresh(player, "goggles", MobEffects.WATER_BREATHING, NIGHT_VISION_DURATION);
             item.discharge(energyPerUse, tier, true, false, false);
+        } else if (nightVision) {
+            nightVision = false;
+            disableNightVision(world, player, false);
         }
         if (solarRecharge && !nightVision && world.isDay()) {
             item.charge(energyPerUse * 2L, tier, true, false);
@@ -123,12 +115,8 @@ public class GogglesItem extends ComponentItem
         if (toggleTimer > 0) {
             toggleTimer--;
         }
-        if (nightVisionTimer > 0) {
-            nightVisionTimer--;
-        }
         tag.putBoolean(TAG_NIGHT_VISION, nightVision);
         tag.putByte(TAG_TOGGLE_TIMER, toggleTimer);
-        tag.putInt(TAG_NIGHT_VISION_TIMER, nightVisionTimer);
     }
 
     @Override
@@ -140,8 +128,8 @@ public class GogglesItem extends ComponentItem
 
     public static void disableNightVision(Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
-            player.removeEffect(MobEffects.NIGHT_VISION);
-            player.removeEffect(MobEffects.WATER_BREATHING);
+            AccessoryEffects.remove(player, "goggles", MobEffects.NIGHT_VISION);
+            AccessoryEffects.remove(player, "goggles", MobEffects.WATER_BREATHING);
             if (sendMsg) {
                 player.displayClientMessage(
                         Component.translatable("metaarmor.message.nightvision.disabled"), true);

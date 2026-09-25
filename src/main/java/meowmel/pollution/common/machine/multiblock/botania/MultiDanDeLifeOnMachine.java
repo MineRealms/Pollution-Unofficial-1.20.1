@@ -58,7 +58,7 @@ import java.util.List;
  *       output. The port adds {@code IMPORT_ITEMS} and {@code EXPORT_FLUIDS}
  *       positions to the {@code G} casing character; see
  *       {@link MultiDanDeLifeOnPatterns}.</li>
- *   <li>Fluid mode needs the unported mana material. The port resolves the
+ *   <li>Fluid mode uses the registered pure mana material. The port resolves the
  *       {@code pollution:mana} fluid through {@link ForgeRegistries#FLUIDS} at
  *       runtime; while the material is absent the buffer simply stays stored
  *       and can still be drained in energy mode.</li>
@@ -141,7 +141,7 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
         }
         FluidStack mana = manaFluid();
         if (mana.isEmpty()) {
-            // The mana material is not ported yet: keep the buffer instead of
+            // Keep the buffer if an integration removes the mana fluid instead of
             // destroying it (documented deviation).
             return;
         }
@@ -172,33 +172,13 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
         if (!(getLevel() instanceof ServerLevel level) || !isFormed()) {
             return;
         }
-        int controllerX = getPos().getX();
-        int controllerY = getPos().getY();
-        int controllerZ = getPos().getZ();
-        int startX = controllerX;
-        int startZ = controllerZ;
-        switch (getFrontFacing()) {
-            case NORTH -> {
-                startX = controllerX - BOARD_OFFSET;
-                startZ = controllerZ + BOARD_DEPTH;
-            }
-            case SOUTH -> {
-                startX = controllerX - BOARD_OFFSET;
-                startZ = controllerZ - (BOARD_SIZE + BOARD_OFFSET);
-            }
-            case WEST -> {
-                startX = controllerX + BOARD_DEPTH;
-                startZ = controllerZ - BOARD_OFFSET;
-            }
-            case EAST -> {
-                startX = controllerX - (BOARD_SIZE + BOARD_OFFSET);
-                startZ = controllerZ - BOARD_OFFSET;
-            }
-            default -> {
-                return;
-            }
-        }
-        int boardY = controllerY + 1;
+        var front = getFrontFacing();
+        var up = getUpwardsFacing();
+        boolean flipped = isFlipped();
+        var right = com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.RIGHT.getRelative(front, up, flipped);
+        var back = com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.BACK.getRelative(front, up, flipped);
+        var upwards = com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.UP.getRelative(front, up, flipped);
+        BlockPos origin = getPos().relative(upwards).relative(back, BOARD_DEPTH).relative(right, -BOARD_OFFSET);
 
         // Remove "breeding" cells that touch the board from outside.
         for (int x = -4; x < BOARD_SIZE + 4; x++) {
@@ -206,7 +186,7 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
                 if (x >= 0 && x < BOARD_SIZE && z >= 0 && z < BOARD_SIZE) {
                     continue;
                 }
-                BlockPos pos = new BlockPos(startX + x, boardY, startZ + z);
+                BlockPos pos = origin.relative(right, x).relative(back, z);
                 if (level.getBlockState(pos).is(BotaniaBlocks.cellBlock)) {
                     level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }
@@ -215,13 +195,13 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
 
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int z = 0; z < BOARD_SIZE; z++) {
-                cellAlive[x][z] = cellAliveAt(level, startX + x, boardY, startZ + z);
+                cellAlive[x][z] = cellAliveAt(level, origin.relative(right, x).relative(back, z), right, back);
             }
         }
 
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int z = 0; z < BOARD_SIZE; z++) {
-                BlockPos pos = new BlockPos(startX + x, boardY, startZ + z);
+                BlockPos pos = origin.relative(right, x).relative(back, z);
                 if (cellAlive[x][z]) {
                     if (!level.getBlockState(pos).is(BotaniaBlocks.cellBlock)) {
                         level.setBlockAndUpdate(pos, BotaniaBlocks.cellBlock.defaultBlockState());
@@ -241,19 +221,19 @@ public class MultiDanDeLifeOnMachine extends ManaMultiblockController implements
         markDirty();
     }
 
-    private static boolean cellAliveAt(ServerLevel level, int x, int y, int z) {
+    private static boolean cellAliveAt(ServerLevel level, BlockPos pos, Direction right, Direction back) {
         int liveNeighbors = 0;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 if (dx == 0 && dz == 0) {
                     continue;
                 }
-                if (level.getBlockState(new BlockPos(x + dx, y, z + dz)).is(BotaniaBlocks.cellBlock)) {
+                if (level.getBlockState(pos.relative(right, dx).relative(back, dz)).is(BotaniaBlocks.cellBlock)) {
                     liveNeighbors++;
                 }
             }
         }
-        boolean alive = level.getBlockState(new BlockPos(x, y, z)).is(BotaniaBlocks.cellBlock);
+        boolean alive = level.getBlockState(pos).is(BotaniaBlocks.cellBlock);
         return alive ? liveNeighbors > 1 && liveNeighbors < 4 : liveNeighbors == 3;
     }
 

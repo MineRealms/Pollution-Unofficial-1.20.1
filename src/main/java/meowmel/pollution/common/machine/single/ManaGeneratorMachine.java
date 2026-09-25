@@ -40,6 +40,7 @@ import java.util.List;
 public class ManaGeneratorMachine extends PollutionEnergyMachine implements IManaHatch, ManaReceiver {
 
     private long manaIntakeThisTick;
+    private long intakeTick = Long.MIN_VALUE;
 
     public ManaGeneratorMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
@@ -52,10 +53,8 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
 
     @Override
     protected void pollutionTick() {
-        // Mana is stored directly in the energy container; emission is handled
-        // by the container's side output condition. Reset the per-tick intake
-        // budget granted by the mana_gen_recipes entry of this tier.
-        manaIntakeThisTick = 0L;
+        // The energy container handles emission. Intake uses the level's tick
+        // timestamp, so a burst arriving before this callback cannot get two budgets.
     }
 
     // ////////////////////////////////////
@@ -79,16 +78,17 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
 
     @Override
     public void receiveMana(long mana) {
-        if (mana <= 0L || isFull()) {
+        if (getLevel() == null || isRemote() || mana <= 0L || isFull()) {
             return;
         }
+        refreshIntakeBudget();
         // Per-tick intake rate from the tier's mana_gen_recipes entry (V[tier]).
         long rate = GTValues.V[Math.min(getTier(), GTValues.V.length - 1)];
         long remaining = Math.max(0L, rate - manaIntakeThisTick);
         if (remaining <= 0L) {
             return;
         }
-        long accepted = Math.min(mana, remaining);
+        long accepted = Math.min(Math.min(mana, remaining), getMaxMana() - getMana());
         energyContainer.addEnergy(accepted);
         manaIntakeThisTick += accepted;
     }
@@ -120,7 +120,15 @@ public class ManaGeneratorMachine extends PollutionEnergyMachine implements IMan
 
     @Override
     public boolean canReceiveManaFromBursts() {
-        return !isFull();
+        refreshIntakeBudget();
+        return !isFull() && manaIntakeThisTick < GTValues.V[Math.min(getTier(), GTValues.V.length - 1)];
+    }
+
+    private void refreshIntakeBudget() {
+        if (getLevel() != null && intakeTick != getLevel().getGameTime()) {
+            intakeTick = getLevel().getGameTime();
+            manaIntakeThisTick = 0L;
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
+import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -14,7 +15,7 @@ import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
 final class MagicBatteryPatterns {
 
     static BlockPattern create(MultiblockMachineDefinition definition) {
-        return FactoryBlockPattern.start()
+        return FactoryBlockPattern.start(RIGHT, UP, FRONT)
                 .aisle("               ", "               ", "               ", "               ", "               ", "       A       ", "      AAA      ", "     AASAA     ", "      AAA      ", "       A       ", "               ", "               ", "               ", "               ", "               ")
                 .aisle("               ", "               ", "               ", "       A       ", "     BBABB     ", "    B  A  B    ", "    B CCC B    ", "   AAACBCAAA   ", "    B CCC B    ", "    B  A  B    ", "     BBABB     ", "       A       ", "               ", "               ", "               ")
                 .aisle("               ", "               ", "       A       ", "       A       ", "               ", "               ", "               ", "  AA       AA  ", "               ", "               ", "               ", "       A       ", "       A       ", "               ", "               ")
@@ -36,8 +37,8 @@ final class MagicBatteryPatterns {
                         .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(16))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(16))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
-                .where('B', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
-                .where('C', Predicates.heatingCoils())
+                .where('B', MagicStructureElements.batteryCores())
+                .where('C', MagicStructureElements.batteryCoils())
                 .build();
     }
 

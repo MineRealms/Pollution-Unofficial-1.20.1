@@ -51,7 +51,7 @@ import java.util.List;
  * tag), the GT {@code MetaTileEntityHolder} unwrapping is gone because modern
  * essentia transports are block entities, item id/meta GUI fields are replaced
  * by a pending {@link ItemStack}, and {@code enabled} can be toggled by
- * right-click because the upstream Container/GUI is not ported yet.</p>
+ * the synchronized menu power button or sneak-right-click.</p>
  */
 public class MineralExtractorBlockEntity extends BlockEntity implements EssentiaTransport {
 
@@ -85,8 +85,18 @@ public class MineralExtractorBlockEntity extends BlockEntity implements Essentia
     // ***** output buffers *****//
     // ////////////////////////////////////
 
-    private final ItemStackHandler outputInventory = new ItemStackHandler(OUTPUT_SLOTS);
-    private final FluidTank outputTank = new FluidTank(OUTPUT_TANK_CAPACITY);
+    private final ItemStackHandler outputInventory = new ItemStackHandler(OUTPUT_SLOTS) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+        }
+    };
+    private final FluidTank outputTank = new FluidTank(OUTPUT_TANK_CAPACITY) {
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
+    };
     private final LazyOptional<IItemHandler> itemHandler = LazyOptional.of(() -> outputInventory);
     private final LazyOptional<IFluidHandler> fluidHandler = LazyOptional.of(() -> outputTank);
 
@@ -449,11 +459,15 @@ public class MineralExtractorBlockEntity extends BlockEntity implements Essentia
     }
 
     private boolean canInsertAll(List<ItemStack> drops) {
+        ItemStackHandler simulated = new ItemStackHandler(outputInventory.getSlots());
+        for (int slot = 0; slot < outputInventory.getSlots(); slot++) {
+            simulated.setStackInSlot(slot, outputInventory.getStackInSlot(slot).copy());
+        }
         for (ItemStack drop : drops) {
             if (drop.isEmpty()) {
                 continue;
             }
-            if (!ItemHandlerHelper.insertItemStacked(outputInventory, drop, true).isEmpty()) {
+            if (!ItemHandlerHelper.insertItemStacked(simulated, drop.copy(), false).isEmpty()) {
                 return false;
             }
         }

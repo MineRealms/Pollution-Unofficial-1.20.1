@@ -26,7 +26,7 @@ public final class StarstreamNetwork {
         long total = 0;
         for (var entry : requirements.entrySet()) {
             Long amount = entry.getValue();
-            if (!CHANNELS.contains(entry.getKey()) || amount == null || amount < 0
+            if (entry.getKey() == null || !CHANNELS.contains(entry.getKey()) || amount == null || amount < 0
                     || Long.MAX_VALUE - total < amount) return -1;
             total += amount;
         }

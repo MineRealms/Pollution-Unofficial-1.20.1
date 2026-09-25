@@ -1,11 +1,12 @@
 {
   "type": "pollution:alfheim",
   "generator": {
-    "type": "minecraft:noise",
+    "type": "pollution:alfheim",
     "settings": "pollution:alfheim",
     "biome_source": {
       "type": "pollution:alfheim",
-      "seed": 0
+      "seed": 0,
+      "use_world_seed": true
     }
   }
 }

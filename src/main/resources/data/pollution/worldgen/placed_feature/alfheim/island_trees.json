@@ -1,0 +1,8 @@
+{
+  "feature": "pollution:alfheim_island",
+  "placement": [
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ Usage: python tools/smoke_test.py [--keep-server]
 
 from __future__ import annotations
 
+import argparse
 import re
 import subprocess
 import sys
@@ -47,6 +48,7 @@ ERROR_PATTERNS = {
         r"Input item is not one of:(?:\r?\n(?!id: )[^\r\n]*){0,3}\r?\nid: (?P<recipe_id>pollution:\S+)"),
     "pollution empty item": re.compile(
         r"(?:Input|Output) item \d+ of recipe (?P<recipe_id>pollution:\S+) is empty"),
+    "pollution skipped recipe or vein": re.compile(r"\[pollution/\]:[^\n]*\bskipping\b", re.IGNORECASE),
 }
 
 # Categories that make the verdict FAIL when found in the server log.
@@ -55,6 +57,7 @@ POLLUTION_ERROR_CATEGORIES = (
     "pollution staging add failure",
     "pollution invalid input",
     "pollution empty item",
+    "pollution skipped recipe or vein",
 )
 
 # machine id -> human label; one per machine family
@@ -72,6 +75,7 @@ MACHINE_CHECKS = [
     ("wire_coil_tritanium", "Wire Coil: Tritanium"),
     ("terra_watertight_casing", "Botania Casing: Terra Watertight"),
     ("void_prism", "Magic Casing: Void Prism"),
+    ("mega_mana_rotor_turbine", "Mega Mana Rotor Turbine (ZPM)"),
 ]
 
 DIMENSIONS = [
@@ -88,6 +92,7 @@ def launch_server() -> subprocess.Popen:
     return subprocess.Popen(
         ["cmd.exe", "/c", "gradlew.bat", "runServer", "--console=plain"],
         cwd=ROOT, stdout=handle, stderr=subprocess.STDOUT,
+        creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
     )
 
 
@@ -149,7 +154,9 @@ def run_rcon_checks() -> list[tuple[str, bool, str]]:
 
 
 def main() -> int:
-    keep = "--keep-server" in sys.argv
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--keep-server", action="store_true", help="leave the local server running after validation")
+    keep = parser.parse_args().keep_server
     started = datetime.now()
     print(f"[smoke] launching dedicated server at {started:%H:%M:%S}")
     process = launch_server()
@@ -162,8 +169,9 @@ def main() -> int:
     if booted:
         errors, pollution_ids = scan_log()
         checks = run_rcon_checks()
-        rcon("stop")
-        time.sleep(8)
+        if not keep:
+            rcon("stop")
+            time.sleep(8)
     if not keep and process.poll() is None:
         subprocess.run(["taskkill", "/F", "/T", "/PID", str(process.pid)], capture_output=True)
 

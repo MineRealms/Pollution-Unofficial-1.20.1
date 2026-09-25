@@ -17,7 +17,7 @@ pattern-vs-machine-logic mismatches found while checking the same code paths.
 | --- | --- | --- | --- |
 | `ManaHatchMachine` (energy-type, `mana_input/output_hatch_*`) | `NotifiableEnergyContainer` + Botania `ManaReceiver` | input: receives Botania bursts/sparks and adjacent output hatches, the multiblock draws it as EU at `V[tier] × A`; output: the multiblock fills it as EU and it pushes up to `V[tier] × A` mana/t to neighbours. Capacity `V×16×A` in / `V×64×A` out. | yes — it **is** the GT energy interface of the magic multiblocks (1 mana = 1 EU internally) |
 | `ManaPoolHatchMachine` (pure mana, `mana_pool_*_hatch_*`) | `NotifiableManaContainer` (`IManaHatch`) + Botania `ManaReceiver` | input: supplies `IManaHatch` recipes, receives bursts and adjacent output pools (intake throttled to `V[tier]`/t); output: receives multiblock mana and pushes to neighbours (output throttled to `V[tier]`/t). Capacities: diluted 10 000, normal/mythic 1 000 000. | no — not registered as an EU recipe handler |
-| `WirelessManaHatchMachine` / `WirelessManaPoolHatchMachine` | subclasses with no overrides | identical to the non-wireless parts; the 1.12 `WirelessManager` network is **not ported** (documented TODO) | same as their parents |
+| `WirelessManaHatchMachine` / `WirelessManaPoolHatchMachine` | subclasses backed by `WirelessManaNetwork` | exchange energy-type or pure mana through a global per-dimension network; there is no team/owner or frequency filtering, and transfer/capacity limits remain the same as the wired parents | same as their parents |
 | `VisHatchMachine` | `IVisHatch` buffer | drains 0.05 Vis/s from the TC4R vis network (channels cycled), stores `tier` Vis per successful drain, capacity `tier × 2000` | no |
 | `InfusedFluidHatchMachine` | `NotifiableFluidTank` (`IO.BOTH`), 1 tank | buffers aspect-mapped infused fluids for magic multiblock recipes, capacity `8000 × 2^tier` mB | no |
 | `FluxMufflerMachine` | `IMufflerMachine` | recovers machine byproducts with `min((tier-1)×10, 100)%` chance; the machine's industrial pollution is emitted through this hatch | no |
@@ -41,7 +41,7 @@ Upstream references:
 | `pollution.machine.mana_pool_hatch.capacity/transfer` | units said "魔力" / "Mana" without the pool semantics | now "纯魔力容量：%s Mana" / "最大传输速率：%s Mana/t" (EN mirrors) |
 | `pollution.machine.mana_pool_input_hatch.tooltip` | only mentioned receiving; omitted that it **supplies the multiblock** | zh + EN now: supplies the multiblock; receives Botania bursts/sparks and adjacent output hatches (upstream wording) |
 | `pollution.machine.mana_pool_output_hatch.tooltip` | only mentioned neighbour output; omitted that it **receives multiblock output** | zh + EN now: receives multiblock mana, outputs to adjacent receivers/input hatches |
-| `pollution.machine.wireless_mana_hatch/pool_hatch.tooltip` | EN was a bare name; the wireless network is not ported | EN now states the network is not ported and the part behaves like the normal hatch (zh already did) |
+| `pollution.machine.wireless_mana_hatch/pool_hatch.tooltip` | EN was a bare name; it did not describe the network scope | EN now states that the hatch uses a global per-dimension wireless network with no team/owner or frequency filter (zh mirrors it) |
 | `pollution.machine.vis_hatch.tooltip.capacity/buffer/drain` | buffer said "units" instead of Vis; drain did not state the real 0.05 Vis/s | now "Vis"; "Stores %s Vis per successful drain"; "Drains 0.05 Vis/s from the Thaumcraft 4R vis network" |
 | `pollution.machine.infused_fluid_hatch.tooltip` | "buffers infused fluid" omitted that only aspect-mapped infused fluids are accepted and that the tank feeds recipes | zh + EN now match upstream "stores infused fluids and supplies them to magic multiblock recipes" |
 | `pollution.machine.flux_muffler.tooltip` | claimed it "keeps byproducts out of the environment"; the hatch actually **recovers** byproducts and is the machine's pollution vent (`MagicRecipeLogic#emitMufflerPollution`) | zh + EN now: recovers byproducts; industrial pollution is vented here |
@@ -105,9 +105,11 @@ Upstream references:
 
 ## 4. Remaining uncertainties / deviations
 
-* **Wireless mana network**: `WirelessMana*HatchMachine` still behaves like
-  the wired parts; the 1.12 `WirelessManager`/`WirelessWorldData` is not
-  ported. Tooltips now say so.
+* **Wireless mana network**: `WirelessMana*HatchMachine` uses the implemented
+  `WirelessManaNetwork` `SavedData`, shared by all matching hatches in a
+  dimension. The remaining intentional deviation is that the network has no
+  team/owner or frequency separation, and there is no configuration GUI for
+  those concepts.
 * **`ManaMultiblockController` consumption pool**: the controller collects
   every `IManaHatch` part, so a pure-mana recipe may also drain energy-type
   mana hatches (upstream only consumed from `MANA_INPUT_POOL`). All current

@@ -2,6 +2,7 @@ package meowmel.pollution.api.pollution;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import meowmel.pollution.PollutionConfig;
+import meowmel.pollution.common.network.PollutionNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -23,6 +24,12 @@ import java.util.Map;
 public final class PollutionEngine {
 
     private static final int DECAY_INTERVAL_TICKS = 200;
+    private static final int EFFECT_INTERVAL_TICKS = 40;
+    private static final int EFFECT_DURATION_TICKS = 100;
+    /** Additional effect bands are expressed as multiples of effectThreshold. */
+    private static final double WEAKNESS_BAND = 2.0D;
+    private static final double MINING_FATIGUE_BAND = 3.0D;
+    private static final double BLINDNESS_BAND = 4.0D;
 
     private static int decayTimer;
 
@@ -55,12 +62,15 @@ public final class PollutionEngine {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
-        convertTerrain(event.getServer());
+        MinecraftServer server = event.getServer();
+        convertTerrain(server);
+        if (server.getTickCount() % EFFECT_INTERVAL_TICKS == 0) {
+            applyPlayerEffects(server);
+        }
         if (++decayTimer < DECAY_INTERVAL_TICKS) {
             return;
         }
         decayTimer = 0;
-        applyPlayerEffects(event.getServer());
         double decay = PollutionConfig.POLLUTION_DECAY_PER_TICK.get() * DECAY_INTERVAL_TICKS;
         if (decay <= 0.0D) {
             return;
@@ -157,28 +167,64 @@ public final class PollutionEngine {
      * Applies the configured harmful effect to players standing in chunks whose
      * pollution exceeds {@link PollutionConfig#EFFECT_THRESHOLD}.
      */
-    public static void applyPlayerEffects(net.minecraft.server.MinecraftServer server) {
-        if (!PollutionConfig.ENABLE_POLLUTION.get()) {
-            return;
-        }
-        double threshold = PollutionConfig.EFFECT_THRESHOLD.get();
+    public static void applyPlayerEffects(MinecraftServer server) {
         for (ServerLevel level : server.getAllLevels()) {
-            for (net.minecraft.server.level.ServerPlayer player : level.players()) {
-                boolean polluted = get(level, player.blockPosition()) > threshold;
-                if (polluted) {
-                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                            net.minecraft.world.effect.MobEffects.CONFUSION, 100, 0, true, false));
-                    player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                            net.minecraft.world.effect.MobEffects.HUNGER, 100, 0, true, false));
-                    if (!player.getPersistentData().getBoolean("pollution.warned")) {
-                        player.displayClientMessage(
-                                net.minecraft.network.chat.Component.translatable("pollution.effect.warning"), true);
-                        player.getPersistentData().putBoolean("pollution.warned", true);
-                    }
-                } else {
-                    player.getPersistentData().remove("pollution.warned");
-                }
-            }
+            for (var player : level.players()) applyPlayerEffects(player);
         }
+    }
+
+    /** Apply one server-authoritative exposure sample; also usable for simulated players. */
+    public static void applyPlayerEffects(net.minecraft.server.level.ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        boolean enabled = PollutionConfig.ENABLE_POLLUTION.get();
+        double threshold = PollutionConfig.EFFECT_THRESHOLD.get();
+        double pollution = enabled ? get(level, player.blockPosition()) : 0.0D;
+        PollutionNetwork.send(player, pollution, threshold);
+        boolean polluted = pollution > threshold;
+        if (polluted) {
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.CONFUSION, EFFECT_DURATION_TICKS, 0, true, false));
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.HUNGER, EFFECT_DURATION_TICKS, 0, true, false));
+
+            // Preserve the upstream baseline nausea/hunger while
+            // making the documented pollution gradient functional:
+            // 2x adds weakness, 3x adds mining fatigue, and 4x adds
+            // blindness. Amplifiers rise one step per additional band
+            // and are capped so extreme chunks cannot create an
+            // unbounded effect level.
+            double ratio = exposureRatio(pollution, threshold);
+            if (ratio >= WEAKNESS_BAND) {
+                int amplifier = Math.min(2, Math.max(0, (int) (ratio / WEAKNESS_BAND) - 1));
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.WEAKNESS,
+                        EFFECT_DURATION_TICKS, amplifier, true, false));
+            }
+            if (ratio >= MINING_FATIGUE_BAND) {
+                int amplifier = Math.min(2, Math.max(0, (int) (ratio / MINING_FATIGUE_BAND) - 1));
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,
+                        EFFECT_DURATION_TICKS, amplifier, true, false));
+            }
+            if (ratio >= BLINDNESS_BAND) {
+                int amplifier = Math.min(2, Math.max(0, (int) (ratio / BLINDNESS_BAND) - 1));
+                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.BLINDNESS,
+                        EFFECT_DURATION_TICKS, amplifier, true, false));
+            }
+            if (!player.getPersistentData().getBoolean("pollution.warned")) {
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.translatable("pollution.effect.warning"), true);
+                player.getPersistentData().putBoolean("pollution.warned", true);
+            }
+        } else {
+            player.getPersistentData().remove("pollution.warned");
+        }
+    }
+
+    /** Shared by the server effects and HUD, including a configured zero threshold. */
+    public static double exposureRatio(double pollution, double threshold) {
+        if (pollution <= 0.0D) return 0.0D;
+        return threshold <= 0.0D ? Double.POSITIVE_INFINITY : pollution / threshold;
     }
 }

@@ -1,5 +1,5 @@
 {
-  "feature": "minecraft:vines",
+  "feature": "pollution:big_vines",
   "placement": [
     {
       "type": "minecraft:count",

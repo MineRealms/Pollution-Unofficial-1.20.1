@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import meowmel.pollution.common.machine.multiblock.mana.ManaMultiblockController;
+import meowmel.pollution.common.machine.multiblock.LayeredMagicTowerMachine;
 
 /**
  * Terra (Botania) distillation tower.
@@ -15,14 +15,9 @@ import meowmel.pollution.common.machine.multiblock.mana.ManaMultiblockController
  * the machine runs GregTech's distillation map and accepts mana energy/pool
  * hatches.</p>
  *
- * <p>Deviation: upstream implemented {@code IDistillationTower} with
- * {@code DistillationTowerLogicHandler} to route each fluid output to its own
- * layer. Modern GTCEu keeps that handler inside its own
- * {@code DistillationTowerMachine} and does not expose it for addons, so the
- * port sends all fluid outputs to the export hatches in the usual order
- * (per-layer routing is not implemented).</p>
+ * <p>Fluid fractions use the shared local-axis layer routing, including rotated structures.</p>
  */
-public class BotDistilleryMachine extends ManaMultiblockController {
+public class BotDistilleryMachine extends LayeredMagicTowerMachine {
 
     public BotDistilleryMachine(IMachineBlockEntity holder) {
         super(holder, GTRecipeTypes.DISTILLATION_RECIPES);

@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_overworld",
+    "pollution:alfheim_beach",
+    "pollution:alfheim_field",
+    "pollution:alfheim_giant_flower_field",
+    "pollution:alfheim_high_plateau",
+    "pollution:alfheim_high_plateau_field",
+    "pollution:alfheim_high_plateau_forest",
+    "pollution:alfheim_island_forest",
+    "pollution:alfheim_low_plateau",
+    "pollution:alfheim_mid_plateau",
+    "pollution:alfheim_pit_forest",
+    "pollution:alfheim_river",
+    "pollution:alfheim_sandbank",
+    "pollution:crystal_cluster",
+    "pollution:desert_cave",
+    "pollution:lush_cave",
+    "pollution:magma_cave",
+    "pollution:mushroom_forest",
+    "pollution:primordial_cave",
+    "pollution:stalactite_cluster",
+    "pollution:underground"
+  ]
+}

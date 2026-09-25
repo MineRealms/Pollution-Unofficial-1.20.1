@@ -2,6 +2,9 @@ package meowmel.pollution.dimension.worldgen;
 
 import meowmel.pollution.Pollution;
 import meowmel.pollution.dimension.worldgen.feature.GardenFeature;
+import meowmel.pollution.dimension.worldgen.feature.CaveShapeFeature;
+import meowmel.pollution.dimension.worldgen.feature.AlfheimSchematicFeature;
+import meowmel.pollution.dimension.worldgen.feature.AlfheimForestFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -27,6 +30,21 @@ public final class PollutionFeatures {
     /** Port of the 1.12 {@code WorldGenGarden}. */
     public static final RegistryObject<GardenFeature> GARDEN =
             FEATURES.register("garden", () -> new GardenFeature(NoneFeatureConfiguration.CODEC));
+
+    static {
+        FEATURES.register("tar_pool", meowmel.pollution.dimension.worldgen.feature.TarPoolFeature::new);
+        FEATURES.register("stone_spheres", meowmel.pollution.dimension.worldgen.feature.StoneSphereFeature::new);
+        for (CaveShapeFeature.Shape shape : CaveShapeFeature.Shape.values()) {
+            FEATURES.register(shape.name().toLowerCase(java.util.Locale.ROOT), () -> new CaveShapeFeature(shape));
+        }
+        for (AlfheimSchematicFeature.Shape shape : AlfheimSchematicFeature.Shape.values()) {
+            FEATURES.register(shape.name().toLowerCase(java.util.Locale.ROOT), () -> new AlfheimSchematicFeature(shape));
+        }
+        for (AlfheimForestFeature.Forest forest : AlfheimForestFeature.Forest.values()) {
+            FEATURES.register("alfheim_" + forest.name().toLowerCase(java.util.Locale.ROOT),
+                    () -> new AlfheimForestFeature(forest));
+        }
+    }
 
     private PollutionFeatures() {
     }

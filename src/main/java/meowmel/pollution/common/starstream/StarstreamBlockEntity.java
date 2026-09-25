@@ -61,6 +61,7 @@ public class StarstreamBlockEntity extends BlockEntity
         super.onLoad();
         if (level instanceof ServerLevel server) {
             LOADED.computeIfAbsent(server, ignored -> new HashSet<>()).add(worldPosition);
+            applyPendingUnlinks();
             if (getKind() == Kind.ANCHOR) forceChunk(true);
         }
     }
@@ -78,7 +79,7 @@ public class StarstreamBlockEntity extends BlockEntity
     }
     private void forceChunk(boolean force) {
         if (level instanceof ServerLevel server) {
-            ForgeChunkManager.forceChunk(server, Pollution.MOD_ID, nodeId,
+            ForgeChunkManager.forceChunk(server, Pollution.MOD_ID, worldPosition,
                     worldPosition.getX() >> 4, worldPosition.getZ() >> 4, force, true);
         }
     }
@@ -102,7 +103,7 @@ public class StarstreamBlockEntity extends BlockEntity
     /** Producer/admin hook: returns a loaded nexus with the requested network identity. */
     @Nullable public static StarstreamBlockEntity findLoadedCore(ServerLevel level, UUID network) {
         for (BlockPos candidate : LOADED.getOrDefault(level, Collections.emptySet())) {
-            if (level.getBlockEntity(candidate) instanceof StarstreamBlockEntity node
+            if (level.hasChunkAt(candidate) && level.getBlockEntity(candidate) instanceof StarstreamBlockEntity node
                     && node.getKind() == Kind.CORE && network.equals(node.nodeId)) return node;
         }
         return null;
@@ -129,6 +130,7 @@ public class StarstreamBlockEntity extends BlockEntity
             current = current.resolveTarget();
         }
         int max = target.getKind() == Kind.CORE ? StarstreamNetwork.MAX_INPUTS : StarstreamNetwork.MAX_RELAY_INPUTS;
+        target.applyPendingUnlinks();
         if (!target.inbound.contains(nodeId) && target.inbound.size() >= max) return false;
         clearOutput();
         targetDimension = target.level.dimension();
@@ -143,10 +145,18 @@ public class StarstreamBlockEntity extends BlockEntity
     public void clearOutput() {
         StarstreamBlockEntity old = resolveTarget();
         if (old != null) { old.inbound.remove(nodeId); old.changed(); }
+        else if (targetId != null && level instanceof ServerLevel server) {
+            StarstreamLinkData.get(server).unlink(targetId, nodeId);
+        }
         targetDimension = null;
         targetPos = null;
         targetId = null;
         changed();
+    }
+
+    private void applyPendingUnlinks() {
+        if (level instanceof ServerLevel server
+                && inbound.removeAll(StarstreamLinkData.get(server).takeUnlinks(nodeId))) setChanged();
     }
 
     @Nullable private StarstreamBlockEntity resolveTarget() {

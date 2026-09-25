@@ -11,7 +11,12 @@
   },
   "spawners": {},
   "spawn_costs": {},
-  "carvers": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:canyon"
+    ]
+  },
   "features": [
     [],
     [
@@ -25,6 +30,7 @@
     [],
     [],
     [
+      "pollution:alfheim/giant_flower",
       "pollution:alfheim/flowers_dense",
       "pollution:alfheim/grass"
     ],

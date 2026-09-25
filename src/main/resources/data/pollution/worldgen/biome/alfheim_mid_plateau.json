@@ -11,7 +11,12 @@
   },
   "spawners": {},
   "spawn_costs": {},
-  "carvers": {},
+  "carvers": {
+    "air": [
+      "minecraft:cave",
+      "minecraft:canyon"
+    ]
+  },
   "features": [
     [],
     [
@@ -26,7 +31,9 @@
     [],
     [],
     [
-      "pollution:alfheim/trees",
+      "pollution:alfheim/plateau_sad_oak",
+      "pollution:alfheim/plateau_dream_tree",
+      "pollution:alfheim/plateau_trees",
       "pollution:alfheim/grass"
     ],
     []

@@ -1,6 +1,6 @@
 # Pollution Port - Server Smoke Test
 
-- date: 2026-09-24 19:55:13
+- date: 2026-09-25 13:34:31
 - server booted (`Done (`): yes
 - log errors (all patterns): 22
 - pollution-specific errors (fail on any): 0
@@ -20,6 +20,7 @@
 - pollution staging add failure: 0 **[POLLUTION]**
 - pollution invalid input: 0 **[POLLUTION]**
 - pollution empty item: 0 **[POLLUTION]**
+- pollution skipped recipe or vein: 0 **[POLLUTION]**
 
 ## RCON checks
 
@@ -36,6 +37,7 @@
 - [x] machine Wire Coil: Tritanium (wire_coil_tritanium) - placed+verified
 - [x] machine Botania Casing: Terra Watertight (terra_watertight_casing) - placed+verified
 - [x] machine Magic Casing: Void Prism (void_prism) - placed+verified
+- [x] machine Mega Mana Rotor Turbine (ZPM) (mega_mana_rotor_turbine) - placed+verified
 - [x] dimension Underground dimension - loaded
 - [x] dimension Alfheim dimension - loaded
 - [x] dimension Blood dimension - loaded

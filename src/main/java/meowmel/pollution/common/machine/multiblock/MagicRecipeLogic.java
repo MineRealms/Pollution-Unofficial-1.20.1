@@ -99,6 +99,7 @@ public class MagicRecipeLogic extends RecipeLogic {
     private final MagicMultiblockController controller;
 
     private boolean visPaidThisCraft;
+    private long craftSequence;
 
     /** Result computed for the running craft; {@link MagicAmplificationResult#NONE} while idle. */
     private MagicAmplificationResult activeAmplification = MagicAmplificationResult.NONE;
@@ -150,6 +151,7 @@ public class MagicRecipeLogic extends RecipeLogic {
      */
     @Override
     public void setupRecipe(GTRecipe recipe) {
+        craftSequence++;
         resetMagicState();
         activeAmplification = calculateAmplification(recipe);
         super.setupRecipe(recipe);
@@ -182,10 +184,10 @@ public class MagicRecipeLogic extends RecipeLogic {
         MagicAmplificationResult result = activeAmplification;
         int parallel = finished == null ? 1 : Math.max(1, finished.getTotalRuns());
         updateChariotStacks(finished, result);
+        long finishedSequence = craftSequence;
+        // The following check is for a new craft, even when GT reuses its recipe object.
+        visPaidThisCraft = false;
         super.onRecipeFinish();
-        if (finished != null) {
-            emitMufflerPollution();
-        }
         if (finished != null && result.isActive()) {
             List<ItemStack> extras = MagicOutputProcessor.settle(finished, parallel, result,
                     fractionalOutputRemainders);
@@ -193,34 +195,8 @@ public class MagicRecipeLogic extends RecipeLogic {
                 insertBonusOutputs(extras);
             }
         }
-        if (getLastRecipe() == null || getLastRecipe() == finished) {
+        if (craftSequence == finishedSequence) {
             resetMagicState();
-        }
-    }
-
-    /**
-     * Adds the muffler hatch pollution of the completed operation.
-     *
-     * <p>Upstream emitted this from {@code MetaTileEntity#pollution}, which
-     * modern GregTech removed. The port re-hooks recipe completion: when the
-     * formed structure contains a muffler hatch, its per-operation output
-     * ({@link IMufflerMachine#getHazardStrengthPerOperation()}, the modern
-     * equivalent of the old pollution value) is added to the chunk pollution
-     * scaled by
-     * {@link meowmel.pollution.PollutionConfig#MUFFLER_POLLUTION_MULTIPLIER}.
-     * Runs after {@code super.onRecipeFinish()} so it happens alongside the
-     * muffler's own environmental hazard pass.</p>
-     */
-    private void emitMufflerPollution() {
-        if (!(controller.getLevel() instanceof ServerLevel level)) {
-            return;
-        }
-        for (IMultiPart part : controller.getParts()) {
-            if (part.self() instanceof IMufflerMachine muffler) {
-                MachinePollution.addMufflerPollution(level, controller.getPos(),
-                        muffler.getHazardStrengthPerOperation());
-                return;
-            }
         }
     }
 
@@ -255,7 +231,7 @@ public class MagicRecipeLogic extends RecipeLogic {
             return ActionResult.fail(requirementFailure, null, null);
         }
         int vis = MagicRecipeProperties.getVisPerCraft(recipe);
-        if (vis > 0 && !controller.consumeVis(vis, true)) {
+        if (vis > 0 && !(visPaidThisCraft && recipe == getLastRecipe()) && !controller.consumeVis(vis, true)) {
             return ActionResult.fail(Component.translatable("pollution.magic.failure.vis"), null, null);
         }
         if (recipe.data.contains("ebf_temp")) {
@@ -293,10 +269,6 @@ public class MagicRecipeLogic extends RecipeLogic {
                 tickRecipe = amplifiedTickRecipe;
             }
         }
-        ActionResult result = super.handleTickRecipe(tickRecipe);
-        if (!result.isSuccess()) {
-            return result;
-        }
         Component requirementFailure = controller.getMagicRequirementFailure(recipe);
         if (requirementFailure != null) {
             return ActionResult.fail(requirementFailure, null, null);
@@ -310,7 +282,6 @@ public class MagicRecipeLogic extends RecipeLogic {
                 return ActionResult.fail(
                         Component.translatable("pollution.magic.failure.infused_fluid"), null, null);
             }
-            controller.drainInfusedFluid(infusedFluid, false);
         }
 
         long mana = discount(scaleByParallel(MagicRecipeProperties.getManaPerTick(recipe), parallel));
@@ -318,7 +289,6 @@ public class MagicRecipeLogic extends RecipeLogic {
             if (!controller.consumeMana(mana, true)) {
                 return ActionResult.fail(Component.translatable("pollution.magic.failure.mana"), null, null);
             }
-            controller.consumeMana(mana, false);
         }
 
         int lifeEssence = discount(
@@ -328,14 +298,26 @@ public class MagicRecipeLogic extends RecipeLogic {
                 return ActionResult.fail(
                         Component.translatable("pollution.magic.failure.life_essence"), null, null);
             }
-            controller.consumeLifeEssence(lifeEssence, false);
         }
 
         int vis = discount(scaleByParallel(MagicRecipeProperties.getVisPerCraft(recipe), parallel));
         if (vis > 0 && !visPaidThisCraft) {
-            if (!controller.consumeVis(vis, false)) {
+            if (!controller.consumeVis(vis, true)) {
                 return ActionResult.fail(Component.translatable("pollution.magic.failure.vis"), null, null);
             }
+        }
+
+        // Validate every magic source before any resource is paid. GT's normal
+        // tick IO can still fail (e.g. no EU); only commit magic after it succeeds.
+        ActionResult result = super.handleTickRecipe(tickRecipe);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        if (infusedFluid > 0) controller.drainInfusedFluid(infusedFluid, false);
+        if (mana > 0) controller.consumeMana(mana, false);
+        if (lifeEssence > 0) controller.consumeLifeEssence(lifeEssence, false);
+        if (vis > 0 && !visPaidThisCraft) {
+            controller.consumeVis(vis, false);
             visPaidThisCraft = true;
         }
 
@@ -549,6 +531,8 @@ public class MagicRecipeLogic extends RecipeLogic {
     public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
         tag.put("MagicAmplification", activeAmplification.serializeSnapshot());
+        tag.putBoolean("MagicVisPaid", visPaidThisCraft);
+        if (lastCompletedRecipeId != null) tag.putString("MagicLastRecipe", lastCompletedRecipeId.toString());
         tag.putInt("MagicChariotStacks", chariotStacks);
         tag.putInt("MagicProgressRetention", progressRetentionTicks);
         CompoundTag remainders = new CompoundTag();
@@ -562,6 +546,8 @@ public class MagicRecipeLogic extends RecipeLogic {
     public void loadCustomPersistedData(CompoundTag tag) {
         super.loadCustomPersistedData(tag);
         activeAmplification = MagicAmplificationResult.deserializeSnapshot(tag.getCompound("MagicAmplification"));
+        visPaidThisCraft = tag.getBoolean("MagicVisPaid");
+        lastCompletedRecipeId = ResourceLocation.tryParse(tag.getString("MagicLastRecipe"));
         chariotStacks = Math.max(0, Math.min(5, tag.getInt("MagicChariotStacks")));
         progressRetentionTicks = Math.max(0, tag.getInt("MagicProgressRetention"));
         fractionalOutputRemainders.clear();

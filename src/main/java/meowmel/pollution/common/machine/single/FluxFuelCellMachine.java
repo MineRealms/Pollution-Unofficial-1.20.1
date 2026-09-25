@@ -2,8 +2,11 @@ package meowmel.pollution.common.machine.single;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import dev.tc4port.thaumcraft.api.aspect.VisAction;
 import meowmel.pollution.PollutionConfig;
+import meowmel.pollution.api.pollution.MachinePollution;
 import meowmel.pollution.compat.tc4r.TC4RBridge;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -20,13 +23,25 @@ import java.util.List;
  * 10-50 / 50-ceiling / explosion above the ceiling, {@code desiredFlux} formula
  * and explosion on over-ceiling) but runs as a plain EU emitter, since the GTQT
  * fuel maps are not ported. Nearby flux is measured by simulation of the TC4R
- * scrubber API (0..64 quanta).</p>
+ * scrubber API, sampled up to one quantum above this tier's safety ceiling.</p>
  */
 public class FluxFuelCellMachine extends PollutionEnergyMachine {
 
-    private static final int FLUX_SAMPLE = 64;
+    private static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            FluxFuelCellMachine.class, PollutionEnergyMachine.MANAGED_FIELD_HOLDER);
 
+    /** Prepaid fractional flux, retained across saves so reloads cannot yield free power. */
+    @Persisted
     private double fluxBuffer;
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+
+    private int fluxSampleLimit() {
+        return (int) (60.0D + 5.0D * Math.pow(4, getTier())) + 1;
+    }
 
     public FluxFuelCellMachine(IMachineBlockEntity info, int tier) {
         super(info, tier);
@@ -42,31 +57,30 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
         if (!(getLevel() instanceof ServerLevel level)) {
             return;
         }
-        int flux = TC4RBridge.scrubFlux(level, getPos(), FLUX_SAMPLE, VisAction.SIMULATE);
+        int flux = TC4RBridge.scrubFlux(level, getPos(), fluxSampleLimit(), VisAction.SIMULATE);
         double desired = PollutionConfig.FLUX_FUEL_CELL_FLUX_PER_TICK.get() * 4.0D + 0.05D * 4.0D * (getTier() - 1);
         double ceiling = 60.0D + 5.0D * Math.pow(4, getTier());
 
-        if (flux >= ceiling) {
+        if (flux > ceiling) {
+            MachinePollution.addExplosionPollution(level, getPos(), 1.0F);
+            level.removeBlock(getPos(), false);
             level.explode(null,
                     getPos().getX() + 0.5D, getPos().getY() + 0.5D, getPos().getZ() + 0.5D,
                     1.0F, Level.ExplosionInteraction.BLOCK);
             return;
         }
-        if (flux < 10 || flux < desired) {
+        if (flux < 10 || flux + fluxBuffer < desired) {
             return;
         }
 
         double efficiency = flux < 50 ? (5.0D - 256.0D / (1.6D * flux + 48.0D)) : 3.0D;
-        fluxBuffer += desired;
-        int quanta = (int) fluxBuffer;
-        if (quanta <= 0) {
-            return;
+        if (fluxBuffer < desired) {
+            int quanta = (int) Math.ceil(desired - fluxBuffer);
+            fluxBuffer += TC4RBridge.scrubFlux(level, getPos(), quanta);
         }
-        int removed = TC4RBridge.scrubFlux(level, getPos(), quanta);
-        if (removed <= 0) {
-            return;
-        }
-        fluxBuffer -= removed;
+        if (fluxBuffer + 1.0E-9D < desired) return;
+        fluxBuffer = Math.max(0.0D, fluxBuffer - desired);
+        markDirty();
         energyContainer.addEnergy((long) (efficiency * GTValues.V[getTier()]));
     }
 
@@ -74,7 +88,7 @@ public class FluxFuelCellMachine extends PollutionEnergyMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (getLevel() instanceof ServerLevel level) {
-            int flux = TC4RBridge.scrubFlux(level, getPos(), FLUX_SAMPLE, VisAction.SIMULATE);
+            int flux = TC4RBridge.scrubFlux(level, getPos(), fluxSampleLimit(), VisAction.SIMULATE);
             textList.add(Component.literal("Nearby Flux: " + flux));
         }
         textList.add(Component.literal("Flux Buffer: " + String.format("%.2f", fluxBuffer)));

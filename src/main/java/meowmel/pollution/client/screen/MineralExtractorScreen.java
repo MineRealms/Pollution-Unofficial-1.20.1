@@ -20,8 +20,6 @@ import java.util.Optional;
  */
 public class MineralExtractorScreen extends AbstractContainerScreen<MineralExtractorMenu> {
 
-    private static final String[] MODE_NAMES = {"实体矿", "虚拟矿物", "虚拟流体"};
-
     // ===== colours (same palette as the 1.12 screen) =====
     private static final int C_BORDER = 0xFF373737;
     private static final int C_BG = 0xFFC6C6C6;
@@ -60,16 +58,16 @@ public class MineralExtractorScreen extends AbstractContainerScreen<MineralExtra
         // title bar
         guiGraphics.fill(x + 1, y + 1, x + this.imageWidth - 1, y + 12, C_TITLE);
         guiGraphics.fill(x + 1, y + 12, x + this.imageWidth - 1, y + 13, 0xFF8B8B8B);
-        guiGraphics.drawString(this.font, "矿物提取器", x + 8, y + 4, 0xFFFFFFFF, false);
+        guiGraphics.drawString(this.font, this.title, x + 8, y + 4, 0xFFFFFFFF, false);
 
         // machine panel
         guiGraphics.fill(x + 3, y + 15, x + this.imageWidth - 3, y + 118, C_PANEL);
         guiGraphics.fill(x + 3, y + 15, x + this.imageWidth - 3, y + 16, 0xFFD6D6D6);
 
         // essentia chambers
-        drawSectionLabel(guiGraphics, x + 8, y + 19, "源质仓", C_CHAOS);
-        drawAspectBar(guiGraphics, x + 10, y + 27, this.menu.getChaosAmount(), C_CHAOS, "混沌/熵");
-        drawAspectBar(guiGraphics, x + 10, y + 47, this.menu.getMagicAmount(), C_MAGIC, "魔法");
+        drawSectionLabel(guiGraphics, x + 8, y + 19, Component.translatable("pollution.extractor.essentia"), C_CHAOS);
+        drawAspectBar(guiGraphics, x + 10, y + 27, this.menu.getChaosAmount(), C_CHAOS, Component.translatable("pollution.extractor.entropy"));
+        drawAspectBar(guiGraphics, x + 10, y + 47, this.menu.getMagicAmount(), C_MAGIC, Component.translatable("pollution.extractor.magic"));
 
         // slot frames (machine row, pending-ore display, player inventory)
         for (int i = 0; i < MineralExtractorMenu.MACHINE_SLOTS; i++) {
@@ -110,17 +108,18 @@ public class MineralExtractorScreen extends AbstractContainerScreen<MineralExtra
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        renderTooltip(guiGraphics, mouseX, mouseY);
         if (inButton(mouseX, mouseY, MODE_BTN_X, MODE_BTN_Y)) {
             guiGraphics.renderTooltip(this.font, List.of(
-                    Component.literal("模式切换"),
-                    Component.literal("当前: " + MODE_NAMES[this.menu.getMode() % 3]),
-                    Component.literal("点击切换 (实体矿/虚拟矿物/虚拟流体)")),
+                    Component.translatable("pollution.extractor.change_mode"),
+                    Component.translatable("pollution.extractor.mode", modeName()),
+                    Component.translatable("pollution.extractor.mode_hint")),
                     Optional.empty(), mouseX, mouseY);
         }
         if (inButton(mouseX, mouseY, POWER_BTN_X, POWER_BTN_Y)) {
             guiGraphics.renderTooltip(this.font, List.of(
-                    Component.literal(this.menu.isEnabled() ? "正在运行" : "已停止"),
-                    Component.literal("点击切换运行状态")),
+                    Component.translatable(this.menu.isEnabled() ? "pollution.extractor.running" : "pollution.extractor.stopped"),
+                    Component.translatable("pollution.extractor.power_hint")),
                     Optional.empty(), mouseX, mouseY);
         }
     }
@@ -156,28 +155,22 @@ public class MineralExtractorScreen extends AbstractContainerScreen<MineralExtra
     // ***** drawing helpers *****//
     // ////////////////////////////////////
 
-    private void drawSectionLabel(GuiGraphics guiGraphics, int x, int y, String text, int dotColor) {
+    private void drawSectionLabel(GuiGraphics guiGraphics, int x, int y, Component text, int dotColor) {
         guiGraphics.fill(x, y + 3, x + 3, y + 6, dotColor);
         guiGraphics.drawString(this.font, text, x + 7, y, C_LABEL, false);
     }
 
-    private void drawStatusLine(GuiGraphics guiGraphics, int x, int y) {
-        int mode = this.menu.getMode() % 3;
-        if (mode == 1) {
-            guiGraphics.drawString(this.font, "虚拟矿物: 产草方块", x + 8, y + 100, C_LABEL, false);
-        } else if (mode == 2) {
-            guiGraphics.drawString(this.font, "虚拟流体: 产石头", x + 8, y + 100, C_LABEL, false);
-        } else {
-            ItemStack ore = this.menu.getPendingOre();
-            if (!ore.isEmpty()) {
-                guiGraphics.drawString(this.font, "当前检测到:", x + 8, y + 100, C_LABEL, false);
-                guiGraphics.renderItem(ore, x + 10, y + 103);
-                guiGraphics.drawString(this.font, ore.getHoverName().getString(), x + 28, y + 106,
-                        0xFF202020, false);
-            } else {
-                guiGraphics.drawString(this.font, "当前检测到: 无", x + 8, y + 100, C_LABEL, false);
-            }
-        }
+    private Component modeName() {
+        return Component.translatable("pollution.extractor.mode." + Math.floorMod(this.menu.getMode(), 3));
+    }
+
+    private void drawStatusLine(GuiGraphics graphics, int x, int y) {
+        ItemStack ore = this.menu.getPendingOre();
+        Component label = this.menu.getMode() == 0
+                ? (ore.isEmpty() ? Component.translatable("pollution.extractor.searching") : ore.getHoverName())
+                : modeName();
+        // The menu renders the display stack; reserve its column and the two buttons.
+        graphics.drawString(this.font, this.font.substrByWidth(label, 99).getString(), x + 29, y + 106, C_LABEL, false);
     }
 
     private int modeColor(int mode) {
@@ -222,7 +215,7 @@ public class MineralExtractorScreen extends AbstractContainerScreen<MineralExtra
         }
     }
 
-    private void drawAspectBar(GuiGraphics guiGraphics, int x, int y, int amount, int color, String label) {
+    private void drawAspectBar(GuiGraphics guiGraphics, int x, int y, int amount, int color, Component label) {
         int max = MineralExtractorMenu.getMaxStock();
         int barWidth = 150;
         guiGraphics.drawString(this.font, label, x, y, C_LABEL, false);

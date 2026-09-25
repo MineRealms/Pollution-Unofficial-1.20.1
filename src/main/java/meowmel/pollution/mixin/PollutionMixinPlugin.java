@@ -9,14 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Keeps the JEI-targeting mixins of {@code pollution.mixins.json} inert when
- * JEI is not installed (dev runs intentionally load no JEI, see
- * {@code build.gradle}).
- *
- * <p>{@code shouldApplyMixin} is evaluated when a target class is loaded, which
- * for the JEI mixins happens long after Forge has built its mod list. The
- * lookup is still null-guarded and wrapped in a try/catch so an early call can
- * never take the launch down.</p>
+ * Logs compatibility mixin application. Optional JEI targets use pseudo mixins so
+ * clients without JEI do not load its classes. Development runs include JEI to exercise
+ * the supported API. Common GT hooks and the client Alfheim sky use the same config.
  */
 public final class PollutionMixinPlugin implements IMixinConfigPlugin {
 

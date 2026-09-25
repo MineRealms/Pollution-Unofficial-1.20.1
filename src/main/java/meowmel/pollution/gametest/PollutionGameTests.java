@@ -2,6 +2,7 @@ package meowmel.pollution.gametest;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.PollutionConfig;
 import meowmel.pollution.api.pollution.PollutionEngine;
 import meowmel.pollution.common.item.PackagedAuraNode;
 import meowmel.pollution.common.item.PollutionItems;
@@ -10,8 +11,11 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.gametest.GameTestHolder;
+import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 /**
  * GameTests of the Pollution port.
@@ -21,6 +25,7 @@ import net.minecraftforge.gametest.GameTestHolder;
  * {@code tools/gen_gametest_structure.py}.</p>
  */
 @GameTestHolder(Pollution.MOD_ID)
+@PrefixGameTestTemplate(false)
 public final class PollutionGameTests {
 
     private static final String[] MAGIC_MACHINES = {
@@ -33,7 +38,7 @@ public final class PollutionGameTests {
 
     private PollutionGameTests() {}
 
-    @GameTest(template = "pollution:platform", batch = "pollution")
+    @GameTest(template = "platform", batch = "pollution")
     public static void pollutionEngineRoundTrip(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
@@ -51,7 +56,42 @@ public final class PollutionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "pollution:platform", batch = "pollution")
+    @GameTest(template = "platform", batch = "pollution")
+    public static void pollutionEffectsApplyWithoutCadenceGap(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos pos = helper.absolutePos(new BlockPos(1, 2, 1));
+        ServerPlayer player = net.minecraftforge.common.util.FakePlayerFactory.get(level,
+                new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "pollution-test"));
+        player.setPos(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
+
+        try {
+            PollutionEngine.set(level, pos, PollutionConfig.EFFECT_THRESHOLD.get() + 1.0D);
+            PollutionEngine.applyPlayerEffects(player);
+
+            if (!player.hasEffect(MobEffects.CONFUSION) || !player.hasEffect(MobEffects.HUNGER)) {
+                helper.fail("pollution threshold did not apply confusion and hunger");
+            }
+            int confusionDuration = player.getEffect(MobEffects.CONFUSION).getDuration();
+            int hungerDuration = player.getEffect(MobEffects.HUNGER).getDuration();
+            if (confusionDuration <= 40 || hungerDuration <= 40) {
+                helper.fail("pollution effects do not outlast the 40-tick refresh interval");
+            }
+
+            PollutionEngine.set(level, pos, PollutionConfig.EFFECT_THRESHOLD.get() * 4.0D + 1.0D);
+            PollutionEngine.applyPlayerEffects(player);
+            if (!player.hasEffect(MobEffects.WEAKNESS)
+                    || !player.hasEffect(MobEffects.DIG_SLOWDOWN)
+                    || !player.hasEffect(MobEffects.BLINDNESS)) {
+                helper.fail("pollution gradient did not apply weakness, mining fatigue, and blindness");
+            }
+        } finally {
+            PollutionEngine.set(level, pos, 0.0D);
+            player.removeAllEffects();
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "platform", batch = "pollution")
     public static void magicMachinesRegistered(GameTestHelper helper) {
         for (String path : MAGIC_MACHINES) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, path);
@@ -62,7 +102,7 @@ public final class PollutionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "pollution:platform", batch = "pollution")
+    @GameTest(template = "platform", batch = "pollution")
     public static void packagedNodeNbtRoundTrip(GameTestHelper helper) {
         ItemStack stack = new ItemStack(PollutionItems.PACKAGED_AURA_NODE.get());
         stack.getOrCreateTag().putString(PackagedAuraNode.TAG_TIER, "Bright");
@@ -81,7 +121,7 @@ public final class PollutionGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "pollution:platform", batch = "pollution")
+    @GameTest(template = "platform", batch = "pollution")
     public static void magicCasingsRegistered(GameTestHelper helper) {
         for (String path : new String[]{"spell_prism_earth", "spell_prism_void", "beam_core_4",
                 "baminated_glass", "magic_battery_casing", "polytetrafluoroethylene_pipe"}) {

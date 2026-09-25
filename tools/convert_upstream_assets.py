@@ -55,7 +55,10 @@ def main() -> int:
             group = parts[1] if parts[1] in ("block", "item") else None
             if group is None:
                 continue
-            target = DEST / "models" / group / f"{flat(src.stem)}.json"
+            target = DEST / "models" / group / Path(*parts[2:-1]) / f"{flat(src.stem)}.json"
+            # Modern multipart/animation references are authored for the live portal.
+            if rel.as_posix() == "models/block/portal.json":
+                continue
             try:
                 data = json.loads(src.read_text(encoding="utf-8"))
             except json.JSONDecodeError:

@@ -1,0 +1,13 @@
+{
+  "values": [
+    "pollution:black_granite",
+    "pollution:limestone",
+    "pollution:komatiite",
+    "pollution:green_schist",
+    "pollution:blue_schist",
+    "pollution:quartzite",
+    "pollution:slate",
+    "pollution:shale",
+    "pollution:kimberlite"
+  ]
+}
