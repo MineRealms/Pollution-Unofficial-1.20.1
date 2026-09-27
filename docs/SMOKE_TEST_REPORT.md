@@ -8,6 +8,9 @@
 - Astral Sorcery common setup, registries, Pollution Astral machines and dynamic recipes loaded on the dedicated server.
 - Required GameTests: **35/35 passed**.
 - Existing development-environment warnings remain; no Pollution-specific startup failure occurred.
+- DEV client (`G:\MinecraftGames\Sunlit Valley(BaopuEdition)-DEV\.minecraft\versions\Society Sunlit Valley`): reached the main menu with Astral 1.20.1.0, TC4R 20721 and the rebuilt Pollution JAR.
+- The five Astral processing controllers have concrete marble/HPCA models; all 1,290 packaged Pollution models passed the model-reference cycle check.
+- Client evidence: `build/astral-client-menu.png` (local screenshot). This verifies startup and resource loading; no world was opened during this check.
 
 - date: 2026-09-25 13:34:31
 - server booted (`Done (`): yes

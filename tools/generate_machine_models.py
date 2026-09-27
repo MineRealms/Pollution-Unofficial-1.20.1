@@ -111,7 +111,16 @@ TIERED_MACHINES = {
 SOLAR_TIERS = [1, 2, 3]
 SOLAR_KINDS = [1, 2, 3, 4, 5, 6]
 
+ASTRAL_MULTIBLOCKS = {
+    "industrial_starlight_infuser": "ev",
+    "industrial_lightwell": "ev",
+    "celestial_observation_array": "luv",
+    "celestial_calibration_matrix": "luv",
+    "celestial_crystal_growth_array": "luv",
+}
+
 MULTIBLOCKS = {
+    **ASTRAL_MULTIBLOCKS,
     "magic_macerator": "hv",
     "magic_bender": "hv",
     "magic_centrifuge": "hv",
@@ -336,6 +345,11 @@ MULTIBLOCK_OVERLAYS = {
 MACHINE_OVERLAYS: dict[str, str] = {
     name: pollution(path) for name, path in MULTIBLOCK_OVERLAYS.items()
 }
+# The Astral controllers use the upstream marble casing and HPCA front panel.
+# Their concrete models must exist; a generated GT model referencing itself
+# causes infinite recursion during client model loading.
+MACHINE_OVERLAYS.update({name: "astralsorcery:block/marble_bricks" for name in ASTRAL_MULTIBLOCKS})
+HPCA_FRONT_MACHINES.update(ASTRAL_MULTIBLOCKS)
 
 # Optional per-face overrides (model key -> top/bottom texture). Solar plates
 # combine the tier OrientedOverlayRenderer ("machines/solar_<tier>", only
