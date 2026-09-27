@@ -490,7 +490,7 @@ public final class PollutionMachines {
                         .langValue("%s Vis Hatch".formatted(GTValues.VNF[tier]))
                         .rotationState(RotationState.ALL)
                         .abilities(POMultiblockAbility.VIS_HATCH)
-                        .simpleModel(model("vis_hatch_" + tierName(tier)))
+                        .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("vis_hatch_" + tierName(tier))))
                         .tooltips(
                                 Component.translatable("pollution.machine.vis_hatch.tooltip.capacity",
                                         tier * 2000),
@@ -507,7 +507,7 @@ public final class PollutionMachines {
                         .langValue("%s Infused Fluid Hatch".formatted(GTValues.VNF[tier]))
                         .rotationState(RotationState.ALL)
                         .abilities(POMultiblockAbility.INFUSED_FLUID_HATCH)
-                        .simpleModel(model("infused_fluid_hatch_" + tierName(tier)))
+                        .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("infused_fluid_hatch_" + tierName(tier))))
                         .tooltips(
                                 Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                         InfusedFluidHatchMachine.getTankCapacity(tier)),
@@ -521,7 +521,7 @@ public final class PollutionMachines {
                 .langValue("LV Tarot Hatch")
                 .rotationState(RotationState.ALL)
                 .abilities(POMultiblockAbility.TAROT_HATCH)
-                .simpleModel(model("tarot_hatch"))
+                .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("tarot_hatch")))
                 .tooltips(
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.1"),
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.2"),
@@ -534,7 +534,7 @@ public final class PollutionMachines {
                 .langValue("MV Astral Lens Hatch")
                 .rotationState(RotationState.ALL)
                 .abilities(POMultiblockAbility.ASTRAL_HATCH)
-                .simpleModel(model("astral_lens_hatch"))
+                .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("astral_lens_hatch")))
                 .register();
 
         ASTRAL_LENS_HATCH_ADVANCED = PollutionGTAddon.REGISTRATE
@@ -543,7 +543,7 @@ public final class PollutionMachines {
                 .langValue("LuV Astral Lens Hatch")
                 .rotationState(RotationState.ALL)
                 .abilities(POMultiblockAbility.ASTRAL_HATCH)
-                .simpleModel(model("astral_lens_hatch_advanced"))
+                .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("astral_lens_hatch_advanced")))
                 .register();
 
         FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
@@ -554,7 +554,7 @@ public final class PollutionMachines {
                         .langValue("%s Flux Muffler".formatted(GTValues.VNF[tier]))
                         .rotationState(RotationState.ALL)
                         .abilities(PartAbility.MUFFLER)
-                        .simpleModel(model("flux_muffler_" + tierName(tier)))
+                        .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model("flux_muffler_" + tierName(tier))))
                         .tooltips(
                                 Component.translatable("pollution.machine.flux_muffler.tooltip.recovery",
                                         Math.min((tier - 1) * 10, 100)),
@@ -681,7 +681,9 @@ public final class PollutionMachines {
                 .langValue("Infused Exchange")
                 .rotationState(RotationState.ALL)
                 .pattern(InfusedExchangeMachine::createPattern)
-                .simpleModel(model("infused_exchange"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("infused_exchange"))
+                .workableCasingModel(PollutionMachineAppearance.texture("infused_exchange"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         ESSENCE_SMELTER = PollutionGTAddon.REGISTRATE
@@ -689,7 +691,9 @@ public final class PollutionMachines {
                 .langValue("Essence Smelter")
                 .rotationState(RotationState.ALL)
                 .pattern(EssenceSmelterMachine::createPattern)
-                .simpleModel(model("essence_smelter"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("essence_smelter"))
+                .workableCasingModel(PollutionMachineAppearance.texture("essence_smelter"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         NODE_PRODUCER = PollutionGTAddon.REGISTRATE
@@ -697,7 +701,9 @@ public final class PollutionMachines {
                 .langValue("Node Producer")
                 .rotationState(RotationState.ALL)
                 .pattern(NodeProducerMachine::createPattern)
-                .simpleModel(model("node_producer"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("node_producer"))
+                .workableCasingModel(PollutionMachineAppearance.texture("node_producer"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.node_producer.tooltip.1"),
                         Component.translatable("pollution.machine.node_producer.tooltip.2"),
@@ -711,7 +717,9 @@ public final class PollutionMachines {
                 .langValue("Large Node Generator")
                 .rotationState(RotationState.ALL)
                 .pattern(LargeNodeGeneratorMachine::createPattern)
-                .simpleModel(model("large_node_generator"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("large_node_generator"))
+                .workableCasingModel(PollutionMachineAppearance.texture("large_node_generator"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         NODE_WASHER = PollutionGTAddon.REGISTRATE
@@ -719,7 +727,9 @@ public final class PollutionMachines {
                 .langValue("Node Washer")
                 .rotationState(RotationState.ALL)
                 .pattern(NodeWasherMachine::createPattern)
-                .simpleModel(model("node_washer"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("node_washer"))
+                .workableCasingModel(PollutionMachineAppearance.texture("node_washer"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.node_washer.tooltip.1"),
                         Component.translatable("pollution.machine.node_washer.tooltip.2"),
@@ -745,7 +755,9 @@ public final class PollutionMachines {
                 .langValue("Central Vis Tower")
                 .rotationState(RotationState.ALL)
                 .pattern(CentralVisTowerMachine::createPattern)
-                .simpleModel(model("central_vis_tower"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("central_vis_tower"))
+                .workableCasingModel(PollutionMachineAppearance.texture("central_vis_tower"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.central_vis_tower.tooltip.1"),
                         Component.translatable("pollution.machine.central_vis_tower.tooltip.2"),
@@ -758,7 +770,9 @@ public final class PollutionMachines {
                 .langValue("GT Essence Smelter")
                 .rotationState(RotationState.ALL)
                 .pattern(GtEssenceSmelterMachine::createPattern)
-                .simpleModel(model("gt_essence_smelter"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("gt_essence_smelter"))
+                .workableCasingModel(PollutionMachineAppearance.texture("gt_essence_smelter"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         ESSENCE_COLLECTOR = PollutionGTAddon.REGISTRATE
@@ -766,7 +780,9 @@ public final class PollutionMachines {
                 .langValue("Essence Collector")
                 .rotationState(RotationState.ALL)
                 .pattern(EssenceCollectorMachine::createPattern)
-                .simpleModel(model("essence_collector"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("essence_collector"))
+                .workableCasingModel(PollutionMachineAppearance.texture("essence_collector"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         INDUSTRIAL_INFUSION = magicMultiblock("industrial_infusion", "Industrial Infusion",
@@ -787,7 +803,9 @@ public final class PollutionMachines {
                 .langValue("Magic Battery")
                 .rotationState(RotationState.ALL)
                 .pattern(MagicBatteryMachine::createPattern)
-                .simpleModel(model("magic_battery"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("magic_battery"))
+                .workableCasingModel(PollutionMachineAppearance.texture("magic_battery"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/research_station"))
                 .register();
 
         MAGIC_LARGE_TURBINE = PollutionGTAddon.REGISTRATE
@@ -799,7 +817,9 @@ public final class PollutionMachines {
                 .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
                 .alwaysTryModifyRecipe(true)
                 .pattern(MagicLargeTurbineMachine::createPattern)
-                .simpleModel(model("magic_large_turbine"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("magic_large_turbine"))
+                .workableCasingModel(PollutionMachineAppearance.texture("magic_large_turbine"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.magic_large_turbine.tooltip.1"),
                         Component.translatable("pollution.machine.magic_large_turbine.tooltip.2"))
@@ -820,7 +840,9 @@ public final class PollutionMachines {
                 .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
                 .alwaysTryModifyRecipe(true)
                 .pattern(LargeManaTurbineMachine::createPattern)
-                .simpleModel(model("large_mana_turbine"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("large_mana_turbine"))
+                .workableCasingModel(PollutionMachineAppearance.texture("large_mana_turbine"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.large_mana_turbine.tooltip.1"),
                         Component.translatable("pollution.machine.large_mana_turbine.tooltip.2"))
@@ -835,7 +857,9 @@ public final class PollutionMachines {
                 .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
                 .alwaysTryModifyRecipe(true)
                 .pattern(MagicMegaTurbineMachine::createPattern)
-                .simpleModel(model("magic_mega_turbine"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("magic_mega_turbine"))
+                .workableCasingModel(PollutionMachineAppearance.texture("magic_mega_turbine"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         MANA_PLATE = PollutionGTAddon.REGISTRATE
@@ -843,7 +867,9 @@ public final class PollutionMachines {
                 .langValue("Mana Plate")
                 .rotationState(RotationState.ALL)
                 .pattern(ManaPlateMachine::createPattern)
-                .simpleModel(model("mana_plate"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("mana_plate"))
+                .workableCasingModel(PollutionMachineAppearance.texture("mana_plate"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.mana_plate.tooltip.1"),
                         Component.translatable("pollution.machine.mana_plate.tooltip.2"))
@@ -878,7 +904,9 @@ public final class PollutionMachines {
                 .langValue("Terra Gas Collector")
                 .rotationState(RotationState.ALL)
                 .pattern(BotGasCollectorMachine::createPattern)
-                .simpleModel(model("bot_gas_collector"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("bot_gas_collector"))
+                .workableCasingModel(PollutionMachineAppearance.texture("bot_gas_collector"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         ENDOFLAME_ARRAY = PollutionGTAddon.REGISTRATE
@@ -886,7 +914,9 @@ public final class PollutionMachines {
                 .langValue("Endoflame Magical Power Array")
                 .rotationState(RotationState.ALL)
                 .pattern(EndoflameArrayMachine::createPattern)
-                .simpleModel(model("endoflame_array"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("endoflame_array"))
+                .workableCasingModel(PollutionMachineAppearance.texture("endoflame_array"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.endoflame_array.tooltip.1"),
                         Component.translatable("pollution.machine.endoflame_array.tooltip.2"))
@@ -906,7 +936,9 @@ public final class PollutionMachines {
                 .recipeModifier(com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine::recipeModifier)
                 .alwaysTryModifyRecipe(true)
                 .pattern(meowmel.pollution.common.machine.multiblock.magic.MegaManaRotorTurbineMachine::createPattern)
-                .simpleModel(model("mega_mana_turbine"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("mega_mana_turbine"))
+                .workableCasingModel(PollutionMachineAppearance.texture("mega_mana_turbine"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
 
         MEGA_MANA_TURBINE = PollutionGTAddon.REGISTRATE
@@ -916,7 +948,9 @@ public final class PollutionMachines {
                 .rotationState(RotationState.ALL)
                 .recipeTypes(BotaniaRecipeMaps.MANA_TO_EU)
                 .pattern(MegaManaTurbineMachine::createPattern)
-                .simpleModel(model("mega_mana_turbine"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("mega_mana_turbine"))
+                .workableCasingModel(PollutionMachineAppearance.texture("mega_mana_turbine"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.mega_mana_turbine.tooltip.1"),
                         Component.translatable("pollution.machine.mega_mana_turbine.tooltip.2"),
@@ -930,7 +964,9 @@ public final class PollutionMachines {
                 .recipeTypes(BotaniaRecipeMaps.DAN_DE_LIFE_ON)
                 .pattern(MultiDanDeLifeOnMachine::createPattern)
                 .renderMultiblockXEIPreview(false)
-                .simpleModel(model("pollution_multi_dan_de_life_on"))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing("pollution_multi_dan_de_life_on"))
+                .workableCasingModel(PollutionMachineAppearance.texture("pollution_multi_dan_de_life_on"),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .tooltips(
                         Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.1"),
                         Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.2"))
@@ -938,28 +974,36 @@ public final class PollutionMachines {
 
         INDUSTRIAL_STARLIGHT_INFUSER = magicMultiblock("industrial_starlight_infuser", "Industrial Starlight Infuser",
                 IndustrialStarlightInfuserMachine::new, IndustrialStarlightInfuserMachine::createPattern,
+                new Component[] { Component.translatable("pollution.machine.industrial_starlight_infuser.pool") },
                 AstralRecipeMaps.INDUSTRIAL_STARLIGHT_INFUSER_RECIPES);
         INDUSTRIAL_LIGHTWELL = magicMultiblock("industrial_lightwell", "Industrial Lightwell",
                 IndustrialLightwellMachine::new, IndustrialLightwellMachine::createPattern,
+                new Component[] { Component.translatable("pollution.machine.industrial_lightwell.native") },
                 AstralRecipeMaps.INDUSTRIAL_LIGHTWELL_RECIPES);
         CELESTIAL_OBSERVATION_ARRAY = magicMultiblock("celestial_observation_array", "Celestial Observation Array",
                 CelestialObservationArrayMachine::new, CelestialObservationArrayMachine::createPattern,
+                new Component[] { Component.translatable("pollution.machine.astral.processing") },
                 AstralRecipeMaps.CELESTIAL_OBSERVATION_RECIPES);
         CELESTIAL_CALIBRATION_MATRIX = magicMultiblock("celestial_calibration_matrix", "Celestial Calibration Matrix",
                 CelestialCalibrationMatrixMachine::new, CelestialCalibrationMatrixMachine::createPattern,
+                new Component[] { Component.translatable("pollution.machine.astral.processing") },
                 AstralRecipeMaps.CELESTIAL_CALIBRATION_RECIPES);
         CELESTIAL_CRYSTAL_GROWTH_ARRAY = magicMultiblock("celestial_crystal_growth_array", "Celestial Crystal Growth Array",
                 CelestialCrystalGrowthArrayMachine::new, CelestialCrystalGrowthArrayMachine::createPattern,
+                new Component[] { Component.translatable("pollution.machine.astral.processing") },
                 AstralRecipeMaps.CELESTIAL_CRYSTAL_GROWTH_RECIPES);
         CONSTELLATION_TOWER = new MultiblockMachineDefinition[ConstellationTowerDefinition.values().length];
         for (ConstellationTowerDefinition tower : ConstellationTowerDefinition.values()) {
             final ConstellationTowerDefinition identity = tower;
             CONSTELLATION_TOWER[tower.ordinal()] = PollutionGTAddon.REGISTRATE
                     .multiblock("constellation_tower_" + tower.getId(), holder -> new AstralConstellationTowerMachine(holder, identity))
+                    .tier(GTValues.UHV)
                     .langValue("Constellation Tower: " + tower.getEnglishName())
                     .rotationState(RotationState.ALL)
                     .pattern(AstralConstellationTowerMachine::createPattern)
-                    .simpleModel(model("constellation_tower"))
+                    .appearanceBlock(() -> PollutionMachineAppearance.casing("constellation_tower"))
+                    .workableCasingModel(PollutionMachineAppearance.texture("constellation_tower"),
+                            ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                     .register();
         }
     }
@@ -984,7 +1028,7 @@ public final class PollutionMachines {
                         .abilities(isExport
                                 ? POMultiblockAbility.MANA_OUTPUT_HATCH
                                 : POMultiblockAbility.MANA_INPUT_HATCH)
-                        .simpleModel(model(name + "_" + tierName(tier)))
+                        .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model(name + "_" + tierName(tier))))
                         .tooltips(manaHatchTooltips(tier, amperage, isExport, wireless))
                         .register(),
                 MANA_HATCH_TIERS);
@@ -1040,7 +1084,7 @@ public final class PollutionMachines {
                 .abilities(isExport
                         ? POMultiblockAbility.MANA_OUTPUT_POOL
                         : POMultiblockAbility.MANA_INPUT_POOL)
-                .simpleModel(model(name))
+                .model(com.gregtechceu.gtceu.common.data.models.GTMachineModels.createBasicReplaceableTextureMachineModel(model(name)))
                 .tooltips(tooltips)
                 .register();
     }
@@ -1052,7 +1096,8 @@ public final class PollutionMachines {
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(GTRecipeTypes.FUSION_RECIPES, PORecipeMaps.NODE_MAGIC_FUSION_RECIPES)
-                .recipeModifiers(meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
+                .recipeModifiers(meowmel.pollution.common.machine.multiblock.astral.AstralRecipeOutputs::recipeModifier,
+                        meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
                         meowmel.pollution.common.machine.multiblock.MagicMultiblockController::parallelModifier)
                 .alwaysTryModifyRecipe(true)
                 .tooltips(
@@ -1060,7 +1105,9 @@ public final class PollutionMachines {
                         Component.translatable("pollution.machine.node_fusion_reactor.tooltip.2"),
                         Component.translatable("pollution.machine.node_fusion_reactor.tooltip.3"))
                 .pattern(NodeFusionReactorMachine::createPattern)
-                .simpleModel(model(name))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing(name))
+                .workableCasingModel(PollutionMachineAppearance.texture(name),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/fusion_reactor"))
                 .register();
     }
 
@@ -1079,10 +1126,18 @@ public final class PollutionMachines {
             Component[] tooltips, GTRecipeType... recipeTypes) {
         return PollutionGTAddon.REGISTRATE
                 .multiblock(name, factory)
+                .tier(switch (name) {
+                    case "industrial_starlight_infuser", "industrial_lightwell" -> GTValues.IV;
+                    case "celestial_observation_array" -> GTValues.LuV;
+                    case "celestial_calibration_matrix" -> GTValues.ZPM;
+                    case "celestial_crystal_growth_array" -> GTValues.UV;
+                    default -> GTValues.ULV;
+                })
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
                 .recipeTypes(recipeTypes)
-                .recipeModifiers(meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
+                .recipeModifiers(meowmel.pollution.common.machine.multiblock.astral.AstralRecipeOutputs::recipeModifier,
+                        meowmel.pollution.common.machine.multiblock.MagicMultiblockController::recipeModifier,
                         meowmel.pollution.common.machine.multiblock.MagicMultiblockController::parallelModifier)
                 .alwaysTryModifyRecipe(true)
                 .tooltips(tooltips)
@@ -1092,7 +1147,9 @@ public final class PollutionMachines {
                     case "bot_distillery" -> meowmel.pollution.common.machine.multiblock.botania.BotDistilleryPatterns.createShapes(definition);
                     default -> java.util.List.of();
                 })
-                .simpleModel(model(name))
+                .appearanceBlock(() -> PollutionMachineAppearance.casing(name))
+                .workableCasingModel(PollutionMachineAppearance.texture(name),
+                        ResourceLocation.fromNamespaceAndPath("gtceu", "block/multiblock/hpca"))
                 .register();
     }
 
@@ -1101,7 +1158,9 @@ public final class PollutionMachines {
     }
 
     private static ResourceLocation model(String key) {
-        return ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "block/machine/" + key);
+        // Keep the source geometry separate from GT's generated machine wrapper.
+        // Sharing the path masks the wrapper (and its formed texture metadata).
+        return ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "block/machine/base/" + key);
     }
 
     private PollutionMachines() {}

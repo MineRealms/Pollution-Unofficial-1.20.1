@@ -4,7 +4,7 @@
   "machine": "pollution:zpm_vis_provider",
   "variants": {
     "": {
-      "model": "pollution:block/machine/vis_provider_zpm"
+      "model": "pollution:block/machine/base/vis_provider_zpm"
     }
   }
 }

@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:mana_pool_input_hatch_mythic",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/mana_pool_input_hatch_mythic"
+      "model": "pollution:block/machine/base/mana_pool_input_hatch_mythic"
     }
   }
 }

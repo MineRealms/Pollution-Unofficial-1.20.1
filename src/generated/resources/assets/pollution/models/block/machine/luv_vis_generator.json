@@ -4,7 +4,7 @@
   "machine": "pollution:luv_vis_generator",
   "variants": {
     "": {
-      "model": "pollution:block/machine/vis_generator_luv"
+      "model": "pollution:block/machine/base/vis_generator_luv"
     }
   }
 }

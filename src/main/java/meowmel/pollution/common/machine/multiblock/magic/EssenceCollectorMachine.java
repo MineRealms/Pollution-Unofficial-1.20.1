@@ -280,11 +280,11 @@ public class EssenceCollectorMachine extends AbstractDisplayMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Heating Coil Level: " + getCoilLevel()));
+            textList.add(Component.translatable("pollution.ui.coil_level", getCoilLevel()));
             Material focus = focusedMaterial();
-            textList.add(Component.literal("Focus Mode: " + (isFocused
-                    ? "On (" + (focus == null ? focusedChannel : focus.getLocalizedName().getString()) + ")"
-                    : "Off")));
+            textList.add(Component.translatable("pollution.ui.essence_focus", isFocused
+                    ? Component.translatable("pollution.ui.enabled_channel", focus == null ? Component.literal(focusedChannel) : focus.getLocalizedName())
+                    : Component.translatable("pollution.ui.no")));
         }
     }
 

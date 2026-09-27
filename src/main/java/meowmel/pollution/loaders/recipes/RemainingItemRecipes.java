@@ -247,70 +247,7 @@ public final class RemainingItemRecipes {
         ItemStack starryRune = SafeItems.of(PollutionItems.STARRY_RUNE);
         ItemStack lens = SafeItems.of(PollutionItems.SILVERED_GLASS_LENS, 2);
 
-        // 晶种：HV 魔导组装机
-        if (!seed.isEmpty()) {
-            FluidStack crystal = fluid(PollutionMaterials.InfusedCrystal, 288);
-            FluidStack aura = fluid(PollutionMaterials.InfusedAura, 288);
-            if (!crystal.isEmpty() && !aura.isEmpty()) {
-                GTRecipeBuilder.of(id("crystal/rock_crystal_seed"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                        .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.Amethyst, 2))
-                        .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.CertusQuartz, 2))
-                        .inputItems(dust(PollutionMaterials.Salisundus, 2))
-                        .inputFluids(crystal)
-                        .inputFluids(aura)
-                        .outputItems(seed)
-                        .duration(200)
-                        .EUt(GTValues.VA[GTValues.HV])
-                        .save(provider);
-            } else {
-                warn("crystal/rock_crystal_seed");
-            }
-        }
-
-        // 培养胚：EV 魔导组装机
-        if (!seed.isEmpty() && !embryo.isEmpty()) {
-            FluidStack light = fluid(PollutionMaterials.InfusedLight, 1000);
-            FluidStack life = fluid(PollutionMaterials.InfusedLife, 500);
-            FluidStack aura = fluid(PollutionMaterials.InfusedAura, 500);
-            if (!light.isEmpty() && !life.isEmpty() && !aura.isEmpty()) {
-                GTRecipeBuilder.of(id("crystal/celestial_crystal_embryo"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                        .inputItems(seed)
-                        .inputItems(crystal("order", 2))
-                        .inputFluids(light)
-                        .inputFluids(life)
-                        .inputFluids(aura)
-                        .outputItems(embryo)
-                        .duration(600)
-                        .EUt(GTValues.VA[GTValues.EV])
-                        .save(provider);
-            } else {
-                warn("crystal/celestial_crystal_embryo");
-            }
-        }
-
-        // 培育水晶：IV 魔导组装机
-        if (!embryo.isEmpty() && !cultivated.isEmpty() && !starryRune.isEmpty()) {
-            FluidStack crystal = fluid(PollutionMaterials.InfusedCrystal, 1000);
-            FluidStack aura = fluid(PollutionMaterials.InfusedAura, 1000);
-            FluidStack light = fluid(PollutionMaterials.InfusedLight, 500);
-            if (!crystal.isEmpty() && !aura.isEmpty() && !light.isEmpty()) {
-                GTRecipeBuilder.of(id("crystal/cultivated_crystal"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                        .inputItems(embryo)
-                        .inputItems(crystal("order", 4))
-                        .inputItems(ChemicalHelper.get(TagPrefix.gem, GTMaterials.Opal, 2))
-                        .inputItems(starryRune)
-                        .inputFluids(crystal)
-                        .inputFluids(aura)
-                        .inputFluids(light)
-                        .outputItems(cultivated)
-                        .duration(800)
-                        .EUt(GTValues.VA[GTValues.IV])
-                        .save(provider);
-            } else {
-                warn("crystal/cultivated_crystal");
-            }
-        }
-
+        // Native crystal lineage is registered by AstralIntegrationRecipes.
         // 调谐晶圆：IV 魔导组装机
         if (!cultivated.isEmpty() && !wafer.isEmpty() && !lens.isEmpty()) {
             FluidStack crystal = fluid(PollutionMaterials.InfusedCrystal, 1000);

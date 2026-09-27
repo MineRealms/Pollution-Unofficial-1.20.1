@@ -4,7 +4,7 @@
   "machine": "pollution:hv_solar_plate_6",
   "variants": {
     "": {
-      "model": "pollution:block/machine/solar_plate_3_6"
+      "model": "pollution:block/machine/base/solar_plate_3_6"
     }
   }
 }

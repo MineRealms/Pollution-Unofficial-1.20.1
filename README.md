@@ -5,8 +5,10 @@ Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
 污染、源质、魔力机器、多方块、世界生成和相关联动适配到现代 Forge API。
 
 基础移植已完成。Astral Sorcery（星辉魔法）1.20.1 端已接入提供端、透镜仓、
-五类星辉处理机、星座塔和 Starstream 供能；后三台处理机的产物 NBT 和透镜仓制造配方
-仍待补全，尚不能视为完整生存流程。Rosetta 实机验证见
+五类星辉处理机、星座塔和 Starstream 供能；星辉机器/仓室制造、十六星座加工、
+晶体属性继承和原生注魔/集光配方已补齐。多方块新增中文状态、星座面板、
+成型仓室外壳匹配及连接纹理，详见
+[`星辉生存与界面说明`](docs/ASTRAL_SURVIVAL_AND_UI.md)。此前 Rosetta 实机验证见
 [`docs/ASTRAL_ROSETTA_TEST.md`](docs/ASTRAL_ROSETTA_TEST.md)。血魔法仍按范围排除。Astral 的开发 JAR
 放在 `local-repo/local/astral/astralsorcery/1.20.1.0/`，不提交到 Git，需要本地构建时准备。
 
@@ -17,14 +19,22 @@ Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
 - GregTech CEu Modern 7.5.3
 - Thaumcraft 4R、Forbidden Magic、Tainted Magic、Thaumic Tinkerer：0.1.0-20721
 - Thaumic Energistics：0.1.0-20711，仅 compile-only
-- JEI 15.56.0.205
+- JEI 15.62.0.216（与本地 Astral 端一致）
 - KubeJS 2001.6.5-build.16
 - Botania、AE2、Curios、TerraBlender、Patchouli、Guideme 等依赖版本以
   `gradle.properties` 为准
 
 本地 TC4R 开发工件不进入仓库，放置方式见 [`local-repo/README.md`](local-repo/README.md)。
 
-## 本轮 TC4R 20721 更新
+## 星辉玩法与界面更新
+
+- 五类星辉机器及 JEI 分类、两级透镜仓、十六座星座塔补齐中文。
+- 星座观测、校准和生长各提供十六星座配方；晶体培育保留原始属性和谱系，校准要求光学品质至少 70%。
+- 工业注魔器/集光井跟随 Astral 原生数据包配方；支持输入属性继承及不消耗的集光催化剂。
+- GTM 状态界面可换行，星座页签显示实时增幅。成型仓室匹配机器外壳，55 套已有连接纹理启用。
+- 星座塔目前使用本端星流结构；上游大型仪式塔及北斗增幅尚未复刻。
+
+## TC4R 20721 更新
 
 - Thaumcraft 4R、Forbidden Magic、Tainted Magic 和 Thaumic Tinkerer 已从 20719 升到 20721。
 - 20721 新增玩家研究知识视图 API，并调整首次发现要素的奖励和研究完成 Warp 行为；本模组没有调用受影响的发放 API，现有直接调用签名保持兼容，无需改写适配代码。
@@ -66,6 +76,10 @@ DEV 客户端依赖包的来源、替换规则与版本说明见 [`docs/DEV_MODS
 首次构建要求 JDK 17、TC4R 本地开发 jar，以及访问 GTCEu、JEI、KubeJS 等 Maven 仓库。
 
 ## 最近验收
+
+2026-09-27 星辉/界面回归：43/43 项 Forge GameTest 通过，1277 条配方通过原料与槽位检查；
+新增实际加工验证注魔 NBT、堵输出、集光催化剂和完整晶体谱系。
+资源审计覆盖 1361 个模型、55 套连接纹理和 1246 个中英文键。
 
 2026-09-25 的最终回归结果：
 

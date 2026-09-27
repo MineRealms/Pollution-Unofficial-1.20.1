@@ -4,7 +4,7 @@
   "machine": "pollution:source_charge",
   "variants": {
     "": {
-      "model": "pollution:block/machine/magic_energy_absorber_lv"
+      "model": "pollution:block/machine/base/magic_energy_absorber_lv"
     }
   }
 }

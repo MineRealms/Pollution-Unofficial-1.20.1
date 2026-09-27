@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:hv_mana_input_hatch_16a",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/mana_input_hatch_16a_hv"
+      "model": "pollution:block/machine/base/mana_input_hatch_16a_hv"
     }
   }
 }

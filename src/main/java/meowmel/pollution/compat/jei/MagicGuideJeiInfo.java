@@ -11,9 +11,8 @@ import java.util.List;
 /**
  * Item information pages for the four static handbook pages from 1.12.
  *
- * <p>They are intentionally JEI item descriptions rather than executable GT
- * recipes: the celestial machines and Astral recipe maps are not part of the
- * 1.20.1 port. The final line on every celestial page says so explicitly.</p>
+ * <p>These item descriptions supplement the executable GT recipes and explain
+ * crystal lineage, constellation wafers and tarot authorization.</p>
  */
 public final class MagicGuideJeiInfo {
 
@@ -21,11 +20,11 @@ public final class MagicGuideJeiInfo {
 
     public static void register(IRecipeRegistration registration) {
         add(registration, List.of(PollutionItems.ROCK_CRYSTAL_SEED.asStack()),
-                "seed", 6);
+                "seed", 7);
         add(registration, List.of(PollutionItems.CELESTIAL_CRYSTAL_EMBRYO.asStack()),
-                "embryo", 7);
+                "embryo", 8);
         add(registration, List.of(PollutionItems.CONSTELLATION_DATA_WAFER.asStack()),
-                "wafer", 20);
+                "wafer", 22);
         add(registration, tarotStacks(), "tarot", 27);
     }
 

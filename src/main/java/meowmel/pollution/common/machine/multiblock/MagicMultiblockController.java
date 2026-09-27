@@ -32,7 +32,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import meowmel.pollution.api.amplification.MagicJeiHintResolver;
@@ -47,7 +46,6 @@ import meowmel.pollution.api.capability.ManaHandlerList;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.recipes.properties.AstralCondition;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
-import meowmel.pollution.common.gui.MachineGuiWidgets;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -80,9 +78,8 @@ import java.util.Set;
  * formation, and the recipe gate checks them exactly like upstream
  * {@code checkMagicRequirements}. The astral lens hatch
  * ({@link IAstralHatch}) is validated against the recipe's
- * {@link AstralCondition}. Life essence and astral have no hatch machine in the
- * port yet, so the lookup simply finds none and the recipe fails with the
- * generic hatch failure message instead of crashing. The tarot hatch is handed
+ * {@link AstralCondition}. Life essence remains outside this port's scope.
+ * The tarot hatch is handed
  * to the amplification engine, but its bonuses still require a calibrated
  * astral wafer (upstream gating).</p>
  *
@@ -90,8 +87,8 @@ import java.util.Set;
  * {@link IDisplayUIMachine} following GregTech's
  * {@code WorkableElectricMultiblockMachine}: a display panel with the working
  * status, energy usage, machine mode, parallels, progress and output lines,
- * plus energy / vis / infused-fluid bars. Every magic multiblock inherits this
- * screen, and the formed parts are exposed as fancy side tabs.</p>
+ * with wrapped localized text. Every magic multiblock inherits this screen;
+ * the constellation panel and formed parts are exposed as fancy side tabs.</p>
  */
 public abstract class MagicMultiblockController extends WorkableMultiblockMachine
         implements IFancyUIMachine, IDisplayUIMachine, IOverclockMachine, ITieredMachine {
@@ -511,24 +508,23 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(218, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 218, 208));
+        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
     }
 
     @Override
     public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 210, 125);
-        var screen = new DraggableScrollableWidgetGroup(4, 4, 138, 104);
+        var group = new WidgetGroup(0, 0, 190, 125);
+        var screen = new DraggableScrollableWidgetGroup(4, 4, 182, 117);
         screen.setBackground(getScreenTexture());
-        screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
-        screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .textSupplier(isRemote() ? null : this::addDisplayText)
-                .setMaxWidthLimit(128)
+        java.util.function.Consumer<List<Component>> display = lines -> {
+            lines.add(Component.translatable(getBlockState().getBlock().getDescriptionId()));
+            addDisplayText(lines);
+        };
+        screen.addWidget(new ComponentPanelWidget(4, 5, display)
+                .textSupplier(isRemote() ? null : display)
+                .setMaxWidthLimit(174)
                 .clickHandler(this::handleDisplayClick));
         group.addWidget(screen);
-        group.addWidget(MachineGuiWidgets.progressBar(recipeLogic, 4, 110, 138, 11));
-        group.addWidget(MachineGuiWidgets.fractionBar(this::getEnergyFill, 146, 4, 18, 117));
-        group.addWidget(MachineGuiWidgets.fractionBar(this::getVisFill, 166, 4, 18, 117));
-        group.addWidget(MachineGuiWidgets.fluidBar(this::getInfusedFluidFill, 186, 4, 18, 117));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
@@ -555,24 +551,25 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
                 .addOutputLines(recipeLogic.getLastRecipe());
 
         if (isFormed()) {
-            textList.add(Component.literal("Vis: " + getVisStore() + " / " + getVisCapacity()));
+            if (visHatch != null) textList.add(Component.translatable("pollution.ui.vis", getVisStore(), getVisCapacity()));
             if (infusedFluidHatch != null) {
                 FluidStack stored = infusedFluidHatch.tank.getFluidInTank(0);
-                String fluidName = stored.isEmpty() ? "-" : stored.getDisplayName().getString();
-                textList.add(Component.literal("Infused Fluid: " + fluidName + " " + stored.getAmount() + " / "
-                        + infusedFluidHatch.tank.getTankCapacity(0)));
+                Component fluidName = stored.isEmpty() ? Component.literal("-") : stored.getDisplayName();
+                textList.add(Component.translatable("pollution.ui.infused", fluidName, stored.getAmount(),
+                        infusedFluidHatch.tank.getTankCapacity(0)));
             }
             if (!manaHandler.isEmpty()) {
                 textList.add(Component.translatable("pollution.machine.mana_plate.tier",
                         manaHandler.getTier(), getMana(), getMaxMana()));
             }
             if (bloodMagicHatch != null) {
-                textList.add(Component.literal("Life Essence: " + bloodMagicHatch.getLifeEssence()
-                        + " / " + bloodMagicHatch.getLifeEssenceCapacity()));
+                textList.add(Component.translatable("pollution.ui.life", bloodMagicHatch.getLifeEssence(),
+                        bloodMagicHatch.getLifeEssenceCapacity()));
             }
             if (astralLensHatch != null) {
                 String constellation = astralLensHatch.getFocusedConstellation();
-                textList.add(Component.literal("Astral Focus: " + (constellation.isEmpty() ? "-" : constellation)));
+                textList.add(Component.translatable("pollution.ui.focus", constellation.isEmpty() ? Component.literal("-")
+                        : Component.translatable("astralsorcery.constellation." + constellation)));
             }
             if (hasCoil()) {
                 textList.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
@@ -589,7 +586,12 @@ public abstract class MagicMultiblockController extends WorkableMultiblockMachin
 
     @Override
     public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast).toList();
+        List<IFancyUIProvider> pages = new ArrayList<>();
+        if (net.minecraftforge.fml.ModList.get().isLoaded("astralsorcery")) {
+            pages.add(new meowmel.pollution.common.gui.AstralConstellationPage(this));
+        }
+        getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast).forEach(pages::add);
+        return pages;
     }
 
     @Override

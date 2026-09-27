@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:uhv_wireless_mana_output_hatch_1a",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/wireless_mana_output_hatch_1a_uhv"
+      "model": "pollution:block/machine/base/wireless_mana_output_hatch_1a_uhv"
     }
   }
 }

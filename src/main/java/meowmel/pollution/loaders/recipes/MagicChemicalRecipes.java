@@ -746,16 +746,22 @@ public final class MagicChemicalRecipes {
             FluidStack saltWater = fluid(GTMaterials.SaltWater, 16000);
             FluidStack bromine = fluid(GTMaterials.Bromine, 100);
             FluidStack iodine = fluid(GTMaterials.Iodine, 10);
-            if (saltWater != null && bromine != null && iodine != null) {
-                GTRecipeBuilder.of(id("seawater_bromine"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
+            if (saltWater != null && bromine != null) {
+                var extraction = GTRecipeBuilder.of(id("seawater_bromine"), PORecipeMaps.MAGIC_CHEMICAL_REACTOR_RECIPES)
                         .notConsumable(stone1.copy())
                         .inputFluids(saltWater)
                         .outputFluids(bromine)
-                        .outputFluids(iodine)
                         .outputItems(ChemicalHelper.get(TagPrefix.dust, GTMaterials.Salt, 16))
                         .duration(120)
-                        .EUt(GTValues.VA[GTValues.EV])
-                        .save(provider);
+                        .EUt(GTValues.VA[GTValues.EV]);
+                if (iodine != null) {
+                    extraction.outputFluids(iodine);
+                } else {
+                    // Modern GT registers solid iodine. Preserve the trace yield:
+                    // 10 mB of a chemical equals a 1% chance of one dust (1000 mB).
+                    extraction.chancedOutput(TagPrefix.dust, GTMaterials.Iodine, 1, 100, 0);
+                }
+                extraction.save(provider);
             } else {
                 Pollution.LOGGER.warn("Skipping magic_chemical/seawater_bromine: a required fluid is missing");
             }

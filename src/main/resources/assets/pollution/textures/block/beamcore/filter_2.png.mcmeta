@@ -1,14 +1,5 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "BLOOM",
-        "gregtech": true,
-        "textures": [
-            "gregtech:blocks/beamcore/filter_2_ctm"
-        ],
-        "extra": {
-            "connect_inside": true
-        }
-    }
+  "ldlib": {
+    "connection": "pollution:block/beamcore/filter_2_ctm"
+  }
 }

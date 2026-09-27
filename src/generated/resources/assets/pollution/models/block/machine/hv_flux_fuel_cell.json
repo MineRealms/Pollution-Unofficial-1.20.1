@@ -4,7 +4,7 @@
   "machine": "pollution:hv_flux_fuel_cell",
   "variants": {
     "": {
-      "model": "pollution:block/machine/flux_fuel_cell_hv"
+      "model": "pollution:block/machine/base/flux_fuel_cell_hv"
     }
   }
 }

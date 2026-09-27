@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:mv_flux_muffler",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/flux_muffler_mv"
+      "model": "pollution:block/machine/base/flux_muffler_mv"
     }
   }
 }

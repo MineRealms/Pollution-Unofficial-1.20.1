@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Generates placeholder machine models for the Pollution port.
+"""Generates base geometry for independent machines and multiblock parts.
+
+The generated GT wrapper belongs at block/machine/<id>; these source models
+live under block/machine/base/<id> so they cannot mask that wrapper. Current
+multiblock controllers use PollutionMachineAppearance and GT datagen directly;
+the historical controller entries below are retained as reference assets.
 
 GregTech's datagen-time ExistingFileHelper does not see assets inside the GTCEu
 jar, so addon machines cannot use GT's `tieredHullModel`/`simpleGeneratorModel`
@@ -65,7 +70,7 @@ import json
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MODEL_DIR = PROJECT_ROOT / "src" / "main" / "resources" / "assets" / "pollution" / "models" / "block" / "machine"
+MODEL_DIR = PROJECT_ROOT / "src" / "main" / "resources" / "assets" / "pollution" / "models" / "block" / "machine" / "base"
 
 TIER_NAMES = {
     1: "lv",
@@ -398,8 +403,10 @@ def machine_model(key: str, casing_tier: str) -> dict:
     hpca_front = key in HPCA_FRONT_MACHINES
     front = HPCA_FRONT if hpca_front else overlay
     front_emissive = HPCA_FRONT_EMISSIVE if hpca_front else emissive
+    is_part = any(marker in key for marker in ("vis_hatch", "infused_fluid_hatch", "mana_input_hatch",
+                  "mana_output_hatch", "mana_pool_", "tarot_hatch", "astral_lens_hatch", "flux_muffler"))
     return {
-        "parent": "gtceu:block/machine/template/generator_machine",
+        "parent": "gtceu:block/machine/template/sided/sided" if is_part else "gtceu:block/machine/template/generator_machine",
         "textures": {
             "bottom": f"{casing}/bottom",
             "top": f"{casing}/top",

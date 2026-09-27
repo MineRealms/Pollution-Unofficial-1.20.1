@@ -4,7 +4,7 @@
   "machine": "pollution:iv_flux_scrubber",
   "variants": {
     "": {
-      "model": "pollution:block/machine/flux_scrubber_iv"
+      "model": "pollution:block/machine/base/flux_scrubber_iv"
     }
   }
 }

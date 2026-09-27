@@ -1,14 +1,5 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "CTM",
-        "layer": "BLOOM",
-        "gregtech": true,
-        "textures": [
-            "gregtech:blocks/glass/caminated_glass_ctm"
-        ],
-        "extra": {
-            "connect_inside": true
-        }
-    }
+  "ldlib": {
+    "connection": "pollution:block/glass/caminated_glass_ctm"
+  }
 }

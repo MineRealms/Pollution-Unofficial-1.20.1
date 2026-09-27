@@ -4,7 +4,7 @@
   "machine": "pollution:lv_solar_plate_2",
   "variants": {
     "": {
-      "model": "pollution:block/machine/solar_plate_1_2"
+      "model": "pollution:block/machine/base/solar_plate_1_2"
     }
   }
 }

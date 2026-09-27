@@ -130,7 +130,8 @@ public class AstralProcessingMachine extends MagicMultiblockController {
                 .where('C', casing(AstralRecipeMaps.CELESTIAL_CRYSTAL_GROWTH_RECIPES))
                 .where('R', Predicates.blocks(BlocksAS.MARBLE_RUNED.get()))
                 .where('G', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))
-                .where('T', Predicates.blocks(BlocksAS.TRANSLUCENT_BLOCK.get()))
+                // Astral's translucent_block is a temporary block without an obtainable item in 1.20.
+                .where('T', Predicates.blocks(PollutionMagicBlocks.LAMINATED_GLASS.get()))
                 .where('L', lens()).where('#', Predicates.air()).build();
     }
 }

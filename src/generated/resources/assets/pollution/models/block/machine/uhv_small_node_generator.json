@@ -4,7 +4,7 @@
   "machine": "pollution:uhv_small_node_generator",
   "variants": {
     "": {
-      "model": "pollution:block/machine/vis_provider_uhv"
+      "model": "pollution:block/machine/base/vis_provider_uhv"
     }
   }
 }

@@ -120,7 +120,9 @@ public final class AstralCrystalNbtHelper {
         CompoundTag embryoData = getTag(embryo);
         CompoundTag stored = embryoData.getCompound(SOURCE);
         if (stored.isEmpty()) return ItemStack.EMPTY;
-        ItemStack nativeCrystal = ItemStack.of(stored);
+        // ItemStack.of retains its nested tag: cultivation must not mutate the
+        // embryo's source NBT while upgrading the independently stored crystal.
+        ItemStack nativeCrystal = ItemStack.of(stored.copy());
         if (!isEligibleRockCrystal(nativeCrystal)) return ItemStack.EMPTY;
         CrystalAttributes attributes = CrystalAttributes.getCrystalAttributes(nativeCrystal);
         if (attributes == null) return ItemStack.EMPTY;
@@ -182,7 +184,7 @@ public final class AstralCrystalNbtHelper {
     /** Convenience view of the preserved native crystal as an item stack; empty when absent. */
     public static ItemStack getCultivatedNativeCrystal(ItemStack stack) {
         CompoundTag nativeTag = getCultivatedProperties(stack);
-        return nativeTag.isEmpty() ? ItemStack.EMPTY : ItemStack.of(nativeTag);
+        return nativeTag.isEmpty() ? ItemStack.EMPTY : ItemStack.of(nativeTag.copy());
     }
 
     public static String getCultivationConstellation(ItemStack stack) {

@@ -4,7 +4,7 @@
   "machine": "pollution:hv_vis_generator",
   "variants": {
     "": {
-      "model": "pollution:block/machine/vis_generator_hv"
+      "model": "pollution:block/machine/base/vis_generator_hv"
     }
   }
 }

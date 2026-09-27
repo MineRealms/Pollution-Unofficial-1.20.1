@@ -78,7 +78,7 @@ minecraft {
         data {
             workingDirectory project.file('run-data')
             property 'forge.logging.console.level', 'info'
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'gtceu'
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'gtceu', '--existing-mod', 'botania', '--existing-mod', 'astralsorcery'
         }
     }
 }

@@ -203,7 +203,7 @@ public class LargeNodeGeneratorMachine extends AbstractDisplayMultiblockMachine 
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Heating Coil Level: " + getCoilLevel()));
+            textList.add(Component.translatable("pollution.ui.coil_level", getCoilLevel()));
         }
     }
 

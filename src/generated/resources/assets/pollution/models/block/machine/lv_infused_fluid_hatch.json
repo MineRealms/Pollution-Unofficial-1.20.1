@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:lv_infused_fluid_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/infused_fluid_hatch_lv"
+      "model": "pollution:block/machine/base/infused_fluid_hatch_lv"
     }
   }
 }

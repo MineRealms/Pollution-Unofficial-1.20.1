@@ -198,9 +198,8 @@ public class EssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Progress: " + progress + " / " + duration));
-            textList.add(Component.literal("Working: " + (working ? "Yes" : "No")
-                    + " | Infused Fire: " + infusedCost + " mB/t"));
+            textList.add(Component.translatable("pollution.ui.progress", progress, duration));
+            textList.add(Component.translatable("pollution.ui.essence_work", Component.translatable(working ? "pollution.ui.yes" : "pollution.ui.no"), infusedCost));
         }
     }
 

@@ -9,11 +9,12 @@
 | [`PORTING_TARGET.md`](PORTING_TARGET.md) | 上游基线、目标版本、现代 API 适配和排除范围 | 当前规范 |
 | [`PORT_COMPLETION_CHECKLIST.md`](PORT_COMPLETION_CHECKLIST.md) | 已完成范围、核心行为不变量和最终验证 | 当前规范 |
 | [`SMOKE_TEST_REPORT.md`](SMOKE_TEST_REPORT.md) | 服务端启动、RCON 机器/维度检查和错误分类 | 当前证据 |
-| [`ASTRAL_ROSETTA_TEST.md`](ASTRAL_ROSETTA_TEST.md) | DEV 世界内星辉联动测试、流体标签修复和未完成项 | 当前证据 |
+| [`ASTRAL_SURVIVAL_AND_UI.md`](ASTRAL_SURVIVAL_AND_UI.md) | 星辉配方、中文、仓室外壳与界面 | 当前实现 |
+| [`ASTRAL_ROSETTA_TEST.md`](ASTRAL_ROSETTA_TEST.md) | DEV 世界内星辉联动测试、流体标签修复 | 实机证据 |
 | [`GAMEPLAY_TUTORIAL.md`](GAMEPLAY_TUTORIAL.md) | 玩法流程、机器使用、配置和已知偏差 | 玩家手册 |
 
 血魔法仍是明确排除项。Astral Sorcery 已接入透镜仓、星辉处理机、星座塔和 Starstream 供能，
-但产物 NBT 加工及透镜仓制造配方尚未闭环；当前完成边界以 Rosetta 测试报告为准。
+产物 NBT 加工及透镜仓制造配方已补齐；当前实现和未复刻的仪式塔边界见星辉生存与界面说明。
 
 ## 工程与兼容性
 

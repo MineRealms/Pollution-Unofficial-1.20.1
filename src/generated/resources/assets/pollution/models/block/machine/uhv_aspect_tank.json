@@ -4,7 +4,7 @@
   "machine": "pollution:uhv_aspect_tank",
   "variants": {
     "": {
-      "model": "pollution:block/machine/aspect_tank_uhv"
+      "model": "pollution:block/machine/base/aspect_tank_uhv"
     }
   }
 }

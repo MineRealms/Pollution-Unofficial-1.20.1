@@ -5,6 +5,9 @@ import meowmel.pollution.api.amplification.MagicJeiHintResolver;
 import meowmel.pollution.api.amplification.MagicProcessTag;
 import meowmel.pollution.api.recipes.PORecipeMaps;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
+import meowmel.pollution.api.recipes.properties.AstralCondition;
+import meowmel.pollution.common.machine.multiblock.astral.AstralRecipeMaps;
+import meowmel.pollution.common.machine.multiblock.astral.AstralRecipeOutputs;
 import meowmel.pollution.common.machine.multiblock.botania.BotaniaRecipeMaps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -46,6 +49,8 @@ public final class MagicRecipeDataInfos {
             recipeType.addDataInfo(MagicRecipeDataInfos::gateLine);
             recipeType.addDataInfo(MagicRecipeDataInfos::processTagLine);
             recipeType.addDataInfo(MagicRecipeDataInfos::guideLine);
+            recipeType.addDataInfo(MagicRecipeDataInfos::astralConditionLine);
+            recipeType.addDataInfo(MagicRecipeDataInfos::crystalLine);
         }
     }
 
@@ -67,7 +72,12 @@ public final class MagicRecipeDataInfos {
                 BotaniaRecipeMaps.MANA_INFUSION_RECIPES,
                 BotaniaRecipeMaps.MANA_GEN_RECIPES,
                 BotaniaRecipeMaps.MANA_TO_EU,
-                BotaniaRecipeMaps.DAN_DE_LIFE_ON);
+                BotaniaRecipeMaps.DAN_DE_LIFE_ON,
+                AstralRecipeMaps.INDUSTRIAL_STARLIGHT_INFUSER_RECIPES,
+                AstralRecipeMaps.INDUSTRIAL_LIGHTWELL_RECIPES,
+                AstralRecipeMaps.CELESTIAL_OBSERVATION_RECIPES,
+                AstralRecipeMaps.CELESTIAL_CALIBRATION_RECIPES,
+                AstralRecipeMaps.CELESTIAL_CRYSTAL_GROWTH_RECIPES);
     }
 
     /** Per-tick / per-craft magic resource costs stored in the recipe data. */
@@ -127,6 +137,26 @@ public final class MagicRecipeDataInfos {
     private static String guideLine(CompoundTag data) {
         List<String> lines = MagicRecipeProperties.getGuideLines(data);
         return lines.isEmpty() ? "" : String.join(" | ", lines);
+    }
+
+    private static String astralConditionLine(CompoundTag data) {
+        AstralCondition condition = AstralCondition.fromNbt(data.getCompound(MagicRecipeProperties.ASTRAL_CONDITION));
+        if (!condition.isConfigured()) return "";
+        String constellation = condition.getConstellation();
+        return text("pollution.jei.recipe.astral.sky",
+                constellation.isEmpty() ? text("pollution.jei.recipe.astral.any")
+                        : text("astralsorcery.constellation." + constellation),
+                text(condition.isNightRequired() ? "pollution.jei.recipe.astral.night" : "pollution.jei.recipe.astral.any_time"),
+                Math.round(condition.getMinimumDistribution() * 100));
+    }
+
+    private static String crystalLine(CompoundTag data) {
+        int quality = data.getInt(AstralRecipeOutputs.MIN_QUALITY);
+        if (quality > 0) return text("pollution.jei.recipe.astral.quality", quality);
+        return switch (data.getString(AstralRecipeOutputs.TRANSFORM)) {
+            case "seed", "embryo", "growth", "copy_nbt" -> text("pollution.jei.recipe.astral.inherit");
+            default -> "";
+        };
     }
 
     private static String text(String key, Object... args) {

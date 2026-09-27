@@ -1,5 +1,13 @@
 # Machine overlays
 
+2026-09-27: multiblock controllers now use GT's workable casing models with
+explicit texture overrides, and parts declare their replaceable casing faces.
+Source geometry lives in `block/machine/base/`; `block/machine/` contains GT's
+generated wrappers. The five Astral controllers use native marble bricks and
+the HPCA front overlay. See [current rendering and UI notes](ASTRAL_SURVIVAL_AND_UI.md).
+The overlay-only approach below is historical and still describes independent
+single-block model assets; it is no longer the multiblock casing mechanism.
+
 Upstream (1.12 GTCE) every machine rendered its own texture: `getBaseTexture()`
 (or `renderMetaTileEntity`) returned a `POTextures`/`Textures` renderer that was
 drawn as the machine's cube texture, and `getFrontOverlay()` added the GT front

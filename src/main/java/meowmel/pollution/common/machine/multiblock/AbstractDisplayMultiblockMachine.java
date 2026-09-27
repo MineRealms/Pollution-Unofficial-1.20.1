@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -48,10 +47,13 @@ public abstract class AbstractDisplayMultiblockMachine extends MultiblockControl
         var group = new WidgetGroup(0, 0, 190, 125);
         var screen = new DraggableScrollableWidgetGroup(4, 4, 182, 117);
         screen.setBackground(getScreenTexture());
-        screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
-        screen.addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .textSupplier(isRemote() ? null : this::addDisplayText)
-                .setMaxWidthLimit(200)
+        java.util.function.Consumer<List<Component>> display = lines -> {
+            lines.add(Component.translatable(getBlockState().getBlock().getDescriptionId()));
+            addDisplayText(lines);
+        };
+        screen.addWidget(new ComponentPanelWidget(4, 5, display)
+                .textSupplier(isRemote() ? null : display)
+                .setMaxWidthLimit(174)
                 .clickHandler(this::handleDisplayClick));
         group.addWidget(screen);
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
@@ -61,7 +63,7 @@ public abstract class AbstractDisplayMultiblockMachine extends MultiblockControl
     @Override
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
-        textList.add(Component.literal("Formed: " + (isFormed() ? "Yes" : "No")));
+        textList.add(Component.translatable(isFormed() ? "pollution.ui.formed" : "pollution.ui.unformed"));
     }
 
     @Override

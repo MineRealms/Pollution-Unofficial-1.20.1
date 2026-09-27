@@ -4,7 +4,7 @@
   "machine": "pollution:lv_magic_energy_absorber",
   "variants": {
     "": {
-      "model": "pollution:block/machine/magic_energy_absorber_lv"
+      "model": "pollution:block/machine/base/magic_energy_absorber_lv"
     }
   }
 }

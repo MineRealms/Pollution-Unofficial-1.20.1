@@ -126,7 +126,8 @@ public final class AstralConstellationTowerMachine extends AbstractDisplayMultib
     public void addDisplayText(java.util.List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("pollution.machine.constellation_tower.display.constellation", definition.getEnglishName()));
+            textList.add(Component.translatable("pollution.machine.constellation_tower.display.constellation",
+                    Component.translatable("astralsorcery.constellation." + definition.getId())));
             textList.add(Component.translatable("pollution.machine.constellation_tower.display.storage", energy, CAPACITY));
             textList.add(Component.translatable("pollution.machine.constellation_tower.display.generation", generation));
             textList.add(Component.translatable(targetPos == null

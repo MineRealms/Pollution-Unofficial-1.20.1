@@ -261,8 +261,8 @@ public class CentralVisTowerMachine extends AbstractDisplayMultiblockMachine {
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Containment Frame Level: " + getFrameLevel()));
-            textList.add(Component.literal("Starry Mansus Progress: " + starryTimer + " / " + CLEANING_PERIOD));
+            textList.add(Component.translatable("pollution.ui.frame_level", getFrameLevel()));
+            textList.add(Component.translatable("pollution.ui.mansus_progress", starryTimer, CLEANING_PERIOD));
         }
     }
 

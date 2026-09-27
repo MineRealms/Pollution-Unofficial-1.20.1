@@ -42,13 +42,10 @@ import java.util.List;
  *       {@link MagicRecipeDataInfos}.</li>
  *   <li>vis / mana hatch information - upstream only shipped item tooltips, the
  *       port adds {@link MagicHatchInfoCategory} on top of them.</li>
- *   <li>starstream and astral recipe categories: the standalone Starstream
- *       network is ported as API/block entities, but its Astral constellation
- *       tower producer and the Astral celestial recipe maps
- *       ({@code celestial_observation}, {@code industrial_starlight_infuser},
- *       ...) remain outside this dependency scope. The ported data items and
- *       constellation effects are surfaced through
- *       {@link MagicAmplificationInfoCategory} instead.</li>
+ *   <li>starstream and astral: the five Astral maps use GT recipe pages with
+ *       native infusion/lightwell proxies and explicit constellation, quality
+ *       and crystal inheritance information. The amplification reference uses
+ *       {@link MagicAmplificationInfoCategory}.</li>
  * </ul>
  *
  * <p>The whole plugin is optional-safe: it lives in {@code compat.jei}, is only

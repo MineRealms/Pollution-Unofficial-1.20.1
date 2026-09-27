@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:astral_lens_hatch_advanced",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/astral_lens_hatch_advanced"
+      "model": "pollution:block/machine/base/astral_lens_hatch_advanced"
     }
   }
 }

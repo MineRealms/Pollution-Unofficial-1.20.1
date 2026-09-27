@@ -4,7 +4,7 @@
   "machine": "pollution:hv_mana_generator",
   "variants": {
     "": {
-      "model": "pollution:block/machine/mana_generator_hv"
+      "model": "pollution:block/machine/base/mana_generator_hv"
     }
   }
 }

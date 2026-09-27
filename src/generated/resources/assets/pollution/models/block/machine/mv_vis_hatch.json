@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:mv_vis_hatch",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/vis_hatch_mv"
+      "model": "pollution:block/machine/base/vis_hatch_mv"
     }
   }
 }

@@ -337,9 +337,8 @@ public class NodeFusionReactorMachine extends MagicMultiblockController implemen
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.literal("Fusion Heat: " + heat + " EU"));
-            textList.add(Component.literal("Fusion Startup Buffer: " + internalEnergyContainer.getEnergyStored()
-                    + " / " + internalEnergyContainer.getEnergyCapacity() + " EU"));
+            textList.add(Component.translatable("pollution.ui.fusion_heat", heat));
+            textList.add(Component.translatable("pollution.ui.fusion_buffer", internalEnergyContainer.getEnergyStored(), internalEnergyContainer.getEnergyCapacity()));
         }
     }
 

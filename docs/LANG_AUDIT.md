@@ -1,5 +1,10 @@
 # Language coverage audit (Pollution Unofficial, Forge 1.20.1)
 
+2026-09-27 update: all 1,246 generated English keys now have Chinese entries,
+including the five Astral GT recipe titles, controller/tower/hatch item names,
+live status text and JEI requirements. Run `python tools/audit_machine_resources.py`
+to repeat this coverage check. The counts below describe the earlier audit.
+
 Audit of every translation key referenced by the port, compared against the
 datagen output `src/generated/resources/assets/pollution/lang/en_us.json` and
 the hand-maintained `src/main/resources/assets/pollution/lang/zh_cn.json`.

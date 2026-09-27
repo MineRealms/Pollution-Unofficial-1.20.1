@@ -432,6 +432,7 @@ public final class Pollution {
                     "Network mode: configure relays, wireless terminals and cross-dimensional gateways");
             provider.add("pollution.item.starstream_linker.unported",
                     "Blood Magic remains excluded; Astral constellation towers can feed the standalone network");
+            meowmel.pollution.common.data.PollutionGuiLang.add(provider);
             provider.add("pollution.machine.constellation_tower.display.constellation", "Constellation: %s");
             provider.add("pollution.machine.constellation_tower.display.storage", "Starlight buffer: %s / %s");
             provider.add("pollution.machine.constellation_tower.display.generation", "Generation: %s / t");
@@ -568,27 +569,27 @@ public final class Pollution {
             String[][] guideText = {
                     {"seed", "Rock crystal seed", "Grow the seed in a crystal growth environment.",
                             "Growth speed and quality depend on the crystal medium.",
-                            "The seed page is informational in this port.",
-                            "Astral Sorcery growth machines are excluded from the dependency set.",
-                            "Use the matching Astral integration when it is installed.",
+                            "Seeds retain the native crystal properties, purity and stability.",
+                            "Process a valid seed into an embryo, then use the Celestial Crystal Growth Array.",
+                            "See JEI for ingredients and the required Astral lens / sky conditions.",
                             "See the item tooltip for the stored crystal data."},
                     {"embryo", "Celestial crystal embryo", "The embryo is a celestial crystal growth input.",
                             "Its growth and quality rules belong to Astral Sorcery.",
                             "This page preserves the upstream handbook reference.",
-                            "No Astral machine is registered by Pollution Unofficial 1.20.1.",
-                            "The item remains available for compatible integrations.",
-                            "Use the matching Astral integration when it is installed.",
-                            "This page does not create a replacement survival recipe."},
+                            "The growth array preserves and improves the native crystal attributes.",
+                            "Insert the cultivated crystal into an advanced lens hatch for an optical bonus.",
+                            "See JEI for ingredients and the required Astral lens / sky conditions.",
+                            "Blank embryos without crystal data cannot be cultivated."},
                     {"wafer", "Constellation data wafer", "A wafer stores one constellation id and celestial function.",
                             "The pollution amplification diagnostic can inspect its NBT.",
                             "Matching recipes may read the wafer as a gate.",
-                            "Constellation tower production belongs to Astral Sorcery.",
-                            "The standalone Starstream network accepts energy through its API.",
+                            "Pollution constellation towers supply linked Starstream cores.",
+                            "Craft calibrated wafers in the Celestial Observation Array using constellation paper.",
                             "No automatic EU-to-constellation conversion is provided.",
                             "The remaining lines describe the upstream constellation channels.",
                             "Aevitas: life and growth.", "Evorsio: processing and change.",
                             "Armara: stability and preservation.", "Discidia: energy and force.",
-                            "Vicio: corruption and entropy.", "Mineralis: mineral resonance.",
+                            "Vicio: movement and energy transfer.", "Mineralis: mineral resonance.",
                             "Fornax: heat and combustion.", "Horologium: time and cycles.",
                             "Lucerna: light and illumination.", "Octans: navigation and geometry.",
                             "Bootes: harvest and collection.", "Pelotrio: motion and exchange.",

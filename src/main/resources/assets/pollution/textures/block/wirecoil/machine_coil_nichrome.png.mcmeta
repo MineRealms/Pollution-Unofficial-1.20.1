@@ -1,10 +1,5 @@
 {
-    "ctm": {
-        "ctm_version": 1,
-        "type": "ctm",
-        "layer": "SOLID",
-        "textures": [
-            "gregtech:blocks/wirecoil/machine_coil_nichrome_ctm"
-        ]
-    }
+  "ldlib": {
+    "connection": "pollution:block/wirecoil/machine_coil_nichrome_ctm"
+  }
 }

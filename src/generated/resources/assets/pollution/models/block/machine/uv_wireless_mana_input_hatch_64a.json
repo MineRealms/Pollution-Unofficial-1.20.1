@@ -2,9 +2,14 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:uv_wireless_mana_input_hatch_64a",
+  "replaceable_textures": [
+    "bottom",
+    "top",
+    "side"
+  ],
   "variants": {
     "": {
-      "model": "pollution:block/machine/wireless_mana_input_hatch_64a_uv"
+      "model": "pollution:block/machine/base/wireless_mana_input_hatch_64a_uv"
     }
   }
 }

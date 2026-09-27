@@ -2,30 +2,89 @@
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "pollution:industrial_lightwell",
+  "texture_overrides": {
+    "all": "astralsorcery:block/marble_bricks"
+  },
   "variants": {
     "is_formed=false,recipe_logic_status=idle": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_emissive"
+        }
+      }
     },
     "is_formed=false,recipe_logic_status=suspend": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_emissive"
+        }
+      }
     },
     "is_formed=false,recipe_logic_status=waiting": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_active_emissive"
+        }
+      }
     },
     "is_formed=false,recipe_logic_status=working": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_active_emissive"
+        }
+      }
     },
     "is_formed=true,recipe_logic_status=idle": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_emissive"
+        }
+      }
     },
     "is_formed=true,recipe_logic_status=suspend": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_emissive"
+        }
+      }
     },
     "is_formed=true,recipe_logic_status=waiting": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_active_emissive"
+        }
+      }
     },
     "is_formed=true,recipe_logic_status=working": {
-      "model": "pollution:block/machine/industrial_lightwell"
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "astralsorcery:block/marble_bricks",
+          "overlay_front": "gtceu:block/multiblock/hpca/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/multiblock/hpca/overlay_front_active_emissive"
+        }
+      }
     }
   }
 }
