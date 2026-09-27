@@ -4,8 +4,10 @@ Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
 `H:\MinecraftMods\Pollution`，原本围绕 GTCEu/GTQT 和 Thaumcraft 6 设计；本项目把
 污染、源质、魔力机器、多方块、世界生成和相关联动适配到现代 Forge API。
 
-当前可移植范围已经完成。Astral Sorcery（星辉魔法）1.20.1 端已接入提供端、透镜仓、
-五类星辉处理机、星座塔和 Starstream 供能；血魔法仍按范围排除。Astral 的开发 JAR
+基础移植已完成。Astral Sorcery（星辉魔法）1.20.1 端已接入提供端、透镜仓、
+五类星辉处理机、星座塔和 Starstream 供能；后三台处理机的产物 NBT 和透镜仓制造配方
+仍待补全，尚不能视为完整生存流程。Rosetta 实机验证见
+[`docs/ASTRAL_ROSETTA_TEST.md`](docs/ASTRAL_ROSETTA_TEST.md)。血魔法仍按范围排除。Astral 的开发 JAR
 放在 `local-repo/local/astral/astralsorcery/1.20.1.0/`，不提交到 Git，需要本地构建时准备。
 
 ## 当前版本矩阵

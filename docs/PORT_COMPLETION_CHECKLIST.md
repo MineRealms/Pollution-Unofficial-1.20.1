@@ -1,6 +1,6 @@
 # Pollution 1.20.1 移植验收清单
 
-本轮按 2026-09-27 用户指令完成 Astral Sorcery 对齐，行为基线为本地上游 `../Pollution` 的 `098834e` 及 1.20.1 Astral 端。血魔法仍不在范围；Astral 提供端、机器、配方、星座塔和 Starstream 联动已纳入。
+本轮按 2026-09-27 用户指令推进 Astral Sorcery 对齐，行为基线为本地上游 `../Pollution` 的 `098834e` 及 1.20.1 Astral 端。血魔法仍不在范围；Astral 提供端、机器、配方、星座塔和 Starstream 联动已纳入。Rosetta 实测确认基础功能可运行，但后三台处理机的产物 NBT 和透镜仓制造配方仍待补全，详见 [实机测试报告](ASTRAL_ROSETTA_TEST.md)。
 
 ## 已完成范围
 

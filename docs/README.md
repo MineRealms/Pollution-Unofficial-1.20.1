@@ -9,10 +9,11 @@
 | [`PORTING_TARGET.md`](PORTING_TARGET.md) | 上游基线、目标版本、现代 API 适配和排除范围 | 当前规范 |
 | [`PORT_COMPLETION_CHECKLIST.md`](PORT_COMPLETION_CHECKLIST.md) | 已完成范围、核心行为不变量和最终验证 | 当前规范 |
 | [`SMOKE_TEST_REPORT.md`](SMOKE_TEST_REPORT.md) | 服务端启动、RCON 机器/维度检查和错误分类 | 当前证据 |
+| [`ASTRAL_ROSETTA_TEST.md`](ASTRAL_ROSETTA_TEST.md) | DEV 世界内星辉联动测试、流体标签修复和未完成项 | 当前证据 |
 | [`GAMEPLAY_TUTORIAL.md`](GAMEPLAY_TUTORIAL.md) | 玩法流程、机器使用、配置和已知偏差 | 玩家手册 |
 
-血魔法仍是明确排除项。Astral Sorcery 已完成 1.20.1 接入，包含透镜仓、星辉处理机、星座塔
-和 Starstream 供能；旧审计中的“未移植 Astral”条目属于历史记录，当前实现以 README 和验收清单为准。
+血魔法仍是明确排除项。Astral Sorcery 已接入透镜仓、星辉处理机、星座塔和 Starstream 供能，
+但产物 NBT 加工及透镜仓制造配方尚未闭环；当前完成边界以 Rosetta 测试报告为准。
 
 ## 工程与兼容性
 

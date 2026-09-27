@@ -2,6 +2,7 @@
 
 ## Astral Sorcery port smoke test (2026-09-27)
 
+- Subsequent in-world Rosetta tests and remaining survival-progression gaps: [ASTRAL_ROSETTA_TEST.md](ASTRAL_ROSETTA_TEST.md). Startup/GameTest success alone does not establish complete Astral gameplay parity.
 - `./gradlew runData --no-daemon --console=plain`: PASS
 - `./gradlew reobfJar --no-daemon --console=plain`: PASS
 - `./gradlew runGameTestServer --no-daemon --console=plain`: PASS

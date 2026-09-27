@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "astralsorcery:liquid_starlight", "required": false },
+    { "id": "astralsorcery:flowing_liquid_starlight", "required": false }
+  ]
+}
