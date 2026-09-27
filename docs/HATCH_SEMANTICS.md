@@ -124,9 +124,9 @@ Upstream references:
   Botania-capability callers), matching upstream's internal transfer
   behaviour; the `ManaReceiverLookup` guard only prevents output→output
   pushes.
-* **Astral/blood hatches** remain unregistered (see
-  `docs/HATCH_AUDIT.md` §3.1); machine tooltips that referenced them were not
-  re-added. The **tarot hatch** is ported (2026-09-20): `TarotHatchMachine`
+* **Astral lens hatches** are registered as MV and LuV variants and validate
+  native constellation data, sky visibility and cultivated crystal NBT. Blood
+  hatches remain outside the port. The **tarot hatch** is ported (2026-09-20): `TarotHatchMachine`
   holds one filtered card, `MagicMultiblockController` discovers it through
   `ITarotHatch` and the amplification engine reads it. Because upstream gates
   all amplification behind a calibrated astral wafer, the card's bonuses only

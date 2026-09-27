@@ -33,6 +33,14 @@ import meowmel.pollution.common.machine.multiblock.botania.ManaPlateMachine;
 import meowmel.pollution.common.machine.multiblock.botania.ManaRuneAltarMachine;
 import meowmel.pollution.common.machine.multiblock.botania.MegaManaTurbineMachine;
 import meowmel.pollution.common.machine.multiblock.botania.MultiDanDeLifeOnMachine;
+import meowmel.pollution.common.machine.multiblock.astral.AstralConstellationTowerMachine;
+import meowmel.pollution.common.machine.multiblock.astral.ConstellationTowerDefinition;
+import meowmel.pollution.common.machine.multiblock.astral.IndustrialStarlightInfuserMachine;
+import meowmel.pollution.common.machine.multiblock.astral.IndustrialLightwellMachine;
+import meowmel.pollution.common.machine.multiblock.astral.CelestialObservationArrayMachine;
+import meowmel.pollution.common.machine.multiblock.astral.CelestialCalibrationMatrixMachine;
+import meowmel.pollution.common.machine.multiblock.astral.CelestialCrystalGrowthArrayMachine;
+import meowmel.pollution.common.machine.multiblock.astral.AstralRecipeMaps;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAlloyBlastSmelterMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAssemblerMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicAutoclaveMachine;
@@ -70,6 +78,7 @@ import meowmel.pollution.common.machine.multiblock.magic.SmallChemicalPlantMachi
 import meowmel.pollution.common.machine.multiblock.magic.MagicSolidifierMachine;
 import meowmel.pollution.common.machine.multiblock.magic.MagicWireMillMachine;
 import meowmel.pollution.common.machine.part.FluxMufflerMachine;
+import meowmel.pollution.common.machine.part.AstralLensHatchMachine;
 import meowmel.pollution.common.machine.part.InfusedFluidHatchMachine;
 import meowmel.pollution.common.machine.part.TarotHatchMachine;
 import meowmel.pollution.common.machine.part.VisHatchMachine;
@@ -169,6 +178,8 @@ public final class PollutionMachines {
     public static MachineDefinition[] INFUSED_FLUID_HATCH;
     /** Upstream registered a single LV tarot hatch, so the port keeps one definition. */
     public static MachineDefinition TAROT_HATCH;
+    public static MachineDefinition ASTRAL_LENS_HATCH;
+    public static MachineDefinition ASTRAL_LENS_HATCH_ADVANCED;
     public static MachineDefinition[] FLUX_MUFFLER;
     public static MachineDefinition[] MANA_INPUT_HATCH_1A;
     public static MachineDefinition[] MANA_INPUT_HATCH_4A;
@@ -244,6 +255,12 @@ public final class PollutionMachines {
     public static MultiblockMachineDefinition MEGA_MANA_TURBINE;
     public static MultiblockMachineDefinition MEGA_MANA_ROTOR_TURBINE;
     public static MultiblockMachineDefinition MULTI_DAN_DE_LIFE_ON;
+    public static MultiblockMachineDefinition INDUSTRIAL_STARLIGHT_INFUSER;
+    public static MultiblockMachineDefinition INDUSTRIAL_LIGHTWELL;
+    public static MultiblockMachineDefinition CELESTIAL_OBSERVATION_ARRAY;
+    public static MultiblockMachineDefinition CELESTIAL_CALIBRATION_MATRIX;
+    public static MultiblockMachineDefinition CELESTIAL_CRYSTAL_GROWTH_ARRAY;
+    public static MultiblockMachineDefinition[] CONSTELLATION_TOWER;
 
     /**
      * Builds and registers all Pollution machines. Called from the
@@ -509,6 +526,24 @@ public final class PollutionMachines {
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.1"),
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.2"),
                         Component.translatable("pollution.machine.tarot_hatch.tooltip.3"))
+                .register();
+
+        ASTRAL_LENS_HATCH = PollutionGTAddon.REGISTRATE
+                .machine("astral_lens_hatch", info -> new AstralLensHatchMachine(info, GTValues.MV))
+                .tier(GTValues.MV)
+                .langValue("MV Astral Lens Hatch")
+                .rotationState(RotationState.ALL)
+                .abilities(POMultiblockAbility.ASTRAL_HATCH)
+                .simpleModel(model("astral_lens_hatch"))
+                .register();
+
+        ASTRAL_LENS_HATCH_ADVANCED = PollutionGTAddon.REGISTRATE
+                .machine("astral_lens_hatch_advanced", info -> new AstralLensHatchMachine(info, GTValues.LuV))
+                .tier(GTValues.LuV)
+                .langValue("LuV Astral Lens Hatch")
+                .rotationState(RotationState.ALL)
+                .abilities(POMultiblockAbility.ASTRAL_HATCH)
+                .simpleModel(model("astral_lens_hatch_advanced"))
                 .register();
 
         FLUX_MUFFLER = GTMachineUtils.registerTieredMachines(
@@ -900,6 +935,33 @@ public final class PollutionMachines {
                         Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.1"),
                         Component.translatable("pollution.machine.pollution_multi_dan_de_life_on.tooltip.2"))
                 .register();
+
+        INDUSTRIAL_STARLIGHT_INFUSER = magicMultiblock("industrial_starlight_infuser", "Industrial Starlight Infuser",
+                IndustrialStarlightInfuserMachine::new, IndustrialStarlightInfuserMachine::createPattern,
+                AstralRecipeMaps.INDUSTRIAL_STARLIGHT_INFUSER_RECIPES);
+        INDUSTRIAL_LIGHTWELL = magicMultiblock("industrial_lightwell", "Industrial Lightwell",
+                IndustrialLightwellMachine::new, IndustrialLightwellMachine::createPattern,
+                AstralRecipeMaps.INDUSTRIAL_LIGHTWELL_RECIPES);
+        CELESTIAL_OBSERVATION_ARRAY = magicMultiblock("celestial_observation_array", "Celestial Observation Array",
+                CelestialObservationArrayMachine::new, CelestialObservationArrayMachine::createPattern,
+                AstralRecipeMaps.CELESTIAL_OBSERVATION_RECIPES);
+        CELESTIAL_CALIBRATION_MATRIX = magicMultiblock("celestial_calibration_matrix", "Celestial Calibration Matrix",
+                CelestialCalibrationMatrixMachine::new, CelestialCalibrationMatrixMachine::createPattern,
+                AstralRecipeMaps.CELESTIAL_CALIBRATION_RECIPES);
+        CELESTIAL_CRYSTAL_GROWTH_ARRAY = magicMultiblock("celestial_crystal_growth_array", "Celestial Crystal Growth Array",
+                CelestialCrystalGrowthArrayMachine::new, CelestialCrystalGrowthArrayMachine::createPattern,
+                AstralRecipeMaps.CELESTIAL_CRYSTAL_GROWTH_RECIPES);
+        CONSTELLATION_TOWER = new MultiblockMachineDefinition[ConstellationTowerDefinition.values().length];
+        for (ConstellationTowerDefinition tower : ConstellationTowerDefinition.values()) {
+            final ConstellationTowerDefinition identity = tower;
+            CONSTELLATION_TOWER[tower.ordinal()] = PollutionGTAddon.REGISTRATE
+                    .multiblock("constellation_tower_" + tower.getId(), holder -> new AstralConstellationTowerMachine(holder, identity))
+                    .langValue("Constellation Tower: " + tower.getEnglishName())
+                    .rotationState(RotationState.ALL)
+                    .pattern(AstralConstellationTowerMachine::createPattern)
+                    .simpleModel(model("constellation_tower"))
+                    .register();
+        }
     }
 
     /**

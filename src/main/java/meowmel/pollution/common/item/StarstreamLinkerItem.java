@@ -13,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import meowmel.pollution.common.machine.multiblock.astral.AstralConstellationTowerMachine;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -50,10 +52,43 @@ public class StarstreamLinkerItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        if (level.isClientSide || !(level.getBlockEntity(context.getClickedPos()) instanceof StarstreamBlockEntity node)) {
+        if (level.isClientSide) {
             return InteractionResult.PASS;
         }
         ItemStack stack = context.getItemInHand();
+        if (level.getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity holder
+                && holder.getMetaMachine() instanceof AstralConstellationTowerMachine tower) {
+            if (context.getPlayer().isShiftKeyDown()) {
+                tower.clearStarstreamTarget();
+                context.getPlayer().displayClientMessage(Component.translatable("pollution.starstream_linker.unlinked"), true);
+                return InteractionResult.CONSUME;
+            }
+            if (stack.getTag() != null && stack.getTag().contains("StarstreamSelectedTower")) {
+                BlockPos target = BlockPos.of(stack.getTag().getLong("StarstreamSelectedTower"));
+                if (level.getBlockEntity(target) instanceof StarstreamBlockEntity node && tower.bindStarstreamTarget(node.getBlockPos())) {
+                    stack.getTag().remove("StarstreamSelectedTower");
+                    context.getPlayer().displayClientMessage(Component.translatable("pollution.starstream_linker.linked"), true);
+                    return InteractionResult.CONSUME;
+                }
+            }
+            stack.getOrCreateTag().putLong("StarstreamSelectedTower", context.getClickedPos().asLong());
+            context.getPlayer().displayClientMessage(Component.translatable("pollution.starstream_linker.source_selected"), true);
+            return InteractionResult.CONSUME;
+        }
+        if (!(level.getBlockEntity(context.getClickedPos()) instanceof StarstreamBlockEntity node)) {
+            return InteractionResult.PASS;
+        }
+        if (stack.getTag() != null && stack.getTag().contains("StarstreamSelectedTower")
+                && (node.getKind() == StarstreamBlockEntity.Kind.CORE || node.getKind() == StarstreamBlockEntity.Kind.RELAY)) {
+            BlockPos towerPos = BlockPos.of(stack.getTag().getLong("StarstreamSelectedTower"));
+            if (level.getBlockEntity(towerPos) instanceof IMachineBlockEntity holder
+                    && holder.getMetaMachine() instanceof AstralConstellationTowerMachine tower
+                    && tower.bindStarstreamTarget(node.getBlockPos())) {
+                stack.getTag().remove("StarstreamSelectedTower");
+                context.getPlayer().displayClientMessage(Component.translatable("pollution.starstream_linker.linked"), true);
+                return InteractionResult.CONSUME;
+            }
+        }
         if (StarstreamLinkerBehavior.isNetworkMode(stack)) {
             if (node.getKind() == StarstreamBlockEntity.Kind.CORE) {
                 stack.getOrCreateTag().putUUID("StarstreamSelectedNetwork", node.getNodeId());

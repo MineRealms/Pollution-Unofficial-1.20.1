@@ -167,6 +167,10 @@ dependencies {
     compileOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
     runtimeOnly(fg.deobf("dev.tc4port:thaumcraft-forge:${thaumcraft_version}")) { transitive = false }
 
+    // Astral Sorcery 1.20.1 port, installed from the local build in local-repo/.
+    compileOnly(fg.deobf("local.astral:astralsorcery:${astralsorcery_version}")) { transitive = false }
+    runtimeOnly(fg.deobf("local.astral:astralsorcery:${astralsorcery_version}")) { transitive = false }
+
     // Thaumcraft 4R addon ports (local-repo/): forbidden magic, tainted magic,
     // thaumic tinkerer. Thaumic Energistics is compile-only below because its
     // 20711 runtime calls an object-aspect helper removed by the 20719+ APIs.
@@ -246,7 +250,8 @@ tasks.named('processResources', ProcessResources).configure {
             loader_version_range: loader_version_range,
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
-            thaumcraft_version: thaumcraft_version, tc_addons_version: tc_addons_version,
+            thaumcraft_version: thaumcraft_version, astralsorcery_version: astralsorcery_version,
+            tc_addons_version: tc_addons_version,
             thaumic_energistics_version: thaumic_energistics_version, gtceu_version: gtceu_version,
     ]
     inputs.properties replaceProperties

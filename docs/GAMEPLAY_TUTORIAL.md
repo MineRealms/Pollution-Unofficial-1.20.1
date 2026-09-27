@@ -552,7 +552,7 @@ TC4R 没有 TC6 的“环境灵气”，灵气只存在于 **灵气节点（Aura
 - `MagicFuelRecipes`：化学配方消耗 1152 mB Infused Energy 制造高级燃料（`MagicFuelRecipes.java:81-92, 109-122, 136-144`）。
 - `Source Charge`：用水环等饰品 + Infused Water 充能（`SourceChargeMachine.java:17-35`，容量 4000 mB，`:51`）。
 
-**注意**：Mana / Life Essence / Astral 资源在 `MagicMultiblockController` 里仍是保留系统——要求它们的配方会像上游缺少仓室时一样失败（`MagicMultiblockController.java:30-34, 160-191`）。塔罗仓已移植：`TarotHatchMachine` 提供一个过滤卡槽，控制器通过 `ITarotHatch` 发现它；`TAROT` 配方属性与 `EXPERIMENTAL` / `MAGIC_CONVERSION` / `HIDDEN_RITUAL` / `RECYCLING` / `THREE_MAGIC_SYSTEMS` 工序标签的授权检查现已生效。受上游设计限制，塔罗的增幅数值仍需配合星辉晶圆（星辉透镜仓尚未移植）。
+**注意**：Mana / Life Essence / Astral 资源在 `MagicMultiblockController` 里仍是保留系统——要求它们的配方会像上游缺少仓室时一样失败（`MagicMultiblockController.java:30-34, 160-191`）。塔罗仓和 MV/LuV 星辉透镜仓均已移植：控制器通过 `ITarotHatch` / `IAstralHatch` 发现对应授权；`TAROT` 配方属性与 `EXPERIMENTAL` / `MAGIC_CONVERSION` / `HIDDEN_RITUAL` / `RECYCLING` / `THREE_MAGIC_SYSTEMS` 工序标签的授权检查现已生效。塔罗的增幅数值仍需配合星辉晶圆。
 
 ---
 
@@ -885,7 +885,7 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 13. ⚠️ **魔法涡轮转子耐久**：转子必须存在且运行中消耗耐久（复用 GT `IRotorHolderMachine`），损坏后中止并清空进度；**转速/输出倍率仍不随转子功率缩放**（上游的生成缩放未移植）。
 14. ✅ **Life Activation Garden 模式 1**：`pollution:mana` 流体已注册，模式 1 正常输出。
 15. ✅ **Mana Generator `mana_gen_recipes`**：已按档注册 5 条配方（EU 输出，速率 `V[tier]`），机器按该速率限制每 tick 魔力输入（仍为 1 mana = 1 EU）。
-16. ⚠️ **Magic Multiblock 的 Mana / Life Essence / Astral 资源**：框架已实现（`ManaHandlerList` 聚合魔力、`IBloodMagicHatch`/`IAstralHatch` 检查、失败信息用 `pollution.magic.failure.*`）；生命源质与星辉**仍无对应仓室机器**（上游对应血魔法仓/星辉透镜仓，未移植）。塔罗已完整移植（仓 + 22 张牌 + 授权检查 + 增幅逻辑；数值增幅仍受星辉晶圆门槛限制）。
+16. ✅ **Magic Multiblock 的 Astral 资源**：MV/LuV 星辉透镜仓读取原生星座、天空、月相和培育晶体属性；塔罗仓仍可作为额外授权。血魔法仓和生命源质仍不在本移植范围。
 17. ⚠️ **Mega Mana Turbine 催化剂材料**：运行时按 `pollution:black_mansus` 等 id 解析；注册表缺失时催化剂等级为 0（当前材料齐备）。
 18. ⚠️ **无线网络限制**：网络为**全局按维度**（上游同样是 `Map<维度, Long>`，无队伍/频率区分）；无网络总量 GUI（上游亦无）。
 
@@ -895,6 +895,10 @@ ZPM 级燃料涡轮：烧 `MANA_TO_EU` 燃料表里的魔力流体发电，可�
 21. **Small Node Generator 只在节点在槽内时发电**（上游移除节点后仍按旧倍率发电）。
 22. **Life Activation Garden 年龄指数修正为 `1.0/3.0`**（上游整数除法恒为 1）。
 23. **结构框架材料替换**：GTQT 的 HyperdimensionalSilver/KQGold/Mansussteel/Thaumium → NaquadahAlloy/TungstenSteel/HSSG/StainlessSteel。
+
+### 6.1 星辉魔法玩法
+
+先安装 Astral Sorcery 1.20.1.0，并用基础或高级星辉透镜仓给魔法多方块提供星座授权。工业星辉聚合器、工业聚星缸、天体观测阵、天体校准矩阵和天体晶体生长阵分别承接上游星辉处理链；高级结构需要 LuV 透镜仓。星座塔按固定星座读取夜空分布和月相，使用星轨绑定器右键星轨核心或中继后，把缓存的星辉能量送入对应通道。血魔法相关机器和配方仍不可用。
 
 ---
 

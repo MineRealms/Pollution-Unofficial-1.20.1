@@ -416,7 +416,7 @@ public final class MagicIntegrationRecipes {
                 // 上游: BLOOD_CIRCUIT_ADVANCED -> 本移植版: BLOOD_IPS_HUMAN_BRAIN
                 .inputItems(PollutionItems.BLOOD_IPS_HUMAN_BRAIN.asStack())
                 // 上游: ASTRAL_LENS_ADVANCED -> 本移植版: CULTIVATED_CRYSTAL
-                .inputItems(PollutionItems.CULTIVATED_CRYSTAL.asStack())
+                .inputItems(PollutionItems.ASTRAL_LENS_ADVANCED.asStack())
                 .inputItems(smdCapacitor)
                 .inputItems(smdTransistor)
                 .inputFluids(bioMedium)

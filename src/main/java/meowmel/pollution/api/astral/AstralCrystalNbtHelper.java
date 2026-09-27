@@ -1,5 +1,10 @@
 package meowmel.pollution.api.astral;
 
+import hellfirepvp.astralsorcery.common.crystal.CrystalAttributes;
+import hellfirepvp.astralsorcery.common.crystal.CrystalProperty;
+import hellfirepvp.astralsorcery.common.lib.CrystalPropertiesAS;
+import hellfirepvp.astralsorcery.common.lib.ItemsAS;
+import meowmel.pollution.common.item.PollutionItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,17 +15,9 @@ import java.util.Locale;
  * seed and embryo processing chain. The chain is deliberately one-way: a
  * cultivated crystal cannot be selected as a new industrial seed.
  *
- * <p>1.12 upstream depended on Astral Sorcery's {@code CrystalProperties} and on
- * Pollution's GregTech meta items. Neither exists in the 1.20.1 port yet, so this
- * port is intentionally generic: it owns the serialized crystal data format and
- * operates on caller-provided {@link ItemStack}s. Item identity and the raw
- * crystal stat math stay the caller's concern; the cultivation bonuses are
- * applied to the stored {@code poCrystalPurity} / {@code poCrystalStability}
- * values.</p>
- *
- * <p>TODO(port): restore the native Astral Sorcery {@code CrystalProperties}
- * read/write once that mod is available, including the native size / collective
- * / fracturation improvements of the cultivated generation.</p>
+ * <p>The 1.20.1 Astral port uses tiered {@link CrystalAttributes} instead of
+ * 1.12's numeric CrystalProperties. The original stack and an improved native
+ * stack are both retained so the cultivation is inspectable and one-way.</p>
  */
 public final class AstralCrystalNbtHelper {
 
@@ -37,39 +34,44 @@ public final class AstralCrystalNbtHelper {
     private AstralCrystalNbtHelper() {
     }
 
-    /**
-     * Upstream also required the stack to be Astral Sorcery's rock crystal.
-     * Generic port: any non-empty stack without a cultivation generation.
-     */
     public static boolean isEligibleRockCrystal(ItemStack stack) {
-        if (stack == null || stack.isEmpty()) return false;
+        if (stack == null || stack.isEmpty() || !stack.is(ItemsAS.ROCK_CRYSTAL.get())) return false;
         CompoundTag tag = stack.getTag();
         return tag == null || tag.getInt(GENERATION) == 0;
     }
 
     public static boolean isCrystalSeed(ItemStack stack) {
         CompoundTag tag = getTag(stack);
-        return hasCrystalData(tag) && !tag.getBoolean(EMBRYO) && tag.getInt(GENERATION) <= 0;
+        return stack != null && stack.is(PollutionItems.ROCK_CRYSTAL_SEED.get())
+                && hasCrystalData(tag) && !tag.getBoolean(EMBRYO) && tag.getInt(GENERATION) <= 0;
     }
 
     public static boolean isCrystalEmbryo(ItemStack stack) {
         CompoundTag tag = getTag(stack);
-        return hasCrystalData(tag) && tag.getBoolean(EMBRYO);
+        return stack != null && stack.is(PollutionItems.CELESTIAL_CRYSTAL_EMBRYO.get())
+                && hasCrystalData(tag) && tag.getBoolean(EMBRYO);
     }
 
     /** The dedicated Pollution output of the growth array and the only valid optical insert. */
     public static boolean isCultivatedCrystal(ItemStack stack) {
-        CompoundTag tag = getTag(stack);
-        return hasCrystalData(tag) && tag.getInt(GENERATION) > 0;
+        return stack != null && stack.is(PollutionItems.CULTIVATED_CRYSTAL.get());
     }
 
-    /**
-     * Writes seed data onto a copy of {@code seed}. Purity and stability are
-     * supplied by the caller (derived from the native crystal stats), so the
-     * helper stays independent of Astral Sorcery.
-     */
+    public static ItemStack createSeed(ItemStack source) {
+        if (!isEligibleRockCrystal(source)) return ItemStack.EMPTY;
+        CrystalAttributes attributes = CrystalAttributes.getCrystalAttributes(source);
+        if (attributes == null) return ItemStack.EMPTY;
+        return createSeed(new ItemStack(PollutionItems.ROCK_CRYSTAL_SEED.get()), source,
+                percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_PURITY),
+                (percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_SIZE)
+                        + percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_SHAPE)) / 2);
+    }
+
+    /** Writes a seed on the dedicated Pollution item, retaining the native source stack. */
     public static ItemStack createSeed(ItemStack seed, ItemStack source, int purity, int stability) {
-        if (seed == null || seed.isEmpty() || !isEligibleRockCrystal(source)) return ItemStack.EMPTY;
+        if (seed == null || !seed.is(PollutionItems.ROCK_CRYSTAL_SEED.get())
+                || !isEligibleRockCrystal(source)
+                || CrystalAttributes.getCrystalAttributes(source) == null) return ItemStack.EMPTY;
 
         ItemStack result = seed.copy();
         CompoundTag data = new CompoundTag();
@@ -83,8 +85,13 @@ public final class AstralCrystalNbtHelper {
         return result;
     }
 
+    public static ItemStack createEmbryo(ItemStack seed) {
+        return createEmbryo(new ItemStack(PollutionItems.CELESTIAL_CRYSTAL_EMBRYO.get()), seed);
+    }
+
     public static ItemStack createEmbryo(ItemStack embryo, ItemStack seed) {
-        if (embryo == null || embryo.isEmpty() || !isCrystalSeed(seed)) return ItemStack.EMPTY;
+        if (embryo == null || !embryo.is(PollutionItems.CELESTIAL_CRYSTAL_EMBRYO.get())
+                || !isCrystalSeed(seed)) return ItemStack.EMPTY;
 
         ItemStack result = embryo.copy();
         CompoundTag data = getTag(seed).copy();
@@ -93,30 +100,48 @@ public final class AstralCrystalNbtHelper {
         return result;
     }
 
-    /**
-     * Produces the sole cultivated generation of a rock crystal. The result
-     * keeps the source data and applies the one-time cultivation bonuses to the
-     * stored purity and stability; the caller owns the resulting item.
-     */
+    public static ItemStack createCultivatedCrystal(ItemStack embryo) {
+        return createCultivatedCrystal(embryo, "");
+    }
+
+    public static ItemStack createCultivatedCrystal(ItemStack embryo, String constellationId) {
+        return createCultivatedCrystal(new ItemStack(PollutionItems.CULTIVATED_CRYSTAL.get()), embryo,
+                constellationId);
+    }
+
     public static ItemStack createCultivatedCrystal(ItemStack cultivated, ItemStack embryo) {
         return createCultivatedCrystal(cultivated, embryo, "");
     }
 
     public static ItemStack createCultivatedCrystal(ItemStack cultivated, ItemStack embryo, String constellationId) {
-        if (cultivated == null || cultivated.isEmpty() || !isCrystalEmbryo(embryo)) return ItemStack.EMPTY;
+        if (cultivated == null || !cultivated.is(PollutionItems.CULTIVATED_CRYSTAL.get())
+                || !isCrystalEmbryo(embryo)) return ItemStack.EMPTY;
 
         CompoundTag embryoData = getTag(embryo);
         CompoundTag stored = embryoData.getCompound(SOURCE);
         if (stored.isEmpty()) return ItemStack.EMPTY;
+        ItemStack nativeCrystal = ItemStack.of(stored);
+        if (!isEligibleRockCrystal(nativeCrystal)) return ItemStack.EMPTY;
+        CrystalAttributes attributes = CrystalAttributes.getCrystalAttributes(nativeCrystal);
+        if (attributes == null) return ItemStack.EMPTY;
 
         CultivationBonus bonus = CultivationBonus.forConstellation(constellationId);
+        nativeCrystal.setCount(1);
+        attributes = attributes.modifyLevel(CrystalPropertiesAS.Properties.PROPERTY_SIZE,
+                        1 + (bonus.size > 0 ? 1 : 0))
+                .modifyLevel(CrystalPropertiesAS.Properties.PROPERTY_PURITY,
+                        1 + (bonus.purity > 0 ? 1 : 0))
+                .modifyLevel(CrystalPropertiesAS.Properties.PROPERTY_SHAPE,
+                        1 + (bonus.collective > 0 || bonus.fractureRepair > 0 ? 1 : 0));
+        attributes.store(nativeCrystal);
         ItemStack result = cultivated.copy();
         CompoundTag data = new CompoundTag();
         data.putInt(VERSION, 1);
         data.put(SOURCE, stored.copy());
-        data.put(NATIVE_CRYSTAL, stored.copy());
-        data.putInt(PURITY, clamp(embryoData.getInt(PURITY) + 12 + bonus.purity, 0, 100));
-        data.putInt(STABILITY, clamp(embryoData.getInt(STABILITY) + 8 + bonus.collective, 0, 100));
+        data.put(NATIVE_CRYSTAL, nativeCrystal.serializeNBT());
+        data.putInt(PURITY, percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_PURITY));
+        data.putInt(STABILITY, (percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_SIZE)
+                + percent(attributes, CrystalPropertiesAS.Properties.PROPERTY_SHAPE)) / 2);
         data.putInt(GENERATION, 1);
         data.putBoolean(EMBRYO, false);
         data.putString(CONSTELLATION, bonus.id);
@@ -139,13 +164,19 @@ public final class AstralCrystalNbtHelper {
      * already penalized during seed selection.
      */
     public static int getOpticalQuality(ItemStack stack) {
-        if (!isCultivatedCrystal(stack)) return 0;
+        if (!isCultivatedCrystal(stack) || !hasCrystalData(stack)) return 0;
         return clamp((getPurity(stack) * 7 + getStability(stack) * 3) / 10, 0, 100);
     }
 
     /** Native Astral properties preserved inside the independent cultivated-crystal item. */
     public static CompoundTag getCultivatedProperties(ItemStack stack) {
-        return isCultivatedCrystal(stack) ? getTag(stack).getCompound(NATIVE_CRYSTAL) : new CompoundTag();
+        return isCultivatedCrystal(stack) && hasCrystalData(stack)
+                ? getTag(stack).getCompound(NATIVE_CRYSTAL) : new CompoundTag();
+    }
+
+    public static CrystalAttributes getCultivatedNativeAttributes(ItemStack stack) {
+        ItemStack nativeCrystal = getCultivatedNativeCrystal(stack);
+        return nativeCrystal.isEmpty() ? null : CrystalAttributes.getCrystalAttributes(nativeCrystal);
     }
 
     /** Convenience view of the preserved native crystal as an item stack; empty when absent. */
@@ -177,6 +208,12 @@ public final class AstralCrystalNbtHelper {
     private static boolean hasCrystalData(CompoundTag tag) {
         return tag != null && tag.contains(VERSION) && tag.contains(SOURCE)
                 && tag.contains(PURITY) && tag.contains(STABILITY);
+    }
+
+    private static int percent(CrystalAttributes attributes, CrystalProperty property) {
+        if (attributes == null || property == null || property.getMaxTier() <= 0) return 0;
+        CrystalAttributes.Attribute value = attributes.getAttribute(property);
+        return value == null ? 0 : clamp(value.getTier() * 100 / property.getMaxTier(), 0, 100);
     }
 
     private static CompoundTag getTag(ItemStack stack) {

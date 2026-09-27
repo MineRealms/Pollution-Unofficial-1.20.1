@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import hellfirepvp.astralsorcery.common.lib.BlocksAS;
+import hellfirepvp.astralsorcery.common.lib.FluidsAS;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.api.unification.PollutionMaterials;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
@@ -65,13 +67,11 @@ public final class StarstreamNexusRecipes {
             return;
         }
 
-        // 星轨外壳（上游 Astral Sorcery 大理石砖 -> GTCEu 大理石；
-        // 上游: ASTRAL_RESONANCE_COIL x4 -> 本移植版: MANA_RESONANCE_COIL x4，
-        // 数量不变：整合包无 Astral Sorcery，魔力谐振线圈同档可量产）
+        // Starstream casing uses Astral Sorcery marble, resonance coils and starlight.
         GTRecipeBuilder.of(id("starstream_casing"), GTRecipeTypes.ASSEMBLER_RECIPES)
-                .inputItems(GTBlocks.MARBLE.asStack(8))
+                .inputItems(new ItemStack(BlocksAS.MARBLE_BRICKS.get(), 8))
                 .inputItems(PollutionItems.STARRY_RUNE.asStack(2))
-                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(4))
+                .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(4))
                 .inputFluids(mana)
                 .outputItems(PollutionMagicBlocks.STARSTREAM_CASING.asStack(8))
                 .duration(600)
@@ -104,12 +104,12 @@ public final class StarstreamNexusRecipes {
             return;
         }
         GTRecipeBuilder.of(id("starstream_linker"), GTRecipeTypes.ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.SILVERED_GLASS_LENS.asStack())
-                .inputItems(PollutionItems.MANA_RESONANCE_COIL.asStack(2))
+                .inputItems(PollutionItems.ASTRAL_LENS_BASIC.asStack())
+                .inputItems(PollutionItems.ASTRAL_RESONANCE_COIL.asStack(2))
                 .inputItems(PollutionItems.MAGIC_CIRCUIT_BOARD_IV.asStack(2))
                 .inputItems(emitter)
                 .inputItems(sensor)
-                .inputFluids(fluid(PollutionMaterials.InfusedAura, 2000))
+                .inputFluids(new FluidStack(FluidsAS.LIQUID_STARLIGHT_SOURCE.get(), 2000))
                 .outputItems(PollutionItems.STARSTREAM_LINKER.asStack())
                 .duration(600)
                 .EUt(GTValues.VA[GTValues.IV])

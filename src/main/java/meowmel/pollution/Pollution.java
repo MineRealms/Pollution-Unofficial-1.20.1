@@ -431,7 +431,11 @@ public final class Pollution {
             provider.add("pollution.item.starstream_linker.tooltip.network",
                     "Network mode: configure relays, wireless terminals and cross-dimensional gateways");
             provider.add("pollution.item.starstream_linker.unported",
-                    "The upstream constellation tower producer is excluded; the standalone network is available");
+                    "Blood Magic remains excluded; Astral constellation towers can feed the standalone network");
+            provider.add("pollution.machine.constellation_tower.display.constellation", "Constellation: %s");
+            provider.add("pollution.machine.constellation_tower.display.storage", "Starlight buffer: %s / %s");
+            provider.add("pollution.machine.constellation_tower.display.generation", "Generation: %s / t");
+            provider.add("pollution.magic.failure.astral_lens", "Missing the required Astral lens hatch tier");
             provider.add("pollution.starstream_linker.selected", "Starstream network selected");
             provider.add("pollution.starstream_linker.bound", "Operation core linked to the Starstream network");
             provider.add("pollution.starstream_linker.source_selected", "Relay source selected");

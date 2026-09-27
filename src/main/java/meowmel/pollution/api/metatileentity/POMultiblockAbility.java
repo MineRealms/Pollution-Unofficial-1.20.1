@@ -35,5 +35,8 @@ public final class POMultiblockAbility {
     /** Tarot hatch: one major-arcana card as a non-consumable authorization. */
     public static final PartAbility TAROT_HATCH = new PartAbility("pollution_tarot_hatch");
 
+    /** Astral Sorcery lens focus, supplied by either MV or LuV hatch. */
+    public static final PartAbility ASTRAL_HATCH = new PartAbility("pollution_astral_lens_hatch");
+
     private POMultiblockAbility() {}
 }

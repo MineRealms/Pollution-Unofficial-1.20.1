@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
+import meowmel.pollution.api.amplification.MagicEnergyAmplification;
+import meowmel.pollution.api.capability.IAstralHatch;
+import meowmel.pollution.api.capability.ITarotHatch;
 import javax.annotation.Nullable;
 
 /**
@@ -48,6 +51,19 @@ public abstract class AbstractMagicTurbineMachine extends LargeTurbineMachine {
     @Override
     public long getOverclockVoltage() {
         return hasRotor() ? super.getOverclockVoltage() * outputMultiplier : 0;
+    }
+
+    @Override
+    protected double productionBoost() {
+        var astral = getParts().stream().map(part -> part.self()).filter(IAstralHatch.class::isInstance)
+                .map(IAstralHatch.class::cast).toList();
+        var tarot = getParts().stream().map(part -> part.self()).filter(ITarotHatch.class::isInstance)
+                .map(ITarotHatch.class::cast).toList();
+        var kind = this instanceof MagicMegaTurbineMachine
+                ? MagicEnergyAmplification.MachineKind.MEGA_TURBINE
+                : MagicEnergyAmplification.MachineKind.LARGE_TURBINE;
+        return super.productionBoost() * (1.0D
+                + MagicEnergyAmplification.read(astral, tarot, kind).getGenerationBonus());
     }
 
     @Override

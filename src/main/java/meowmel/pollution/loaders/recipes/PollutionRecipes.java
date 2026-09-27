@@ -68,6 +68,7 @@ public final class PollutionRecipes {
         MagicIntegrationRecipes.init(provider);
         MagicGCYMRecipes.init(provider);
         StarstreamNexusRecipes.init(provider);
+        AstralIntegrationRecipes.init(provider);
 
         Pollution.LOGGER.info("Registered vis generator crafting recipes for {} tiers", count(PollutionMachines.VIS_GENERATOR));
         Pollution.LOGGER.info("Registered vis provider crafting recipes for {} tiers", count(PollutionMachines.VIS_PROVIDER));

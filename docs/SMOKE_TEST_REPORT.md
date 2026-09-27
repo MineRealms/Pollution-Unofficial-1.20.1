@@ -1,5 +1,14 @@
 # Pollution Port - Server Smoke Test
 
+## Astral Sorcery port smoke test (2026-09-27)
+
+- `./gradlew runData --no-daemon --console=plain`: PASS
+- `./gradlew reobfJar --no-daemon --console=plain`: PASS
+- `./gradlew runGameTestServer --no-daemon --console=plain`: PASS
+- Astral Sorcery common setup, registries, Pollution Astral machines and dynamic recipes loaded on the dedicated server.
+- Required GameTests: **35/35 passed**.
+- Existing development-environment warnings remain; no Pollution-specific startup failure occurred.
+
 - date: 2026-09-25 13:34:31
 - server booted (`Done (`): yes
 - log errors (all patterns): 22

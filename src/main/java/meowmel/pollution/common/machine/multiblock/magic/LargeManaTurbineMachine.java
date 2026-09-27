@@ -36,6 +36,7 @@ public final class LargeManaTurbineMachine extends AbstractMagicTurbineMachine {
                         .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMaxGlobalLimited(4))
                         .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY).setMaxGlobalLimited(2))
                         .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .or(Predicates.abilities(POMultiblockAbility.ASTRAL_HATCH).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(POMultiblockAbility.TAROT_HATCH).setMaxGlobalLimited(1)))
                 .where('R', rotorsAtLeast(definition.getTier()).setExactLimit(1)
                         .or(Predicates.abilities(POMultiblockAbility.MANA_OUTPUT_HATCH).setExactLimit(1)))

@@ -16,6 +16,9 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachi
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import meowmel.pollution.api.amplification.MagicEnergyAmplification;
+import meowmel.pollution.api.capability.IAstralHatch;
+import meowmel.pollution.api.capability.ITarotHatch;
 import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import net.minecraft.network.chat.Component;
 
@@ -35,6 +38,8 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implem
     @DescSynced private long outputPerTick;
     private EnergyContainerList inputs = new EnergyContainerList(List.of());
     private EnergyContainerList outputs = new EnergyContainerList(List.of());
+    private List<IAstralHatch> astralHatches = List.of();
+    private List<ITarotHatch> tarotHatches = List.of();
     private TickableSubscription tickSubscription;
 
     public MagicBatteryMachine(IMachineBlockEntity holder) { super(holder); }
@@ -42,8 +47,21 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implem
     @Override public boolean isWorkingEnabled() { return workingEnabled; }
     @Override public void setWorkingEnabled(boolean enabled) { workingEnabled = enabled; markDirty(); }
     public long getStoredEnergy() { return storedEnergy; }
-    public long getCapacity() { return Math.max(storedEnergy, 250000L * coreTier * coilTier); }
-    public long getTransferRate() { return coreTier == 0 ? 0 : GTValues.VA[Math.min(GTValues.MAX, coreTier * 2)]; }
+    public long getCapacity() {
+        long baseCapacity = 250000L * coreTier * coilTier;
+        long amplifiedCapacity = (long) Math.floor(baseCapacity * (1.0D + getEnergyAmplification().getCapacityBonus()));
+        return Math.max(storedEnergy, amplifiedCapacity);
+    }
+    public long getTransferRate() {
+        if (coreTier == 0) return 0;
+        long baseRate = GTValues.VA[Math.min(GTValues.MAX, coreTier * 2)];
+        return (long) Math.floor(baseRate * (1.0D + getEnergyAmplification().getTransferBonus()));
+    }
+
+    private MagicEnergyAmplification getEnergyAmplification() {
+        return MagicEnergyAmplification.read(astralHatches, tarotHatches,
+                MagicEnergyAmplification.MachineKind.BATTERY);
+    }
 
     @Override
     public void onStructureFormed() {
@@ -52,7 +70,11 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implem
         coilTier = (Integer) getMultiblockState().getMatchContext().get("BatteryCoilTier");
         List<IEnergyContainer> inputHatches = new ArrayList<>();
         List<IEnergyContainer> outputHatches = new ArrayList<>();
+        List<IAstralHatch> astral = new ArrayList<>();
+        List<ITarotHatch> tarot = new ArrayList<>();
         for (var part : getParts()) {
+            if (part.self() instanceof IAstralHatch hatch) astral.add(hatch);
+            if (part.self() instanceof ITarotHatch hatch) tarot.add(hatch);
             if (part.self() instanceof EnergyHatchPartMachine hatch) {
                 if (PartAbility.INPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) inputHatches.add(hatch.energyContainer);
                 if (PartAbility.OUTPUT_ENERGY.isApplicable(hatch.getBlockState().getBlock())) outputHatches.add(hatch.energyContainer);
@@ -60,6 +82,8 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implem
         }
         inputs = new EnergyContainerList(inputHatches);
         outputs = new EnergyContainerList(outputHatches);
+        astralHatches = List.copyOf(astral);
+        tarotHatches = List.copyOf(tarot);
         if (tickSubscription == null) tickSubscription = subscribeServerTick(this::tickBattery);
     }
 
@@ -69,6 +93,8 @@ public class MagicBatteryMachine extends AbstractDisplayMultiblockMachine implem
         stopTicking();
         inputs = new EnergyContainerList(List.of());
         outputs = new EnergyContainerList(List.of());
+        astralHatches = List.of();
+        tarotHatches = List.of();
         inputPerTick = outputPerTick = 0;
     }
 

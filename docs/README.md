@@ -11,9 +11,8 @@
 | [`SMOKE_TEST_REPORT.md`](SMOKE_TEST_REPORT.md) | 服务端启动、RCON 机器/维度检查和错误分类 | 当前证据 |
 | [`GAMEPLAY_TUTORIAL.md`](GAMEPLAY_TUTORIAL.md) | 玩法流程、机器使用、配置和已知偏差 | 玩家手册 |
 
-血魔法和 Astral Sorcery 是明确排除项。看到文档中的 Blood/Astral 条目时，应先确认它
-是“范围外边界”还是历史审计中的未移植项；本项目保留独立 Starstream，但不实现 Astral
-方尖碑及星辉原生供能闭环。
+血魔法仍是明确排除项。Astral Sorcery 已完成 1.20.1 接入，包含透镜仓、星辉处理机、星座塔
+和 Starstream 供能；旧审计中的“未移植 Astral”条目属于历史记录，当前实现以 README 和验收清单为准。
 
 ## 工程与兼容性
 

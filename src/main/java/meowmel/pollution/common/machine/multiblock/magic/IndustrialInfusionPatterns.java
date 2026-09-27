@@ -56,6 +56,7 @@ final class IndustrialInfusionPatterns {
                         .or(Predicates.abilities(POMultiblockAbility.VIS_HATCH).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(POMultiblockAbility.INFUSED_FLUID_HATCH).setExactLimit(1))
                         .or(Predicates.abilities(POMultiblockAbility.MANA_INPUT_POOL).setMaxGlobalLimited(1))
+                        .or(Predicates.abilities(POMultiblockAbility.ASTRAL_HATCH).setMaxGlobalLimited(1))
                         .or(Predicates.abilities(POMultiblockAbility.TAROT_HATCH).setMaxGlobalLimited(1)))
                 .where('C', Predicates.blocks(PollutionMagicBlocks.BEAM_CORE_4.get()))
                 .where('D', Predicates.blocks(PollutionMagicBlocks.TITANIUM_PIPE.get()))
