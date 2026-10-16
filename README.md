@@ -17,7 +17,7 @@ Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
 - Minecraft 1.20.1 / Forge 47.4.23
 - Java 17 / Gradle Wrapper 8.8
 - GregTech CEu Modern 7.5.3
-- Thaumcraft 4R、Forbidden Magic、Tainted Magic、Thaumic Tinkerer：0.1.0-20721
+- Thaumcraft 4R、Forbidden Magic、Tainted Magic、Thaumic Tinkerer：编译基准 0.1.0-20721，已验证兼容最新构建 0.1.0-20740
 - Thaumic Energistics：0.1.0-20711，仅 compile-only
 - JEI 15.62.0.216（与本地 Astral 端一致）
 - KubeJS 2001.6.5-build.16
@@ -43,6 +43,19 @@ Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
 - 20721 未附 Thaumic Energistics，因此 20711 仍仅作 `compileOnly` 参考，不进入运行包。
 
 DEV 客户端依赖包的来源、替换规则与版本说明见 [`docs/DEV_MODS_BUNDLE_20721.md`](docs/DEV_MODS_BUNDLE_20721.md)。
+
+## TC4R 20740 兼容
+
+- 对本模组全部 85 处 `dev.tc4port` 引用做了字节码级审计：所有引用的所属类在
+  TC4R 0.1.0-20740 中全部存在，**20740 完全兼容**，无需改写适配代码。
+- 20740 将 vis/essentia 网络重构为 capability API（`EssentiaCapabilities`/`VisCapabilities`），
+  并对 BlockEntity 接口能力做了运行时通用注册：本模组以纯接口实现的机器方块实体
+  无需实现 capability provider 即可正常接入 vis 网络。
+- 20740 下 `compileJava` 通过（仅既有的 `onArmorTick` 弃用警告）；已在 Sunlit DEV
+  整合包实机验证：TC4R 20740 + 本模组同场加载，进入存档无 TC4R 相关错误。
+- 编译 pin 仍为 `0.1.0-20721`（20721→20740 的差异对本模组全部导入均为增量修改，
+  在任一版本上编译均可在 20740 运行时加载）；20711 的 Thaumic Energistics 仍仅作
+  `compileOnly` 参考。
 
 ## 已完成内容
 
