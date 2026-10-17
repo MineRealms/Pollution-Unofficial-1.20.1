@@ -1,72 +1,43 @@
 # Pollution Unofficial 1.20.1
 
-Pollution 的非官方 Forge 1.20.1 移植版。上游是 Minecraft 1.12.2 的
-`H:\MinecraftMods\Pollution`，原本围绕 GTCEu/GTQT 和 Thaumcraft 6 设计；本项目把
-污染、源质、魔力机器、多方块、世界生成和相关联动适配到现代 Forge API。
+Pollution 的非官方 Forge 1.20.1 移植版。原版是 Minecraft 1.12.2 上围绕 GregTech（GTCEu/GTQT）
+与神秘时代 6 设计的污染管理模组；本项目把污染、源质、魔力机器、多方块、世界生成和各条联动
+完整适配到现代 Forge API，并接入了本地移植的星辉魔法（Astral Sorcery）1.20.1。
 
-基础移植已完成。Astral Sorcery（星辉魔法）1.20.1 端已接入提供端、透镜仓、
-五类星辉处理机、星座塔和 Starstream 供能；星辉机器/仓室制造、十六星座加工、
-晶体属性继承和原生注魔/集光配方已补齐。多方块新增中文状态、星座面板、
-成型仓室外壳匹配及连接纹理，详见
-[`星辉生存与界面说明`](docs/ASTRAL_SURVIVAL_AND_UI.md)。此前 Rosetta 实机验证见
-[`docs/ASTRAL_ROSETTA_TEST.md`](docs/ASTRAL_ROSETTA_TEST.md)。血魔法仍按范围排除。Astral 的开发 JAR
-放在 `local-repo/local/astral/astralsorcery/1.20.1.0/`，不提交到 Git，需要本地构建时准备。
+## 这是什么模组
 
-## 当前版本矩阵
+在 GregTech 的工业体系中，多方块机器的消声仓、爆炸和大规模加工都会向区块排放**污染**。污染不仅
+损害玩家健康、拖慢机器效率，还会催生难缠的裂隙。本模组提供一整套污染的产生、监测、清理与利用
+玩法，并把神秘时代 4R 的灵气/咒波/源质体系接入工业链路：
+
+- **污染系统**：按区块的污染数据、分级负面效果、环境转化、机器排污与爆炸归因，
+  `/pollution` 查询与清理命令。
+- **工业魔法机器**：单体机器、多方块、分层蒸馏塔、化学浸洗池、魔法电池、大型/巨型轮机。
+- **神秘时代 4R 联动**：Vis、要素、注魔流体与魔法支付逻辑；咒波与污染互相转化。
+- **星辉魔法联动**：Starstream 核心/中继/操作核心/区块锚、十六星座塔、透镜仓、
+  五类星辉处理机，以及星辉供能接口。
+- **植物魔法联动**：魔力仓、魔力转换、生命花阵列、Alfheim 世界生成与天空效果。
+- **AE2 / JEI / KubeJS**：AE2 配方联动、JEI 信息页、KubeJS 配方与污染事件桥接。
+- **装备与世界**：矿物提取器、护目镜、翅膀（Curios 兼容）、Underground/Alfheim 世界生成、
+  矿脉、焦油池与结构战利品。
+
+血魔法仍按范围排除。Astral Sorcery 开发 JAR 放在
+`local-repo/local/astral/astralsorcery/1.20.1.0/`，不提交到 Git，需要本地构建时准备。
+
+## 版本矩阵
 
 - Minecraft 1.20.1 / Forge 47.4.23
 - Java 17 / Gradle Wrapper 8.8
 - GregTech CEu Modern 7.5.3
-- Thaumcraft 4R、Forbidden Magic、Tainted Magic、Thaumic Tinkerer：编译基准 0.1.0-20721，已验证兼容最新构建 0.1.0-20740
+- Thaumcraft 4R、Forbidden Magic、Tainted Magic、Thaumic Tinkerer：编译基准 0.1.0-20721，
+  已验证兼容最新构建 0.1.0-20740
 - Thaumic Energistics：0.1.0-20711，仅 compile-only
 - JEI 15.62.0.216（与本地 Astral 端一致）
 - KubeJS 2001.6.5-build.16
-- Botania、AE2、Curios、TerraBlender、Patchouli、Guideme 等依赖版本以
+- Botania、AE2、Curios、TerraBlender、Patchouli、GuideME 等依赖版本以
   `gradle.properties` 为准
 
 本地 TC4R 开发工件不进入仓库，放置方式见 [`local-repo/README.md`](local-repo/README.md)。
-
-## 星辉玩法与界面更新
-
-- 五类星辉机器及 JEI 分类、两级透镜仓、十六座星座塔补齐中文。
-- 星座观测、校准和生长各提供十六星座配方；晶体培育保留原始属性和谱系，校准要求光学品质至少 70%。
-- 工业注魔器/集光井跟随 Astral 原生数据包配方；支持输入属性继承及不消耗的集光催化剂。
-- GTM 状态界面可换行，星座页签显示实时增幅。成型仓室匹配机器外壳，55 套已有连接纹理启用。
-- 星座塔目前使用本端星流结构；上游大型仪式塔及北斗增幅尚未复刻。
-
-## TC4R 20721 更新
-
-- Thaumcraft 4R、Forbidden Magic、Tainted Magic 和 Thaumic Tinkerer 已从 20719 升到 20721。
-- 20721 新增玩家研究知识视图 API，并调整首次发现要素的奖励和研究完成 Warp 行为；本模组没有调用受影响的发放 API，现有直接调用签名保持兼容，无需改写适配代码。
-- 20721 移除了通用物品注册 `thaumcraft:primal_arrow`（六种元素箭仍存在）；旧存档若实际保存了该通用箭物品，Forge 会报告缺失注册并可能丢弃该物品。没有语义等价的替代项，因此不做自动映射。
-- `compileJava`、`reobfJar`、35 项 Forge GameTest 均通过；独立 `runClient` 加载新版 TC4R、完成污染联动注册及客户端资源初始化。
-- 20721 未附 Thaumic Energistics，因此 20711 仍仅作 `compileOnly` 参考，不进入运行包。
-
-DEV 客户端依赖包的来源、替换规则与版本说明见 [`docs/DEV_MODS_BUNDLE_20721.md`](docs/DEV_MODS_BUNDLE_20721.md)。
-
-## TC4R 20740 兼容
-
-- 对本模组全部 85 处 `dev.tc4port` 引用做了字节码级审计：所有引用的所属类在
-  TC4R 0.1.0-20740 中全部存在，**20740 完全兼容**，无需改写适配代码。
-- 20740 将 vis/essentia 网络重构为 capability API（`EssentiaCapabilities`/`VisCapabilities`），
-  并对 BlockEntity 接口能力做了运行时通用注册：本模组以纯接口实现的机器方块实体
-  无需实现 capability provider 即可正常接入 vis 网络。
-- 20740 下 `compileJava` 通过（仅既有的 `onArmorTick` 弃用警告）；已在 Sunlit DEV
-  整合包实机验证：TC4R 20740 + 本模组同场加载，进入存档无 TC4R 相关错误。
-- 编译 pin 仍为 `0.1.0-20721`（20721→20740 的差异对本模组全部导入均为增量修改，
-  在任一版本上编译均可在 20740 运行时加载）；20711 的 Thaumic Energistics 仍仅作
-  `compileOnly` 参考。
-
-## 已完成内容
-
-- 按区块污染数据、分级负面效果、环境转化、机器排污、消声仓和爆炸归因。
-- TC4R 灵气/咒波/源质适配，Vis、Aspect、Infused 流体和魔法支付逻辑。
-- GTCEu 单体机器、多方块、分层蒸馏塔、化学浸洗池、魔法电池和大型/巨型轮机。
-- Botania 魔力仓、魔力转换、生命花阵列、Alfheim 世界生成与客户端天空效果。
-- AE2 配方联动、JEI 信息页和配方增幅说明、KubeJS 配方与污染事件桥接。
-- Starstream 核心/中继/操作核心/区块锚、持久化、区块票据和原子多通道扣款。
-- 矿物提取器、护目镜、翅膀、Curios 兼容、传送门形成和边界检查。
-- Underground/Alfheim 世界生成、矿脉、石团、焦油池、PureTar 和结构战利品。
 
 ## 构建和运行
 
@@ -88,24 +59,6 @@ DEV 客户端依赖包的来源、替换规则与版本说明见 [`docs/DEV_MODS
 
 首次构建要求 JDK 17、TC4R 本地开发 jar，以及访问 GTCEu、JEI、KubeJS 等 Maven 仓库。
 
-## 最近验收
-
-2026-09-27 星辉/界面回归：43/43 项 Forge GameTest 通过，1277 条配方通过原料与槽位检查；
-新增实际加工验证注魔 NBT、堵输出、集光催化剂和完整晶体谱系。
-资源审计覆盖 1361 个模型、55 套连接纹理和 1246 个中英文键。
-
-2026-09-25 的最终回归结果：
-
-- `runData`、`compileJava`、`reobfJar`：通过。
-- Forge GameTest：35/35 通过。
-- TC4R 20721 升级回归：重新编译及 35/35 GameTest 通过；独立客户端完成 Forge/TC4R/Pollution 初始化。完整 UI/联机客户端烟测见此前 20719 基线记录。
-- 服务端烟测：通过，污染专属错误为 0。
-- 20719 基线客户端烟测：通过，包含 HUD 网络、石材模型、矿物提取器 GUI/按钮、装备、JEI 和 Alfheim 天空。
-- 2206 个资源 JSON 可解析且无重复键；污染纹理和模型目标审计通过。
-
-截图位于 `run-client/screenshots`。完整验收边界和行为不变量见
-[`docs/PORT_COMPLETION_CHECKLIST.md`](docs/PORT_COMPLETION_CHECKLIST.md)。
-
 ## 文档入口
 
 | 文档 | 用途 |
@@ -113,15 +66,22 @@ DEV 客户端依赖包的来源、替换规则与版本说明见 [`docs/DEV_MODS
 | [`docs/README.md`](docs/README.md) | 文档索引、当前状态和阅读顺序 |
 | [`docs/PORTING_TARGET.md`](docs/PORTING_TARGET.md) | 移植目标、范围边界和现代 API 取舍 |
 | [`docs/PORT_COMPLETION_CHECKLIST.md`](docs/PORT_COMPLETION_CHECKLIST.md) | 当前完成范围、核心不变量、最终验证 |
-| [`docs/SMOKE_TEST_REPORT.md`](docs/SMOKE_TEST_REPORT.md) | 服务端烟测和 RCON 检查 |
 | [`docs/GAMEPLAY_TUTORIAL.md`](docs/GAMEPLAY_TUTORIAL.md) | 玩家操作、机器、配方和配置说明 |
-| [`docs/MIGRATION_TRACKER.md`](docs/MIGRATION_TRACKER.md) | 版本矩阵、API 记录和历史执行日志 |
-| [`docs/PORT_GAP_AUDIT.md`](docs/PORT_GAP_AUDIT.md) | 上游对比审计；以最新验收清单覆盖历史快照 |
+| [`docs/ASTRAL_SURVIVAL_AND_UI.md`](docs/ASTRAL_SURVIVAL_AND_UI.md) | 星辉生存与界面说明 |
 | [`docs/SUBSTITUTIONS.md`](docs/SUBSTITUTIONS.md) | 1.12 依赖在现代版本中的替代关系 |
 
-迁移跟踪文档保留了开发过程中的历史记录；判断当前状态时，以 README、移植边界、
-最新验收清单和烟测报告为准。
+开发过程的历史验收记录见 git log 与 `docs/` 各专题文档。
 
-## 协议
+## 致谢与协议
 
-本移植沿用上游协议：AGPL-3.0-or-later。上游版权：Copyright (c) KeQingSoCute520 越人不歌。
+本项目的全部核心内容都来自原版 Pollution，在此向原作者致谢：
+
+- **Pollution**（1.12.2，含主线策划、代码与**全部材质美术**）
+  — Copyright (c) **KeQingSoCute520（越人不歌）**，
+  [GTQT/Pollution](https://github.com/GTQT/Pollution)。
+  本移植中的方块、物品、机器与 GUI 材质均取自原版，版权归原许可方所有。
+- **GregTech CEu Modern**、**Thaumcraft 4R** 及其它联动模组各自的原作者与贡献者。
+- 1.20.1 移植适配由 MineRealms 的移植贡献者完成。
+
+本移植沿用上游协议：**AGPL-3.0-or-later**（见 [LICENSE](LICENSE)）。
+任何二次分发请一并遵守该协议并保留对原作者的署名。

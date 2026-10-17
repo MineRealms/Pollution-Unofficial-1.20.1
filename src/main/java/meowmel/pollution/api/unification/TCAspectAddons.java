@@ -79,6 +79,13 @@ public final class TCAspectAddons {
         if (addonAspect == null || material == null) {
             return;
         }
+        // Optional addon jars can expose legacy sin aspects that are not
+        // registered by the active TC4R port. Do not create mappings for
+        // those absent registry entries; doing so only produces unusable
+        // recipes and a misleading startup warning.
+        if (!AspectApi.definitions().isEmpty() && !AspectApi.contains(addonAspect)) {
+            return;
+        }
         List<Material> materials = ASPECT_TO_MATERIALS.computeIfAbsent(addonAspect, key -> new ArrayList<>());
         if (!materials.contains(material)) {
             materials.add(material);
