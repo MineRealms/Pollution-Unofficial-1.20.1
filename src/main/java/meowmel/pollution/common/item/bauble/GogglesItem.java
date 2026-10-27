@@ -11,9 +11,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+import dev.tc4port.thaumcraft.api.ability.PlayerAbility;
 import dev.tc4port.thaumcraft.api.aspect.VisChannel;
-import dev.tc4port.thaumcraft.api.item.AuraRevealingGear;
-import dev.tc4port.thaumcraft.api.item.GogglesOverlayGear;
+import dev.tc4port.thaumcraft.api.item.PlayerAbilityGear;
 import dev.tc4port.thaumcraft.api.item.VisDiscountGear;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -31,7 +31,7 @@ import java.util.List;
 
 /** Powered helmet and Curios head accessory exposing the Thaumcraft goggles APIs. */
 public class GogglesItem extends ArmorComponentItem
-        implements ICurioItem, AuraRevealingGear, GogglesOverlayGear, VisDiscountGear {
+        implements ICurioItem, PlayerAbilityGear, VisDiscountGear {
 
     public static final String TAG_NIGHT_VISION = "Nightvision";
     public static final String TAG_TOGGLE_TIMER = "toggleTimer";
@@ -138,13 +138,8 @@ public class GogglesItem extends ArmorComponentItem
     }
 
     @Override
-    public boolean revealsThaumcraftAura(ItemStack stack, Player player) {
-        return true;
-    }
-
-    @Override
-    public boolean showsThaumcraftGogglesOverlay(ItemStack stack, Player player) {
-        return true;
+    public boolean grantsPlayerAbility(ItemStack stack, Player player, PlayerAbility ability) {
+        return ability == PlayerAbility.AURA_REVEALING || ability == PlayerAbility.GOGGLES_OVERLAY;
     }
 
     @Override

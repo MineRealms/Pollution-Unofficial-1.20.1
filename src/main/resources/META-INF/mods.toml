@@ -29,7 +29,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="thaumcraft"
     mandatory=true
-    versionRange="[${thaumcraft_version},)"
+    versionRange="[${thaumcraft_runtime_version},)"
     ordering="AFTER"
     side="BOTH"
 
