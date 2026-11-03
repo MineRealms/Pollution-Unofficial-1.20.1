@@ -1,0 +1,11 @@
+{
+ "direct": {},
+ "forge:conditions": [
+  {
+   "condition": "forge:mod_loaded",
+   "values": [
+    "gtmfo"
+   ]
+  }
+ ]
+}

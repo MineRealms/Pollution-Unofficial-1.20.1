@@ -1,0 +1,14 @@
+{
+ "direct": {
+  "gtnn:orange_metal_catalyst": {},
+  "gtnn:palladium_on_carbon_catalyst": {}
+ },
+ "forge:conditions": [
+  {
+   "condition": "forge:mod_loaded",
+   "values": [
+    "gtnn"
+   ]
+  }
+ ]
+}
