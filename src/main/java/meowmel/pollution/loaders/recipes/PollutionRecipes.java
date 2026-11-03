@@ -57,6 +57,8 @@ public final class PollutionRecipes {
         HatchRecipes.init(provider);
         MachineRecipes.init(provider);
         MagicCircuitRecipes.init(provider);
+        ThaumicCircuitRecipes.init(provider);
+        ThaumicIndustrialRecipes.init(provider);
         StructureBlockRecipes.init(provider);
         PlantBlockRecipes.init(provider);
         RemainingItemRecipes.init(provider);
