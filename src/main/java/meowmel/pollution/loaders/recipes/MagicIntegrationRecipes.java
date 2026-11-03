@@ -85,7 +85,6 @@ public final class MagicIntegrationRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         sterileSlate(provider);
         naturalInfusedCoil(provider);
-        bloodCircuit(provider);
         tarotStock(provider);
         magicCircuitBoardUlv(provider);
         magicCircuitBoardsLvHv(provider);
@@ -169,23 +168,8 @@ public final class MagicIntegrationRecipes {
     }
 
     private static void bloodCircuit(Consumer<FinishedRecipe> provider) {
-        FluidStack growthMedium = fluid(GTMaterials.SterileGrowthMedium, 1000);
-        FluidStack mana = fluid(PollutionMaterials.InfusedAura, 1000);
-        if (growthMedium == null || mana == null) {
-            Pollution.LOGGER.warn("Skipping magic_integration/blood_circuit_advanced: a required fluid is missing");
-            return;
-        }
-        GTRecipeBuilder.of(id("blood_circuit_advanced"), PORecipeMaps.MAGIC_ASSEMBLER_RECIPES)
-                .inputItems(PollutionItems.BLOOD_CIRCUIT.asStack())
-                .inputItems(PollutionItems.BLOOD_RATS_BRAIN.asStack())
-                .inputItems(PollutionItems.BLOOD_MITOCHONDRION_POWER.asStack())
-                .inputItems(PollutionItems.BLOOD_ENDORPHINS_STABILIZER.asStack())
-                .inputFluids(growthMedium)
-                .inputFluids(mana)
-                .outputItems(PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack())
-                .duration(500)
-                .EUt(GTValues.VA[GTValues.IV])
-                .save(provider);
+        // 2026-11 phase 3: the blood-magic assembler route is retired. The advanced
+        // template is now the TC infusion in ThaumicCircuitRecipes (templates 2..4).
     }
 
     // ////////////////////////////////////
@@ -397,7 +381,7 @@ public final class MagicIntegrationRecipes {
      * （血液培养基属 Blood Magic，整合包无）；BLOOD_CIRCUIT_ADVANCED ->
      * 本移植版 BLOOD_IPS_HUMAN_BRAIN（血肉培养链产物）；
      * ASTRAL_LENS_ADVANCED -> 本移植版 CULTIVATED_CRYSTAL
-     * （整合包无 Astral Sorcery）。ZPM 及以上需要星图晶圆/星辉，跳过。
+     * （整合包无 Astral Sorcery）。ZPM 及以上板见 MagicCircuitRecipes 的注魔链（非星辉系）。
      */
     private static void magicCircuitBoardLuv(Consumer<FinishedRecipe> provider) {
         FluidStack bioMedium = fluid(PollutionMaterials.InfusedAura, 500);
