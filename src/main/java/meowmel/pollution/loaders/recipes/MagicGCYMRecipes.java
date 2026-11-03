@@ -615,9 +615,8 @@ public final class MagicGCYMRecipes {
 
     /**
      * 六要素粉的粉碎与重结晶。上游使用 TC6 的 {@code BlocksTC.crystal*} 方块；
-     * TC4R 没有同名方块，改用 TC4R 的 {@code *_crystal_cluster} 方块
-     * （// 上游: BlocksTC.crystalAir/Fire/Water/Earth/Order/Entropy ->
-     * 本移植版: thaumcraft:*_crystal_cluster）。
+     * TC4R 晶簇仍可作为粉碎输入；流体返造只生成本模组的一份元素宝石，
+     * 不生成可拆出多碎片的 TC4R 晶簇，避免 144 mB 变成多份源质。
      */
     private static void elementCrystals(Consumer<FinishedRecipe> provider) {
         Material[] aspects = { PollutionMaterials.InfusedAir, PollutionMaterials.InfusedFire,
@@ -639,9 +638,11 @@ public final class MagicGCYMRecipes {
 
             FluidStack essence = fluid(aspects[index], 144);
             if (essence != null) {
+                // Do not manufacture native TC clusters: placing/breaking those yields multiple
+                // shards. Our own gem carries exactly one essentia unit, like 144 mB of fluid.
                 GTRecipeBuilder.of(id("element_crystal_reverse/" + names[index]), GTRecipeTypes.AUTOCLAVE_RECIPES)
                         .inputFluids(essence)
-                        .outputItems(cluster)
+                        .outputItems(ChemicalHelper.get(TagPrefix.gem, aspects[index]))
                         .duration(200)
                         .EUt(120)
                         .save(provider);
