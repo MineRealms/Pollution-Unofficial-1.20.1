@@ -30,6 +30,7 @@ public final class PollutionConfig {
     public static final ForgeConfigSpec.DoubleValue VIS_GENERATOR_POLLUTION_MULTIPLIER;
     public static final ForgeConfigSpec.DoubleValue VIS_PROVIDER_MULTIPLIER;
     public static final ForgeConfigSpec.DoubleValue FLUX_FUEL_CELL_FLUX_PER_TICK;
+    public static final ForgeConfigSpec.ConfigValue<java.util.List<? extends String>> EXTRA_THAUMIC_INDUSTRIAL_WHITELIST;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -113,6 +114,13 @@ public final class PollutionConfig {
                 .defineInRange("fluxFuelCellFluxPerTick", 0.005D, 0.0D, 100.0D);
         builder.pop();
 
+        builder.comment("Thaumic industrial infusion (TC recipe whitelist converter)").push("thaumic_industrial");
+        EXTRA_THAUMIC_INDUSTRIAL_WHITELIST = builder
+                .comment("Additional Thaumcraft result item ids allowed for industrial infusion conversion",
+                        "(the built-in mystic-material whitelist is always active).")
+                .defineListAllowEmpty("extraIndustrialWhitelist", java.util.List.of(),
+                        value -> value instanceof String id && net.minecraft.resources.ResourceLocation.tryParse(id) != null);
+        builder.pop();
         SPEC = builder.build();
     }
 
