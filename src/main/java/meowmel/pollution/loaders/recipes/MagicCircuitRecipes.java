@@ -109,7 +109,8 @@ public final class MagicCircuitRecipes {
         if (luvBoardAlternative(provider)) {
             added++;
         }
-        for (int tier = GTValues.ZPM; tier <= GTValues.MAX; tier++) {
+        // UEV..MAX disabled (phase 3, 2026-11): out of pack scope; items hidden in JEI.
+        for (int tier = GTValues.ZPM; tier <= GTValues.UHV; tier++) {
             if (highBoardInfusion(provider, tier)) {
                 added++;
             }
@@ -312,7 +313,8 @@ public final class MagicCircuitRecipes {
 
     private static int infusedCircuits(Consumer<FinishedRecipe> provider) {
         int added = 0;
-        for (int tier = GTValues.ZPM; tier <= GTValues.MAX; tier++) {
+        // UEV..MAX disabled (phase 3, 2026-11): out of pack scope; items hidden in JEI.
+        for (int tier = GTValues.ZPM; tier <= GTValues.UHV; tier++) {
             if (infusedCircuit(provider, tier)) {
                 added++;
             }
