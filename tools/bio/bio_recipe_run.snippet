@@ -1,0 +1,72 @@
+net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+if (server == null) return "NO_SERVER";
+java.util.concurrent.CompletableFuture<String> result = new java.util.concurrent.CompletableFuture<>();
+Runnable probe = () -> {
+    var level = server.m_129783_();
+    var pos = new net.minecraft.core.BlockPos(24, 250, 24);
+    var old = level.m_8055_(pos);
+    java.util.List<String> checks = new java.util.ArrayList<>();
+    try {
+        if (!old.m_60795_()) throw new IllegalStateException("Probe location occupied");
+        var def = com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES.get(new net.minecraft.resources.ResourceLocation("gtceu:luv_chemical_reactor"));
+        level.m_46597_(pos, def.getBlock().m_49966_());
+        var machine = (com.gregtechceu.gtceu.api.machine.WorkableTieredMachine) com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level, pos);
+        machine.onLoad(); // The block was placed and exercised in one synchronous server task.
+        var recipe = server.m_129894_().m_44051_().stream()
+                .filter(r -> r instanceof com.gregtechceu.gtceu.api.recipe.GTRecipe && r.m_6423_().toString().equals("society:chemical_reactor/bio/ips_assisted_stem_cells"))
+                .map(r -> (com.gregtechceu.gtceu.api.recipe.GTRecipe) r).findFirst().orElseThrow();
+        var reg = net.minecraft.core.registries.BuiltInRegistries.f_257033_;
+        machine.importItems.setStackInSlot(0, new net.minecraft.world.item.ItemStack(reg.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:small_osmiridium_dust")), 8));
+        machine.importItems.setStackInSlot(1, new net.minecraft.world.item.ItemStack(reg.m_7745_(new net.minecraft.resources.ResourceLocation("pollution:ips_human_brain"))));
+        machine.importFluids.fill(new net.minecraftforge.fluids.FluidStack(net.minecraft.core.registries.BuiltInRegistries.f_257020_.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:bacteria")), 1000), net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        machine.importFluids.fill(new net.minecraftforge.fluids.FluidStack(net.minecraft.core.registries.BuiltInRegistries.f_257020_.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:sterilized_growth_medium")), 1000), net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        if (com.gregtechceu.gtceu.api.recipe.RecipeHelper.checkConditions(recipe, machine.recipeLogic).isSuccess()) throw new IllegalStateException("Missing cleanroom passed");
+        checks.add("no cleanroom refused");
+        com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider sterile = new com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider() {
+            public java.util.Set<com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType> getTypes() { return java.util.Set.of(com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.STERILE_CLEANROOM); }
+            public boolean isClean() { return true; }
+            public com.gregtechceu.gtceu.api.machine.MetaMachine self() { return machine; }
+        };
+        machine.setCleanroom(new com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider() {
+            public java.util.Set<com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType> getTypes() { return java.util.Set.of(com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.CLEANROOM); }
+            public boolean isClean() { return true; }
+            public com.gregtechceu.gtceu.api.machine.MetaMachine self() { return machine; }
+        });
+        if (com.gregtechceu.gtceu.api.recipe.RecipeHelper.checkConditions(recipe, machine.recipeLogic).isSuccess()) throw new IllegalStateException("Ordinary cleanroom passed sterile condition");
+        checks.add("ordinary cleanroom refused");
+        machine.setCleanroom(sterile);
+        machine.importItems.setStackInSlot(1, net.minecraft.world.item.ItemStack.f_41583_);
+        if (com.gregtechceu.gtceu.api.recipe.RecipeHelper.matchContents(machine, recipe).isSuccess()) throw new IllegalStateException("Missing catalyst accepted");
+        machine.importItems.setStackInSlot(1, new net.minecraft.world.item.ItemStack(reg.m_7745_(new net.minecraft.resources.ResourceLocation("pollution:ips_human_brain"))));
+        checks.add("missing catalyst refused");
+        if (!com.gregtechceu.gtceu.api.recipe.RecipeHelper.checkConditions(recipe, machine.recipeLogic).isSuccess()) throw new IllegalStateException("Sterile room refused");
+        checks.add("sterile accepted");
+        // Begin lookup explicitly: this synchronous probe does not advance the world's offset timer.
+        machine.energyContainer.changeEnergy(machine.energyContainer.getEnergyCapacity());
+        machine.recipeLogic.findAndHandleRecipe();
+        checks.add("lookup=" + machine.recipeLogic.getStatus() + " fluids=" + machine.importFluids.getFluidInTank(0).getAmount() + "/" + machine.importFluids.getFluidInTank(1).getAmount());
+        checks.add("type=" + machine.getRecipeType() + " selected=" + recipe.id + " match=" + com.gregtechceu.gtceu.api.recipe.RecipeHelper.matchContents(machine, recipe));
+        var changed = machine.fullModifyRecipe(recipe);
+        checks.add("modified=" + (changed == null ? "null" : changed.duration));
+        // Run the actual recipe logic through two sequential batches; refill energy, never inputs.
+        for (int tick = 0; tick < 510; tick++) {
+            machine.energyContainer.changeEnergy(machine.energyContainer.getEnergyCapacity());
+            machine.recipeLogic.serverTick();
+        }
+        int cells = 0;
+        for (int i = 0; i < machine.exportItems.getSlots(); i++) {
+            var stack = machine.exportItems.getStackInSlot(i);
+            if (reg.m_7981_(stack.m_41720_()).toString().equals("gtceu:stem_cells")) cells += stack.m_41613_();
+        }
+        int brain = machine.importItems.getStackInSlot(1).m_41613_();
+        if (cells != 64 || brain != 1 || !machine.importItems.getStackInSlot(0).m_41619_())
+            throw new IllegalStateException("wrong output cells="+cells+" brain="+brain+" dust="+machine.importItems.getStackInSlot(0));
+        int sludge = machine.exportFluids.getFluidInTank(0).getAmount();
+        if (sludge != 1000 || machine.importFluids.getFluidInTank(0).getAmount() != 0 || machine.importFluids.getFluidInTank(1).getAmount() != 0) throw new IllegalStateException("Fluid accounting wrong, sludge="+sludge);
+        checks.add("two batches: cells=64 brain=1 dust=0 fluids=0 sludge=1000");
+        result.complete("PASS " + checks);
+    } catch (Throwable ex) { result.complete("FAIL " + ex + " checks=" + checks); }
+    finally { level.m_46597_(pos, old); }
+};
+if (server.m_18695_()) probe.run(); else server.execute(probe);
+return result.get(30, java.util.concurrent.TimeUnit.SECONDS);

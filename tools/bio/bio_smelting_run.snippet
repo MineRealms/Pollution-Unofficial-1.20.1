@@ -1,0 +1,63 @@
+var server=net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+var level=server.m_129783_();
+java.util.Map<net.minecraft.core.BlockPos,net.minecraft.world.level.block.state.BlockState> before=new java.util.LinkedHashMap<>();
+java.util.List<String> checks=new java.util.ArrayList<>();
+try {
+    for(boolean gt : new boolean[]{false,true}) {
+        int x=gt?64:48;
+        var origin=new net.minecraft.core.BlockPos(x,250,48);
+        var itemPos=new net.minecraft.core.BlockPos(x+1,250,48);
+        var fuelPos=new net.minecraft.core.BlockPos(x+2,250,48);
+        var energyPos=new net.minecraft.core.BlockPos(x+3,250,48);
+        var outputPos=new net.minecraft.core.BlockPos(x,251,48);
+        var defs=com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES;
+        var ids=new String[]{gt?"pollution:gt_essence_smelter":"pollution:essence_smelter","gtceu:lv_input_bus","gtceu:lv_input_hatch","gtceu:lv_energy_input_hatch","gtceu:lv_output_hatch"};
+        var positions=new net.minecraft.core.BlockPos[]{origin,itemPos,fuelPos,energyPos,outputPos};
+        for(int i=0;i<positions.length;i++) {
+            var old=level.m_8055_(positions[i]);
+            if(!old.m_60795_())throw new IllegalStateException("Fixture occupied "+positions[i]);
+            before.put(positions[i],old);
+            if(i==4&&!gt) {
+                var jar=net.minecraft.core.registries.BuiltInRegistries.f_256975_.m_7745_(new net.minecraft.resources.ResourceLocation("thaumcraft:warded_jar"));
+                level.m_46597_(positions[i],jar.m_49966_());
+            } else level.m_46597_(positions[i],defs.get(new net.minecraft.resources.ResourceLocation(ids[i])).getBlock().m_49966_());
+        }
+        var machine=com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,origin);
+        var items=(com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,itemPos);
+        var fuel=(com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,fuelPos);
+        var energy=(com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,energyPos);
+        var parent=com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.class;
+        var parts=parent.getDeclaredField("partPositions");parts.setAccessible(true);
+        parts.set(machine,gt?new net.minecraft.core.BlockPos[]{itemPos,fuelPos,energyPos,outputPos}:new net.minecraft.core.BlockPos[]{itemPos,fuelPos,energyPos});
+        var formed=parent.getDeclaredField("isFormed");formed.setAccessible(true);formed.setBoolean(machine,true);
+        var batchField=machine.getClass().getDeclaredField("batch");batchField.setAccessible(true);
+        var batch=(meowmel.pollution.api.magic.EssenceBatch)batchField.get(machine);
+        var tick=machine.getClass().getDeclaredMethod("tickSmelter");tick.setAccessible(true);
+        var dust=net.minecraft.core.registries.BuiltInRegistries.f_257033_.m_7745_(new net.minecraft.resources.ResourceLocation("pollution:infused_air_dust"));
+        items.getInventory().storage.setStackInSlot(0,new net.minecraft.world.item.ItemStack(dust,2));
+        fuel.tank.fillInternal(meowmel.pollution.api.unification.PollutionMaterials.InfusedFire.getFluid(1000),net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        energy.energyContainer.changeEnergy(energy.energyContainer.getEnergyCapacity());
+        long euBefore=energy.energyContainer.getEnergyStored();
+        for(int i=0;i<10;i++)tick.invoke(machine);
+        if(!items.getInventory().storage.getStackInSlot(0).m_41619_()||batch.progress()!=10)throw new IllegalStateException("Input/progress wrong gt="+gt+" progress="+batch.progress());
+        var saved=new net.minecraft.nbt.CompoundTag();machine.saveCustomPersistedData(saved,false);
+        batch.load(new net.minecraft.nbt.CompoundTag());machine.loadCustomPersistedData(saved);
+        formed.setBoolean(machine,false);tick.invoke(machine);
+        if(batch.progress()!=10||!batch.active())throw new IllegalStateException("Unforming cleared consumed batch");
+        formed.setBoolean(machine,true);
+        for(int i=0;i<10;i++)tick.invoke(machine);
+        if(batch.active())throw new IllegalStateException("Batch not finished gt="+gt+" remaining="+batch.remaining());
+        long euSpent=euBefore-energy.energyContainer.getEnergyStored();
+        int fuelLeft=fuel.tank.getFluidInTank(0).getAmount();
+        if(euSpent!=640||fuelLeft!=980)throw new IllegalStateException("Fuel/EU wrong gt="+gt+" eu="+euSpent+" fuelLeft="+fuelLeft);
+        if(gt) {
+            var output=(com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,outputPos);
+            if(output.tank.getFluidInTank(0).getAmount()!=288)throw new IllegalStateException("Expected 288mB");
+        } else {
+            var jar=(dev.tc4port.thaumcraft.api.essentia.EssentiaTransport)level.m_7702_(outputPos);
+            if(jar.essentiaAmount(net.minecraft.core.Direction.UP)!=2)throw new IllegalStateException("Expected 2 essentia");
+        }
+        checks.add((gt?"GT":"TC")+": input2 consumed once, paused/unformed+NBT retained,20ticks,640EU,20mB fire, output="+(gt?"288mB":"2 essentia"));
+    }
+    return "PASS "+checks+" (real parts/tick; structure flag injected, structure-pattern formation not tested)";
+} finally {before.forEach((pos,state)->level.m_46597_(pos,state));}

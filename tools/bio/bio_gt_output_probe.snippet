@@ -1,0 +1,42 @@
+var server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+var level = server.m_129783_();
+var a = new net.minecraft.core.BlockPos(32,250,32);
+var b = new net.minecraft.core.BlockPos(33,250,32);
+var c = new net.minecraft.core.BlockPos(34,250,32);
+java.util.Map<net.minecraft.core.BlockPos,net.minecraft.world.level.block.state.BlockState> before = new java.util.LinkedHashMap<>();
+try {
+    for(var pos: java.util.List.of(a,b,c)) {
+        var state=level.m_8055_(pos);
+        if(!state.m_60795_())return "REFUSED occupied";
+        before.put(pos,state);
+    }
+    var registry=com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES;
+    var controller=registry.get(new net.minecraft.resources.ResourceLocation("pollution:gt_essence_smelter"));
+    var export=registry.get(new net.minecraft.resources.ResourceLocation("gtceu:lv_output_hatch"));
+    level.m_46597_(a,controller.getBlock().m_49966_());
+    level.m_46597_(b,export.getBlock().m_49966_());
+    level.m_46597_(c,export.getBlock().m_49966_());
+    var machine=(meowmel.pollution.common.machine.multiblock.magic.GtEssenceSmelterMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,a);
+    var one=(com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,b);
+    var two=(com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,c);
+    var parent=com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.class;
+    var positions=parent.getDeclaredField("partPositions");positions.setAccessible(true);
+    positions.set(machine,new net.minecraft.core.BlockPos[]{b,c});
+    var field=machine.getClass().getDeclaredField("batch");field.setAccessible(true);
+    var batch=(meowmel.pollution.api.magic.EssenceBatch)field.get(machine);
+    var transfer=machine.getClass().getDeclaredMethod("transportEssence");transfer.setAccessible(true);
+    var fluid=meowmel.pollution.api.unification.PollutionMaterials.InfusedAir;
+    int capacity=one.tank.getTankCapacity(0);
+    one.tank.fillInternal(fluid.getFluid(capacity-17),net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+    two.tank.fillInternal(fluid.getFluid(capacity),net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+    batch.start(java.util.Map.of("thaumcraft:aer",144L),1);batch.advance();
+    transfer.invoke(machine);
+    if(batch.remaining().getOrDefault("thaumcraft:aer",0L)!=127)throw new IllegalStateException("Expected exact 127mB pending: "+batch.remaining());
+    var saved=new net.minecraft.nbt.CompoundTag();machine.saveCustomPersistedData(saved,false);
+    batch.load(new net.minecraft.nbt.CompoundTag());machine.loadCustomPersistedData(saved);
+    if(batch.remaining().getOrDefault("thaumcraft:aer",0L)!=127)throw new IllegalStateException("NBT lost fractional aspect");
+    two.tank.drainInternal(127,net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+    transfer.invoke(machine);
+    if(batch.active()||two.tank.getFluidInTank(0).getAmount()!=capacity)throw new IllegalStateException("Second hatch did not receive remainder");
+    return "PASS GT output: first hatch=17mB, pending=127mB survives NBT, second hatch=127mB, no duplicate";
+} finally {before.forEach((pos,state)->level.m_46597_(pos,state));}

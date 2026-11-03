@@ -1,0 +1,45 @@
+var server=net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+var level=server.m_129783_();
+var pos=new net.minecraft.core.BlockPos(40,250,40);
+var old=level.m_8055_(pos);
+try {
+    if(!old.m_60795_())return "REFUSED occupied";
+    var recipe=server.m_129894_().m_44051_().stream()
+        .filter(r->r instanceof com.gregtechceu.gtceu.api.recipe.GTRecipe && r.m_6423_().toString().equals("society:chemical_reactor/bio/ips_brain_bootstrap"))
+        .map(r->(com.gregtechceu.gtceu.api.recipe.GTRecipe)r).findFirst().orElseThrow();
+    var defs=com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES;
+    level.m_46597_(pos,defs.get(new net.minecraft.resources.ResourceLocation("gtceu:iv_chemical_reactor")).getBlock().m_49966_());
+    var low=(com.gregtechceu.gtceu.api.machine.WorkableTieredMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,pos);
+    low.onLoad();
+    if(low.fullModifyRecipe(recipe)!=null)throw new IllegalStateException("IV accepted LuV recipe");
+    level.m_46597_(pos,old);
+    level.m_46597_(pos,defs.get(new net.minecraft.resources.ResourceLocation("gtceu:luv_chemical_reactor")).getBlock().m_49966_());
+    var machine=(com.gregtechceu.gtceu.api.machine.WorkableTieredMachine)com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level,pos);
+    machine.onLoad();
+    var items=net.minecraft.core.registries.BuiltInRegistries.f_257033_;
+    var fluids=net.minecraft.core.registries.BuiltInRegistries.f_257020_;
+    machine.importItems.setStackInSlot(0,new net.minecraft.world.item.ItemStack(items.m_7745_(new net.minecraft.resources.ResourceLocation("pollution:rat_brain")),2));
+    machine.importItems.setStackInSlot(1,new net.minecraft.world.item.ItemStack(items.m_7745_(new net.minecraft.resources.ResourceLocation("thaumcraft:brain_jar"))));
+    String[] f={"pollution:infused_human","pollution:infused_life","gtceu:sterilized_growth_medium"};
+    int[] amounts={500,1000,1000};
+    for(int i=0;i<f.length;i++) {
+        int accepted=machine.importFluids.fill(new net.minecraftforge.fluids.FluidStack(fluids.m_7745_(new net.minecraft.resources.ResourceLocation(f[i])),amounts[i]),net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        if(accepted!=amounts[i])throw new IllegalStateException("Input fluid rejected: "+f[i]);
+    }
+    machine.setCleanroom(new com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider(){
+        public java.util.Set<com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType> getTypes(){return java.util.Set.of(com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.STERILE_CLEANROOM);}
+        public boolean isClean(){return true;}
+        public com.gregtechceu.gtceu.api.machine.MetaMachine self(){return machine;}
+    });
+    machine.energyContainer.changeEnergy(machine.energyContainer.getEnergyCapacity());
+    machine.recipeLogic.findAndHandleRecipe();
+    for(int tick=0;tick<1610;tick++) {
+        machine.energyContainer.changeEnergy(machine.energyContainer.getEnergyCapacity());
+        machine.recipeLogic.serverTick();
+    }
+    var stack=machine.exportItems.getStackInSlot(0);
+    if(!items.m_7981_(stack.m_41720_()).toString().equals("pollution:ips_human_brain") || stack.m_41613_()!=1)throw new IllegalStateException("Wrong product "+stack);
+    for(int i=0;i<2;i++)if(!machine.importItems.getStackInSlot(i).m_41619_())throw new IllegalStateException("Input item not consumed");
+    for(int i=0;i<3;i++)if(machine.importFluids.getFluidInTank(i).getAmount()!=0)throw new IllegalStateException("Input fluid not consumed");
+    return "PASS bootstrap: IV refused; LuV sterile reactor -> 1 iPS brain; 2 rat brains, 1 brain jar, 500/1000/1000mB consumed; duration=1600";
+} finally {level.m_46597_(pos,old);}

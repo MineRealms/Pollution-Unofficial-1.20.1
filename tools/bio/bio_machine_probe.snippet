@@ -1,0 +1,59 @@
+net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+if (server == null) return "NO_SERVER";
+java.util.concurrent.CompletableFuture<String> result = new java.util.concurrent.CompletableFuture<>();
+Runnable probe = () -> {
+    java.util.List<String> checks = new java.util.ArrayList<>();
+    var level = server.m_129783_();
+    var origin = new net.minecraft.core.BlockPos(16, 250, 16);
+    java.util.Map<net.minecraft.core.BlockPos, net.minecraft.world.level.block.state.BlockState> saved = new java.util.LinkedHashMap<>();
+    try {
+        var machineId = new net.minecraft.resources.ResourceLocation("pollution:essence_smelter");
+        var def = com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES.get(machineId);
+        var jarBlock = net.minecraft.core.registries.BuiltInRegistries.f_256975_.m_7745_(new net.minecraft.resources.ResourceLocation("thaumcraft:warded_jar"));
+        for (var pos : java.util.List.of(origin, origin.m_6630_(1), origin.m_6630_(2))) {
+            if (!level.m_8055_(pos).m_60795_()) throw new IllegalStateException("Probe position occupied: " + pos);
+            saved.put(pos, level.m_8055_(pos));
+        }
+        level.m_46597_(origin, def.getBlock().m_49966_());
+        level.m_46597_(origin.m_6630_(1), jarBlock.m_49966_());
+        level.m_46597_(origin.m_6630_(2), jarBlock.m_49966_());
+        var machine = (meowmel.pollution.common.machine.multiblock.magic.EssenceSmelterMachine)
+                com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level, origin);
+        var field = machine.getClass().getDeclaredField("batch");
+        field.setAccessible(true);
+        var batch = (meowmel.pollution.api.magic.EssenceBatch) field.get(machine);
+        var transfer = machine.getClass().getDeclaredMethod("transportEssence", net.minecraft.server.level.ServerLevel.class);
+        transfer.setAccessible(true);
+        var aer = dev.tc4port.thaumcraft.api.aspect.AspectId.parse("aer");
+        var one = (dev.tc4port.thaumcraft.api.essentia.EssentiaTransport) level.m_7702_(origin.m_6630_(1));
+        var two = (dev.tc4port.thaumcraft.api.essentia.EssentiaTransport) level.m_7702_(origin.m_6630_(2));
+        batch.start(java.util.Map.of(aer.toString(), 100L), 1); batch.advance();
+        transfer.invoke(machine, level);
+        long left = batch.remaining().getOrDefault(aer.toString(), 0L);
+        int first = one.essentiaAmount(net.minecraft.core.Direction.UP);
+        int second = two.essentiaAmount(net.minecraft.core.Direction.UP);
+        if (first + second + left != 100) throw new IllegalStateException("Non-conserving output " + first + "+" + second + "+" + left);
+        checks.add("multi-jar conserved: " + first + "+" + second + "+pending " + left + "=100");
+        one.addEssentia(aer, 1000, net.minecraft.core.Direction.UP, dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode.EXECUTE);
+        two.addEssentia(aer, 1000, net.minecraft.core.Direction.UP, dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode.EXECUTE);
+        batch.start(java.util.Map.of(aer.toString(), 10L), 1); batch.advance();
+        transfer.invoke(machine, level);
+        if (batch.remaining().getOrDefault(aer.toString(), 0L) != 10) throw new IllegalStateException("Full receivers voided output");
+        var savedBatch = new net.minecraft.nbt.CompoundTag();
+        machine.saveCustomPersistedData(savedBatch, false);
+        batch.load(new net.minecraft.nbt.CompoundTag());
+        machine.loadCustomPersistedData(savedBatch);
+        if (!batch.ready() || batch.remaining().getOrDefault(aer.toString(), 0L) != 10) throw new IllegalStateException("NBT lost pending");
+        one.takeEssentia(aer, 6, net.minecraft.core.Direction.UP, dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode.EXECUTE);
+        transfer.invoke(machine, level);
+        if (batch.remaining().getOrDefault(aer.toString(), 0L) != 4) throw new IllegalStateException("Partial receiver did not leave exactly 4");
+        two.takeEssentia(aer, 4, net.minecraft.core.Direction.UP, dev.tc4port.thaumcraft.api.essentia.EssentiaTransferMode.EXECUTE);
+        transfer.invoke(machine, level);
+        if (batch.active()) throw new IllegalStateException("Last 4 not delivered");
+        checks.add("full jars keep pending, machine NBT restores, partial 6+4 delivered once");
+        result.complete("PASS " + checks);
+    } catch (Throwable ex) { result.complete("FAIL " + ex + " checks=" + checks); }
+    finally { saved.forEach((pos, state) -> level.m_46597_(pos, state)); }
+};
+if (server.m_18695_()) probe.run(); else server.execute(probe);
+return result.get(30, java.util.concurrent.TimeUnit.SECONDS);
