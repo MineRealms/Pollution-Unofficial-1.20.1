@@ -2,7 +2,9 @@ package meowmel.pollution.compat.jei;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import meowmel.pollution.Pollution;
+import meowmel.pollution.common.item.PollutionItems;
 import meowmel.pollution.api.amplification.MagicJeiHintResolver;
 import meowmel.pollution.api.amplification.MagicMachineProfileRegistry;
 import meowmel.pollution.api.amplification.MagicProcessTag;
@@ -18,6 +20,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -75,6 +78,28 @@ public final class PollutionJeiPlugin implements IModPlugin {
         registration.addRecipes(MagicHatchInfoCategory.RECIPE_TYPE, magicHatchRecipes());
         MagicGuideJeiInfo.register(registration);
         MagicRecipeDataInfos.install();
+    }
+
+    /** Phase 3 (2026-11): disabled out-of-scope items (blood_circuit.7..12, magic_circuit UEV..MAX). */
+    @Override
+    public void onRuntimeAvailable(mezz.jei.api.runtime.IJeiRuntime runtime) {
+        List<ItemStack> disabled = new ArrayList<>();
+        for (String name : new String[]{
+                "blood_circuit.7", "blood_circuit.8", "blood_circuit.9", "blood_circuit.10",
+                "blood_circuit.11", "blood_circuit.12",
+                "magic_circuit.uev", "magic_circuit.uiv", "magic_circuit.uxv", "magic_circuit.opv",
+                "magic_circuit.max", "magic_circuit_board.uev", "magic_circuit_board.uiv",
+                "magic_circuit_board.uxv", "magic_circuit_board.opv", "magic_circuit_board.max"}) {
+            ItemEntry<Item> entry = PollutionItems.get(name);
+            if (entry != null) {
+                disabled.add(entry.asStack());
+            }
+        }
+        if (!disabled.isEmpty()) {
+            runtime.getIngredientManager().removeIngredientsAtRuntime(
+                    mezz.jei.api.constants.VanillaTypes.ITEM_STACK, disabled);
+            Pollution.LOGGER.info("[thaumic-circuit] hid {} disabled items from JEI", disabled.size());
+        }
     }
 
     @Override
