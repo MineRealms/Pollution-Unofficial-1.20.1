@@ -14,10 +14,12 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import dev.tc4port.thaumcraft.api.aspect.AspectAmounts;
-import dev.tc4port.thaumcraft.api.aspect.AspectApi;
+import dev.tc4port.thaumcraft.api.aspect.AspectQueryApi;
 import dev.tc4port.thaumcraft.api.aspect.AspectId;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.unification.PollutionMaterials;
+import meowmel.pollution.api.magic.EssenceBatch;
+import net.minecraft.nbt.CompoundTag;
 import meowmel.pollution.common.block.PollutionMagicBlocks;
 import meowmel.pollution.common.machine.multiblock.AbstractDisplayMultiblockMachine;
 import meowmel.pollution.common.machine.multiblock.MagicStructureElements;
@@ -39,12 +41,9 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
 
     private TickableSubscription tickSubscription;
 
-    private int progress;
-    private int duration;
+    private final EssenceBatch batch = new EssenceBatch();
     private int infusedCost = 1;
     private int euTier = 1;
-    private boolean working;
-    private AspectAmounts pending = AspectAmounts.EMPTY;
 
     public GtEssenceSmelterMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -69,7 +68,10 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
 
     private void tickSmelter() {
         if (!(getLevel() instanceof ServerLevel) || !isFormed()) {
-            reset();
+            return;
+        }
+        if (batch.ready()) {
+            transportEssence();
             return;
         }
         EnergyHatchPartMachine energy = findPart(EnergyHatchPartMachine.class);
@@ -77,7 +79,6 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         FluidHatchPartMachine outputFluids = findFluidHatch(PartAbility.EXPORT_FLUIDS);
         ItemBusPartMachine items = findPart(ItemBusPartMachine.class);
         if (energy == null || fluids == null || outputFluids == null || items == null) {
-            reset();
             return;
         }
 
@@ -85,7 +86,7 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         euTier = Math.max(1, (int) Math.ceil(Math.log((double) inputVoltage / 32) / Math.log(4) + 1));
         infusedCost = euTier <= 1 ? 1 : Math.max(1, (int) (Math.log(1024) / Math.log(euTier)));
 
-        if (!working && !tryStartRecipe(items)) {
+        if (!batch.active() && !tryStartRecipe(items)) {
             return;
         }
 
@@ -94,68 +95,65 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         }
         FluidStack infusedFire = PollutionMaterials.InfusedFire.getFluid(infusedCost);
         if (!infusedFire.isEmpty() &&
-                fluids.tank.drain(infusedFire, IFluidHandler.FluidAction.SIMULATE).getAmount() < infusedCost) {
+                fluids.tank.drainInternal(infusedFire, IFluidHandler.FluidAction.SIMULATE).getAmount() < infusedCost) {
             return;
         }
         energy.energyContainer.changeEnergy(-inputVoltage);
         if (!infusedFire.isEmpty()) {
-            fluids.tank.drain(infusedFire, IFluidHandler.FluidAction.EXECUTE);
+            fluids.tank.drainInternal(infusedFire, IFluidHandler.FluidAction.EXECUTE);
         }
-        progress++;
-        if (progress >= duration) {
-            transportEssence(outputFluids, pending);
-            reset();
-        }
+        batch.advance();
+        markDirty();
+        if (batch.ready()) transportEssence();
     }
 
     private boolean tryStartRecipe(ItemBusPartMachine items) {
         var inventory = items.getInventory().storage;
         for (int slot = 0; slot < inventory.getSlots(); slot++) {
-            ItemStack stack = inventory.getStackInSlot(slot);
-            if (stack.isEmpty()) {
-                continue;
-            }
-            AspectAmounts aspects = AspectApi.getItemAspects(stack);
-            if (aspects.amounts().isEmpty()) {
-                continue;
-            }
-            int total = 0;
-            for (Map.Entry<AspectId, Integer> entry : aspects.amounts().entrySet()) {
-                total += (entry.getValue() == null ? 0 : entry.getValue()) * stack.getCount();
-            }
-            duration = Math.max(20, total * 10 / (int) Math.pow(4, Math.max(0, euTier - 1)));
-            pending = scale(aspects, stack.getCount());
-            inventory.extractItem(slot, stack.getCount(), false);
-            progress = 0;
-            working = true;
+            ItemStack candidate = inventory.extractItem(slot, Integer.MAX_VALUE, true);
+            if (candidate.isEmpty()) continue;
+            AspectAmounts aspects = AspectQueryApi.item(candidate);
+            Map<String, Long> outputs = outputs(aspects, candidate.getCount());
+            if (outputs.isEmpty()) continue;
+            ItemStack extracted = inventory.extractItem(slot, candidate.getCount(), false);
+            if (extracted.isEmpty()) continue;
+            outputs = outputs(aspects, extracted.getCount());
+            long total = aspects.amounts().values().stream().filter(java.util.Objects::nonNull)
+                    .mapToLong(n -> Math.max(0, n)).sum() * extracted.getCount();
+            int ticks = (int) Math.min(Integer.MAX_VALUE,
+                    Math.max(20D, total * 10D / Math.pow(4, Math.max(0, euTier - 1))));
+            batch.start(outputs, ticks);
+            markDirty();
             return true;
         }
         return false;
     }
 
-    private static AspectAmounts scale(AspectAmounts aspects, int multiplier) {
-        if (multiplier <= 1) {
-            return aspects;
+    /** Reject unmapped aspects before consuming any input; amounts are buffered in mB. */
+    private static Map<String, Long> outputs(AspectAmounts aspects, int count) {
+        Map<String, Long> outputs = new java.util.LinkedHashMap<>();
+        for (var entry : aspects.amounts().entrySet()) {
+            if (entry.getValue() == null || entry.getValue() <= 0) continue;
+            Material material = PollutionAspectMapping.materialOf(entry.getKey()).orElse(null);
+            if (material == null || !material.hasFluid() || material.getFluid(1).isEmpty()) return Map.of();
+            outputs.put(entry.getKey().toString(), (long) entry.getValue() * count * 144L);
         }
-        java.util.Map<AspectId, Integer> scaled = new java.util.HashMap<>();
-        aspects.amounts().forEach((aspect, amount) -> scaled.put(aspect, amount * multiplier));
-        return new AspectAmounts(scaled);
+        return outputs;
     }
 
-    private void transportEssence(FluidHatchPartMachine fluids, AspectAmounts aspects) {
-        for (Map.Entry<AspectId, Integer> entry : aspects.amounts().entrySet()) {
-            Material material = PollutionAspectMapping.materialOf(entry.getKey()).orElse(null);
-            if (material == null || !material.hasFluid()) {
-                continue;
-            }
-            int amount = entry.getValue() == null ? 0 : entry.getValue();
-            if (amount <= 0) {
-                continue;
-            }
-            FluidStack fluid = material.getFluid(144 * amount);
-            if (!fluid.isEmpty()) {
-                fluids.tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
-            }
+    private void transportEssence() {
+        // Try every export hatch. Partial fills retain their exact mB remainder, not rounded aspects.
+        for (IMultiPart part : getParts()) {
+            if (!(part.self() instanceof FluidHatchPartMachine hatch)
+                    || !PartAbility.EXPORT_FLUIDS.isApplicable(hatch.getBlockState().getBlock())) continue;
+            boolean changed = batch.offer((key, amount) -> {
+                Material material = PollutionAspectMapping.materialOf(AspectId.parse(key)).orElse(null);
+                if (material == null || !material.hasFluid()) return 0L;
+                FluidStack fluid = material.getFluid((int) Math.min(Integer.MAX_VALUE, amount));
+                return fluid.isEmpty() ? 0L : hatch.tank.fillInternal(fluid, IFluidHandler.FluidAction.EXECUTE);
+            });
+            if (changed) markDirty();
+            if (!batch.active()) break;
         }
     }
 
@@ -178,19 +176,24 @@ public class GtEssenceSmelterMachine extends AbstractDisplayMultiblockMachine {
         return null;
     }
 
-    private void reset() {
-        progress = 0;
-        duration = 0;
-        working = false;
-        pending = AspectAmounts.EMPTY;
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        tag.put("EssenceBatch", batch.save());
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        batch.load(tag.getCompound("EssenceBatch"));
     }
 
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("pollution.ui.progress", progress, duration));
-            textList.add(Component.translatable("pollution.ui.essence_work", Component.translatable(working ? "pollution.ui.yes" : "pollution.ui.no"), infusedCost));
+            textList.add(Component.translatable("pollution.ui.progress", batch.progress(), batch.duration()));
+            textList.add(Component.translatable("pollution.ui.essence_work", Component.translatable(batch.active() ? "pollution.ui.yes" : "pollution.ui.no"), infusedCost));
         }
     }
 

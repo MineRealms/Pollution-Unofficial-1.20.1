@@ -86,13 +86,13 @@ public class InfusedExchangeMachine extends AbstractDisplayMultiblockMachine {
             }
             FluidStack fluid = material.getFluid(MB_PER_ESSENTIA);
             if (fluid.isEmpty() ||
-                    output.tank.fill(fluid, IFluidHandler.FluidAction.SIMULATE) < MB_PER_ESSENTIA) {
+                    output.tank.fillInternal(fluid, IFluidHandler.FluidAction.SIMULATE) < MB_PER_ESSENTIA) {
                 return;
             }
             if (EssentiaApi.extract(level, source.get(), aspect, 1, EssentiaTransferMode.EXECUTE) <= 0) {
                 return;
             }
-            output.tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+            output.tank.fillInternal(fluid, IFluidHandler.FluidAction.EXECUTE);
             return;
         }
     }
