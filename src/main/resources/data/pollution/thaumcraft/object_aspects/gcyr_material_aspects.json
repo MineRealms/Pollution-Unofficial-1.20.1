@@ -93,10 +93,8 @@
  },
  "forge:conditions": [
   {
-   "condition": "forge:mod_loaded",
-   "values": [
-    "gcyr"
-   ]
+   "type": "forge:mod_loaded",
+   "modid": "gcyr"
   }
  ]
 }

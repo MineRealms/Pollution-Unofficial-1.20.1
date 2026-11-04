@@ -2,10 +2,8 @@
  "direct": {},
  "forge:conditions": [
   {
-   "condition": "forge:mod_loaded",
-   "values": [
-    "gtmfo"
-   ]
+   "type": "forge:mod_loaded",
+   "modid": "gtmfo"
   }
  ]
 }
