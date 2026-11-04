@@ -71,12 +71,15 @@ public final class ThaumicCircuitRecipes {
     // ////////////////////////////////////
 
     private static void templates(Consumer<FinishedRecipe> provider) {
-        // Template 1: arcane worktable — thaumium + quicksilver + LV circuit, auram vis.
-        arcane(provider, "blood_circuit_template_1", item("thaumcraft", "thaumium_ingot"),
+        // Template 1: arcane worktable — thaumium + quicksilver + LV circuit.
+        // The vis map may only name the six primal channels: TC4R rejects any compound
+        // aspect with "Arcane recipe cost is not a vis channel" and drops the recipe
+        // silently (no build error). auram is a compound, so it is charged as aer.
+        arcane(provider, "blood_circuit_template_1", PollutionItems.BLOOD_CIRCUIT.asStack(),
                 new String[]{"TQT", " B "},
                 Map.of("T", "thaumcraft:thaumium_ingot", "Q", "thaumcraft:quicksilver",
                         "B", "gtceu:basic_integrated_circuit"),
-                Map.of("auram", 16, "ordo", 8));
+                Map.of("aer", 16, "ordo", 8));
 
         // Templates 2..4: TC infusions on the previous template.
         infusion(provider, "blood_circuit_template_2", PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack(), 3,
