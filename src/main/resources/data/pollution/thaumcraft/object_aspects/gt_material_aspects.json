@@ -175,8 +175,7 @@
   "gtceu:black_matter_plate": {},
   "gtceu:black_matter_rod": {},
   "gtceu:black_steel_block": {
-   "metallum": 16,
-   "ordo": 5
+   "metallum": 9
   },
   "gtceu:black_steel_double_cable": {},
   "gtceu:black_steel_double_wire": {},
@@ -203,19 +202,27 @@
   "gtceu:black_steel_single_cable": {},
   "gtceu:black_steel_single_wire": {},
   "gtceu:blackstone_dust": {},
-  "gtceu:blue_alloy_block": {},
+  "gtceu:blue_alloy_block": {
+   "vitreus": 9
+  },
   "gtceu:blue_alloy_bolt": {},
   "gtceu:blue_alloy_double_cable": {},
   "gtceu:blue_alloy_double_wire": {},
-  "gtceu:blue_alloy_dust": {},
+  "gtceu:blue_alloy_dust": {
+   "vitreus": 1
+  },
   "gtceu:blue_alloy_frame": {},
   "gtceu:blue_alloy_hex_cable": {},
   "gtceu:blue_alloy_hex_wire": {},
-  "gtceu:blue_alloy_ingot": {},
+  "gtceu:blue_alloy_ingot": {
+   "vitreus": 1
+  },
   "gtceu:blue_alloy_nugget": {},
   "gtceu:blue_alloy_octal_cable": {},
   "gtceu:blue_alloy_octal_wire": {},
-  "gtceu:blue_alloy_plate": {},
+  "gtceu:blue_alloy_plate": {
+   "vitreus": 1
+  },
   "gtceu:blue_alloy_quadruple_cable": {},
   "gtceu:blue_alloy_quadruple_wire": {},
   "gtceu:blue_alloy_rod": {},
@@ -224,8 +231,7 @@
   "gtceu:blue_alloy_single_wire": {},
   "gtceu:blue_glass_lens": {},
   "gtceu:blue_steel_block": {
-   "metallum": 14,
-   "ordo": 4
+   "metallum": 9
   },
   "gtceu:blue_steel_bolt": {},
   "gtceu:blue_steel_buzz_saw_blade": {},
@@ -408,9 +414,7 @@
   "gtceu:coal_dust": {},
   "gtceu:cobalt_block": {},
   "gtceu:cobalt_brass_block": {
-   "instrumentum": 7,
-   "metallum": 14,
-   "perditio": 7
+   "metallum": 9
   },
   "gtceu:cobalt_brass_bolt": {},
   "gtceu:cobalt_brass_buzz_saw_blade": {},
@@ -654,26 +658,22 @@
   "gtceu:cyan_glass_lens": {},
   "gtceu:cyclohexanone_oxime_dust": {},
   "gtceu:damascus_steel_block": {
-   "metallum": 27,
-   "ordo": 9
+   "metallum": 9
   },
   "gtceu:damascus_steel_bolt": {},
   "gtceu:damascus_steel_buzz_saw_blade": {},
   "gtceu:damascus_steel_chainsaw_head": {},
   "gtceu:damascus_steel_drill_head": {},
   "gtceu:damascus_steel_dust": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:damascus_steel_gear": {},
   "gtceu:damascus_steel_ingot": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:damascus_steel_nugget": {},
   "gtceu:damascus_steel_plate": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:damascus_steel_rod": {},
   "gtceu:damascus_steel_screw": {},
@@ -721,7 +721,9 @@
   "gtceu:diamond_screwdriver_tip": {},
   "gtceu:diamond_wire_cutter_head": {},
   "gtceu:diamond_wrench_tip": {},
-  "gtceu:diatomite_dust": {},
+  "gtceu:diatomite_dust": {
+   "vitreus": 1
+  },
   "gtceu:diethylenetriaminepentaacetic_acid_dust": {},
   "gtceu:diorite_dust": {},
   "gtceu:diphenylamine_dust": {},
@@ -865,7 +867,9 @@
   "gtceu:echo_shard_dust": {},
   "gtceu:echo_shard_plate": {},
   "gtceu:echo_shard_rod": {},
-  "gtceu:electrotine_dust": {},
+  "gtceu:electrotine_dust": {
+   "vitreus": 1
+  },
   "gtceu:electrum_block": {},
   "gtceu:electrum_bolt": {},
   "gtceu:electrum_double_cable": {},
@@ -983,8 +987,7 @@
   "gtceu:exquisite_emerald_gem": {},
   "gtceu:exquisite_glass_gem": {},
   "gtceu:exquisite_green_sapphire_gem": {
-   "lucrum": 2,
-   "vitreus": 2
+   "vitreus": 4
   },
   "gtceu:exquisite_grossular_gem": {},
   "gtceu:exquisite_lapis_gem": {},
@@ -1000,14 +1003,12 @@
   "gtceu:exquisite_red_garnet_gem": {},
   "gtceu:exquisite_rock_salt_gem": {},
   "gtceu:exquisite_ruby_gem": {
-   "lucrum": 2,
-   "vitreus": 2
+   "vitreus": 4
   },
   "gtceu:exquisite_rutile_gem": {},
   "gtceu:exquisite_salt_gem": {},
   "gtceu:exquisite_sapphire_gem": {
-   "lucrum": 2,
-   "vitreus": 2
+   "vitreus": 4
   },
   "gtceu:exquisite_sodalite_gem": {},
   "gtceu:exquisite_spessartine_gem": {},
@@ -1071,7 +1072,6 @@
   "gtceu:flawless_emerald_gem": {},
   "gtceu:flawless_glass_gem": {},
   "gtceu:flawless_green_sapphire_gem": {
-   "lucrum": 2,
    "vitreus": 2
   },
   "gtceu:flawless_grossular_gem": {},
@@ -1088,13 +1088,11 @@
   "gtceu:flawless_red_garnet_gem": {},
   "gtceu:flawless_rock_salt_gem": {},
   "gtceu:flawless_ruby_gem": {
-   "lucrum": 2,
    "vitreus": 2
   },
   "gtceu:flawless_rutile_gem": {},
   "gtceu:flawless_salt_gem": {},
   "gtceu:flawless_sapphire_gem": {
-   "lucrum": 2,
    "vitreus": 2
   },
   "gtceu:flawless_sodalite_gem": {},
@@ -1176,7 +1174,9 @@
   "gtceu:graphene_single_cable": {},
   "gtceu:graphene_single_wire": {},
   "gtceu:graphite_dust": {},
-  "gtceu:graphite_uranium_mixture_dust": {},
+  "gtceu:graphite_uranium_mixture_dust": {
+   "venenum": 1
+  },
   "gtceu:gray_glass_lens": {},
   "gtceu:green_glass_lens": {},
   "gtceu:green_sapphire_block": {
@@ -1285,19 +1285,24 @@
   "gtceu:hsla_steel_rod": {},
   "gtceu:hsla_steel_spring": {},
   "gtceu:hsse_block": {
-   "metallum": 5,
-   "ordo": 1
+   "metallum": 9
   },
   "gtceu:hsse_bolt": {},
   "gtceu:hsse_buzz_saw_blade": {},
   "gtceu:hsse_chainsaw_head": {},
   "gtceu:hsse_drill_head": {},
-  "gtceu:hsse_dust": {},
+  "gtceu:hsse_dust": {
+   "metallum": 1
+  },
   "gtceu:hsse_frame": {},
   "gtceu:hsse_gear": {},
-  "gtceu:hsse_ingot": {},
+  "gtceu:hsse_ingot": {
+   "metallum": 1
+  },
   "gtceu:hsse_nugget": {},
-  "gtceu:hsse_plate": {},
+  "gtceu:hsse_plate": {
+   "metallum": 1
+  },
   "gtceu:hsse_ring": {},
   "gtceu:hsse_rod": {},
   "gtceu:hsse_screw": {},
@@ -1306,23 +1311,28 @@
   "gtceu:hsse_wire_cutter_head": {},
   "gtceu:hsse_wrench_tip": {},
   "gtceu:hssg_block": {
-   "metallum": 7,
-   "ordo": 2
+   "metallum": 9
   },
   "gtceu:hssg_bolt": {},
   "gtceu:hssg_double_cable": {},
   "gtceu:hssg_double_wire": {},
-  "gtceu:hssg_dust": {},
+  "gtceu:hssg_dust": {
+   "metallum": 1
+  },
   "gtceu:hssg_foil": {},
   "gtceu:hssg_frame": {},
   "gtceu:hssg_gear": {},
   "gtceu:hssg_hex_cable": {},
   "gtceu:hssg_hex_wire": {},
-  "gtceu:hssg_ingot": {},
+  "gtceu:hssg_ingot": {
+   "metallum": 1
+  },
   "gtceu:hssg_nugget": {},
   "gtceu:hssg_octal_cable": {},
   "gtceu:hssg_octal_wire": {},
-  "gtceu:hssg_plate": {},
+  "gtceu:hssg_plate": {
+   "metallum": 1
+  },
   "gtceu:hssg_quadruple_cable": {},
   "gtceu:hssg_quadruple_wire": {},
   "gtceu:hssg_rod": {},
@@ -1332,17 +1342,22 @@
   "gtceu:hssg_spring": {},
   "gtceu:hssg_turbine_blade": {},
   "gtceu:hsss_block": {
-   "metallum": 5,
-   "ordo": 1
+   "metallum": 9
   },
   "gtceu:hsss_bolt": {},
-  "gtceu:hsss_dust": {},
+  "gtceu:hsss_dust": {
+   "metallum": 1
+  },
   "gtceu:hsss_foil": {},
   "gtceu:hsss_frame": {},
   "gtceu:hsss_gear": {},
-  "gtceu:hsss_ingot": {},
+  "gtceu:hsss_ingot": {
+   "metallum": 1
+  },
   "gtceu:hsss_nugget": {},
-  "gtceu:hsss_plate": {},
+  "gtceu:hsss_plate": {
+   "metallum": 1
+  },
   "gtceu:hsss_ring": {},
   "gtceu:hsss_rod": {},
   "gtceu:hsss_rotor": {},
@@ -1472,14 +1487,19 @@
   "gtceu:impure_yellow_limonite_dust": {},
   "gtceu:impure_zeolite_dust": {},
   "gtceu:incoloy_ma_956_block": {
-   "metallum": 6,
-   "ordo": 2
+   "metallum": 9
   },
-  "gtceu:incoloy_ma_956_dust": {},
+  "gtceu:incoloy_ma_956_dust": {
+   "metallum": 1
+  },
   "gtceu:incoloy_ma_956_frame": {},
-  "gtceu:incoloy_ma_956_ingot": {},
+  "gtceu:incoloy_ma_956_ingot": {
+   "metallum": 1
+  },
   "gtceu:incoloy_ma_956_nugget": {},
-  "gtceu:incoloy_ma_956_plate": {},
+  "gtceu:incoloy_ma_956_plate": {
+   "metallum": 1
+  },
   "gtceu:incoloy_ma_956_rod": {},
   "gtceu:indium_block": {},
   "gtceu:indium_dust": {},
@@ -1783,21 +1803,17 @@
   "gtceu:magnetic_samarium_nugget": {},
   "gtceu:magnetic_samarium_rod": {},
   "gtceu:magnetic_steel_block": {
-   "metallum": 27,
-   "ordo": 9
+   "metallum": 9
   },
   "gtceu:magnetic_steel_dust": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:magnetic_steel_ingot": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:magnetic_steel_nugget": {},
   "gtceu:magnetic_steel_plate": {
-   "metallum": 3,
-   "ordo": 1
+   "metallum": 1
   },
   "gtceu:magnetic_steel_rod": {},
   "gtceu:magnetite_dust": {},
@@ -2186,7 +2202,9 @@
   "gtceu:phosphorus_pentoxide_dust": {},
   "gtceu:phthalic_anhydride_dust": {},
   "gtceu:pink_glass_lens": {},
-  "gtceu:pitchblende_dust": {},
+  "gtceu:pitchblende_dust": {
+   "venenum": 1
+  },
   "gtceu:platinum_block": {},
   "gtceu:platinum_bolt": {},
   "gtceu:platinum_double_cable": {},
@@ -2232,7 +2250,9 @@
   "gtceu:plutonium_dust": {},
   "gtceu:plutonium_ingot": {},
   "gtceu:plutonium_nugget": {},
-  "gtceu:plutonium_oxide_uranium_mixture_dust": {},
+  "gtceu:plutonium_oxide_uranium_mixture_dust": {
+   "venenum": 1
+  },
   "gtceu:pollucite_dust": {},
   "gtceu:polybenzimidazole_block": {},
   "gtceu:polybenzimidazole_dust": {},
@@ -2655,15 +2675,20 @@
   "gtceu:raw_cooperite_block": {},
   "gtceu:raw_diamond": {},
   "gtceu:raw_diamond_block": {},
-  "gtceu:raw_diatomite": {},
-  "gtceu:raw_diatomite_block": {
-   "lucrum": 1,
+  "gtceu:raw_diatomite": {
    "vitreus": 1
+  },
+  "gtceu:raw_diatomite_block": {
+   "vitreus": 9
   },
   "gtceu:raw_dolomite": {},
   "gtceu:raw_dolomite_block": {},
-  "gtceu:raw_electrotine": {},
-  "gtceu:raw_electrotine_block": {},
+  "gtceu:raw_electrotine": {
+   "vitreus": 1
+  },
+  "gtceu:raw_electrotine_block": {
+   "vitreus": 9
+  },
   "gtceu:raw_emerald": {},
   "gtceu:raw_emerald_block": {},
   "gtceu:raw_fullers_earth": {},
@@ -2687,8 +2712,7 @@
    "vitreus": 2
   },
   "gtceu:raw_green_sapphire_block": {
-   "lucrum": 18,
-   "vitreus": 18
+   "vitreus": 9
   },
   "gtceu:raw_grossular": {},
   "gtceu:raw_grossular_block": {},
@@ -2748,11 +2772,11 @@
   "gtceu:raw_palladium_block": {},
   "gtceu:raw_pentlandite": {},
   "gtceu:raw_pentlandite_block": {},
-  "gtceu:raw_pitchblende": {},
+  "gtceu:raw_pitchblende": {
+   "venenum": 1
+  },
   "gtceu:raw_pitchblende_block": {
-   "metallum": 3,
-   "potentia": 3,
-   "venenum": 3
+   "venenum": 9
   },
   "gtceu:raw_platinum": {},
   "gtceu:raw_platinum_block": {},
@@ -2776,10 +2800,11 @@
   "gtceu:raw_realgar_block": {},
   "gtceu:raw_red_garnet": {},
   "gtceu:raw_red_garnet_block": {},
-  "gtceu:raw_redstone": {},
-  "gtceu:raw_redstone_block": {
-   "lucrum": 1,
+  "gtceu:raw_redstone": {
    "vitreus": 1
+  },
+  "gtceu:raw_redstone_block": {
+   "vitreus": 9
   },
   "gtceu:raw_rock_salt": {},
   "gtceu:raw_rock_salt_block": {},
@@ -2791,8 +2816,7 @@
    "vitreus": 2
   },
   "gtceu:raw_ruby_block": {
-   "lucrum": 18,
-   "vitreus": 18
+   "vitreus": 9
   },
   "gtceu:raw_salt": {},
   "gtceu:raw_salt_block": {},
@@ -2803,8 +2827,7 @@
    "vitreus": 2
   },
   "gtceu:raw_sapphire_block": {
-   "lucrum": 18,
-   "vitreus": 18
+   "vitreus": 9
   },
   "gtceu:raw_scheelite": {},
   "gtceu:raw_scheelite_block": {},
@@ -2847,11 +2870,11 @@
   "gtceu:raw_trona_block": {},
   "gtceu:raw_tungstate": {},
   "gtceu:raw_tungstate_block": {},
-  "gtceu:raw_uraninite": {},
+  "gtceu:raw_uraninite": {
+   "venenum": 1
+  },
   "gtceu:raw_uraninite_block": {
-   "metallum": 6,
-   "potentia": 6,
-   "venenum": 6
+   "venenum": 9
   },
   "gtceu:raw_vanadium_magnetite": {},
   "gtceu:raw_vanadium_magnetite_block": {},
@@ -2869,21 +2892,26 @@
   "gtceu:realgar_dust": {},
   "gtceu:realgar_gem": {},
   "gtceu:red_alloy_block": {
-   "lucrum": 1,
-   "vitreus": 1
+   "vitreus": 9
   },
   "gtceu:red_alloy_bolt": {},
   "gtceu:red_alloy_double_cable": {},
   "gtceu:red_alloy_double_wire": {},
-  "gtceu:red_alloy_dust": {},
+  "gtceu:red_alloy_dust": {
+   "vitreus": 1
+  },
   "gtceu:red_alloy_foil": {},
   "gtceu:red_alloy_hex_cable": {},
   "gtceu:red_alloy_hex_wire": {},
-  "gtceu:red_alloy_ingot": {},
+  "gtceu:red_alloy_ingot": {
+   "vitreus": 1
+  },
   "gtceu:red_alloy_nugget": {},
   "gtceu:red_alloy_octal_cable": {},
   "gtceu:red_alloy_octal_wire": {},
-  "gtceu:red_alloy_plate": {},
+  "gtceu:red_alloy_plate": {
+   "vitreus": 1
+  },
   "gtceu:red_alloy_quadruple_cable": {},
   "gtceu:red_alloy_quadruple_wire": {},
   "gtceu:red_alloy_rod": {},
@@ -2898,10 +2926,7 @@
   "gtceu:red_glass_lens": {},
   "gtceu:red_granite": {},
   "gtceu:red_steel_block": {
-   "instrumentum": 1,
-   "metallum": 17,
-   "ordo": 4,
-   "perditio": 1
+   "metallum": 9
   },
   "gtceu:red_steel_bolt": {},
   "gtceu:red_steel_buzz_saw_blade": {},
@@ -2924,7 +2949,9 @@
   "gtceu:red_steel_wire_cutter_head": {},
   "gtceu:red_steel_wrench_tip": {},
   "gtceu:redrock_dust": {},
-  "gtceu:redstone_plate": {},
+  "gtceu:redstone_plate": {
+   "vitreus": 1
+  },
   "gtceu:refined_almandine_ore": {},
   "gtceu:refined_aluminium_ore": {},
   "gtceu:refined_alunite_ore": {},
@@ -4588,8 +4615,7 @@
   "gtceu:tungsten_small_fluid_pipe": {},
   "gtceu:tungsten_spring": {},
   "gtceu:tungsten_steel_block": {
-   "metallum": 13,
-   "ordo": 4
+   "metallum": 9
   },
   "gtceu:tungsten_steel_bolt": {},
   "gtceu:tungsten_steel_buzz_saw_blade": {},
@@ -4663,7 +4689,9 @@
   "gtceu:ultimet_wire_cutter_head": {},
   "gtceu:ultimet_wrench_tip": {},
   "gtceu:unfired_porcelain_tile_dust": {},
-  "gtceu:uraninite_dust": {},
+  "gtceu:uraninite_dust": {
+   "venenum": 1
+  },
   "gtceu:uranium_235_block": {},
   "gtceu:uranium_235_dust": {},
   "gtceu:uranium_235_ingot": {},
@@ -4693,30 +4721,36 @@
    "venenum": 2
   },
   "gtceu:uranium_rhodium_dinaquadide_block": {
-   "metallum": 4,
-   "potentia": 4,
-   "venenum": 4
+   "venenum": 9
   },
   "gtceu:uranium_rhodium_dinaquadide_double_wire": {},
-  "gtceu:uranium_rhodium_dinaquadide_dust": {},
+  "gtceu:uranium_rhodium_dinaquadide_dust": {
+   "venenum": 1
+  },
   "gtceu:uranium_rhodium_dinaquadide_foil": {},
   "gtceu:uranium_rhodium_dinaquadide_hex_wire": {},
-  "gtceu:uranium_rhodium_dinaquadide_ingot": {},
+  "gtceu:uranium_rhodium_dinaquadide_ingot": {
+   "venenum": 1
+  },
   "gtceu:uranium_rhodium_dinaquadide_nugget": {},
   "gtceu:uranium_rhodium_dinaquadide_octal_wire": {},
-  "gtceu:uranium_rhodium_dinaquadide_plate": {},
+  "gtceu:uranium_rhodium_dinaquadide_plate": {
+   "venenum": 1
+  },
   "gtceu:uranium_rhodium_dinaquadide_quadruple_wire": {},
   "gtceu:uranium_rhodium_dinaquadide_single_wire": {},
   "gtceu:uranium_rod": {},
   "gtceu:uranium_triplatinum_block": {
-   "metallum": 4,
-   "potentia": 4,
-   "venenum": 4
+   "venenum": 9
   },
   "gtceu:uranium_triplatinum_double_wire": {},
-  "gtceu:uranium_triplatinum_dust": {},
+  "gtceu:uranium_triplatinum_dust": {
+   "venenum": 1
+  },
   "gtceu:uranium_triplatinum_hex_wire": {},
-  "gtceu:uranium_triplatinum_ingot": {},
+  "gtceu:uranium_triplatinum_ingot": {
+   "venenum": 1
+  },
   "gtceu:uranium_triplatinum_nugget": {},
   "gtceu:uranium_triplatinum_octal_wire": {},
   "gtceu:uranium_triplatinum_quadruple_wire": {},
@@ -4749,28 +4783,27 @@
   "gtceu:vanadium_nugget": {},
   "gtceu:vanadium_pentoxide_dust": {},
   "gtceu:vanadium_steel_block": {
-   "metallum": 21,
-   "ordo": 7
+   "metallum": 9
   },
   "gtceu:vanadium_steel_bolt": {},
   "gtceu:vanadium_steel_buzz_saw_blade": {},
   "gtceu:vanadium_steel_chainsaw_head": {},
   "gtceu:vanadium_steel_drill_head": {},
   "gtceu:vanadium_steel_dust": {
-   "metallum": 2
+   "metallum": 1
   },
   "gtceu:vanadium_steel_foil": {},
   "gtceu:vanadium_steel_gear": {},
   "gtceu:vanadium_steel_huge_fluid_pipe": {},
   "gtceu:vanadium_steel_ingot": {
-   "metallum": 2
+   "metallum": 1
   },
   "gtceu:vanadium_steel_large_fluid_pipe": {},
   "gtceu:vanadium_steel_nonuple_fluid_pipe": {},
   "gtceu:vanadium_steel_normal_fluid_pipe": {},
   "gtceu:vanadium_steel_nugget": {},
   "gtceu:vanadium_steel_plate": {
-   "metallum": 2
+   "metallum": 1
   },
   "gtceu:vanadium_steel_quadruple_fluid_pipe": {},
   "gtceu:vanadium_steel_rod": {},
@@ -4874,7 +4907,9 @@
   "gtceu:zinc_sulfate_dust": {},
   "gtceu:zinc_sulfide_dust": {},
   "gtceu:zincite_dust": {},
-  "pollution:advanced_battery_content_dust": {},
+  "pollution:advanced_battery_content_dust": {
+   "potentia": 1
+  },
   "pollution:advanced_battery_hull_alloy_block": {},
   "pollution:advanced_battery_hull_alloy_bolt": {},
   "pollution:advanced_battery_hull_alloy_dust": {},
@@ -4899,10 +4934,14 @@
   "pollution:advanced_thaumic_superconductor_quadruple_wire": {},
   "pollution:advanced_thaumic_superconductor_single_wire": {},
   "pollution:aertitanium_block": {
-   "aer": 5
+   "aer": 9
   },
-  "pollution:aertitanium_dust": {},
-  "pollution:aertitanium_ingot": {},
+  "pollution:aertitanium_dust": {
+   "aer": 1
+  },
+  "pollution:aertitanium_ingot": {
+   "aer": 1
+  },
   "pollution:aertitanium_nugget": {},
   "pollution:aetheric_dark_steel_block": {},
   "pollution:aetheric_dark_steel_bolt": {},
@@ -4927,31 +4966,40 @@
   "pollution:amber_dust": {},
   "pollution:amber_gem": {},
   "pollution:aquasilver_block": {
-   "aqua": 5
+   "aqua": 9
   },
-  "pollution:aquasilver_dust": {},
-  "pollution:aquasilver_ingot": {},
+  "pollution:aquasilver_dust": {
+   "aqua": 1
+  },
+  "pollution:aquasilver_ingot": {
+   "aqua": 1
+  },
   "pollution:aquasilver_nugget": {},
   "pollution:authority_lead_block": {
-   "ignis": 3,
-   "ordo": 4
+   "ordo": 9
   },
   "pollution:authority_lead_bolt": {},
   "pollution:authority_lead_double_cable": {},
   "pollution:authority_lead_double_wire": {},
-  "pollution:authority_lead_dust": {},
+  "pollution:authority_lead_dust": {
+   "ordo": 1
+  },
   "pollution:authority_lead_foil": {},
   "pollution:authority_lead_hex_cable": {},
   "pollution:authority_lead_hex_wire": {},
   "pollution:authority_lead_huge_fluid_pipe": {},
-  "pollution:authority_lead_ingot": {},
+  "pollution:authority_lead_ingot": {
+   "ordo": 1
+  },
   "pollution:authority_lead_large_fluid_pipe": {},
   "pollution:authority_lead_nonuple_fluid_pipe": {},
   "pollution:authority_lead_normal_fluid_pipe": {},
   "pollution:authority_lead_nugget": {},
   "pollution:authority_lead_octal_cable": {},
   "pollution:authority_lead_octal_wire": {},
-  "pollution:authority_lead_plate": {},
+  "pollution:authority_lead_plate": {
+   "ordo": 1
+  },
   "pollution:authority_lead_quadruple_cable": {},
   "pollution:authority_lead_quadruple_fluid_pipe": {},
   "pollution:authority_lead_quadruple_wire": {},
@@ -4964,18 +5012,25 @@
   "pollution:authority_lead_small_fluid_pipe": {},
   "pollution:authority_lead_spring": {},
   "pollution:authority_lead_tiny_fluid_pipe": {},
-  "pollution:basic_battery_content_dust": {},
+  "pollution:basic_battery_content_dust": {
+   "potentia": 1
+  },
   "pollution:basic_battery_hull_alloy_block": {
-   "metallum": 6,
-   "ordo": 3
+   "metallum": 9
   },
   "pollution:basic_battery_hull_alloy_bolt": {},
-  "pollution:basic_battery_hull_alloy_dust": {},
+  "pollution:basic_battery_hull_alloy_dust": {
+   "metallum": 1
+  },
   "pollution:basic_battery_hull_alloy_frame": {},
   "pollution:basic_battery_hull_alloy_gear": {},
-  "pollution:basic_battery_hull_alloy_ingot": {},
+  "pollution:basic_battery_hull_alloy_ingot": {
+   "metallum": 1
+  },
   "pollution:basic_battery_hull_alloy_nugget": {},
-  "pollution:basic_battery_hull_alloy_plate": {},
+  "pollution:basic_battery_hull_alloy_plate": {
+   "metallum": 1
+  },
   "pollution:basic_battery_hull_alloy_ring": {},
   "pollution:basic_battery_hull_alloy_rod": {},
   "pollution:basic_battery_hull_alloy_rotor": {},
@@ -5116,19 +5171,22 @@
   "pollution:dragonstone_dust": {},
   "pollution:dragonstone_gem": {},
   "pollution:dumb_tin_block": {
-   "aer": 2,
-   "aqua": 5
+   "aqua": 9
   },
   "pollution:dumb_tin_bolt": {},
   "pollution:dumb_tin_double_cable": {},
   "pollution:dumb_tin_double_wire": {},
-  "pollution:dumb_tin_dust": {},
+  "pollution:dumb_tin_dust": {
+   "aqua": 1
+  },
   "pollution:dumb_tin_foil": {},
   "pollution:dumb_tin_hex_cable": {},
   "pollution:dumb_tin_hex_wire": {},
   "pollution:dumb_tin_huge_item_pipe": {},
   "pollution:dumb_tin_huge_restrictive_item_pipe": {},
-  "pollution:dumb_tin_ingot": {},
+  "pollution:dumb_tin_ingot": {
+   "aqua": 1
+  },
   "pollution:dumb_tin_large_item_pipe": {},
   "pollution:dumb_tin_large_restrictive_item_pipe": {},
   "pollution:dumb_tin_normal_item_pipe": {},
@@ -5136,7 +5194,9 @@
   "pollution:dumb_tin_nugget": {},
   "pollution:dumb_tin_octal_cable": {},
   "pollution:dumb_tin_octal_wire": {},
-  "pollution:dumb_tin_plate": {},
+  "pollution:dumb_tin_plate": {
+   "aqua": 1
+  },
   "pollution:dumb_tin_quadruple_cable": {},
   "pollution:dumb_tin_quadruple_wire": {},
   "pollution:dumb_tin_ring": {},
@@ -5180,121 +5240,133 @@
   "pollution:exquisite_amber_gem": {},
   "pollution:exquisite_dragonstone_gem": {},
   "pollution:exquisite_elven_quartz_gem": {},
-  "pollution:exquisite_flame_coal_gem": {},
-  "pollution:exquisite_infused_air_gem": {
-   "aer": 1
+  "pollution:exquisite_flame_coal_gem": {
+   "ignis": 4
   },
-  "pollution:exquisite_infused_alchemy_gem": {},
+  "pollution:exquisite_infused_air_gem": {
+   "aer": 4
+  },
+  "pollution:exquisite_infused_alchemy_gem": {
+   "praecantatio": 4
+  },
   "pollution:exquisite_infused_alien_gem": {
-   "alienis": 1
+   "alienis": 4
   },
   "pollution:exquisite_infused_animal_gem": {
-   "bestia": 1
+   "bestia": 4
   },
   "pollution:exquisite_infused_armor_gem": {
-   "tutamen": 1
+   "tutamen": 4
   },
   "pollution:exquisite_infused_aura_gem": {
-   "auram": 1
+   "auram": 4
   },
   "pollution:exquisite_infused_cold_gem": {
-   "gelum": 1
+   "gelum": 4
   },
   "pollution:exquisite_infused_craft_gem": {
-   "fabrico": 1
+   "fabrico": 4
   },
   "pollution:exquisite_infused_crystal_gem": {
-   "vitreus": 1
+   "vitreus": 4
   },
   "pollution:exquisite_infused_dark_gem": {
-   "tenebrae": 1
+   "tenebrae": 4
   },
   "pollution:exquisite_infused_death_gem": {
-   "mortuus": 1
+   "mortuus": 4
   },
   "pollution:exquisite_infused_earth_gem": {
-   "terra": 1
+   "terra": 4
   },
   "pollution:exquisite_infused_energy_gem": {
-   "potentia": 1
+   "potentia": 4
   },
   "pollution:exquisite_infused_entropy_gem": {
-   "perditio": 1
+   "perditio": 4
   },
   "pollution:exquisite_infused_exchange_gem": {
-   "permutatio": 1
+   "permutatio": 4
   },
   "pollution:exquisite_infused_fire_gem": {
-   "ignis": 1
+   "ignis": 4
   },
   "pollution:exquisite_infused_fly_gem": {
-   "volatus": 1
+   "volatus": 4
   },
   "pollution:exquisite_infused_greed_gem": {
-   "lucrum": 1
+   "lucrum": 4
   },
   "pollution:exquisite_infused_human_gem": {
-   "humanus": 1
+   "humanus": 4
   },
   "pollution:exquisite_infused_instrument_gem": {
-   "instrumentum": 1
+   "instrumentum": 4
   },
   "pollution:exquisite_infused_life_gem": {
-   "victus": 1
+   "victus": 4
   },
   "pollution:exquisite_infused_light_gem": {
-   "lux": 1
+   "lux": 4
   },
   "pollution:exquisite_infused_magic_gem": {
-   "praecantatio": 1
+   "praecantatio": 4
   },
   "pollution:exquisite_infused_mechanics_gem": {
-   "machina": 1
+   "machina": 4
   },
   "pollution:exquisite_infused_metal_gem": {
-   "metallum": 1
+   "metallum": 4
   },
   "pollution:exquisite_infused_motion_gem": {
-   "motus": 1
+   "motus": 4
   },
   "pollution:exquisite_infused_order_gem": {
-   "ordo": 1
+   "ordo": 4
   },
   "pollution:exquisite_infused_plant_gem": {
-   "herba": 1
+   "herba": 4
   },
   "pollution:exquisite_infused_sense_gem": {
-   "sensus": 1
+   "sensus": 4
   },
   "pollution:exquisite_infused_soul_gem": {
-   "spiritus": 1
+   "spiritus": 4
   },
-  "pollution:exquisite_infused_spatio_gem": {},
+  "pollution:exquisite_infused_spatio_gem": {
+   "vacuos": 4
+  },
   "pollution:exquisite_infused_taint_gem": {
-   "vitium": 1
+   "vitium": 4
   },
-  "pollution:exquisite_infused_tempus_gem": {},
+  "pollution:exquisite_infused_tempus_gem": {
+   "permutatio": 4
+  },
   "pollution:exquisite_infused_thought_gem": {
-   "cognitio": 1
+   "cognitio": 4
   },
-  "pollution:exquisite_infused_tinctura_gem": {},
+  "pollution:exquisite_infused_tinctura_gem": {
+   "sensus": 4
+  },
   "pollution:exquisite_infused_trap_gem": {
-   "vinculum": 1
+   "vinculum": 4
   },
   "pollution:exquisite_infused_undead_gem": {
-   "exanimis": 1
+   "exanimis": 4
   },
   "pollution:exquisite_infused_void_gem": {
-   "vacuos": 1
+   "vacuos": 4
   },
   "pollution:exquisite_infused_water_gem": {
-   "aqua": 1
+   "aqua": 4
   },
   "pollution:exquisite_infused_weapon_gem": {
-   "telum": 1
+   "telum": 4
   },
   "pollution:exquisite_optical_grade_aquamarine_gem": {},
-  "pollution:exquisite_scabyst_gem": {},
+  "pollution:exquisite_scabyst_gem": {
+   "ordo": 4
+  },
   "pollution:exquisite_valonite_gem": {},
   "pollution:fading_nexus_block": {},
   "pollution:fading_nexus_bolt": {},
@@ -5310,134 +5382,151 @@
   "pollution:fading_nexus_round": {},
   "pollution:fading_nexus_screw": {},
   "pollution:ferrous_chloride_dust": {},
-  "pollution:filth_dust": {},
+  "pollution:filth_dust": {
+   "vitium": 1
+  },
   "pollution:fine_authority_lead_wire": {},
   "pollution:fine_dumb_tin_wire": {},
   "pollution:fine_melt_gold_wire": {},
   "pollution:flame_coal_block": {
-   "ignis": 5,
-   "terra": 2
+   "ignis": 9
   },
-  "pollution:flame_coal_dust": {},
-  "pollution:flame_coal_gem": {},
+  "pollution:flame_coal_dust": {
+   "ignis": 1
+  },
+  "pollution:flame_coal_gem": {
+   "ignis": 1
+  },
   "pollution:flawless_amber_gem": {},
   "pollution:flawless_dragonstone_gem": {},
   "pollution:flawless_elven_quartz_gem": {},
-  "pollution:flawless_flame_coal_gem": {},
-  "pollution:flawless_infused_air_gem": {
-   "aer": 1
+  "pollution:flawless_flame_coal_gem": {
+   "ignis": 2
   },
-  "pollution:flawless_infused_alchemy_gem": {},
+  "pollution:flawless_infused_air_gem": {
+   "aer": 2
+  },
+  "pollution:flawless_infused_alchemy_gem": {
+   "praecantatio": 2
+  },
   "pollution:flawless_infused_alien_gem": {
-   "alienis": 1
+   "alienis": 2
   },
   "pollution:flawless_infused_animal_gem": {
-   "bestia": 1
+   "bestia": 2
   },
   "pollution:flawless_infused_armor_gem": {
-   "tutamen": 1
+   "tutamen": 2
   },
   "pollution:flawless_infused_aura_gem": {
-   "auram": 1
+   "auram": 2
   },
   "pollution:flawless_infused_cold_gem": {
-   "gelum": 1
+   "gelum": 2
   },
   "pollution:flawless_infused_craft_gem": {
-   "fabrico": 1
+   "fabrico": 2
   },
   "pollution:flawless_infused_crystal_gem": {
-   "vitreus": 1
+   "vitreus": 2
   },
   "pollution:flawless_infused_dark_gem": {
-   "tenebrae": 1
+   "tenebrae": 2
   },
   "pollution:flawless_infused_death_gem": {
-   "mortuus": 1
+   "mortuus": 2
   },
   "pollution:flawless_infused_earth_gem": {
-   "terra": 1
+   "terra": 2
   },
   "pollution:flawless_infused_energy_gem": {
-   "potentia": 1
+   "potentia": 2
   },
   "pollution:flawless_infused_entropy_gem": {
-   "perditio": 1
+   "perditio": 2
   },
   "pollution:flawless_infused_exchange_gem": {
-   "permutatio": 1
+   "permutatio": 2
   },
   "pollution:flawless_infused_fire_gem": {
-   "ignis": 1
+   "ignis": 2
   },
   "pollution:flawless_infused_fly_gem": {
-   "volatus": 1
+   "volatus": 2
   },
   "pollution:flawless_infused_greed_gem": {
-   "lucrum": 1
+   "lucrum": 2
   },
   "pollution:flawless_infused_human_gem": {
-   "humanus": 1
+   "humanus": 2
   },
   "pollution:flawless_infused_instrument_gem": {
-   "instrumentum": 1
+   "instrumentum": 2
   },
   "pollution:flawless_infused_life_gem": {
-   "victus": 1
+   "victus": 2
   },
   "pollution:flawless_infused_light_gem": {
-   "lux": 1
+   "lux": 2
   },
   "pollution:flawless_infused_magic_gem": {
-   "praecantatio": 1
+   "praecantatio": 2
   },
   "pollution:flawless_infused_mechanics_gem": {
-   "machina": 1
+   "machina": 2
   },
   "pollution:flawless_infused_metal_gem": {
-   "metallum": 1
+   "metallum": 2
   },
   "pollution:flawless_infused_motion_gem": {
-   "motus": 1
+   "motus": 2
   },
   "pollution:flawless_infused_order_gem": {
-   "ordo": 1
+   "ordo": 2
   },
   "pollution:flawless_infused_plant_gem": {
-   "herba": 1
+   "herba": 2
   },
   "pollution:flawless_infused_sense_gem": {
-   "sensus": 1
+   "sensus": 2
   },
   "pollution:flawless_infused_soul_gem": {
-   "spiritus": 1
+   "spiritus": 2
   },
-  "pollution:flawless_infused_spatio_gem": {},
+  "pollution:flawless_infused_spatio_gem": {
+   "vacuos": 2
+  },
   "pollution:flawless_infused_taint_gem": {
-   "vitium": 1
+   "vitium": 2
   },
-  "pollution:flawless_infused_tempus_gem": {},
+  "pollution:flawless_infused_tempus_gem": {
+   "permutatio": 2
+  },
   "pollution:flawless_infused_thought_gem": {
-   "cognitio": 1
+   "cognitio": 2
   },
-  "pollution:flawless_infused_tinctura_gem": {},
+  "pollution:flawless_infused_tinctura_gem": {
+   "sensus": 2
+  },
   "pollution:flawless_infused_trap_gem": {
-   "vinculum": 1
+   "vinculum": 2
   },
   "pollution:flawless_infused_undead_gem": {
-   "exanimis": 1
+   "exanimis": 2
   },
   "pollution:flawless_infused_void_gem": {
-   "vacuos": 1
+   "vacuos": 2
   },
   "pollution:flawless_infused_water_gem": {
-   "aqua": 1
+   "aqua": 2
   },
   "pollution:flawless_infused_weapon_gem": {
-   "telum": 1
+   "telum": 2
   },
   "pollution:flawless_optical_grade_aquamarine_gem": {},
-  "pollution:flawless_scabyst_gem": {},
+  "pollution:flawless_scabyst_gem": {
+   "ordo": 2
+  },
   "pollution:flawless_valonite_gem": {},
   "pollution:hafnocene_dichloride_dust": {},
   "pollution:highmana_stannous_sulfate_dust": {},
@@ -5468,12 +5557,14 @@
   "pollution:hyperdimensional_silver_round": {},
   "pollution:hyperdimensional_silver_screw": {},
   "pollution:ignissteel_block": {
-   "ignis": 5,
-   "metallum": 6,
-   "ordo": 2
+   "metallum": 9
   },
-  "pollution:ignissteel_dust": {},
-  "pollution:ignissteel_ingot": {},
+  "pollution:ignissteel_dust": {
+   "metallum": 1
+  },
+  "pollution:ignissteel_ingot": {
+   "metallum": 1
+  },
   "pollution:ignissteel_nugget": {},
   "pollution:iizunamaru_electrum_block": {},
   "pollution:iizunamaru_electrum_bolt": {},
@@ -5554,11 +5645,14 @@
    "aer": 1
   },
   "pollution:infused_alchemy_block": {
-   "aqua": 4,
-   "praecantatio": 4
+   "praecantatio": 9
   },
-  "pollution:infused_alchemy_dust": {},
-  "pollution:infused_alchemy_gem": {},
+  "pollution:infused_alchemy_dust": {
+   "praecantatio": 1
+  },
+  "pollution:infused_alchemy_gem": {
+   "praecantatio": 1
+  },
   "pollution:infused_alien_block": {
    "alienis": 9
   },
@@ -5812,11 +5906,14 @@
    "spiritus": 1
   },
   "pollution:infused_spatio_block": {
-   "perditio": 4,
-   "vacuos": 4
+   "vacuos": 9
   },
-  "pollution:infused_spatio_dust": {},
-  "pollution:infused_spatio_gem": {},
+  "pollution:infused_spatio_dust": {
+   "vacuos": 1
+  },
+  "pollution:infused_spatio_gem": {
+   "vacuos": 1
+  },
   "pollution:infused_taint_block": {
    "vitium": 9
   },
@@ -5827,12 +5924,14 @@
    "vitium": 1
   },
   "pollution:infused_tempus_block": {
-   "perditio": 2,
-   "permutatio": 4,
-   "vacuos": 2
+   "permutatio": 9
   },
-  "pollution:infused_tempus_dust": {},
-  "pollution:infused_tempus_gem": {},
+  "pollution:infused_tempus_dust": {
+   "permutatio": 1
+  },
+  "pollution:infused_tempus_gem": {
+   "permutatio": 1
+  },
   "pollution:infused_thought_block": {
    "cognitio": 9
   },
@@ -5843,11 +5942,14 @@
    "cognitio": 1
   },
   "pollution:infused_tinctura_block": {
-   "permutatio": 4,
-   "sensus": 4
+   "sensus": 9
   },
-  "pollution:infused_tinctura_dust": {},
-  "pollution:infused_tinctura_gem": {},
+  "pollution:infused_tinctura_dust": {
+   "sensus": 1
+  },
+  "pollution:infused_tinctura_gem": {
+   "sensus": 1
+  },
   "pollution:infused_trap_block": {
    "vinculum": 9
   },
@@ -5953,24 +6055,29 @@
   "pollution:lotus_dust_dust": {},
   "pollution:magical_sulfo_plumbic_salt_dust": {},
   "pollution:melt_gold_block": {
-   "aer": 4,
-   "ignis": 3
+   "aer": 9
   },
   "pollution:melt_gold_double_cable": {},
   "pollution:melt_gold_double_wire": {},
-  "pollution:melt_gold_dust": {},
+  "pollution:melt_gold_dust": {
+   "aer": 1
+  },
   "pollution:melt_gold_foil": {},
   "pollution:melt_gold_hex_cable": {},
   "pollution:melt_gold_hex_wire": {},
   "pollution:melt_gold_huge_fluid_pipe": {},
-  "pollution:melt_gold_ingot": {},
+  "pollution:melt_gold_ingot": {
+   "aer": 1
+  },
   "pollution:melt_gold_large_fluid_pipe": {},
   "pollution:melt_gold_nonuple_fluid_pipe": {},
   "pollution:melt_gold_normal_fluid_pipe": {},
   "pollution:melt_gold_nugget": {},
   "pollution:melt_gold_octal_cable": {},
   "pollution:melt_gold_octal_wire": {},
-  "pollution:melt_gold_plate": {},
+  "pollution:melt_gold_plate": {
+   "aer": 1
+  },
   "pollution:melt_gold_quadruple_cable": {},
   "pollution:melt_gold_quadruple_fluid_pipe": {},
   "pollution:melt_gold_quadruple_wire": {},
@@ -5982,8 +6089,7 @@
   "pollution:melt_gold_spring": {},
   "pollution:melt_gold_tiny_fluid_pipe": {},
   "pollution:octine_block": {
-   "aer": 2,
-   "ignis": 5
+   "ignis": 9
   },
   "pollution:octine_bolt": {},
   "pollution:octine_buzz_saw_blade": {},
@@ -5991,21 +6097,27 @@
   "pollution:octine_double_cable": {},
   "pollution:octine_double_wire": {},
   "pollution:octine_drill_head": {},
-  "pollution:octine_dust": {},
+  "pollution:octine_dust": {
+   "ignis": 1
+  },
   "pollution:octine_foil": {},
   "pollution:octine_frame": {},
   "pollution:octine_gear": {},
   "pollution:octine_hex_cable": {},
   "pollution:octine_hex_wire": {},
   "pollution:octine_huge_fluid_pipe": {},
-  "pollution:octine_ingot": {},
+  "pollution:octine_ingot": {
+   "ignis": 1
+  },
   "pollution:octine_large_fluid_pipe": {},
   "pollution:octine_nonuple_fluid_pipe": {},
   "pollution:octine_normal_fluid_pipe": {},
   "pollution:octine_nugget": {},
   "pollution:octine_octal_cable": {},
   "pollution:octine_octal_wire": {},
-  "pollution:octine_plate": {},
+  "pollution:octine_plate": {
+   "ignis": 1
+  },
   "pollution:octine_quadruple_cable": {},
   "pollution:octine_quadruple_fluid_pipe": {},
   "pollution:octine_quadruple_wire": {},
@@ -6025,19 +6137,29 @@
   "pollution:optical_grade_aquamarine_dust": {},
   "pollution:optical_grade_aquamarine_gem": {},
   "pollution:ordolead_block": {
-   "ordo": 5
+   "ordo": 9
   },
-  "pollution:ordolead_dust": {},
-  "pollution:ordolead_ingot": {},
+  "pollution:ordolead_dust": {
+   "ordo": 1
+  },
+  "pollution:ordolead_ingot": {
+   "ordo": 1
+  },
   "pollution:ordolead_nugget": {},
   "pollution:perditioaluminium_block": {
-   "perditio": 5
+   "perditio": 9
   },
-  "pollution:perditioaluminium_dust": {},
-  "pollution:perditioaluminium_ingot": {},
+  "pollution:perditioaluminium_dust": {
+   "perditio": 1
+  },
+  "pollution:perditioaluminium_ingot": {
+   "perditio": 1
+  },
   "pollution:perditioaluminium_nugget": {},
   "pollution:pixie_dust_dust": {},
-  "pollution:pluto_zinc_dust": {},
+  "pollution:pluto_zinc_dust": {
+   "terra": 1
+  },
   "pollution:pure_amber_dust": {},
   "pollution:pure_authority_lead_dust": {},
   "pollution:pure_cryolite_dust": {},
@@ -6151,31 +6273,36 @@
   "pollution:purified_scabyst_ore": {},
   "pollution:purified_syrmorite_ore": {},
   "pollution:purified_valonite_ore": {},
-  "pollution:pyrargyrite_dust": {},
+  "pollution:pyrargyrite_dust": {
+   "aer": 1
+  },
   "pollution:raw_amber": {},
   "pollution:raw_amber_block": {},
-  "pollution:raw_authority_lead": {},
+  "pollution:raw_authority_lead": {
+   "ordo": 1
+  },
   "pollution:raw_authority_lead_block": {
-   "ignis": 3,
-   "ordo": 4
+   "ordo": 9
   },
   "pollution:raw_cryolite": {},
   "pollution:raw_cryolite_block": {},
   "pollution:raw_dragonstone": {},
   "pollution:raw_dragonstone_block": {},
-  "pollution:raw_dumb_tin": {},
+  "pollution:raw_dumb_tin": {
+   "aqua": 1
+  },
   "pollution:raw_dumb_tin_block": {
-   "aer": 2,
-   "aqua": 5
+   "aqua": 9
   },
   "pollution:raw_elven_elementium": {},
   "pollution:raw_elven_elementium_block": {},
   "pollution:raw_elven_quartz": {},
   "pollution:raw_elven_quartz_block": {},
-  "pollution:raw_flame_coal": {},
+  "pollution:raw_flame_coal": {
+   "ignis": 1
+  },
   "pollution:raw_flame_coal_block": {
-   "ignis": 5,
-   "terra": 2
+   "ignis": 9
   },
   "pollution:raw_infused_air": {
    "aer": 1
@@ -6183,10 +6310,11 @@
   "pollution:raw_infused_air_block": {
    "aer": 9
   },
-  "pollution:raw_infused_alchemy": {},
+  "pollution:raw_infused_alchemy": {
+   "praecantatio": 1
+  },
   "pollution:raw_infused_alchemy_block": {
-   "aqua": 4,
-   "praecantatio": 4
+   "praecantatio": 9
   },
   "pollution:raw_infused_alien": {
    "alienis": 1
@@ -6356,10 +6484,11 @@
   "pollution:raw_infused_soul_block": {
    "spiritus": 9
   },
-  "pollution:raw_infused_spatio": {},
+  "pollution:raw_infused_spatio": {
+   "vacuos": 1
+  },
   "pollution:raw_infused_spatio_block": {
-   "perditio": 4,
-   "vacuos": 4
+   "vacuos": 9
   },
   "pollution:raw_infused_taint": {
    "vitium": 1
@@ -6367,11 +6496,11 @@
   "pollution:raw_infused_taint_block": {
    "vitium": 9
   },
-  "pollution:raw_infused_tempus": {},
+  "pollution:raw_infused_tempus": {
+   "permutatio": 1
+  },
   "pollution:raw_infused_tempus_block": {
-   "perditio": 2,
-   "permutatio": 4,
-   "vacuos": 2
+   "permutatio": 9
   },
   "pollution:raw_infused_thought": {
    "cognitio": 1
@@ -6379,10 +6508,11 @@
   "pollution:raw_infused_thought_block": {
    "cognitio": 9
   },
-  "pollution:raw_infused_tinctura": {},
+  "pollution:raw_infused_tinctura": {
+   "sensus": 1
+  },
   "pollution:raw_infused_tinctura_block": {
-   "permutatio": 4,
-   "sensus": 4
+   "sensus": 9
   },
   "pollution:raw_infused_trap": {
    "vinculum": 1
@@ -6414,38 +6544,43 @@
   "pollution:raw_infused_weapon_block": {
    "telum": 9
   },
-  "pollution:raw_melt_gold": {},
-  "pollution:raw_melt_gold_block": {
-   "aer": 4,
-   "ignis": 3
+  "pollution:raw_melt_gold": {
+   "aer": 1
   },
-  "pollution:raw_octine": {},
+  "pollution:raw_melt_gold_block": {
+   "aer": 9
+  },
+  "pollution:raw_octine": {
+   "ignis": 1
+  },
   "pollution:raw_octine_block": {
-   "aer": 2,
-   "ignis": 5
+   "ignis": 9
   },
   "pollution:raw_pixie_dust": {},
   "pollution:raw_pixie_dust_block": {},
-  "pollution:raw_pluto_zinc": {},
-  "pollution:raw_pluto_zinc_block": {
-   "aqua": 2,
-   "terra": 3
-  },
-  "pollution:raw_pyrargyrite": {},
-  "pollution:raw_pyrargyrite_block": {
-   "aer": 3,
-   "ignis": 2
-  },
-  "pollution:raw_scabyst": {},
-  "pollution:raw_scabyst_block": {
-   "ignis": 1,
-   "ordo": 2,
+  "pollution:raw_pluto_zinc": {
    "terra": 1
   },
-  "pollution:raw_syrmorite": {},
+  "pollution:raw_pluto_zinc_block": {
+   "terra": 9
+  },
+  "pollution:raw_pyrargyrite": {
+   "aer": 1
+  },
+  "pollution:raw_pyrargyrite_block": {
+   "aer": 9
+  },
+  "pollution:raw_scabyst": {
+   "ordo": 1
+  },
+  "pollution:raw_scabyst_block": {
+   "ordo": 9
+  },
+  "pollution:raw_syrmorite": {
+   "terra": 1
+  },
   "pollution:raw_syrmorite_block": {
-   "ordo": 2,
-   "terra": 5
+   "terra": 9
   },
   "pollution:raw_valonite": {},
   "pollution:raw_valonite_block": {},
@@ -6509,19 +6644,23 @@
   "pollution:roughdraft_dust": {},
   "pollution:salisundus_dust": {},
   "pollution:scabyst_block": {
-   "ignis": 1,
-   "ordo": 2,
-   "terra": 1
+   "ordo": 9
   },
   "pollution:scabyst_bolt": {},
   "pollution:scabyst_buzz_saw_blade": {},
   "pollution:scabyst_chainsaw_head": {},
   "pollution:scabyst_drill_head": {},
-  "pollution:scabyst_dust": {},
+  "pollution:scabyst_dust": {
+   "ordo": 1
+  },
   "pollution:scabyst_frame": {},
   "pollution:scabyst_gear": {},
-  "pollution:scabyst_gem": {},
-  "pollution:scabyst_plate": {},
+  "pollution:scabyst_gem": {
+   "ordo": 1
+  },
+  "pollution:scabyst_plate": {
+   "ordo": 1
+  },
   "pollution:scabyst_rod": {},
   "pollution:scabyst_screw": {},
   "pollution:scabyst_screwdriver_tip": {},
@@ -6666,8 +6805,7 @@
   "pollution:substrate_dust": {},
   "pollution:sulfo_plumbic_salt_dust": {},
   "pollution:syrmorite_block": {
-   "ordo": 2,
-   "terra": 5
+   "terra": 9
   },
   "pollution:syrmorite_bolt": {},
   "pollution:syrmorite_buzz_saw_blade": {},
@@ -6675,21 +6813,27 @@
   "pollution:syrmorite_double_cable": {},
   "pollution:syrmorite_double_wire": {},
   "pollution:syrmorite_drill_head": {},
-  "pollution:syrmorite_dust": {},
+  "pollution:syrmorite_dust": {
+   "terra": 1
+  },
   "pollution:syrmorite_foil": {},
   "pollution:syrmorite_frame": {},
   "pollution:syrmorite_gear": {},
   "pollution:syrmorite_hex_cable": {},
   "pollution:syrmorite_hex_wire": {},
   "pollution:syrmorite_huge_fluid_pipe": {},
-  "pollution:syrmorite_ingot": {},
+  "pollution:syrmorite_ingot": {
+   "terra": 1
+  },
   "pollution:syrmorite_large_fluid_pipe": {},
   "pollution:syrmorite_nonuple_fluid_pipe": {},
   "pollution:syrmorite_normal_fluid_pipe": {},
   "pollution:syrmorite_nugget": {},
   "pollution:syrmorite_octal_cable": {},
   "pollution:syrmorite_octal_wire": {},
-  "pollution:syrmorite_plate": {},
+  "pollution:syrmorite_plate": {
+   "terra": 1
+  },
   "pollution:syrmorite_quadruple_cable": {},
   "pollution:syrmorite_quadruple_fluid_pipe": {},
   "pollution:syrmorite_quadruple_wire": {},
@@ -6706,10 +6850,14 @@
   "pollution:syrmorite_wire_cutter_head": {},
   "pollution:syrmorite_wrench_tip": {},
   "pollution:terracopper_block": {
-   "terra": 5
+   "terra": 9
   },
-  "pollution:terracopper_dust": {},
-  "pollution:terracopper_ingot": {},
+  "pollution:terracopper_dust": {
+   "terra": 1
+  },
+  "pollution:terracopper_ingot": {
+   "terra": 1
+  },
   "pollution:terracopper_nugget": {},
   "pollution:thaummix_dust": {},
   "pollution:tiny_advanced_battery_content_dust": {},
