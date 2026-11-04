@@ -1,0 +1,63 @@
+net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
+if (server == null) return "NO_SERVER";
+java.util.concurrent.CompletableFuture<String> result = new java.util.concurrent.CompletableFuture<>();
+Runnable probe = () -> {
+    var level = server.m_129783_();
+    var pos = new net.minecraft.core.BlockPos(32, 250, 32);
+    var old = level.m_8055_(pos);
+    java.util.List<String> checks = new java.util.ArrayList<>();
+    try {
+        if (!old.m_60795_()) throw new IllegalStateException("Probe location occupied");
+        var reg = net.minecraft.core.registries.BuiltInRegistries.f_257033_;
+        var fluids = net.minecraft.core.registries.BuiltInRegistries.f_257020_;
+        var def = com.gregtechceu.gtceu.api.registry.GTRegistries.MACHINES.get(new net.minecraft.resources.ResourceLocation("gtceu:mv_assembler"));
+        level.m_46597_(pos, def.getBlock().m_49966_());
+        var machine = (com.gregtechceu.gtceu.api.machine.WorkableTieredMachine) com.gregtechceu.gtceu.api.machine.MetaMachine.getMachine(level, pos);
+        machine.onLoad();
+        var recipes = server.m_129894_().m_44051_();
+        java.util.function.Function<String, com.gregtechceu.gtceu.api.recipe.GTRecipe> find = id -> recipes.stream()
+                .filter(r -> r instanceof com.gregtechceu.gtceu.api.recipe.GTRecipe && r.m_6423_().toString().equals(id))
+                .map(r -> (com.gregtechceu.gtceu.api.recipe.GTRecipe) r).findFirst().orElse(null);
+        java.util.function.Function<String, com.gregtechceu.gtceu.api.recipe.GTRecipe> findTwin = suffix -> recipes.stream()
+                .filter(r -> r instanceof com.gregtechceu.gtceu.api.recipe.GTRecipe && r.m_6423_().toString().endsWith("industrial_infusion/thaumic/" + suffix))
+                .map(r -> (com.gregtechceu.gtceu.api.recipe.GTRecipe) r).findFirst().orElse(null);
+        var mv = find.apply("pollution:assembler/thaumic_circuit/0");
+        var hv = find.apply("pollution:assembler/thaumic_circuit/1");
+        if (mv == null || hv == null) throw new IllegalStateException("thaumic circuit recipes missing");
+        machine.importItems.setStackInSlot(0, new net.minecraft.world.item.ItemStack(net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(new net.minecraft.resources.ResourceLocation("pollution:blood_circuit"))));
+        machine.importItems.setStackInSlot(1, new net.minecraft.world.item.ItemStack(net.minecraftforge.registries.ForgeRegistries.ITEMS.getValue(new net.minecraft.resources.ResourceLocation("thaumcraft:thaumium_ingot"))));
+        machine.importItems.setStackInSlot(2, new net.minecraft.world.item.ItemStack(reg.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:plastic_printed_circuit_board"))));
+        machine.importItems.setStackInSlot(3, new net.minecraft.world.item.ItemStack(reg.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:fine_red_alloy_wire")), 4));
+        machine.importFluids.fill(new net.minecraftforge.fluids.FluidStack(fluids.m_7745_(new net.minecraft.resources.ResourceLocation("gtceu:soldering_alloy")), 1000), net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+        machine.energyContainer.changeEnergy(machine.energyContainer.getEnergyCapacity());
+        var m = com.gregtechceu.gtceu.api.recipe.RecipeHelper.matchContents(machine, mv);
+        if (!m.isSuccess()) throw new IllegalStateException("MV circuit recipe did not match: " + m);
+        if (com.gregtechceu.gtceu.api.recipe.RecipeHelper.getRealEUt(mv).voltage() != 60 || mv.duration != 200) throw new IllegalStateException("MV parity broken: " + mv.duration);
+        checks.add("MV match + parity 60EUt/200t");
+        if (machine.getTier() >= 3 /* HV */) throw new IllegalStateException("HV recipe runnable on MV machine");
+        checks.add("HV voltage-gated on MV machine (tier=" + machine.getTier() + ")");
+        var cond = com.gregtechceu.gtceu.api.recipe.RecipeHelper.checkConditions(hv, machine.recipeLogic);
+        if (cond.isSuccess()) throw new IllegalStateException("HV cleanroom condition absent");
+        checks.add("HV cleanroom required (refused without)");
+        machine.setCleanroom(new com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider() {
+            public java.util.Set<com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType> getTypes() { return java.util.Set.of(com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.CLEANROOM); }
+            public boolean isClean() { return true; }
+            public com.gregtechceu.gtceu.api.machine.MetaMachine self() { return machine; }
+        });
+        if (!com.gregtechceu.gtceu.api.recipe.RecipeHelper.checkConditions(hv, machine.recipeLogic).isSuccess()) throw new IllegalStateException("HV cleanroom not satisfied");
+        checks.add("HV accepted with cleanroom");
+        com.gregtechceu.gtceu.api.recipe.GTRecipe t3r = findTwin.apply("template_3");
+        if (t3r == null) throw new IllegalStateException("industrial twin template_3 missing");
+        int fluidIn = 0;
+        for (var list : t3r.inputs.values()) for (var c : list) {
+            var stacks = com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability.CAP.of(c.content).getStacks();
+            if (stacks.length > 0) fluidIn += stacks[0].getAmount();
+        }
+        if (fluidIn != 7488) throw new IllegalStateException("T3 industrial twin fluid total " + fluidIn + " != 7488");
+        checks.add("industrial twin T3 fluids=7488mB(52pts x144)");
+        result.complete("PASS " + checks);
+    } catch (Throwable ex) { result.complete("FAIL " + ex + " checks=" + checks); }
+    finally { level.m_46597_(pos, old); }
+};
+if (server.m_18695_()) probe.run(); else server.execute(probe);
+return result.get(30, java.util.concurrent.TimeUnit.SECONDS);
