@@ -11,7 +11,6 @@ import com.mojang.datafixers.util.Pair;
 import dev.tc4port.thaumcraft.api.aspect.AspectId;
 import meowmel.pollution.Pollution;
 import meowmel.pollution.PollutionConfig;
-import meowmel.pollution.common.item.PollutionItems;
 import meowmel.pollution.api.magic.PollutionAspectMapping;
 import meowmel.pollution.api.recipes.properties.MagicRecipeProperties;
 import net.minecraft.core.registries.Registries;
@@ -22,10 +21,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.io.InputStream;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,8 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.stream.Stream;
 
 /**
  * 神秘物品工业量产：把 TC 配方 JSON（{@code thaumcraft:infusion / crucible /
@@ -60,7 +60,8 @@ import java.util.zip.ZipFile;
  * </ul>
  *
  * <p>Pollution 自产的四块奥术电路基底模板不经过 JSON 扫描（它们是运行时动态
- * 配方），在本类中直接按同一规则落成工业注魔配方。</p>
+ * 配方），在本类中直接按同一规则落成工业注魔配方；每块模板都消耗上一块模板，
+ * 与祭坛路线一致。原始珍珠只有 Boss 掉落，本类另给一条 LuV 级工业合成作为后期替代。</p>
  */
 public final class ThaumicIndustrialRecipes {
 
@@ -70,10 +71,10 @@ public final class ThaumicIndustrialRecipes {
     private static final int MB_PER_VIS_POINT = 36;
     private static final int MAX_ITEMS = 25;
     private static final int MAX_FLUIDS = 8;
-    /** Default whitelist: the four templates are handled directly (dynamic recipes). */
+    /** Default whitelist: the four templates and the pearl are handled directly (dynamic recipes). */
     private static final Set<String> DEFAULT_WHITELIST = Set.of(
             "thaumcraft:thaumium_ingot", "thaumcraft:void_ingot", "thaumcraft:quicksilver",
-            "thaumcraft:balanced_shard", "thaumcraft:crystal_essence", "thaumcraft:primordial_pearl",
+            "thaumcraft:balanced_shard", "thaumcraft:crystal_essence",
             "thaumcraft:salis_mundus",
             "thaumadds:mithminite_ingot", "thaumadds:adaminite_ingot", "thaumadds:mithrillium_ingot",
             "tainted_magic:shadow_metal_ingot", "tainted_magic:creation_shard",
@@ -85,6 +86,7 @@ public final class ThaumicIndustrialRecipes {
     public static void init(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider) {
         int converted = 0;
         converted += templates(provider);
+        converted += primordialPearl(provider);
         converted += scanModFiles(provider);
         Pollution.LOGGER.info("[thaumic-industrial] registered {} industrial infusion recipes from TC JSONs",
                 converted);
@@ -95,71 +97,87 @@ public final class ThaumicIndustrialRecipes {
     // ////////////////////////////////////
 
     /**
-     * Industrial twins of {@code ThaumicCircuitRecipes#templates}: same items,
-     * aspects as fluids, no instability, machine-owner research INFUSION.
+     * Industrial twins of {@code ThaumicCircuitRecipes#templates}: same items
+     * (including the previous template), aspects / vis as fluids, no instability.
      */
     private static int templates(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider) {
         int added = 0;
-        // template 2: void_ingot + crystal_essence x2 + quicksilver, praecantatio 16 / metallum 8 / vacuos 8
-        added += template(provider, "template_2", PollutionItems.BLOOD_CIRCUIT_ADVANCED.asStack(),
-                items("thaumcraft:void_ingot"), pairs("thaumcraft:crystal_essence", 2, "thaumcraft:quicksilver", 1),
-                Map.of("praecantatio", 16, "metallum", 8, "vacuos", 8));
-        // template 3: mithminite + shadow_metal + ethereal_shard x2, praecantatio 24 / alienis 16 / metallum 12
-        added += template(provider, "template_3", PollutionItems.BLOOD_CIRCUIT_ULTIMATE.asStack(),
-                items("thaumadds:mithminite_ingot", "tainted_magic:shadow_metal_ingot"),
-                pairs("isorropia:ethereal_shard", 2),
-                Map.of("praecantatio", 24, "alienis", 16, "metallum", 12));
-        // template 4: mithrillium + creation_shard + primordial_pearl, praecantatio 32 / alienis 24 / auram 24
-        added += template(provider, "template_4", PollutionItems.BLOOD_CIRCUIT_SUPREME.asStack(),
-                items("thaumadds:mithrillium_ingot", "thaumcraft:primordial_pearl"),
-                pairs("tainted_magic:creation_shard", 1),
-                Map.of("praecantatio", 32, "alienis", 24, "auram", 24));
+        // template 1 (arcane): thaumium x2 + quicksilver + LV circuit, vis aer 16 / ordo 8 (no research)
+        added += twin(provider, "template_1", "pollution:blood_circuit",
+                pairs("thaumcraft:thaumium_ingot", 2, "thaumcraft:quicksilver", 1,
+                        "gtceu:basic_integrated_circuit", 1),
+                Map.of("aer", 16, "ordo", 8), MB_PER_VIS_POINT, "");
+        // template 2: template 1 + void_ingot + crystal_essence x2 + quicksilver
+        added += twin(provider, "template_2", "pollution:blood_circuit_advanced",
+                pairs("pollution:blood_circuit", 1, "thaumcraft:void_ingot", 1,
+                        "thaumcraft:crystal_essence", 2, "thaumcraft:quicksilver", 1),
+                Map.of("praecantatio", 16, "metallum", 8, "vacuos", 8), MB_PER_POINT, "INFUSION");
+        // template 3: template 2 + mithrillium + shadow_metal + ethereal_shard x2
+        added += twin(provider, "template_3", "pollution:blood_circuit_ultimate",
+                pairs("pollution:blood_circuit_advanced", 1, "thaumadds:mithrillium_ingot", 1,
+                        "tainted_magic:shadow_metal_ingot", 1, "isorropia:ethereal_shard", 2),
+                Map.of("praecantatio", 24, "alienis", 16, "metallum", 12), MB_PER_POINT, "INFUSION");
+        // template 4: template 3 + ichorium x2 + creation_shard + nether_star
+        added += twin(provider, "template_4", "pollution:blood_circuit_supreme",
+                pairs("pollution:blood_circuit_ultimate", 1, "thaumictinkerer:ichorium", 2,
+                        "tainted_magic:creation_shard", 1, "minecraft:nether_star", 1),
+                Map.of("praecantatio", 32, "alienis", 24, "auram", 24), MB_PER_POINT, "INFUSION");
         return added;
     }
 
-    /** @return 1 when the template recipe was emitted */
-    private static int template(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider, String name,
-                                ItemStack result, List<String> itemInputs, List<Pair<String, Integer>> countedInputs,
-                                Map<String, Integer> aspects) {
+    /**
+     * Primordial pearls only drop from eldritch bosses and rare loot bags; no TC recipe makes them.
+     * Adaminite, mithminite and the creation shard all eat one, so the late mystic circuits could
+     * never scale. This is the late-game industrial substitute: LuV voltage, a nether star and a
+     * heavy aspect bill per pearl, gated by the owner's TC {@code PRIMPEARL} research.
+     */
+    private static int primordialPearl(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider) {
+        return emit(provider, "primordial_pearl_synthesis", "thaumcraft:primordial_pearl",
+                pairs("minecraft:nether_star", 1, "thaumcraft:balanced_shard", 4, "isorropia:ethereal_shard", 2),
+                Map.of("praecantatio", 32, "auram", 32, "alienis", 32, "vacuos", 32), MB_PER_POINT,
+                "PRIMPEARL", GTValues.VA[GTValues.LuV], 1200);
+    }
+
+    private static int twin(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider, String name,
+                            String resultId, List<Pair<String, Integer>> inputs, Map<String, Integer> aspects,
+                            int mbPerPoint, String research) {
+        int total = aspects.values().stream().mapToInt(Integer::intValue).sum();
+        return emit(provider, name, resultId, inputs, aspects, mbPerPoint, research,
+                GTValues.VA[GTValues.HV], Math.max(100, total * 5));
+    }
+
+    /** @return 1 when the recipe was emitted */
+    private static int emit(Consumer<net.minecraft.data.recipes.FinishedRecipe> provider, String name,
+                            String resultId, List<Pair<String, Integer>> inputs, Map<String, Integer> aspects,
+                            int mbPerPoint, String research, int eut, int duration) {
+        ItemStack result = item(resultId);
+        if (result.isEmpty()) {
+            Pollution.LOGGER.warn("[thaumic-industrial] skipping {}: result {} missing", name, resultId);
+            return 0;
+        }
         GTRecipeBuilder builder = GTRecipeBuilder.of(
                 ResourceLocation.fromNamespaceAndPath(Pollution.MOD_ID, "industrial_infusion/thaumic/" + name),
                 PORecipeMaps.INDUSTRIAL_INFUSION_RECIPES);
-        if (result.isEmpty()) {
-            Pollution.LOGGER.warn("[thaumic-industrial] skipping template {}: result missing", name);
-            return 0;
-        }
-        for (String id : itemInputs) {
-            ItemStack stack = item(id);
-            if (stack.isEmpty()) {
-                Pollution.LOGGER.warn("[thaumic-industrial] skipping template {}: {} missing", name, id);
-                return 0;
-            }
-            builder.inputItems(stack);
-        }
-        for (Pair<String, Integer> entry : countedInputs) {
+        for (Pair<String, Integer> entry : inputs) {
             ItemStack stack = item(entry.getFirst());
             if (stack.isEmpty()) {
-                Pollution.LOGGER.warn("[thaumic-industrial] skipping template {}: {} missing",
-                        name, entry.getFirst());
+                Pollution.LOGGER.warn("[thaumic-industrial] skipping {}: {} missing", name, entry.getFirst());
                 return 0;
             }
             builder.inputItems(stack, entry.getSecond());
         }
-        int total = 0;
         for (Map.Entry<String, Integer> aspect : aspects.entrySet()) {
-            FluidStack fluid = aspectFluid(aspect.getKey(), aspect.getValue());
+            FluidStack fluid = aspectFluid(aspect.getKey(), aspect.getValue() * mbPerPoint);
             if (fluid.isEmpty()) {
-                Pollution.LOGGER.warn("[thaumic-industrial] skipping template {}: unmapped aspect {}",
-                        name, aspect.getKey());
+                Pollution.LOGGER.warn("[thaumic-industrial] skipping {}: unmapped aspect {}", name, aspect.getKey());
                 return 0;
             }
             builder.inputFluids(fluid);
-            total += aspect.getValue();
         }
         builder.outputItems(result)
-                .duration(Math.max(100, total * 5))
-                .EUt(GTValues.VA[GTValues.HV]);
-        MagicRecipeProperties.thaumcraftResearch(builder, "INFUSION");
+                .duration(duration)
+                .EUt(eut);
+        MagicRecipeProperties.thaumcraftResearch(builder, research);
         builder.save(provider);
         return 1;
     }
@@ -172,6 +190,7 @@ public final class ThaumicIndustrialRecipes {
         Set<String> whitelist = new LinkedHashSet<>(DEFAULT_WHITELIST);
         whitelist.addAll(PollutionConfig.EXTRA_THAUMIC_INDUSTRIAL_WHITELIST.get());
 
+        Set<String> seen = new HashSet<>();
         int converted = 0;
         int skippedUnmapped = 0;
         int skippedFluids = 0;
@@ -179,49 +198,62 @@ public final class ThaumicIndustrialRecipes {
         int skippedCaps = 0;
         int scanned = 0;
         for (var modFileInfo : net.minecraftforge.fml.ModList.get().getModFiles()) {
-            Path file = modFileInfo.getFile().getFilePath();
-            try (ZipFile zip = new ZipFile(file.toFile())) {
-                var entries = zip.entries();
-                while (entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    String name = entry.getName();
-                    if (entry.isDirectory() || !name.startsWith("data/") || !name.endsWith(".json")
-                            || !name.contains("/recipes/")) {
-                        continue;
-                    }
-                    JsonObject json;
-                    try (InputStream in = zip.getInputStream(entry)) {
-                        json = JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8))
-                                .getAsJsonObject();
-                    } catch (Exception broken) {
-                        continue;
-                    }
-                    String type = json.has("type") && json.get("type").isJsonPrimitive()
-                            ? json.get("type").getAsString() : "";
-                    if (!type.startsWith("thaumcraft:")) {
-                        continue;
-                    }
-                    String resultId = resultId(json);
-                    if (resultId == null || !whitelist.contains(resultId)) {
-                        continue;
-                    }
-                    scanned++;
-                    JsonObject report = convert(provider, name, type, json, resultId);
-                    if (report == null) {
-                        converted++;
-                    } else {
-                        String why = report.get("why").getAsString();
-                        switch (why) {
-                            case "unmapped-aspect" -> skippedUnmapped++;
-                            case "too-many-fluids" -> skippedFluids++;
-                            case "nbt" -> skippedNbt++;
-                            default -> skippedCaps++;
-                        }
+            // findResource goes through the mod file system, so jar-in-jar libraries resolve too
+            // (a plain ZipFile on getFilePath() throws FileNotFoundException for nested jars).
+            Path data = modFileInfo.getFile().findResource("data");
+            if (!Files.isDirectory(data)) {
+                continue;
+            }
+            List<Path> jsons;
+            try (Stream<Path> walk = Files.walk(data)) {
+                jsons = walk.filter(path -> path.toString().endsWith(".json")
+                        && path.toString().replace('\\', '/').contains("/recipes/")).sorted().toList();
+            } catch (Exception e) {
+                Pollution.LOGGER.debug("[thaumic-industrial] cannot walk {}: {}",
+                        modFileInfo.getFile().getFileName(), e.toString());
+                continue;
+            }
+            for (Path path : jsons) {
+                String name = "data/" + data.relativize(path).toString().replace('\\', '/');
+                JsonObject json;
+                try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+                    json = JsonParser.parseReader(reader).getAsJsonObject();
+                } catch (Exception broken) {
+                    continue;
+                }
+                String type = json.has("type") && json.get("type").isJsonPrimitive()
+                        ? json.get("type").getAsString() : "";
+                if (!type.startsWith("thaumcraft:")) {
+                    continue;
+                }
+                String resultId = resultId(json);
+                if (resultId == null || !whitelist.contains(resultId) || !seen.add(name)) {
+                    continue;
+                }
+                if (json.has("conditions") && !net.minecraftforge.common.crafting.CraftingHelper.processConditions(
+                        json, "conditions", net.minecraftforge.common.crafting.conditions.ICondition.IContext.EMPTY)) {
+                    continue;
+                }
+                scanned++;
+                JsonObject report;
+                try {
+                    report = convert(provider, name, type, json, resultId);
+                } catch (RuntimeException invalid) {
+                    Pollution.LOGGER.warn("[thaumic-industrial] invalid recipe {}: {}", name, invalid.toString());
+                    report = report("invalid-data");
+                }
+                if (report == null) {
+                    converted++;
+                } else {
+                    String why = report.get("why").getAsString();
+                    Pollution.LOGGER.info("[thaumic-industrial] skipped {} ({})", name, why);
+                    switch (why) {
+                        case "unmapped-aspect" -> skippedUnmapped++;
+                        case "too-many-fluids" -> skippedFluids++;
+                        case "nbt" -> skippedNbt++;
+                        default -> skippedCaps++;
                     }
                 }
-            } catch (Exception e) {
-                Pollution.LOGGER.warn("[thaumic-industrial] failed to scan {}: {}",
-                        file.getFileName(), e.toString());
             }
         }
         Pollution.LOGGER.info(
@@ -245,42 +277,13 @@ public final class ThaumicIndustrialRecipes {
 
         List<Ingredient> itemInputs = new ArrayList<>();
         List<Integer> itemCounts = new ArrayList<>();
-        if (type.equals("thaumcraft:infusion")) {
-            if (nbt(json.getAsJsonObject("central"))) {
-                return report("nbt");
-            }
-            addIngredient(json.getAsJsonObject("central"), itemInputs, itemCounts);
-            for (JsonElement component : json.getAsJsonArray("components")) {
-                if (nbt(component.getAsJsonObject())) {
-                    return report("nbt");
-                }
-                addIngredient(component.getAsJsonObject(), itemInputs, itemCounts);
-            }
-        } else if (type.equals("thaumcraft:crucible")) {
-            if (nbt(json.getAsJsonObject("catalyst"))) {
-                return report("nbt");
-            }
-            addIngredient(json.getAsJsonObject("catalyst"), itemInputs, itemCounts);
-        } else if (type.equals("thaumcraft:arcane_shapeless")) {
-            for (JsonElement ingredient : json.getAsJsonArray("ingredients")) {
-                if (nbt(ingredient.getAsJsonObject())) {
-                    return report("nbt");
-                }
-                addIngredient(ingredient.getAsJsonObject(), itemInputs, itemCounts);
-            }
-        } else { // arcane_shaped: pattern/key
-            JsonObject key = json.getAsJsonObject("key");
-            Set<String> used = usedSymbols(json.getAsJsonArray("pattern"));
-            for (Map.Entry<String, JsonElement> symbol : key.entrySet()) {
-                if (!used.contains(symbol.getKey())) {
-                    continue;
-                }
-                JsonObject entry = symbol.getValue().getAsJsonObject();
-                if (nbt(entry)) {
-                    return report("nbt");
-                }
-                addIngredient(entry, itemInputs, itemCounts);
-            }
+        // Never silently drop an unresolved ingredient: that would create a cheaper recipe.
+        if (json.has("input_transformation") || json.has("retained_slots") || json.has("retainedSlots")
+                || json.has("retained_ingredient_indices")) {
+            return report("unsupported-transformation");
+        }
+        for (JsonObject ingredient : ThaumicRecipeData.inputs(type, json)) {
+            if (!addIngredient(ingredient, itemInputs, itemCounts)) return report("missing-input");
         }
 
         Map<String, Integer> fluids = new LinkedHashMap<>();
@@ -288,16 +291,16 @@ public final class ThaumicIndustrialRecipes {
         boolean arcane = type.startsWith("thaumcraft:arcane");
         JsonObject aspectObject = arcane ? json.getAsJsonObject("vis") : json.getAsJsonObject("aspects");
         if (aspectObject != null) {
-            int perPoint = arcane ? MB_PER_VIS_POINT : MB_PER_POINT;
             for (Map.Entry<String, JsonElement> aspect : aspectObject.entrySet()) {
                 String id = aspect.getKey();
                 int amount = aspect.getValue().getAsInt();
-                FluidStack stack = aspectFluid(id, amount * perPoint);
+                if (amount == 0) continue;
+                FluidStack stack = aspectFluid(id, ThaumicRecipeData.fluidAmount(amount, arcane));
                 if (stack.isEmpty()) {
                     return report("unmapped-aspect");
                 }
                 fluids.merge(String.valueOf(ForgeRegistries.FLUIDS.getKey(stack.getFluid())), stack.getAmount(), Integer::sum);
-                total += amount;
+                total = Math.addExact(total, amount);
             }
         }
         if (fluids.size() > MAX_FLUIDS) {
@@ -323,8 +326,8 @@ public final class ThaumicIndustrialRecipes {
         builder.outputItems(out)
                 .duration(Math.max(100, total * 5))
                 .EUt(GTValues.VA[GTValues.HV]);
-        String research = json.has("research") && json.get("research").isJsonPrimitive()
-                ? json.get("research").getAsString() : "";
+        if (json.has("research") && !json.get("research").isJsonPrimitive()) return report("unsupported-research");
+        String research = json.has("research") ? json.get("research").getAsString() : "";
         if (!research.isEmpty()) {
             MagicRecipeProperties.thaumcraftResearch(builder, research);
         }
@@ -332,44 +335,26 @@ public final class ThaumicIndustrialRecipes {
         return null;
     }
 
-    private static Set<String> usedSymbols(JsonArray pattern) {
-        Set<String> used = new LinkedHashSet<>();
-        for (JsonElement row : pattern) {
-            for (char symbol : row.getAsString().toCharArray()) {
-                if (symbol != ' ') {
-                    used.add(String.valueOf(symbol));
-                }
-            }
-        }
-        return used;
-    }
-
-    private static void addIngredient(JsonObject entry, List<Ingredient> inputs, List<Integer> counts) {
+    private static boolean addIngredient(JsonObject entry, List<Ingredient> inputs, List<Integer> counts) {
         int count = entry.has("count") ? entry.get("count").getAsInt() : 1;
         if (entry.has("tag")) {
-            TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.tryParse(entry.get("tag").getAsString()));
-            if (tag != null) {
-                inputs.add(Ingredient.of(tag));
-                counts.add(count);
-            }
-            return;
-        }
-        ItemStack stack = item(entry.get("item").getAsString(), count);
-        if (!stack.isEmpty()) {
-            inputs.add(Ingredient.of(stack));
+            ResourceLocation id = ResourceLocation.tryParse(entry.get("tag").getAsString());
+            if (id == null) return false;
+            inputs.add(Ingredient.of(TagKey.create(Registries.ITEM, id)));
             counts.add(count);
+            return true;
         }
-    }
-
-    private static boolean nbt(JsonObject entry) {
-        return entry == null || entry.has("nbt");
+        ItemStack stack = item(entry.get("item").getAsString());
+        if (stack.isEmpty()) return false;
+        inputs.add(Ingredient.of(stack));
+        counts.add(count);
+        return true;
     }
 
     private static String resultId(JsonObject json) {
-        if (!json.has("result") || !json.getAsJsonObject("result").has("item")) {
-            return null;
-        }
-        return json.getAsJsonObject("result").get("item").getAsString();
+        JsonElement result = json.get("result");
+        if (result == null || !result.isJsonObject() || !result.getAsJsonObject().has("item")) return null;
+        return result.getAsJsonObject().get("item").getAsString();
     }
 
     private static JsonObject report(String why) {
@@ -387,10 +372,6 @@ public final class ThaumicIndustrialRecipes {
         return resolved == null ? ItemStack.EMPTY : new ItemStack(resolved, count);
     }
 
-    private static List<String> items(String... ids) {
-        return List.of(ids);
-    }
-
     private static List<Pair<String, Integer>> pairs(Object... idAndCount) {
         List<Pair<String, Integer>> result = new ArrayList<>();
         for (int index = 0; index + 1 < idAndCount.length; index += 2) {
@@ -399,8 +380,8 @@ public final class ThaumicIndustrialRecipes {
         return result;
     }
 
-    /** @return the aspect fluid stack (144 mB per point basis already applied), or EMPTY when unmapped */
-    private static FluidStack aspectFluid(String aspectKey, int points) {
+    /** @return {@code mb} of the aspect's infused fluid, or EMPTY when the aspect has no Pollution fluid */
+    private static FluidStack aspectFluid(String aspectKey, int mb) {
         AspectId aspect;
         try {
             aspect = AspectId.parse(aspectKey);
@@ -409,7 +390,7 @@ public final class ThaumicIndustrialRecipes {
         }
         return PollutionAspectMapping.materialOf(aspect)
                 .filter(material -> material.hasFluid())
-                .map(material -> material.getFluid(points * MB_PER_POINT))
+                .map(material -> material.getFluid(mb))
                 .orElse(FluidStack.EMPTY);
     }
 

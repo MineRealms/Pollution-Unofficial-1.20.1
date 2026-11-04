@@ -94,10 +94,10 @@ public final class MagicCircuitRecipes {
         int assembled = assembledCircuits(provider);
         int infused = infusedCircuits(provider);
         Pollution.LOGGER.info("[circuit] registered {} magic circuit board infusions "
-                + "(LuV alternative + ZPM..MAX)", boards);
+                + "(LuV alternative + ZPM..UHV; UEV..MAX disabled)", boards);
         Pollution.LOGGER.info("[circuit] registered {} magic circuit recipes in the magic assembler "
                 + "(ULV..LuV)", assembled);
-        Pollution.LOGGER.info("[circuit] registered {} magic circuit infusions (ZPM..MAX)", infused);
+        Pollution.LOGGER.info("[circuit] registered {} magic circuit infusions (ZPM..UHV; UEV..MAX disabled)", infused);
     }
 
     // ////////////////////////////////////

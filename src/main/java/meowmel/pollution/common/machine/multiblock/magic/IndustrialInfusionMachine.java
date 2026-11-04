@@ -15,6 +15,12 @@ import meowmel.pollution.common.machine.multiblock.MagicMultiblockController;
 import meowmel.pollution.common.machine.multiblock.MagicRecipeLogic;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.util.UUID;
 
@@ -23,15 +29,17 @@ import java.util.UUID;
  *
  * <p>Upstream gated recipes on the bound player's Thaumcraft research and
  * exposed the diagnostic texts in its UI. The port gates on the machine
- * owner's research through {@code ResearchApi.isComplete}; when the owner is
- * missing or offline the gate is skipped (server-friendly fallback), and an
- * unknown research key never blocks.</p>
+ * owner's research through {@code ResearchApi.isComplete}. Only research previously verified for
+ * this owner may run while they are offline; missing ownership or invalid research fails closed.</p>
  *
  * <p>Structure deviation: upstream additionally accepted the blood-magic,
  * astral-lens and tarot hatches on the void-prism casing (0..1 each); none of
  * those abilities is registered in the port, so they are not accepted.</p>
  */
 public class IndustrialInfusionMachine extends MagicMultiblockController {
+
+    private UUID researchOwner;
+    private final Set<String> verifiedResearch = new HashSet<>();
 
     public IndustrialInfusionMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -47,21 +55,46 @@ public class IndustrialInfusionMachine extends MagicMultiblockController {
     }
 
     boolean ownerHasResearch(String researchKey) {
-        if (!(getLevel() instanceof ServerLevel level)) {
-            return true;
-        }
+        if (!(getLevel() instanceof ServerLevel level)) return false;
         UUID owner = getOwnerUUID();
-        if (owner == null) {
-            return true;
+        if (owner == null) return false;
+        if (!owner.equals(researchOwner)) {
+            researchOwner = owner;
+            verifiedResearch.clear();
+            markDirty();
         }
         var player = level.getServer().getPlayerList().getPlayer(owner);
-        if (player == null) {
-            return true;
-        }
+        if (player == null) return verifiedResearch.contains(researchKey);
         try {
-            return ResearchApi.isComplete(player, ResearchKey.parse(researchKey));
+            boolean complete = ResearchApi.isComplete(player, ResearchKey.parse(researchKey));
+            boolean changed = complete ? verifiedResearch.add(researchKey) : verifiedResearch.remove(researchKey);
+            if (changed) markDirty();
+            return complete;
         } catch (RuntimeException exception) {
-            return true;
+            if (verifiedResearch.remove(researchKey)) markDirty();
+            return false;
+        }
+    }
+
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        if (researchOwner != null && !forDrop) {
+            tag.putUUID("VerifiedResearchOwner", researchOwner);
+            ListTag keys = new ListTag();
+            verifiedResearch.stream().sorted().forEach(key -> keys.add(StringTag.valueOf(key)));
+            tag.put("VerifiedResearch", keys);
+        }
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag tag) {
+        super.loadCustomPersistedData(tag);
+        researchOwner = tag.hasUUID("VerifiedResearchOwner") ? tag.getUUID("VerifiedResearchOwner") : null;
+        verifiedResearch.clear();
+        if (researchOwner != null) {
+            ListTag keys = tag.getList("VerifiedResearch", Tag.TAG_STRING);
+            for (int i = 0; i < keys.size(); i++) verifiedResearch.add(keys.getString(i));
         }
     }
 
