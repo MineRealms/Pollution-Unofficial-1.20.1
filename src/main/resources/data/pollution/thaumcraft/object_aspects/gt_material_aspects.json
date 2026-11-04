@@ -983,8 +983,8 @@
   "gtceu:exquisite_emerald_gem": {},
   "gtceu:exquisite_glass_gem": {},
   "gtceu:exquisite_green_sapphire_gem": {
-   "lucrum": 8,
-   "vitreus": 8
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:exquisite_grossular_gem": {},
   "gtceu:exquisite_lapis_gem": {},
@@ -1000,14 +1000,14 @@
   "gtceu:exquisite_red_garnet_gem": {},
   "gtceu:exquisite_rock_salt_gem": {},
   "gtceu:exquisite_ruby_gem": {
-   "lucrum": 8,
-   "vitreus": 8
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:exquisite_rutile_gem": {},
   "gtceu:exquisite_salt_gem": {},
   "gtceu:exquisite_sapphire_gem": {
-   "lucrum": 8,
-   "vitreus": 8
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:exquisite_sodalite_gem": {},
   "gtceu:exquisite_spessartine_gem": {},
@@ -1071,8 +1071,8 @@
   "gtceu:flawless_emerald_gem": {},
   "gtceu:flawless_glass_gem": {},
   "gtceu:flawless_green_sapphire_gem": {
-   "lucrum": 4,
-   "vitreus": 4
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:flawless_grossular_gem": {},
   "gtceu:flawless_lapis_gem": {},
@@ -1088,14 +1088,14 @@
   "gtceu:flawless_red_garnet_gem": {},
   "gtceu:flawless_rock_salt_gem": {},
   "gtceu:flawless_ruby_gem": {
-   "lucrum": 4,
-   "vitreus": 4
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:flawless_rutile_gem": {},
   "gtceu:flawless_salt_gem": {},
   "gtceu:flawless_sapphire_gem": {
-   "lucrum": 4,
-   "vitreus": 4
+   "lucrum": 2,
+   "vitreus": 2
   },
   "gtceu:flawless_sodalite_gem": {},
   "gtceu:flawless_spessartine_gem": {},
@@ -5004,6 +5004,28 @@
   "pollution:binding_metal_rotor": {},
   "pollution:binding_metal_round": {},
   "pollution:binding_metal_screw": {},
+  "pollution:blood_circuit": {},
+  "pollution:blood_circuit.1": {},
+  "pollution:blood_circuit.2": {},
+  "pollution:blood_circuit.3": {},
+  "pollution:blood_circuit.4": {},
+  "pollution:blood_circuit.5": {},
+  "pollution:blood_circuit.6": {},
+  "pollution:blood_circuit_advanced": {
+   "metallum": 8,
+   "praecantatio": 16,
+   "vacuos": 8
+  },
+  "pollution:blood_circuit_supreme": {
+   "alienis": 24,
+   "auram": 24,
+   "praecantatio": 32
+  },
+  "pollution:blood_circuit_ultimate": {
+   "alienis": 16,
+   "metallum": 12,
+   "praecantatio": 24
+  },
   "pollution:crude_lk_99_block": {},
   "pollution:crude_lk_99_dust": {},
   "pollution:crude_lk_99_ingot": {},
@@ -5158,139 +5180,121 @@
   "pollution:exquisite_amber_gem": {},
   "pollution:exquisite_dragonstone_gem": {},
   "pollution:exquisite_elven_quartz_gem": {},
-  "pollution:exquisite_flame_coal_gem": {
-   "ignis": 2,
-   "terra": 1
-  },
+  "pollution:exquisite_flame_coal_gem": {},
   "pollution:exquisite_infused_air_gem": {
-   "aer": 4
+   "aer": 1
   },
-  "pollution:exquisite_infused_alchemy_gem": {
-   "aqua": 2,
-   "praecantatio": 2
-  },
+  "pollution:exquisite_infused_alchemy_gem": {},
   "pollution:exquisite_infused_alien_gem": {
-   "alienis": 4
+   "alienis": 1
   },
   "pollution:exquisite_infused_animal_gem": {
-   "bestia": 4
+   "bestia": 1
   },
   "pollution:exquisite_infused_armor_gem": {
-   "tutamen": 4
+   "tutamen": 1
   },
   "pollution:exquisite_infused_aura_gem": {
-   "auram": 4
+   "auram": 1
   },
   "pollution:exquisite_infused_cold_gem": {
-   "gelum": 4
+   "gelum": 1
   },
   "pollution:exquisite_infused_craft_gem": {
-   "fabrico": 4
+   "fabrico": 1
   },
   "pollution:exquisite_infused_crystal_gem": {
-   "vitreus": 4
+   "vitreus": 1
   },
   "pollution:exquisite_infused_dark_gem": {
-   "tenebrae": 4
+   "tenebrae": 1
   },
   "pollution:exquisite_infused_death_gem": {
-   "mortuus": 4
+   "mortuus": 1
   },
   "pollution:exquisite_infused_earth_gem": {
-   "terra": 4
+   "terra": 1
   },
   "pollution:exquisite_infused_energy_gem": {
-   "potentia": 4
+   "potentia": 1
   },
   "pollution:exquisite_infused_entropy_gem": {
-   "perditio": 4
+   "perditio": 1
   },
   "pollution:exquisite_infused_exchange_gem": {
-   "permutatio": 4
+   "permutatio": 1
   },
   "pollution:exquisite_infused_fire_gem": {
-   "ignis": 4
+   "ignis": 1
   },
   "pollution:exquisite_infused_fly_gem": {
-   "volatus": 4
+   "volatus": 1
   },
   "pollution:exquisite_infused_greed_gem": {
-   "lucrum": 4
+   "lucrum": 1
   },
   "pollution:exquisite_infused_human_gem": {
-   "humanus": 4
+   "humanus": 1
   },
   "pollution:exquisite_infused_instrument_gem": {
-   "instrumentum": 4
+   "instrumentum": 1
   },
   "pollution:exquisite_infused_life_gem": {
-   "victus": 4
+   "victus": 1
   },
   "pollution:exquisite_infused_light_gem": {
-   "lux": 4
+   "lux": 1
   },
   "pollution:exquisite_infused_magic_gem": {
-   "praecantatio": 4
+   "praecantatio": 1
   },
   "pollution:exquisite_infused_mechanics_gem": {
-   "machina": 4
+   "machina": 1
   },
   "pollution:exquisite_infused_metal_gem": {
-   "metallum": 4
+   "metallum": 1
   },
   "pollution:exquisite_infused_motion_gem": {
-   "motus": 4
+   "motus": 1
   },
   "pollution:exquisite_infused_order_gem": {
-   "ordo": 4
-  },
-  "pollution:exquisite_infused_plant_gem": {
-   "herba": 4
-  },
-  "pollution:exquisite_infused_sense_gem": {
-   "sensus": 4
-  },
-  "pollution:exquisite_infused_soul_gem": {
-   "spiritus": 4
-  },
-  "pollution:exquisite_infused_spatio_gem": {
-   "perditio": 2,
-   "vacuos": 2
-  },
-  "pollution:exquisite_infused_taint_gem": {
-   "vitium": 4
-  },
-  "pollution:exquisite_infused_tempus_gem": {
-   "perditio": 1,
-   "permutatio": 2,
-   "vacuos": 1
-  },
-  "pollution:exquisite_infused_thought_gem": {
-   "cognitio": 4
-  },
-  "pollution:exquisite_infused_tinctura_gem": {
-   "permutatio": 2,
-   "sensus": 2
-  },
-  "pollution:exquisite_infused_trap_gem": {
-   "vinculum": 4
-  },
-  "pollution:exquisite_infused_undead_gem": {
-   "exanimis": 4
-  },
-  "pollution:exquisite_infused_void_gem": {
-   "vacuos": 4
-  },
-  "pollution:exquisite_infused_water_gem": {
-   "aqua": 4
-  },
-  "pollution:exquisite_infused_weapon_gem": {
-   "telum": 4
-  },
-  "pollution:exquisite_optical_grade_aquamarine_gem": {},
-  "pollution:exquisite_scabyst_gem": {
    "ordo": 1
   },
+  "pollution:exquisite_infused_plant_gem": {
+   "herba": 1
+  },
+  "pollution:exquisite_infused_sense_gem": {
+   "sensus": 1
+  },
+  "pollution:exquisite_infused_soul_gem": {
+   "spiritus": 1
+  },
+  "pollution:exquisite_infused_spatio_gem": {},
+  "pollution:exquisite_infused_taint_gem": {
+   "vitium": 1
+  },
+  "pollution:exquisite_infused_tempus_gem": {},
+  "pollution:exquisite_infused_thought_gem": {
+   "cognitio": 1
+  },
+  "pollution:exquisite_infused_tinctura_gem": {},
+  "pollution:exquisite_infused_trap_gem": {
+   "vinculum": 1
+  },
+  "pollution:exquisite_infused_undead_gem": {
+   "exanimis": 1
+  },
+  "pollution:exquisite_infused_void_gem": {
+   "vacuos": 1
+  },
+  "pollution:exquisite_infused_water_gem": {
+   "aqua": 1
+  },
+  "pollution:exquisite_infused_weapon_gem": {
+   "telum": 1
+  },
+  "pollution:exquisite_optical_grade_aquamarine_gem": {},
+  "pollution:exquisite_scabyst_gem": {},
   "pollution:exquisite_valonite_gem": {},
   "pollution:fading_nexus_block": {},
   "pollution:fading_nexus_bolt": {},
@@ -5319,131 +5323,118 @@
   "pollution:flawless_amber_gem": {},
   "pollution:flawless_dragonstone_gem": {},
   "pollution:flawless_elven_quartz_gem": {},
-  "pollution:flawless_flame_coal_gem": {
-   "ignis": 1
-  },
+  "pollution:flawless_flame_coal_gem": {},
   "pollution:flawless_infused_air_gem": {
-   "aer": 2
+   "aer": 1
   },
-  "pollution:flawless_infused_alchemy_gem": {
-   "aqua": 1,
-   "praecantatio": 1
-  },
+  "pollution:flawless_infused_alchemy_gem": {},
   "pollution:flawless_infused_alien_gem": {
-   "alienis": 2
+   "alienis": 1
   },
   "pollution:flawless_infused_animal_gem": {
-   "bestia": 2
+   "bestia": 1
   },
   "pollution:flawless_infused_armor_gem": {
-   "tutamen": 2
+   "tutamen": 1
   },
   "pollution:flawless_infused_aura_gem": {
-   "auram": 2
+   "auram": 1
   },
   "pollution:flawless_infused_cold_gem": {
-   "gelum": 2
+   "gelum": 1
   },
   "pollution:flawless_infused_craft_gem": {
-   "fabrico": 2
+   "fabrico": 1
   },
   "pollution:flawless_infused_crystal_gem": {
-   "vitreus": 2
+   "vitreus": 1
   },
   "pollution:flawless_infused_dark_gem": {
-   "tenebrae": 2
+   "tenebrae": 1
   },
   "pollution:flawless_infused_death_gem": {
-   "mortuus": 2
+   "mortuus": 1
   },
   "pollution:flawless_infused_earth_gem": {
-   "terra": 2
+   "terra": 1
   },
   "pollution:flawless_infused_energy_gem": {
-   "potentia": 2
+   "potentia": 1
   },
   "pollution:flawless_infused_entropy_gem": {
-   "perditio": 2
+   "perditio": 1
   },
   "pollution:flawless_infused_exchange_gem": {
-   "permutatio": 2
-  },
-  "pollution:flawless_infused_fire_gem": {
-   "ignis": 2
-  },
-  "pollution:flawless_infused_fly_gem": {
-   "volatus": 2
-  },
-  "pollution:flawless_infused_greed_gem": {
-   "lucrum": 2
-  },
-  "pollution:flawless_infused_human_gem": {
-   "humanus": 2
-  },
-  "pollution:flawless_infused_instrument_gem": {
-   "instrumentum": 2
-  },
-  "pollution:flawless_infused_life_gem": {
-   "victus": 2
-  },
-  "pollution:flawless_infused_light_gem": {
-   "lux": 2
-  },
-  "pollution:flawless_infused_magic_gem": {
-   "praecantatio": 2
-  },
-  "pollution:flawless_infused_mechanics_gem": {
-   "machina": 2
-  },
-  "pollution:flawless_infused_metal_gem": {
-   "metallum": 2
-  },
-  "pollution:flawless_infused_motion_gem": {
-   "motus": 2
-  },
-  "pollution:flawless_infused_order_gem": {
-   "ordo": 2
-  },
-  "pollution:flawless_infused_plant_gem": {
-   "herba": 2
-  },
-  "pollution:flawless_infused_sense_gem": {
-   "sensus": 2
-  },
-  "pollution:flawless_infused_soul_gem": {
-   "spiritus": 2
-  },
-  "pollution:flawless_infused_spatio_gem": {
-   "perditio": 1,
-   "vacuos": 1
-  },
-  "pollution:flawless_infused_taint_gem": {
-   "vitium": 2
-  },
-  "pollution:flawless_infused_tempus_gem": {
    "permutatio": 1
   },
-  "pollution:flawless_infused_thought_gem": {
-   "cognitio": 2
+  "pollution:flawless_infused_fire_gem": {
+   "ignis": 1
   },
-  "pollution:flawless_infused_tinctura_gem": {
-   "permutatio": 1,
+  "pollution:flawless_infused_fly_gem": {
+   "volatus": 1
+  },
+  "pollution:flawless_infused_greed_gem": {
+   "lucrum": 1
+  },
+  "pollution:flawless_infused_human_gem": {
+   "humanus": 1
+  },
+  "pollution:flawless_infused_instrument_gem": {
+   "instrumentum": 1
+  },
+  "pollution:flawless_infused_life_gem": {
+   "victus": 1
+  },
+  "pollution:flawless_infused_light_gem": {
+   "lux": 1
+  },
+  "pollution:flawless_infused_magic_gem": {
+   "praecantatio": 1
+  },
+  "pollution:flawless_infused_mechanics_gem": {
+   "machina": 1
+  },
+  "pollution:flawless_infused_metal_gem": {
+   "metallum": 1
+  },
+  "pollution:flawless_infused_motion_gem": {
+   "motus": 1
+  },
+  "pollution:flawless_infused_order_gem": {
+   "ordo": 1
+  },
+  "pollution:flawless_infused_plant_gem": {
+   "herba": 1
+  },
+  "pollution:flawless_infused_sense_gem": {
    "sensus": 1
   },
+  "pollution:flawless_infused_soul_gem": {
+   "spiritus": 1
+  },
+  "pollution:flawless_infused_spatio_gem": {},
+  "pollution:flawless_infused_taint_gem": {
+   "vitium": 1
+  },
+  "pollution:flawless_infused_tempus_gem": {},
+  "pollution:flawless_infused_thought_gem": {
+   "cognitio": 1
+  },
+  "pollution:flawless_infused_tinctura_gem": {},
   "pollution:flawless_infused_trap_gem": {
-   "vinculum": 2
+   "vinculum": 1
   },
   "pollution:flawless_infused_undead_gem": {
-   "exanimis": 2
+   "exanimis": 1
   },
   "pollution:flawless_infused_void_gem": {
-   "vacuos": 2
+   "vacuos": 1
   },
   "pollution:flawless_infused_water_gem": {
-   "aqua": 2
+   "aqua": 1
   },
   "pollution:flawless_infused_weapon_gem": {
-   "telum": 2
+   "telum": 1
   },
   "pollution:flawless_optical_grade_aquamarine_gem": {},
   "pollution:flawless_scabyst_gem": {},

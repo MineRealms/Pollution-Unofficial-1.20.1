@@ -5,8 +5,8 @@
  },
  "forge:conditions": [
   {
-   "type": "forge:mod_loaded",
-   "modid": "gtnn"
+   "modid": "gtnn",
+   "type": "forge:mod_loaded"
   }
  ]
 }
