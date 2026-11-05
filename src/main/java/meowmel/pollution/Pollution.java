@@ -85,6 +85,7 @@ public final class Pollution {
             provider.add("pollution.machine.battery.enabled", "Energy transfer enabled: %s");
             provider.add("pollution.hud.exposure", "Pollution %s×");
             provider.add("pollution.portal.unsafe", "The destination lies outside the world's safe border.");
+            provider.add("pollution.portal.need_loonium", "The pool must be ringed with Botania Loonium and activated with a Thaumium Ingot; vanilla flowers belong to the Twilight Forest ritual.");
             provider.add("chat.pollution.warp.countdownbomb.tick", "Warp bomb detonates in %s s");
             provider.add("chat.pollution.warp.countdownbomb.end", "The warp bomb releases a harmless blast");
             provider.add("pollution.machine.vis_generator.tooltip",

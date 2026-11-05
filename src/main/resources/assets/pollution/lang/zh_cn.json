@@ -1203,6 +1203,7 @@
   "pollution.mineral_extractor.enabled": "矿物提取器已开启",
   "pollution.mineral_extractor.mode": "矿物提取器模式：%s",
   "pollution.modeChanged.message": "输出模式已切换",
+  "pollution.portal.need_loonium": "水池四周必须摆上植物魔法聚宝花 (botania:loonium)，并投入神秘锭才能开启地底之门；普通花朵属于暮色森林的仪式。",
   "pollution.portal.unsafe": "目的地位于世界安全边界之外。",
   "pollution.starstream_linker.bound": "运行核心已绑定星辉网络",
   "pollution.starstream_linker.linked": "星流中继已连接",

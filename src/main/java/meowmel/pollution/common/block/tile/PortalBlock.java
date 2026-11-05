@@ -5,7 +5,10 @@ import meowmel.pollution.dimension.PollutionTeleporter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +25,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -36,6 +38,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Port of the 1.12 {@code BlockPOPortal}: the flesh-pool portal to the
@@ -61,6 +65,12 @@ public class PortalBlock extends Block {
     private static final VoxelShape SHAPE = Shapes.box(0.0, 0.0, 0.0, 1.0, 0.8125, 1.0);
     private static final int MIN_PORTAL_SIZE = 4;
     private static final int MAX_PORTAL_SIZE = 64;
+
+    /** Only Botania's Loonium may decorate the ring; vanilla flowers belong to Twilight Forest. */
+    private static final ResourceLocation LOONIUM_ID = new ResourceLocation("botania", "loonium");
+    /** Arrival used to land inside the portal block and bounce forever; keep a hard cooldown too. */
+    private static final Map<UUID, Long> LAST_TELEPORT = new ConcurrentHashMap<>();
+    private static final long TELEPORT_COOLDOWN_NS = 3_000_000_000L;
 
     public PortalBlock(Properties properties) {
         super(properties);
@@ -120,6 +130,14 @@ public class PortalBlock extends Block {
         if (server == null) {
             return;
         }
+        long now = System.nanoTime();
+        Long last = LAST_TELEPORT.get(entity.getUUID());
+        if (last != null && now - last < TELEPORT_COOLDOWN_NS) {
+            return;
+        }
+        if (LAST_TELEPORT.size() > 256) {
+            LAST_TELEPORT.clear();
+        }
         boolean returning = entity.level().dimension().equals(PollutionDimensions.UNDERGROUND);
         ResourceKey<Level> destinationKey = returning
                 ? PollutionTeleporter.originDimension()
@@ -128,7 +146,8 @@ public class PortalBlock extends Block {
         if (target == null) {
             return;
         }
-        entity.setPortalCooldown(10);
+        entity.setPortalCooldown(20);
+        LAST_TELEPORT.put(entity.getUUID(), now);
         Entity transported = entity.changeDimension(target, PollutionTeleporter.get());
         if (!returning && transported instanceof ServerPlayer player) {
             player.setRespawnPosition(PollutionDimensions.UNDERGROUND, player.blockPosition(),
@@ -171,6 +190,9 @@ public class PortalBlock extends Block {
         int[] portalSize = {0};
         if (!recursivelyValidatePortal(level, pos, blocksChecked, portalSize, state)
                 || portalSize[0] < MIN_PORTAL_SIZE) {
+            if (player != null && player.tickCount % 100 == 0) {
+                player.displayClientMessage(Component.translatable("pollution.portal.need_loonium"), true);
+            }
             return false;
         }
 
@@ -217,8 +239,8 @@ public class PortalBlock extends Block {
                     isPoolProbablyEnclosed = recursivelyValidatePortal(level, positionCheck, blocksChecked,
                             portalSize, requiredState);
                 }
-            } else if ((isGrassOrDirt(state) && isNatureBlock(level.getBlockState(positionCheck.above())))
-                    || state.is(Blocks.STONE)) {
+            } else if (isGrassOrDirt(state)
+                    && isLoonium(level.getBlockState(positionCheck.above()))) {
                 blocksChecked.put(positionCheck, false);
             } else {
                 return false;
@@ -237,9 +259,15 @@ public class PortalBlock extends Block {
         return state.is(BlockTags.DIRT);
     }
 
-    /** Modern replacement for the 1.12 {@code Material.PLANTS}/{@code VINE}/{@code LEAVES} check. */
-    private static boolean isNatureBlock(BlockState state) {
-        return state.is(BlockTags.LEAVES) || state.is(Blocks.VINE) || state.getBlock() instanceof BushBlock;
+    /**
+     * Only Botania's Loonium is accepted as the ring decoration. Twilight Forest
+     * uses {@code #minecraft:flowers} and friends, so the two rituals can never
+     * both match the same pool; the separate catalysts make them fully disjoint.
+     */
+    private static boolean isLoonium(BlockState state) {
+        Block loonium = BuiltInRegistries.BLOCK.get(LOONIUM_ID);
+        // A missing Botania resolves to AIR; never let air count as a decoration.
+        return loonium != Blocks.AIR && state.is(loonium);
     }
 
     private static void causeLightning(Level level, BlockPos pos, boolean visualOnly) {

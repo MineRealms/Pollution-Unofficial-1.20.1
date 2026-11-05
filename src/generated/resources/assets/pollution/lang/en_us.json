@@ -1202,6 +1202,7 @@
   "pollution.mineral_extractor.enabled": "Mineral extractor enabled",
   "pollution.mineral_extractor.mode": "Mineral extractor mode: %s",
   "pollution.modeChanged.message": "Machine mode switched",
+  "pollution.portal.need_loonium": "The pool must be ringed with Botania Loonium and activated with a Thaumium Ingot; vanilla flowers belong to the Twilight Forest ritual.",
   "pollution.portal.unsafe": "The destination lies outside the world's safe border.",
   "pollution.starstream_linker.bound": "Operation core linked to the Starstream network",
   "pollution.starstream_linker.linked": "Starstream relay linked",

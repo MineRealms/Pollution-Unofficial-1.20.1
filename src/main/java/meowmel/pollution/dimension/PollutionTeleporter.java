@@ -83,8 +83,34 @@ public final class PollutionTeleporter implements ITeleporter {
             double yFactor = destination.dimension().equals(originDimension()) ? 2.0D : 0.5D;
             portalPos = createPortal(destination, origin, yFactor);
         }
-        return new PortalInfo(Vec3.atBottomCenterOf(portalPos), Vec3.ZERO,
+        return new PortalInfo(safeArrival(destination, portalPos), Vec3.ZERO,
                 entity.getYRot(), entity.getXRot());
+    }
+
+    /**
+     * Never drop the entity inside the portal block: that re-triggers
+     * {@code entityInside} on the next tick and bounces between dimensions
+     * forever. Prefer a solid, air-clear ledge beside the arrival portal.
+     */
+    private static Vec3 safeArrival(ServerLevel level, BlockPos portalPos) {
+        Block portal = PollutionMiscBlocks.PORTAL.get();
+        for (int dy = 0; dy <= 1; dy++) {
+            for (int dx = -2; dx <= 2; dx++) {
+                for (int dz = -2; dz <= 2; dz++) {
+                    if (dx == 0 && dz == 0 && dy == 0) continue;
+                    BlockPos spot = portalPos.offset(dx, dy, dz);
+                    if (level.getBlockState(spot).is(portal)) continue;
+                    if (!level.getBlockState(spot).canBeReplaced()) continue;
+                    if (!level.getBlockState(spot.above()).canBeReplaced()) continue;
+                    BlockPos below = spot.below();
+                    if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) continue;
+                    return Vec3.atBottomCenterOf(spot);
+                }
+            }
+        }
+        // Player-built portal in open water: at least land above the block; the
+        // hard cooldown in PortalBlock stops the instant bounce.
+        return Vec3.atBottomCenterOf(portalPos.above());
     }
 
     @Override
